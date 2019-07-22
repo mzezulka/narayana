@@ -75,11 +75,15 @@ import com.arjuna.ats.jta.exceptions.InactiveTransactionException;
 import com.arjuna.ats.jta.exceptions.InvalidTerminationStateException;
 import com.arjuna.ats.jta.logging.jtaLogger;
 import com.arjuna.ats.jta.resources.LastResourceCommitOptimisation;
+import com.arjuna.ats.jta.tracing.JtaTracer;
 import com.arjuna.ats.jta.utils.JTAHelper;
 import com.arjuna.ats.jta.utils.XAHelper;
 import com.arjuna.ats.jta.xa.XAModifier;
 import com.arjuna.ats.jta.xa.XidImple;
 import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
+
+import io.opentracing.Span;
+import io.opentracing.Tracer;
 
 /*
  * Is given an AtomicAction, but uses the TwoPhaseCoordinator aspects of it to
@@ -427,6 +431,9 @@ public class TransactionImple implements javax.transaction.Transaction,
 			throws RollbackException, IllegalStateException,
 			javax.transaction.SystemException
 	{
+	    Tracer tracer = JtaTracer.getInstance().getTracer();
+	    Span span = tracer.buildSpan("enlist_resource").start();
+	    
 		if (jtaLogger.logger.isTraceEnabled()) {
             jtaLogger.logger.trace("TransactionImple.enlistResource ( " + xaRes + " )");
         }
@@ -774,6 +781,8 @@ public class TransactionImple implements javax.transaction.Transaction,
 			markRollbackOnly();
 
 			return false;
+		} finally {
+			span.finish();
 		}
 	}
 
