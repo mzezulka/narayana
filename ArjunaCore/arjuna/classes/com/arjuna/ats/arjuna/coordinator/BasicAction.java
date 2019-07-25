@@ -54,6 +54,9 @@ import com.arjuna.ats.arjuna.utils.ThreadUtil;
 import com.arjuna.ats.arjuna.utils.Utility;
 import com.arjuna.ats.internal.arjuna.Header;
 import com.arjuna.ats.internal.arjuna.thread.ThreadActionData;
+import com.arjuna.ats.internal.arjuna.tracing.JtaTracer;
+
+import io.opentracing.Span;
 
 /**
  * BasicAction does most of the work of an atomic action, but does not manage
@@ -769,6 +772,8 @@ public class BasicAction extends StateManager
 
     public boolean save_state (OutputObjectState os, int ot)
     {
+    	Span span = JtaTracer.getInstance().getTracer().buildSpan("save_state").start();
+    	
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("BasicAction::save_state ()");
         }

@@ -61,6 +61,7 @@ import com.arjuna.ats.arjuna.coordinator.TransactionReaper;
 import com.arjuna.ats.arjuna.exceptions.ObjectStoreException;
 import com.arjuna.ats.arjuna.logging.tsLogger;
 import com.arjuna.ats.internal.arjuna.abstractrecords.LastResourceRecord;
+import com.arjuna.ats.internal.arjuna.tracing.JtaTracer;
 import com.arjuna.ats.internal.jta.resources.arjunacore.CommitMarkableResourceRecord;
 import com.arjuna.ats.internal.jta.resources.arjunacore.SynchronizationImple;
 import com.arjuna.ats.internal.jta.resources.arjunacore.XAOnePhaseResource;
@@ -75,7 +76,6 @@ import com.arjuna.ats.jta.exceptions.InactiveTransactionException;
 import com.arjuna.ats.jta.exceptions.InvalidTerminationStateException;
 import com.arjuna.ats.jta.logging.jtaLogger;
 import com.arjuna.ats.jta.resources.LastResourceCommitOptimisation;
-import com.arjuna.ats.jta.tracing.JtaTracer;
 import com.arjuna.ats.jta.utils.JTAHelper;
 import com.arjuna.ats.jta.utils.XAHelper;
 import com.arjuna.ats.jta.xa.XAModifier;
@@ -431,8 +431,7 @@ public class TransactionImple implements javax.transaction.Transaction,
 			throws RollbackException, IllegalStateException,
 			javax.transaction.SystemException
 	{
-	    Tracer tracer = JtaTracer.getInstance().getTracer();
-	    Span span = tracer.buildSpan("enlist_resource").start();
+	    Span span = JtaTracer.getInstance().getTracer().buildSpan("enlist_resource").start();
 	    
 		if (jtaLogger.logger.isTraceEnabled()) {
             jtaLogger.logger.trace("TransactionImple.enlistResource ( " + xaRes + " )");
