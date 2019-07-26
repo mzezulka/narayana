@@ -103,6 +103,7 @@ public class TransactionImple implements javax.transaction.Transaction,
 
 	public TransactionImple(int timeout)
 	{
+		Span span = JtaTracer.getInstance().getTracer().buildSpan("transaction_begin").start();
 		_theTransaction = new AtomicAction();
 
 		_theTransaction.begin(timeout);
@@ -113,6 +114,7 @@ public class TransactionImple implements javax.transaction.Transaction,
 		_xaTransactionTimeoutEnabled = getXATransactionTimeoutEnabled();
 
         _txLocalResources = Collections.synchronizedMap(new HashMap());
+        span.finish();
     }
 
 	/**
@@ -796,6 +798,7 @@ public class TransactionImple implements javax.transaction.Transaction,
      */
     private AbstractRecord createRecord(XAResource xaRes, Object[] params, Xid xid)
     {
+    	Span span = JtaTracer.getInstance().getTracer().buildSpan("create_record").start();
         if ((xaRes instanceof LastResourceCommitOptimisation)
                 || ((LAST_RESOURCE_OPTIMISATION_INTERFACE != null) && LAST_RESOURCE_OPTIMISATION_INTERFACE
                 .isInstance(xaRes)))
@@ -809,13 +812,17 @@ public class TransactionImple implements javax.transaction.Transaction,
 							| SystemException e) {
 						tsLogger.logger.warn("Could not register synchronization for CommitMarkableResourceRecord", e);
 						return null;
+					} finally {
+						span.finish();
 					}
             	}
             }
+            span.finish();
             return new LastResourceRecord(new XAOnePhaseResource(xaRes, xid, params));
         }
         else
         {
+        	span.finish();
             return new XAResourceRecord(this, xaRes, xid, params);
         }
     }

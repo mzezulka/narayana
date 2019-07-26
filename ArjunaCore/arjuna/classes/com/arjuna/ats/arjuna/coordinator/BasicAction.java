@@ -981,7 +981,7 @@ public class BasicAction extends StateManager
                 res = false;
             }
         }
-
+        span.finish();
         return res;
     }
 
@@ -2804,6 +2804,7 @@ public class BasicAction extends StateManager
 
     protected int doCommit (RecordList rl, boolean reportHeuristics)
     {
+    	Span span = JtaTracer.getInstance().getTracer().buildSpan("do_commit").start();
         if ((rl != null) && (rl.size() > 0))
         {
             AbstractRecord rec;
@@ -2869,12 +2870,13 @@ public class BasicAction extends StateManager
                 }
             }
         }
-
+        span.finish();
         return TwoPhaseOutcome.FINISH_OK;
     }
 
     protected int doCommit (boolean reportHeuristics, AbstractRecord record)
     {
+    	Span span = JtaTracer.getInstance().getTracer().buildSpan("do_commit").start();
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("BasicAction::doCommit ("
                     + record + ")");
@@ -2989,7 +2991,7 @@ public class BasicAction extends StateManager
             }
 
         }
-
+        span.finish();
         return ok;
     }
 

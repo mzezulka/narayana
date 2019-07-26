@@ -77,32 +77,12 @@
     </plugins>
   </build>
   <dependencies>
-        <!-- Opentracing API -->
-  	<dependency>
-      <groupId>io.opentracing</groupId>
-      <artifactId>opentracing-util</artifactId>
-      <version>${opentracing.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.opentracing</groupId>
-      <artifactId>opentracing-util</artifactId>
-      <version>${opentracing.version}</version>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.opentracing</groupId>
-      <artifactId>opentracing-mock</artifactId>
-      <version>${opentracing.version}</version>
-      <scope>test</scope>
-    </dependency>
     <!-- Opentracing impl, Jaeger -->
     <dependency>
 	  <groupId>io.jaegertracing</groupId>
       <artifactId>jaeger-core</artifactId>
-	  <version>0.34.0</version>
+	  <version>0.35.5</version>
 	</dependency>
-  
     <dependency>
       <groupId>org.jboss.narayana</groupId>
       <artifactId>common</artifactId>
