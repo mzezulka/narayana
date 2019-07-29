@@ -64,6 +64,11 @@ import com.arjuna.ats.internal.arjuna.abstractrecords.PersistenceRecord;
 import com.arjuna.ats.internal.arjuna.abstractrecords.RecoveryRecord;
 import com.arjuna.ats.internal.arjuna.common.UidHelper;
 import com.arjuna.ats.internal.arjuna.objectstore.TwoPhaseVolatileStore;
+import com.arjuna.ats.internal.arjuna.tracing.JtaTracer;
+
+import io.opentracing.Scope;
+import io.opentracing.Span;
+import io.opentracing.util.GlobalTracer;
 
 /**
  * The root of the Arjuna class hierarchy. This class provides state management
@@ -92,28 +97,30 @@ public class StateManager
 
     public synchronized boolean save_state (OutputObjectState os, int ot)
     {
-        /*
-         * Only pack additional information if this is for a persistent state
-         * modification.
-         */
-
-        if (ot == ObjectType.ANDPERSISTENT)
-        {
-            try
+    	Span span = JtaTracer.getInstance().getTracer().buildSpan("save_state").start();
+    	try(Scope scope = GlobalTracer.get().activateSpan(span)) {
+            /*
+             * Only pack additional information if this is for a persistent state
+             * modification.
+             */
+            if (ot == ObjectType.ANDPERSISTENT)
             {
-                BasicAction action = BasicAction.Current();
-
-                if (action == null)
-                    packHeader(os, new Header(null, Utility.getProcessUid()));
-                else
-                    packHeader(os, new Header(action.get_uid(), Utility.getProcessUid()));
-            }
-            catch (IOException e)
-            {
-                return false;
-            }
-        }
-
+                try
+                {
+                    BasicAction action = BasicAction.Current();
+                    if (action == null)
+                        packHeader(os, new Header(null, Utility.getProcessUid()));
+                    else
+                        packHeader(os, new Header(action.get_uid(), Utility.getProcessUid()));
+                }
+                catch (IOException e)
+                {
+                    return false;
+                }
+            }	
+    	} finally {
+    		span.finish();
+    	}
         return true;
     }
 

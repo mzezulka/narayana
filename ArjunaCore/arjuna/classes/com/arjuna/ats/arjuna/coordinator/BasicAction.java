@@ -69,7 +69,7 @@ import io.opentracing.Span;
 
 public class BasicAction extends StateManager
 {
-
+	
     public BasicAction ()
     {
         super(ObjectType.NEITHER);

@@ -39,6 +39,9 @@ import com.arjuna.ats.arjuna.coordinator.TwoPhaseCoordinator;
 import com.arjuna.ats.arjuna.coordinator.TxControl;
 import com.arjuna.ats.arjuna.logging.tsLogger;
 import com.arjuna.ats.internal.arjuna.thread.ThreadActionData;
+import com.arjuna.ats.internal.arjuna.tracing.JtaTracer;
+
+import io.opentracing.Span;
 
 /**
  * This is a user-level transaction class, unlike BasicAction. AtomicAction
@@ -113,6 +116,7 @@ public class AtomicAction extends TwoPhaseCoordinator
 
 	public int begin (int timeout)
 	{
+		Span span = JtaTracer.getInstance().getTracer().buildSpan("begin").start();
 		int status = super.start();
 
 		if (status == ActionStatus.RUNNING)
@@ -131,7 +135,7 @@ public class AtomicAction extends TwoPhaseCoordinator
 			if (_timeout > 0)
 				TransactionReaper.transactionReaper().insert(this, _timeout);
 		}
-
+		span.finish();
 		return status;
 	}
 
@@ -159,6 +163,7 @@ public class AtomicAction extends TwoPhaseCoordinator
 
 	public int commit (boolean report_heuristics)
 	{
+		Span span = JtaTracer.getInstance().getTracer().buildSpan("commit").start();
 		int status = super.end(report_heuristics);
 
 		/*
@@ -168,7 +173,7 @@ public class AtomicAction extends TwoPhaseCoordinator
 		ThreadActionData.popAction();
 
 		TransactionReaper.transactionReaper().remove(this);
-
+		span.finish();
 		return status;
 	}
 
