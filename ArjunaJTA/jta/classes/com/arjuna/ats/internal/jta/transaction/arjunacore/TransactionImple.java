@@ -61,7 +61,7 @@ import com.arjuna.ats.arjuna.coordinator.TransactionReaper;
 import com.arjuna.ats.arjuna.exceptions.ObjectStoreException;
 import com.arjuna.ats.arjuna.logging.tsLogger;
 import com.arjuna.ats.internal.arjuna.abstractrecords.LastResourceRecord;
-import com.arjuna.ats.internal.arjuna.tracing.JtaTracer;
+import com.arjuna.ats.internal.arjuna.tracing.TracerUtils;
 import com.arjuna.ats.internal.jta.resources.arjunacore.CommitMarkableResourceRecord;
 import com.arjuna.ats.internal.jta.resources.arjunacore.SynchronizationImple;
 import com.arjuna.ats.internal.jta.resources.arjunacore.XAOnePhaseResource;
@@ -82,8 +82,10 @@ import com.arjuna.ats.jta.xa.XAModifier;
 import com.arjuna.ats.jta.xa.XidImple;
 import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
 
+import io.opentracing.Scope;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
+import io.opentracing.util.GlobalTracer;
 
 /*
  * Is given an AtomicAction, but uses the TwoPhaseCoordinator aspects of it to
@@ -103,7 +105,6 @@ public class TransactionImple implements javax.transaction.Transaction,
 
 	public TransactionImple(int timeout)
 	{
-		Span span = JtaTracer.getInstance().getTracer().buildSpan("transaction_begin").start();
 		_theTransaction = new AtomicAction();
 
 		_theTransaction.begin(timeout);
@@ -114,7 +115,6 @@ public class TransactionImple implements javax.transaction.Transaction,
 		_xaTransactionTimeoutEnabled = getXATransactionTimeoutEnabled();
 
         _txLocalResources = Collections.synchronizedMap(new HashMap());
-        span.finish();
     }
 
 	/**
@@ -432,9 +432,7 @@ public class TransactionImple implements javax.transaction.Transaction,
 	public boolean enlistResource(XAResource xaRes, Object[] params)
 			throws RollbackException, IllegalStateException,
 			javax.transaction.SystemException
-	{
-	    Span span = JtaTracer.getInstance().getTracer().buildSpan("enlist_resource").start();
-	    
+	{   
 		if (jtaLogger.logger.isTraceEnabled()) {
             jtaLogger.logger.trace("TransactionImple.enlistResource ( " + xaRes + " )");
         }
@@ -469,7 +467,8 @@ public class TransactionImple implements javax.transaction.Transaction,
 			}
 		}
 
-		try
+		Span span = TracerUtils.getSpanWithName("TransactionImple.enlistResource");
+		try(Scope scope = GlobalTracer.get().activateSpan(span))
 		{
 			/*
 			 * For each transaction we maintain a list of resources registered
@@ -798,33 +797,33 @@ public class TransactionImple implements javax.transaction.Transaction,
      */
     private AbstractRecord createRecord(XAResource xaRes, Object[] params, Xid xid)
     {
-    	Span span = JtaTracer.getInstance().getTracer().buildSpan("create_record").start();
-        if ((xaRes instanceof LastResourceCommitOptimisation)
-                || ((LAST_RESOURCE_OPTIMISATION_INTERFACE != null) && LAST_RESOURCE_OPTIMISATION_INTERFACE
-                .isInstance(xaRes)))
-        {
-            if (xaRes instanceof ConnectableResource) {
-            	String jndiName = ((XAResourceWrapper)xaRes).getJndiName();
-            	if (commitMarkableResourceJNDINames.contains(jndiName)) {
-            		try {
-						return new CommitMarkableResourceRecord(this, ((ConnectableResource)xaRes), xid, _theTransaction);
-					} catch (IllegalStateException | RollbackException
-							| SystemException e) {
-						tsLogger.logger.warn("Could not register synchronization for CommitMarkableResourceRecord", e);
-						return null;
-					} finally {
-						span.finish();
-					}
-            	}
+    	Span span = TracerUtils.getSpanWithName("TransactionImple.createRecord");
+    	try(Scope scope = GlobalTracer.get().activateSpan(span)) {
+            if ((xaRes instanceof LastResourceCommitOptimisation)
+                    || ((LAST_RESOURCE_OPTIMISATION_INTERFACE != null) && LAST_RESOURCE_OPTIMISATION_INTERFACE
+                    .isInstance(xaRes)))
+            {
+                if (xaRes instanceof ConnectableResource) {
+                	String jndiName = ((XAResourceWrapper)xaRes).getJndiName();
+                	if (commitMarkableResourceJNDINames.contains(jndiName)) {
+                		try {
+    						return new CommitMarkableResourceRecord(this, ((ConnectableResource)xaRes), xid, _theTransaction);
+    					} catch (IllegalStateException | RollbackException
+    							| SystemException e) {
+    						tsLogger.logger.warn("Could not register synchronization for CommitMarkableResourceRecord", e);
+    						return null;
+    					}
+                	}
+                }
+                return new LastResourceRecord(new XAOnePhaseResource(xaRes, xid, params));
             }
-            span.finish();
-            return new LastResourceRecord(new XAOnePhaseResource(xaRes, xid, params));
-        }
-        else
-        {
-        	span.finish();
-            return new XAResourceRecord(this, xaRes, xid, params);
-        }
+            else
+            {
+                return new XAResourceRecord(this, xaRes, xid, params);
+            }
+    	} finally {
+    		span.finish();
+    	}
     }
 
     /*

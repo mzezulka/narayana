@@ -39,9 +39,11 @@ import com.arjuna.ats.arjuna.coordinator.TwoPhaseCoordinator;
 import com.arjuna.ats.arjuna.coordinator.TxControl;
 import com.arjuna.ats.arjuna.logging.tsLogger;
 import com.arjuna.ats.internal.arjuna.thread.ThreadActionData;
-import com.arjuna.ats.internal.arjuna.tracing.JtaTracer;
+import com.arjuna.ats.internal.arjuna.tracing.TracerUtils;
 
+import io.opentracing.Scope;
 import io.opentracing.Span;
+import io.opentracing.util.GlobalTracer;
 
 /**
  * This is a user-level transaction class, unlike BasicAction. AtomicAction
@@ -116,27 +118,30 @@ public class AtomicAction extends TwoPhaseCoordinator
 
 	public int begin (int timeout)
 	{
-		Span span = JtaTracer.getInstance().getTracer().buildSpan("begin").start();
-		int status = super.start();
+		Span span = TracerUtils.getSpanWithName("AtomicAction.begin");
+		try(Scope scope = GlobalTracer.get().activateSpan(span)) {
+			int status = super.start();
 
-		if (status == ActionStatus.RUNNING)
-		{
-			/*
-			 * Now do thread/action tracking.
-			 */
+			if (status == ActionStatus.RUNNING)
+			{
+				/*
+				 * Now do thread/action tracking.
+				 */
 
-			ThreadActionData.pushAction(this);
+				ThreadActionData.pushAction(this);
 
-			_timeout = timeout;
+				_timeout = timeout;
 
-			if (_timeout == 0)
-				_timeout = TxControl.getDefaultTimeout();
+				if (_timeout == 0)
+					_timeout = TxControl.getDefaultTimeout();
 
-			if (_timeout > 0)
-				TransactionReaper.transactionReaper().insert(this, _timeout);
+				if (_timeout > 0)
+					TransactionReaper.transactionReaper().insert(this, _timeout);
+			}
+			return status;
+		} finally {
+			span.finish();
 		}
-		span.finish();
-		return status;
 	}
 
 	/**
@@ -163,18 +168,18 @@ public class AtomicAction extends TwoPhaseCoordinator
 
 	public int commit (boolean report_heuristics)
 	{
-		Span span = JtaTracer.getInstance().getTracer().buildSpan("commit").start();
-		int status = super.end(report_heuristics);
-
-		/*
-		 * Now remove this thread from the action state.
-		 */
-
-		ThreadActionData.popAction();
-
-		TransactionReaper.transactionReaper().remove(this);
-		span.finish();
-		return status;
+		Span span = TracerUtils.getSpanWithName("AtomicAction.commit");
+		try(Scope scope = GlobalTracer.get().activateSpan(span)) {
+			int status = super.end(report_heuristics);
+			/*
+			 * Now remove this thread from the action state.
+			 */
+			ThreadActionData.popAction();
+			TransactionReaper.transactionReaper().remove(this);
+			return status;
+		} finally {
+			span.finish();
+		}
 	}
 
 	/**

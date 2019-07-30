@@ -54,9 +54,11 @@ import com.arjuna.ats.arjuna.utils.ThreadUtil;
 import com.arjuna.ats.arjuna.utils.Utility;
 import com.arjuna.ats.internal.arjuna.Header;
 import com.arjuna.ats.internal.arjuna.thread.ThreadActionData;
-import com.arjuna.ats.internal.arjuna.tracing.JtaTracer;
+import com.arjuna.ats.internal.arjuna.tracing.TracerUtils;
 
+import io.opentracing.Scope;
 import io.opentracing.Span;
+import io.opentracing.util.GlobalTracer;
 
 /**
  * BasicAction does most of the work of an atomic action, but does not manage
@@ -772,7 +774,7 @@ public class BasicAction extends StateManager
 
     public boolean save_state (OutputObjectState os, int ot)
     {
-    	Span span = JtaTracer.getInstance().getTracer().buildSpan("save_state").start();
+    	Span span = TracerUtils.getSpanWithName("BasicAction.save_state");
     	
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("BasicAction::save_state ()");
@@ -2804,195 +2806,201 @@ public class BasicAction extends StateManager
 
     protected int doCommit (RecordList rl, boolean reportHeuristics)
     {
-    	Span span = JtaTracer.getInstance().getTracer().buildSpan("do_commit").start();
-        if ((rl != null) && (rl.size() > 0))
-        {
-            AbstractRecord rec;
-
-            while (((rec = rl.getFront()) != null))
-            {
-                int outcome = doCommit(reportHeuristics, rec);
-
-                /*
-                     * Check the outcome and if we have a heuristic rollback try to
-                     * rollback everything else in the list *if* we have not already
-                     * committed something. That way we make the outcome for all
-                     * participants the same as the first (rollback) and don't get a
-                     * heuristic!
-                     */
-
-                switch (outcome)
-                {
-                    case TwoPhaseOutcome.FINISH_OK:
-                    case TwoPhaseOutcome.HEURISTIC_COMMIT:
-                        pastFirstParticipant = true;
-                        break;
-                    case TwoPhaseOutcome.HEURISTIC_MIXED:
-                    case TwoPhaseOutcome.HEURISTIC_HAZARD:
-                    default:
-                        /*
-                           * Do nothing and continue to commit everything else. We've
-                           * got this far as errors have caused problems, but we gain
-                           * nothing by now rolling back some participants. This could
-                           * cause further heuristics!
-                           */
-
-                        pastFirstParticipant = true;
-                        break;
-                    case TwoPhaseOutcome.HEURISTIC_ROLLBACK:
-                    {
-                        /*
-                           * A heuristic decision of commit means that we have got
-                           * past the first entry in the list. So there is no going
-                           * back now!
-                           */
-
-                        if (pastFirstParticipant)
-                            break;
-                        else
-                        {
-                            /*
-                                * Remember the heuristic decision so we can restore it
-                                * after rolling back. Otherwise we can't return the
-                                * right value from commit.
-                                */
-
-                            pastFirstParticipant = true;
-
-                            int oldDecision = heuristicDecision;
-
-                            phase2Abort(reportHeuristics);
-
-                            heuristicDecision = oldDecision;
-                        }
-                    }
-                    break;
-                }
-            }
-        }
-        span.finish();
-        return TwoPhaseOutcome.FINISH_OK;
+		Span span = TracerUtils.getSpanWithName("BasicAction.doCommit - RecordList");
+		try(Scope scope = GlobalTracer.get().activateSpan(span)) {
+	        if ((rl != null) && (rl.size() > 0))
+	        {
+	            AbstractRecord rec;
+	
+	            while (((rec = rl.getFront()) != null))
+	            {
+	                int outcome = doCommit(reportHeuristics, rec);
+	
+	                /*
+	                     * Check the outcome and if we have a heuristic rollback try to
+	                     * rollback everything else in the list *if* we have not already
+	                     * committed something. That way we make the outcome for all
+	                     * participants the same as the first (rollback) and don't get a
+	                     * heuristic!
+	                     */
+	
+	                switch (outcome)
+	                {
+	                    case TwoPhaseOutcome.FINISH_OK:
+	                    case TwoPhaseOutcome.HEURISTIC_COMMIT:
+	                        pastFirstParticipant = true;
+	                        break;
+	                    case TwoPhaseOutcome.HEURISTIC_MIXED:
+	                    case TwoPhaseOutcome.HEURISTIC_HAZARD:
+	                    default:
+	                        /*
+	                           * Do nothing and continue to commit everything else. We've
+	                           * got this far as errors have caused problems, but we gain
+	                           * nothing by now rolling back some participants. This could
+	                           * cause further heuristics!
+	                           */
+	
+	                        pastFirstParticipant = true;
+	                        break;
+	                    case TwoPhaseOutcome.HEURISTIC_ROLLBACK:
+	                    {
+	                        /*
+	                           * A heuristic decision of commit means that we have got
+	                           * past the first entry in the list. So there is no going
+	                           * back now!
+	                           */
+	
+	                        if (pastFirstParticipant)
+	                            break;
+	                        else
+	                        {
+	                            /*
+	                                * Remember the heuristic decision so we can restore it
+	                                * after rolling back. Otherwise we can't return the
+	                                * right value from commit.
+	                                */
+	
+	                            pastFirstParticipant = true;
+	
+	                            int oldDecision = heuristicDecision;
+	
+	                            phase2Abort(reportHeuristics);
+	
+	                            heuristicDecision = oldDecision;
+	                        }
+	                    }
+	                    break;
+	                }
+	            }
+	        }
+	        return TwoPhaseOutcome.FINISH_OK;
+		} finally {
+			span.finish();	
+		}
     }
 
     protected int doCommit (boolean reportHeuristics, AbstractRecord record)
     {
-    	Span span = JtaTracer.getInstance().getTracer().buildSpan("do_commit").start();
-        if (tsLogger.logger.isTraceEnabled()) {
-            tsLogger.logger.trace("BasicAction::doCommit ("
-                    + record + ")");
-        }
-
-        /*
-           * To get heuristics right, as soon as we manage to commit the first
-           * record we set the heuristic to HEURISTIC_COMMIT. Then, if any other
-           * heuristics are raised we can manage the final outcome correctly.
-           */
-
-        int ok = TwoPhaseOutcome.FINISH_ERROR;
-
-        recordBeingHandled = record;
-
-        if (recordBeingHandled != null)
-        {
-            if (actionType == ActionType.TOP_LEVEL)
-            {
-                if ((ok = recordBeingHandled.topLevelCommit()) == TwoPhaseOutcome.FINISH_OK)
-                {
-                    /*
-                          * Record successfully committed, we can delete it now.
-                          */
-
-                    recordBeingHandled = null;
-
-                    updateHeuristic(TwoPhaseOutcome.FINISH_OK, true); // must
-                    // remember
-                    // that
-                    // something
-                    // has
-                    // committed
-                }
-                else
-                {
-                    if (tsLogger.logger.isTraceEnabled()) {
-                        tsLogger.logger.trace("BasicAction.doCommit for "+get_uid()+" received "+
-                                TwoPhaseOutcome.stringForm(ok)+" from "+RecordType.typeToClass(recordBeingHandled.typeIs()));
-                    }
-
-                    if ((reportHeuristics)
-                            && ((ok == TwoPhaseOutcome.HEURISTIC_ROLLBACK)
-                            || (ok == TwoPhaseOutcome.HEURISTIC_COMMIT)
-                            || (ok == TwoPhaseOutcome.HEURISTIC_MIXED) || (ok == TwoPhaseOutcome.HEURISTIC_HAZARD)))
-                    {
-                        updateHeuristic(ok, true);
-                        heuristicList.insert(recordBeingHandled);
-                        addDeferredThrowables(recordBeingHandled, deferredThrowables);
-                    }
-                    else
-                    {
-                        if (ok == TwoPhaseOutcome.NOT_PREPARED)
-                        {
-                            /*
-                                    * If this is the first resource then rollback,
-                                    * otherwise promote to HEURISTIC_HAZARD, but don't
-                                    * add to heuristicList.
-                                    */
-
-                            updateHeuristic(TwoPhaseOutcome.HEURISTIC_HAZARD, true);
-                        }
-                        else
-                        {
-                            /*
-                                    * The commit failed. Add this record to the failed
-                                    * list to indicate this. Covers statuses like FAILED_ERROR.
-                                    */
-
-
-                            if ((ok == TwoPhaseOutcome.HEURISTIC_ROLLBACK)
-                                    || (ok == TwoPhaseOutcome.HEURISTIC_COMMIT)
-                                    || (ok == TwoPhaseOutcome.HEURISTIC_MIXED) || (ok == TwoPhaseOutcome.HEURISTIC_HAZARD))
-                            {
-                                updateHeuristic(ok, true);                               
-                            }
-                            
-                            failedList.insert(recordBeingHandled);
-                            addDeferredThrowables(recordBeingHandled, deferredThrowables);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                /*
-                     * Thankfully nested actions cannot raise heuristics!
-                     */
-
-                ok = recordBeingHandled.nestedCommit();
-
-                if (recordBeingHandled.propagateOnCommit())
-                {
-                    merge(recordBeingHandled);
-                }
-                else
-                {
-                    recordBeingHandled = null;
-                }
-            }
-
-            if (ok != TwoPhaseOutcome.FINISH_OK)
-            {
-                /* Preserve error messages */
-            }
-
-            if (tsLogger.logger.isTraceEnabled()) {
-                tsLogger.logger.tracef(
-                        "BasicAction::doCommit() result for action-id (%s) on record id: (%s) is (%s) node id: (%s)",
-                        get_uid(), record.order(), TwoPhaseOutcome.stringForm(ok),
-                        arjPropertyManager.getCoreEnvironmentBean().getNodeIdentifier());
-            }
-
-        }
-        span.finish();
-        return ok;
+		Span span = TracerUtils.getSpanWithName("BasicAction.doCommit - AbstractRecord");
+		try(Scope scope = GlobalTracer.get().activateSpan(span)) {
+	        if (tsLogger.logger.isTraceEnabled()) {
+	            tsLogger.logger.trace("BasicAction::doCommit ("
+	                    + record + ")");
+	        }
+	
+	        /*
+	           * To get heuristics right, as soon as we manage to commit the first
+	           * record we set the heuristic to HEURISTIC_COMMIT. Then, if any other
+	           * heuristics are raised we can manage the final outcome correctly.
+	           */
+	
+	        int ok = TwoPhaseOutcome.FINISH_ERROR;
+	
+	        recordBeingHandled = record;
+	
+	        if (recordBeingHandled != null)
+	        {
+	            if (actionType == ActionType.TOP_LEVEL)
+	            {
+	                if ((ok = recordBeingHandled.topLevelCommit()) == TwoPhaseOutcome.FINISH_OK)
+	                {
+	                    /*
+	                          * Record successfully committed, we can delete it now.
+	                          */
+	
+	                    recordBeingHandled = null;
+	
+	                    updateHeuristic(TwoPhaseOutcome.FINISH_OK, true); // must
+	                    // remember
+	                    // that
+	                    // something
+	                    // has
+	                    // committed
+	                }
+	                else
+	                {
+	                    if (tsLogger.logger.isTraceEnabled()) {
+	                        tsLogger.logger.trace("BasicAction.doCommit for "+get_uid()+" received "+
+	                                TwoPhaseOutcome.stringForm(ok)+" from "+RecordType.typeToClass(recordBeingHandled.typeIs()));
+	                    }
+	
+	                    if ((reportHeuristics)
+	                            && ((ok == TwoPhaseOutcome.HEURISTIC_ROLLBACK)
+	                            || (ok == TwoPhaseOutcome.HEURISTIC_COMMIT)
+	                            || (ok == TwoPhaseOutcome.HEURISTIC_MIXED) || (ok == TwoPhaseOutcome.HEURISTIC_HAZARD)))
+	                    {
+	                        updateHeuristic(ok, true);
+	                        heuristicList.insert(recordBeingHandled);
+	                        addDeferredThrowables(recordBeingHandled, deferredThrowables);
+	                    }
+	                    else
+	                    {
+	                        if (ok == TwoPhaseOutcome.NOT_PREPARED)
+	                        {
+	                            /*
+	                                    * If this is the first resource then rollback,
+	                                    * otherwise promote to HEURISTIC_HAZARD, but don't
+	                                    * add to heuristicList.
+	                                    */
+	
+	                            updateHeuristic(TwoPhaseOutcome.HEURISTIC_HAZARD, true);
+	                        }
+	                        else
+	                        {
+	                            /*
+	                                    * The commit failed. Add this record to the failed
+	                                    * list to indicate this. Covers statuses like FAILED_ERROR.
+	                                    */
+	
+	
+	                            if ((ok == TwoPhaseOutcome.HEURISTIC_ROLLBACK)
+	                                    || (ok == TwoPhaseOutcome.HEURISTIC_COMMIT)
+	                                    || (ok == TwoPhaseOutcome.HEURISTIC_MIXED) || (ok == TwoPhaseOutcome.HEURISTIC_HAZARD))
+	                            {
+	                                updateHeuristic(ok, true);                               
+	                            }
+	                            
+	                            failedList.insert(recordBeingHandled);
+	                            addDeferredThrowables(recordBeingHandled, deferredThrowables);
+	                        }
+	                    }
+	                }
+	            }
+	            else
+	            {
+	                /*
+	                     * Thankfully nested actions cannot raise heuristics!
+	                     */
+	
+	                ok = recordBeingHandled.nestedCommit();
+	
+	                if (recordBeingHandled.propagateOnCommit())
+	                {
+	                    merge(recordBeingHandled);
+	                }
+	                else
+	                {
+	                    recordBeingHandled = null;
+	                }
+	            }
+	
+	            if (ok != TwoPhaseOutcome.FINISH_OK)
+	            {
+	                /* Preserve error messages */
+	            }
+	
+	            if (tsLogger.logger.isTraceEnabled()) {
+	                tsLogger.logger.tracef(
+	                        "BasicAction::doCommit() result for action-id (%s) on record id: (%s) is (%s) node id: (%s)",
+	                        get_uid(), record.order(), TwoPhaseOutcome.stringForm(ok),
+	                        arjPropertyManager.getCoreEnvironmentBean().getNodeIdentifier());
+	            }
+	
+	        }
+	        return ok;
+		} finally {
+			span.finish();
+		}
     }
 
     /*

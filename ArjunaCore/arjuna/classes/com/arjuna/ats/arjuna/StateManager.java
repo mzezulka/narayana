@@ -64,7 +64,7 @@ import com.arjuna.ats.internal.arjuna.abstractrecords.PersistenceRecord;
 import com.arjuna.ats.internal.arjuna.abstractrecords.RecoveryRecord;
 import com.arjuna.ats.internal.arjuna.common.UidHelper;
 import com.arjuna.ats.internal.arjuna.objectstore.TwoPhaseVolatileStore;
-import com.arjuna.ats.internal.arjuna.tracing.JtaTracer;
+import com.arjuna.ats.internal.arjuna.tracing.TracerUtils;
 
 import io.opentracing.Scope;
 import io.opentracing.Span;
@@ -97,7 +97,7 @@ public class StateManager
 
     public synchronized boolean save_state (OutputObjectState os, int ot)
     {
-    	Span span = JtaTracer.getInstance().getTracer().buildSpan("save_state").start();
+    	Span span = TracerUtils.getSpanWithName("StateManager.save_state");
     	try(Scope scope = GlobalTracer.get().activateSpan(span)) {
             /*
              * Only pack additional information if this is for a persistent state
