@@ -43,15 +43,25 @@ import javax.transaction.NotSupportedException;
 
 import com.arjuna.ats.arjuna.AtomicAction;
 import com.arjuna.ats.arjuna.coordinator.TxControl;
+import com.arjuna.ats.internal.arjuna.tracing.TracerUtils;
 import com.arjuna.ats.jta.common.jtaPropertyManager;
 import com.arjuna.ats.jta.logging.jtaLogger;
 
+import io.opentracing.Scope;
+import io.opentracing.Span;
+import io.opentracing.util.GlobalTracer;
+
 public class BaseTransaction
 {
-
+	
+	private Span rootSpan;
+	private Scope rootScope;
+	
 	public void begin() throws javax.transaction.NotSupportedException,
 			javax.transaction.SystemException
 	{
+		rootSpan = TracerUtils.getSpanWithName("TX");
+    	rootScope = GlobalTracer.get().activateSpan(rootSpan);
 		if (jtaLogger.logger.isTraceEnabled()) {
             jtaLogger.logger.trace("BaseTransaction.begin");
         }
@@ -124,6 +134,8 @@ public class BaseTransaction
 							+ jtaLogger.i18NLogger.get_transaction_arjunacore_notx());
 
 		theTransaction.commitAndDisassociate();
+		rootScope.close();
+		rootSpan.finish();
 	}
 
 	public void rollback() throws java.lang.IllegalStateException,

@@ -25,6 +25,7 @@ public class TracerUtils {
 	public static Span getSpanWithName(String name) {
 		Objects.requireNonNull(name, "Name of the span cannot be null");
 		SpanBuilder bldr = getTracer().buildSpan(name);
+		bldr.asChildOf(getTracer().activeSpan());
 	    return bldr.start().setTag("NARAYANA", true);
 	}
 	

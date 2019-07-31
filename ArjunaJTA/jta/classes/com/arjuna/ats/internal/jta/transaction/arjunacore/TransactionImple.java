@@ -115,7 +115,7 @@ public class TransactionImple implements javax.transaction.Transaction,
 		_xaTransactionTimeoutEnabled = getXATransactionTimeoutEnabled();
 
         _txLocalResources = Collections.synchronizedMap(new HashMap());
-    }
+}
 
 	/**
 	 * Overloads Object.equals()
@@ -186,60 +186,65 @@ public class TransactionImple implements javax.transaction.Transaction,
 			java.lang.SecurityException, javax.transaction.SystemException,
 			java.lang.IllegalStateException
 	{
-		if (jtaLogger.logger.isTraceEnabled()) {
-            jtaLogger.logger.trace("TransactionImple.commit");
-        }
-
-		if (_theTransaction != null)
-		{
-			switch (_theTransaction.status())
+		Span span = TracerUtils.getSpanWithName("TransactionImple.commit");
+    	try(Scope scope = GlobalTracer.get().activateSpan(span)) {
+			if (jtaLogger.logger.isTraceEnabled()) {
+	            jtaLogger.logger.trace("TransactionImple.commit");
+	        }
+	
+			if (_theTransaction != null)
 			{
-			case ActionStatus.RUNNING:
-			case ActionStatus.ABORT_ONLY:
-				break;
-			default:
-				throw new IllegalStateException( jtaLogger.i18NLogger.get_transaction_arjunacore_inactive(_theTransaction.get_uid()) );
-			}
-
-			/*
-			 * Call end on any suspended resources. If this fails, then the
-			 * transaction will be rolled back.
-			 */
-
-			if (!endSuspendedRMs())
-				_theTransaction.preventCommit();
-
-			// use end of TwoPhaseCoordinator to avoid thread changes.
-
-			int status = _theTransaction.end(true);
-
-			TransactionImple.removeTransaction(this);
-
-			switch (status)
-			{
-			case ActionStatus.COMMITTED:
-			case ActionStatus.COMMITTING: // in case of async commit
-				break;
-			case ActionStatus.H_MIXED:
-				throw addSuppressedThrowables(new javax.transaction.HeuristicMixedException());
-			case ActionStatus.H_HAZARD:
-				throw addSuppressedThrowables(new javax.transaction.HeuristicMixedException());
-			case ActionStatus.H_ROLLBACK:
-			case ActionStatus.ABORTED:
-				RollbackException rollbackException = new RollbackException(
-                        jtaLogger.i18NLogger.get_transaction_arjunacore_commitwhenaborted() );
-				if (_theTransaction.getDeferredThrowable() != null)
+				switch (_theTransaction.status())
 				{
-					rollbackException.initCause(_theTransaction
-							.getDeferredThrowable());
+				case ActionStatus.RUNNING:
+				case ActionStatus.ABORT_ONLY:
+					break;
+				default:
+					throw new IllegalStateException( jtaLogger.i18NLogger.get_transaction_arjunacore_inactive(_theTransaction.get_uid()) );
 				}
-				throw addSuppressedThrowables(rollbackException);
-			default:
-				throw new IllegalStateException( jtaLogger.i18NLogger.get_transaction_arjunacore_invalidstate() );
+	
+				/*
+				 * Call end on any suspended resources. If this fails, then the
+				 * transaction will be rolled back.
+				 */
+	
+				if (!endSuspendedRMs())
+					_theTransaction.preventCommit();
+	
+				// use end of TwoPhaseCoordinator to avoid thread changes.
+	
+				int status = _theTransaction.end(true);
+	
+				TransactionImple.removeTransaction(this);
+	
+				switch (status)
+				{
+				case ActionStatus.COMMITTED:
+				case ActionStatus.COMMITTING: // in case of async commit
+					break;
+				case ActionStatus.H_MIXED:
+					throw addSuppressedThrowables(new javax.transaction.HeuristicMixedException());
+				case ActionStatus.H_HAZARD:
+					throw addSuppressedThrowables(new javax.transaction.HeuristicMixedException());
+				case ActionStatus.H_ROLLBACK:
+				case ActionStatus.ABORTED:
+					RollbackException rollbackException = new RollbackException(
+	                        jtaLogger.i18NLogger.get_transaction_arjunacore_commitwhenaborted() );
+					if (_theTransaction.getDeferredThrowable() != null)
+					{
+						rollbackException.initCause(_theTransaction
+								.getDeferredThrowable());
+					}
+					throw addSuppressedThrowables(rollbackException);
+				default:
+					throw new IllegalStateException( jtaLogger.i18NLogger.get_transaction_arjunacore_invalidstate() );
+				}
 			}
-		}
-		else
-			throw new IllegalStateException( jtaLogger.i18NLogger.get_transaction_arjunacore_inactive() );
+			else
+				throw new IllegalStateException( jtaLogger.i18NLogger.get_transaction_arjunacore_inactive() );
+    	} finally {
+    		span.finish();
+    	}
 	}
 	
 	/**

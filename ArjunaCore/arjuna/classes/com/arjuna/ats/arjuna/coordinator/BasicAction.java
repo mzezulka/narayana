@@ -1374,63 +1374,68 @@ public class BasicAction extends StateManager
 
     protected synchronized int Begin (BasicAction parentAct)
     {
-        if (tsLogger.logger.isTraceEnabled()) {
-            tsLogger.logger.trace("BasicAction::Begin() for action-id "
-                    + get_uid());
-        }
-        
-        // check to see if transaction system is enabled
-
-        if (!TxControl.isEnabled()) {
-            /*
-                * Prevent transaction from making forward progress.
-                */
-
-            actionStatus = ActionStatus.ABORT_ONLY;
-
-            tsLogger.i18NLogger.warn_coordinator_notrunning();
-        }
-        else
-        {
-            if (actionStatus != ActionStatus.CREATED) {
-                tsLogger.i18NLogger.warn_coordinator_BasicAction_29(get_uid(), ActionStatus.stringForm(actionStatus));
-            }
-            else
-            {
-                actionInitialise(parentAct);
-                actionStatus = ActionStatus.RUNNING;
-
-                if ((actionType != ActionType.TOP_LEVEL)
-                        && ((parentAct == null) || (parentAct.status() > ActionStatus.RUNNING)))
-                {
-                    actionStatus = ActionStatus.ABORT_ONLY;
-
-                    if (parentAct == null) {
-                        tsLogger.i18NLogger.warn_coordinator_BasicAction_30(get_uid());
-                    }
-                    else
-                    {
-                        tsLogger.i18NLogger.warn_coordinator_BasicAction_31(get_uid(), parentAct.get_uid(), Integer.toString(parentAct.status()));
-                    }
-                }
-
-                ActionManager.manager().put(this);
-
-                if(finalizeBasicActions) {
-                    finalizerObject = new BasicActionFinalizer(this);
-                }
-
-                if (TxStats.enabled())
-                {
-                    TxStats.getInstance().incrementTransactions();
-
-                    if (parentAct != null)
-                        TxStats.getInstance().incrementNestedTransactions();
-                }
-            }
-        }
-
-        return actionStatus;
+    	Span span = TracerUtils.getSpanWithName("BasicAction.Begin");
+    	try(Scope scope = GlobalTracer.get().activateSpan(span)) {
+	        if (tsLogger.logger.isTraceEnabled()) {
+	            tsLogger.logger.trace("BasicAction::Begin() for action-id "
+	                    + get_uid());
+	        }
+	        
+	        // check to see if transaction system is enabled
+	
+	        if (!TxControl.isEnabled()) {
+	            /*
+	                * Prevent transaction from making forward progress.
+	                */
+	
+	            actionStatus = ActionStatus.ABORT_ONLY;
+	
+	            tsLogger.i18NLogger.warn_coordinator_notrunning();
+	        }
+	        else
+	        {
+	            if (actionStatus != ActionStatus.CREATED) {
+	                tsLogger.i18NLogger.warn_coordinator_BasicAction_29(get_uid(), ActionStatus.stringForm(actionStatus));
+	            }
+	            else
+	            {
+	                actionInitialise(parentAct);
+	                actionStatus = ActionStatus.RUNNING;
+	
+	                if ((actionType != ActionType.TOP_LEVEL)
+	                        && ((parentAct == null) || (parentAct.status() > ActionStatus.RUNNING)))
+	                {
+	                    actionStatus = ActionStatus.ABORT_ONLY;
+	
+	                    if (parentAct == null) {
+	                        tsLogger.i18NLogger.warn_coordinator_BasicAction_30(get_uid());
+	                    }
+	                    else
+	                    {
+	                        tsLogger.i18NLogger.warn_coordinator_BasicAction_31(get_uid(), parentAct.get_uid(), Integer.toString(parentAct.status()));
+	                    }
+	                }
+	
+	                ActionManager.manager().put(this);
+	
+	                if(finalizeBasicActions) {
+	                    finalizerObject = new BasicActionFinalizer(this);
+	                }
+	
+	                if (TxStats.enabled())
+	                {
+	                    TxStats.getInstance().incrementTransactions();
+	
+	                    if (parentAct != null)
+	                        TxStats.getInstance().incrementNestedTransactions();
+	                }
+	            }
+	        }
+	
+	        return actionStatus;
+    	} finally {
+    		span.finish();
+    	}
     }
 
     /**
@@ -1850,104 +1855,109 @@ public class BasicAction extends StateManager
 
     protected synchronized final void phase2Commit (boolean reportHeuristics) throws Error
     {
-        if (tsLogger.logger.isTraceEnabled()) {
-            tsLogger.logger.trace("BasicAction::phase2Commit() for action-id "
-                    + get_uid());
-        }
-
-        if ((pendingList != null) && (pendingList.size() > 0)) {
-            int size = ((pendingList == null) ? 0 : pendingList.size());
-
-            tsLogger.i18NLogger.warn_coordinator_BasicAction_42(get_uid(), Integer.toString(size), pendingList.toString());
-
-            phase2Abort(reportHeuristics);
-        }
-        else
-        {
-            Long startTime = TxStats.enabled() ? System.nanoTime() : null;
-
-            criticalStart();
-
-            actionStatus = ActionStatus.COMMITTING;
-
-            /*
-                * If we get a heuristic during commit then we continue to commit
-                * since we may have already told some records to commit. We could
-                * optimise this if the first record raises the heuristic by
-                * aborting (or going with the heuristic decision).
-                */
-
-            doCommit(preparedList, reportHeuristics); /*
-													   * process the
-													   * preparedList
-													   */
-
-            /*
-                * Now check any heuristic decision. If we received one then we may
-                * have to raise HEURISTIC_MIXED since we will have committed some
-                * resources, whereas others may have aborted.
-                */
-
-            if (heuristicDecision != TwoPhaseOutcome.PREPARE_OK)
-            {
-                /*
-                     * Heuristic decision matched the actual outcome!
-                     */
-
-                if (heuristicDecision == TwoPhaseOutcome.HEURISTIC_COMMIT)
-                    heuristicDecision = TwoPhaseOutcome.FINISH_OK;
-            }
-
-            /* The readonlyList requires special attention */
-
-            if ((readonlyList != null) && (readonlyList.size() > 0))
-            {
-                if (!TxControl.readonlyOptimisation)
-                {
-                    if (readonlyList != null)
-                        doCommit(readonlyList, reportHeuristics);
-                }
-
-                // now still process the list.
-
-                while (((recordBeingHandled = readonlyList.getFront()) != null))
-                {
-                    if ((actionType == ActionType.NESTED)
-                            && (recordBeingHandled.propagateOnCommit()))
-                    {
-                        merge(recordBeingHandled);
-                    }
-                    else
-                    {
-                        recordBeingHandled = null;
-                    }
-                }
-            }
-
-            forgetHeuristics();
-
-            actionStatus = ActionStatus.COMMITTED;
-
-            updateState();
-
-            ActionManager.manager().remove(get_uid());
-
-            criticalEnd();
-
-            // ok count this as a commit unless we got a heuristic rollback in which case phase2Abort
-            // will have been called and will already have counted it as an abort
-
-            if (TxStats.enabled()) {
-                if (heuristicDecision != TwoPhaseOutcome.HEURISTIC_ROLLBACK) {
-                    // NB statistics monitoring could have been dynamically enabled after starting this transaction
-                    if (startTime == null)
-                        TxStats.getInstance().incrementCommittedTransactions(0L);
-                    else
-                        TxStats.getInstance().incrementCommittedTransactions(System.nanoTime() - startTime);
-                }
-            }
-
-        }
+    	Span span = TracerUtils.getSpanWithName("BasicAction.doCommit - RecordList");
+		try(Scope scope = GlobalTracer.get().activateSpan(span)) {
+	        if (tsLogger.logger.isTraceEnabled()) {
+	            tsLogger.logger.trace("BasicAction::phase2Commit() for action-id "
+	                    + get_uid());
+	        }
+	
+	        if ((pendingList != null) && (pendingList.size() > 0)) {
+	            int size = ((pendingList == null) ? 0 : pendingList.size());
+	
+	            tsLogger.i18NLogger.warn_coordinator_BasicAction_42(get_uid(), Integer.toString(size), pendingList.toString());
+	
+	            phase2Abort(reportHeuristics);
+	        }
+	        else
+	        {
+	            Long startTime = TxStats.enabled() ? System.nanoTime() : null;
+	
+	            criticalStart();
+	
+	            actionStatus = ActionStatus.COMMITTING;
+	
+	            /*
+	                * If we get a heuristic during commit then we continue to commit
+	                * since we may have already told some records to commit. We could
+	                * optimise this if the first record raises the heuristic by
+	                * aborting (or going with the heuristic decision).
+	                */
+	
+	            doCommit(preparedList, reportHeuristics); /*
+														   * process the
+														   * preparedList
+														   */
+	
+	            /*
+	                * Now check any heuristic decision. If we received one then we may
+	                * have to raise HEURISTIC_MIXED since we will have committed some
+	                * resources, whereas others may have aborted.
+	                */
+	
+	            if (heuristicDecision != TwoPhaseOutcome.PREPARE_OK)
+	            {
+	                /*
+	                     * Heuristic decision matched the actual outcome!
+	                     */
+	
+	                if (heuristicDecision == TwoPhaseOutcome.HEURISTIC_COMMIT)
+	                    heuristicDecision = TwoPhaseOutcome.FINISH_OK;
+	            }
+	
+	            /* The readonlyList requires special attention */
+	
+	            if ((readonlyList != null) && (readonlyList.size() > 0))
+	            {
+	                if (!TxControl.readonlyOptimisation)
+	                {
+	                    if (readonlyList != null)
+	                        doCommit(readonlyList, reportHeuristics);
+	                }
+	
+	                // now still process the list.
+	
+	                while (((recordBeingHandled = readonlyList.getFront()) != null))
+	                {
+	                    if ((actionType == ActionType.NESTED)
+	                            && (recordBeingHandled.propagateOnCommit()))
+	                    {
+	                        merge(recordBeingHandled);
+	                    }
+	                    else
+	                    {
+	                        recordBeingHandled = null;
+	                    }
+	                }
+	            }
+	
+	            forgetHeuristics();
+	
+	            actionStatus = ActionStatus.COMMITTED;
+	
+	            updateState();
+	
+	            ActionManager.manager().remove(get_uid());
+	
+	            criticalEnd();
+	
+	            // ok count this as a commit unless we got a heuristic rollback in which case phase2Abort
+	            // will have been called and will already have counted it as an abort
+	
+	            if (TxStats.enabled()) {
+	                if (heuristicDecision != TwoPhaseOutcome.HEURISTIC_ROLLBACK) {
+	                    // NB statistics monitoring could have been dynamically enabled after starting this transaction
+	                    if (startTime == null)
+	                        TxStats.getInstance().incrementCommittedTransactions(0L);
+	                    else
+	                        TxStats.getInstance().incrementCommittedTransactions(System.nanoTime() - startTime);
+	                }
+	            }
+	
+	        }
+		} finally {
+			span.finish();
+		}
     }
 
     /**
