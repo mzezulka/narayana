@@ -43,10 +43,10 @@ import javax.transaction.NotSupportedException;
 
 import com.arjuna.ats.arjuna.AtomicAction;
 import com.arjuna.ats.arjuna.coordinator.TxControl;
-import com.arjuna.ats.internal.arjuna.tracing.TracerUtils;
 import com.arjuna.ats.jta.common.jtaPropertyManager;
 import com.arjuna.ats.jta.logging.jtaLogger;
 
+import io.narayana.tracing.TracerUtils;
 import io.opentracing.Scope;
 import io.opentracing.Span;
 import io.opentracing.util.GlobalTracer;

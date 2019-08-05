@@ -62,7 +62,6 @@ import com.arjuna.ats.arjuna.coordinator.TransactionReaper;
 import com.arjuna.ats.arjuna.exceptions.ObjectStoreException;
 import com.arjuna.ats.arjuna.logging.tsLogger;
 import com.arjuna.ats.internal.arjuna.abstractrecords.LastResourceRecord;
-import com.arjuna.ats.internal.arjuna.tracing.TracerUtils;
 import com.arjuna.ats.internal.jta.resources.arjunacore.CommitMarkableResourceRecord;
 import com.arjuna.ats.internal.jta.resources.arjunacore.SynchronizationImple;
 import com.arjuna.ats.internal.jta.resources.arjunacore.XAOnePhaseResource;
@@ -83,6 +82,7 @@ import com.arjuna.ats.jta.xa.XAModifier;
 import com.arjuna.ats.jta.xa.XidImple;
 import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
 
+import io.narayana.tracing.TracerUtils;
 import io.opentracing.Scope;
 import io.opentracing.Span;
 import io.opentracing.Tracer;

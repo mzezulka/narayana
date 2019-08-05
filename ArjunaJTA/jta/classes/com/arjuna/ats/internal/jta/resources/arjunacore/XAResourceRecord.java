@@ -42,7 +42,6 @@ import com.arjuna.ats.arjuna.recovery.RecoveryManager;
 import com.arjuna.ats.arjuna.recovery.RecoveryModule;
 import com.arjuna.ats.arjuna.state.InputObjectState;
 import com.arjuna.ats.arjuna.state.OutputObjectState;
-import com.arjuna.ats.internal.arjuna.tracing.TracerUtils;
 import com.arjuna.ats.internal.jta.recovery.arjunacore.XARecoveryModule;
 import com.arjuna.ats.internal.jta.resources.XAResourceErrorHandler;
 import com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionImple;
@@ -56,6 +55,7 @@ import com.arjuna.ats.jta.xa.RecoverableXAConnection;
 import com.arjuna.ats.jta.xa.XidImple;
 import com.arjuna.common.internal.util.ClassloadingUtility;
 
+import io.narayana.tracing.TracerUtils;
 import io.opentracing.Scope;
 import io.opentracing.Span;
 import io.opentracing.util.GlobalTracer;

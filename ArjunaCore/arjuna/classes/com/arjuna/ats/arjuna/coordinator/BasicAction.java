@@ -31,8 +31,8 @@
 
 package com.arjuna.ats.arjuna.coordinator;
 
-import static com.arjuna.ats.internal.arjuna.tracing.TracerUtils.decorateSpan;
-import static com.arjuna.ats.internal.arjuna.tracing.TracerUtils.getSpanWithName;
+import static io.narayana.tracing.TracerUtils.decorateSpan;
+import static io.narayana.tracing.TracerUtils.getSpanWithName;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,9 +57,9 @@ import com.arjuna.ats.arjuna.utils.ThreadUtil;
 import com.arjuna.ats.arjuna.utils.Utility;
 import com.arjuna.ats.internal.arjuna.Header;
 import com.arjuna.ats.internal.arjuna.thread.ThreadActionData;
-import com.arjuna.ats.internal.arjuna.tracing.TracerUtils;
 import com.google.common.collect.ImmutableMap;
 
+import io.narayana.tracing.TracerUtils;
 import io.opentracing.Scope;
 import io.opentracing.Span;
 import io.opentracing.util.GlobalTracer;

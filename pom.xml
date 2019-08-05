@@ -517,6 +517,7 @@
     <module>compensations</module>
     <module>osgi</module>
     <module>vertx</module>
+    <module>tracing</module>
   </modules>
   <profiles>
     <profile>

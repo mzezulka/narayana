@@ -83,18 +83,6 @@
         <artifactId>aspectjrt</artifactId>
         <version>1.8.13</version>
 	</dependency>
-  	
-<!--     Opentracing API - be very careful when updating the API version as there might yet not be any implementations with the given API version! -->
-<!--     <dependency> -->
-<!--       <groupId>io.opentracing</groupId> -->
-<!--       <artifactId>opentracing-api</artifactId> -->
-<!--     <version>${opentracing.version}</version> -->
-<!-- 	</dependency> -->
-<!-- 	<dependency> -->
-<!--       <groupId>io.opentracing</groupId> -->
-<!--       <artifactId>opentracing-util</artifactId> -->
-<!--       <version>${opentracing.version}</version> -->
-<!-- 	</dependency> -->
 	<dependency>
 	    <groupId>io.jaegertracing</groupId>
 	    <artifactId>jaeger-core</artifactId>
@@ -116,6 +104,12 @@
           <artifactId>netty</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>io.narayana.tracing</groupId>
+      <artifactId>tracing</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.logging</groupId>

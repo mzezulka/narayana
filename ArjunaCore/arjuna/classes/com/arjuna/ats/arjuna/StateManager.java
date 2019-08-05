@@ -65,10 +65,8 @@ import com.arjuna.ats.internal.arjuna.abstractrecords.PersistenceRecord;
 import com.arjuna.ats.internal.arjuna.abstractrecords.RecoveryRecord;
 import com.arjuna.ats.internal.arjuna.common.UidHelper;
 import com.arjuna.ats.internal.arjuna.objectstore.TwoPhaseVolatileStore;
-import com.google.common.collect.ImmutableMap;
 
-import com.arjuna.ats.internal.arjuna.tracing.TracerUtils;
-
+import io.narayana.tracing.TracerUtils;
 import io.opentracing.Scope;
 import io.opentracing.Span;
 import io.opentracing.util.GlobalTracer;

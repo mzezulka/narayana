@@ -39,8 +39,8 @@ import com.arjuna.ats.arjuna.coordinator.TwoPhaseCoordinator;
 import com.arjuna.ats.arjuna.coordinator.TxControl;
 import com.arjuna.ats.arjuna.logging.tsLogger;
 import com.arjuna.ats.internal.arjuna.thread.ThreadActionData;
-import com.arjuna.ats.internal.arjuna.tracing.TracerUtils;
 
+import io.narayana.tracing.TracerUtils;
 import io.opentracing.Scope;
 import io.opentracing.Span;
 import io.opentracing.util.GlobalTracer;
@@ -112,8 +112,11 @@ public class AtomicAction extends TwoPhaseCoordinator {
 	 * @return <code>ActionStatus</code> indicating outcome.
 	 */
 
-	public int begin(int timeout) {
-		int status = super.start();
+	public int begin (int timeout)
+	{
+		Span span = TracerUtils.getSpanWithName("AtomicAction.begin");
+		try(Scope scope = GlobalTracer.get().activateSpan(span)) {
+			int status = super.start();
 
 		if (status == ActionStatus.RUNNING) {
 			/*
@@ -127,10 +130,13 @@ public class AtomicAction extends TwoPhaseCoordinator {
 			if (_timeout == 0)
 				_timeout = TxControl.getDefaultTimeout();
 
-			if (_timeout > 0)
-				TransactionReaper.transactionReaper().insert(this, _timeout);
+				if (_timeout > 0)
+					TransactionReaper.transactionReaper().insert(this, _timeout);
+			}
+			return status;
+		} finally {
+			span.finish();
 		}
-		return status;
 	}
 
 	/**
@@ -154,14 +160,20 @@ public class AtomicAction extends TwoPhaseCoordinator {
 	 * @return <code>ActionStatus</code> indicating outcome.
 	 */
 
-	public int commit(boolean report_heuristics) {
-		int status = super.end(report_heuristics);
-		/*
-		 * Now remove this thread from the action state.
-		 */
-		ThreadActionData.popAction();
-		TransactionReaper.transactionReaper().remove(this);
-		return status;
+	public int commit (boolean report_heuristics)
+	{
+		Span span = TracerUtils.getSpanWithName("AtomicAction.commit");
+		try(Scope scope = GlobalTracer.get().activateSpan(span)) {
+			int status = super.end(report_heuristics);
+			/*
+			 * Now remove this thread from the action state.
+			 */
+			ThreadActionData.popAction();
+			TransactionReaper.transactionReaper().remove(this);
+			return status;
+		} finally {
+			span.finish();
+		}
 	}
 
 	/**

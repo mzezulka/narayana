@@ -1,4 +1,4 @@
-package com.arjuna.ats.internal.arjuna.tracing;
+package io.narayana.tracing;
 
 import java.util.HashMap;
 import java.util.Map;
