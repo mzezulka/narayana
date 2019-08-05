@@ -54,14 +54,9 @@ import io.opentracing.util.GlobalTracer;
 public class BaseTransaction
 {
 	
-	private Span rootSpan;
-	private Scope rootScope;
-	
 	public void begin() throws javax.transaction.NotSupportedException,
 			javax.transaction.SystemException
 	{
-		rootSpan = TracerUtils.getSpanWithName("TX");
-    	rootScope = GlobalTracer.get().activateSpan(rootSpan);
 		if (jtaLogger.logger.isTraceEnabled()) {
             jtaLogger.logger.trace("BaseTransaction.begin");
         }
@@ -132,10 +127,7 @@ public class BaseTransaction
 			throw new IllegalStateException(
 					"BaseTransaction.commit - "
 							+ jtaLogger.i18NLogger.get_transaction_arjunacore_notx());
-
 		theTransaction.commitAndDisassociate();
-		rootScope.close();
-		rootSpan.finish();
 	}
 
 	public void rollback() throws java.lang.IllegalStateException,
@@ -151,7 +143,6 @@ public class BaseTransaction
 			throw new IllegalStateException(
 					"BaseTransaction.rollback - "
 							+ jtaLogger.i18NLogger.get_transaction_arjunacore_notx());
-
 		theTransaction.rollbackAndDisassociate();
 	}
 
@@ -167,7 +158,6 @@ public class BaseTransaction
 		if (theTransaction == null)
 			throw new IllegalStateException(
 					jtaLogger.i18NLogger.get_transaction_arjunacore_nosuchtx());
-
 		theTransaction.setRollbackOnly();
 	}
 
@@ -287,7 +277,6 @@ public class BaseTransaction
 					+ jtaLogger.i18NLogger.get_transaction_arjunacore_notx());
 		
 		AtomicAction.suspend();
-
 		return wrap(new Callable<Void>() {
 			public Void call() throws InvalidTransactionException,
 					javax.transaction.RollbackException,

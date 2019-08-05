@@ -56,103 +56,91 @@ import io.opentracing.util.GlobalTracer;
  * associate/disassociate threads with the transaction.
  *
  * @author Mark Little (mark@arjuna.com)
- * @version $Id: AtomicAction.java 2342 2006-03-30 13:06:17Z  $
+ * @version $Id: AtomicAction.java 2342 2006-03-30 13:06:17Z $
  * @since JTS 1.0.
  */
 
-public class AtomicAction extends TwoPhaseCoordinator
-{
+public class AtomicAction extends TwoPhaseCoordinator {
 
 	public static final int NO_TIMEOUT = -1;
 
 	/**
-	 * Create a new transaction. If there is already a transaction associated
-	 * with the thread then this new transaction will be automatically nested.
-	 * The transaction is *not* running at this point.
+	 * Create a new transaction. If there is already a transaction associated with
+	 * the thread then this new transaction will be automatically nested. The
+	 * transaction is *not* running at this point.
 	 *
 	 * No timeout is associated with this transaction, i.e., it will not be
 	 * automatically rolled back by the system.
 	 */
 
-	public AtomicAction ()
-	{
+	public AtomicAction() {
 		super();
 	}
 
 	/**
-	 * AtomicAction constructor with a Uid. This constructor is for recreating
-	 * an AtomicAction, typically during crash recovery.
+	 * AtomicAction constructor with a Uid. This constructor is for recreating an
+	 * AtomicAction, typically during crash recovery.
 	 */
 
-	public AtomicAction (Uid objUid)
-	{
+	public AtomicAction(Uid objUid) {
 		super(objUid);
 	}
 
 	/**
 	 * Start the transaction running.
 	 *
-	 * If the transaction is already running or has terminated, then an error
-	 * code will be returned. No timeout is associated with the transaction.
+	 * If the transaction is already running or has terminated, then an error code
+	 * will be returned. No timeout is associated with the transaction.
 	 *
 	 * @return <code>ActionStatus</code> indicating outcome.
 	 */
 
-	public int begin ()
-	{
+	public int begin() {
 		return begin(AtomicAction.NO_TIMEOUT);
 	}
 
 	/**
 	 * Start the transaction running.
 	 *
-	 * If the transaction is already running or has terminated, then an error
-	 * code will be returned.
+	 * If the transaction is already running or has terminated, then an error code
+	 * will be returned.
 	 *
 	 * @param timeout the timeout associated with the transaction. If the
-	 *            transaction is still active when this timeout elapses, the
-	 *            system will automatically roll it back.
+	 *                transaction is still active when this timeout elapses, the
+	 *                system will automatically roll it back.
 	 *
 	 * @return <code>ActionStatus</code> indicating outcome.
 	 */
 
-	public int begin (int timeout)
-	{
-		Span span = TracerUtils.getSpanWithName("AtomicAction.begin");
-		try(Scope scope = GlobalTracer.get().activateSpan(span)) {
-			int status = super.start();
+	public int begin(int timeout) {
+		int status = super.start();
 
-			if (status == ActionStatus.RUNNING)
-			{
-				/*
-				 * Now do thread/action tracking.
-				 */
+		if (status == ActionStatus.RUNNING) {
+			/*
+			 * Now do thread/action tracking.
+			 */
 
-				ThreadActionData.pushAction(this);
+			ThreadActionData.pushAction(this);
 
-				_timeout = timeout;
+			_timeout = timeout;
 
-				if (_timeout == 0)
-					_timeout = TxControl.getDefaultTimeout();
+			if (_timeout == 0)
+				_timeout = TxControl.getDefaultTimeout();
 
-				if (_timeout > 0)
-					TransactionReaper.transactionReaper().insert(this, _timeout);
-			}
-			return status;
-		} finally {
-			span.finish();
+			if (_timeout > 0)
+				TransactionReaper.transactionReaper().insert(this, _timeout);
 		}
+		return status;
 	}
 
 	/**
-	 * Commit the transaction, and have heuristic reporting. Heuristic reporting
-	 * via the return code is enabled.
+	 * Commit the transaction, and have heuristic reporting. Heuristic reporting via
+	 * the return code is enabled.
 	 *
 	 * @return <code>ActionStatus</code> indicating outcome.
 	 */
 
-	public int commit ()
-	{
+	public int commit() {
 		return commit(true);
 	}
 
@@ -166,20 +154,14 @@ public class AtomicAction extends TwoPhaseCoordinator
 	 * @return <code>ActionStatus</code> indicating outcome.
 	 */
 
-	public int commit (boolean report_heuristics)
-	{
-		Span span = TracerUtils.getSpanWithName("AtomicAction.commit");
-		try(Scope scope = GlobalTracer.get().activateSpan(span)) {
-			int status = super.end(report_heuristics);
-			/*
-			 * Now remove this thread from the action state.
-			 */
-			ThreadActionData.popAction();
-			TransactionReaper.transactionReaper().remove(this);
-			return status;
-		} finally {
-			span.finish();
-		}
+	public int commit(boolean report_heuristics) {
+		int status = super.end(report_heuristics);
+		/*
+		 * Now remove this thread from the action state.
+		 */
+		ThreadActionData.popAction();
+		TransactionReaper.transactionReaper().remove(this);
+		return status;
 	}
 
 	/**
@@ -191,8 +173,7 @@ public class AtomicAction extends TwoPhaseCoordinator
 	 * @return <code>ActionStatus</code> indicating outcome.
 	 */
 
-	public int abort ()
-	{
+	public int abort() {
 		int status = super.cancel();
 
 		/*
@@ -206,13 +187,12 @@ public class AtomicAction extends TwoPhaseCoordinator
 		return status;
 	}
 
-	public int end (boolean report_heuristics)
-	{
+	public int end(boolean report_heuristics) {
 		int outcome = super.end(report_heuristics);
 
 		/*
-		 * Now remove this thread from the reaper. Leave
-		 * the thread-to-tx association though.
+		 * Now remove this thread from the reaper. Leave the thread-to-tx association
+		 * though.
 		 */
 
 		TransactionReaper.transactionReaper().remove(this);
@@ -220,13 +200,12 @@ public class AtomicAction extends TwoPhaseCoordinator
 		return outcome;
 	}
 
-	public int cancel ()
-	{
+	public int cancel() {
 		int outcome = super.cancel();
 
 		/*
-		 * Now remove this thread from the reaper. Leave
-		 * the thread-to-tx association though.
+		 * Now remove this thread from the reaper. Leave the thread-to-tx association
+		 * though.
 		 */
 
 		TransactionReaper.transactionReaper().remove(this);
@@ -238,14 +217,13 @@ public class AtomicAction extends TwoPhaseCoordinator
 	 * @return the timeout associated with this instance.
 	 */
 
-	public final int getTimeout ()
-	{
+	public final int getTimeout() {
 		return _timeout;
 	}
 
 	/**
-	 * The type of the class is used to locate the state of the transaction log
-	 * in the object store.
+	 * The type of the class is used to locate the state of the transaction log in
+	 * the object store.
 	 *
 	 * Overloads BasicAction.type()
 	 *
@@ -253,8 +231,7 @@ public class AtomicAction extends TwoPhaseCoordinator
 	 *         logs in the transaction object store.
 	 */
 
-	public String type ()
-	{
+	public String type() {
 		return "/StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction";
 	}
 
@@ -262,12 +239,10 @@ public class AtomicAction extends TwoPhaseCoordinator
 	 * Register the current thread with the transaction. This operation is not
 	 * affected by the state of the transaction.
 	 *
-	 * @return <code>true</code> if successful, <code>false</code>
-	 *         otherwise.
+	 * @return <code>true</code> if successful, <code>false</code> otherwise.
 	 */
 
-	public boolean addThread ()
-	{
+	public boolean addThread() {
 		return addThread(Thread.currentThread());
 	}
 
@@ -275,14 +250,11 @@ public class AtomicAction extends TwoPhaseCoordinator
 	 * Register the specified thread with the transaction. This operation is not
 	 * affected by the state of the transaction.
 	 *
-	 * @return <code>true</code> if successful, <code>false</code>
-	 *         otherwise.
+	 * @return <code>true</code> if successful, <code>false</code> otherwise.
 	 */
 
-	public boolean addThread (Thread t)
-	{
-		if (t != null)
-		{
+	public boolean addThread(Thread t) {
+		if (t != null) {
 			ThreadActionData.pushAction(this);
 			return true;
 		}
@@ -294,27 +266,22 @@ public class AtomicAction extends TwoPhaseCoordinator
 	 * Unregister the current thread from the transaction. This operation is not
 	 * affected by the state of the transaction.
 	 *
-	 * @return <code>true</code> if successful, <code>false</code>
-	 *         otherwise.
+	 * @return <code>true</code> if successful, <code>false</code> otherwise.
 	 */
 
-	public boolean removeThread ()
-	{
+	public boolean removeThread() {
 		return removeThread(Thread.currentThread());
 	}
 
 	/**
-	 * Unregister the specified thread from the transaction. This operation is
-	 * not affected by the state of the transaction.
+	 * Unregister the specified thread from the transaction. This operation is not
+	 * affected by the state of the transaction.
 	 *
-	 * @return <code>true</code> if successful, <code>false</code>
-	 *         otherwise.
+	 * @return <code>true</code> if successful, <code>false</code> otherwise.
 	 */
 
-	public boolean removeThread (Thread t)
-	{
-		if (t != null)
-		{
+	public boolean removeThread(Thread t) {
+		if (t != null) {
 			ThreadActionData.purgeAction(this, t);
 			return true;
 		}
@@ -326,27 +293,25 @@ public class AtomicAction extends TwoPhaseCoordinator
 	 * Suspend all transaction association from the invoking thread. When this
 	 * operation returns, the thread will be associated with no transactions.
 	 *
-	 * If the current transaction is not an AtomicAction then this method will
-	 * not suspend.
+	 * If the current transaction is not an AtomicAction then this method will not
+	 * suspend.
 	 *
-	 * @return a handle on the current AtomicAction (if any) so that the thread
-	 *         can later resume association if required.
+	 * @return a handle on the current AtomicAction (if any) so that the thread can
+	 *         later resume association if required.
 	 *
 	 */
 
-	public static final AtomicAction suspend ()
-	{
+	public static final AtomicAction suspend() {
 		BasicAction curr = ThreadActionData.currentAction();
 
-		if (curr != null)
-		{
+		if (curr != null) {
 			if (curr instanceof AtomicAction)
 				ThreadActionData.purgeActions();
 			else {
-                tsLogger.i18NLogger.warn_ats_atomicaction_1(curr.toString());
+				tsLogger.i18NLogger.warn_ats_atomicaction_1(curr.toString());
 
-                curr = null;
-            }
+				curr = null;
+			}
 		}
 
 		return (AtomicAction) curr;
@@ -354,25 +319,22 @@ public class AtomicAction extends TwoPhaseCoordinator
 
 	/**
 	 * Resume transaction association on the current thread. If the specified
-	 * transaction is null, then this is the same as doing a suspend. If the
-	 * current thread is associated with transactions then those associations
-	 * will be lost.
+	 * transaction is null, then this is the same as doing a suspend. If the current
+	 * thread is associated with transactions then those associations will be lost.
 	 *
-	 * @param act the transaction to associate. If this is a nested
-	 *            transaction, then the thread will be associated with all of
-	 *            the transactions in the hierarchy.
+	 * @param act the transaction to associate. If this is a nested transaction,
+	 *            then the thread will be associated with all of the transactions in
+	 *            the hierarchy.
 	 *
-	 * @return <code>true</code> if association is successful,
-	 *         <code>false</code> otherwise.
+	 * @return <code>true</code> if association is successful, <code>false</code>
+	 *         otherwise.
 	 */
 
-	public static final boolean resume (AtomicAction act)
-	{
-		if (act == null)
-		{
-			suspend(); // If you ever change this, you need to change the way resume is handled in /ArjunaJTS/integration/src/main/java/com/arjuna/ats/jbossatx/BaseTransactionManagerDelegate.java
-		}
-		else
+	public static final boolean resume(AtomicAction act) {
+		if (act == null) {
+			suspend(); // If you ever change this, you need to change the way resume is handled in
+						// /ArjunaJTS/integration/src/main/java/com/arjuna/ats/jbossatx/BaseTransactionManagerDelegate.java
+		} else
 			ThreadActionData.restoreActions(act);
 
 		return true;
@@ -382,22 +344,19 @@ public class AtomicAction extends TwoPhaseCoordinator
 	 * Create a new transaction of the specified type.
 	 */
 
-	protected AtomicAction (int at)
-	{
+	protected AtomicAction(int at) {
 		super(at);
 	}
 
 	/**
-	 * By default the BasicAction class only allows the termination of a
-	 * transaction if it's the one currently associated with the thread. We
-	 * override this here.
+	 * By default the BasicAction class only allows the termination of a transaction
+	 * if it's the one currently associated with the thread. We override this here.
 	 *
 	 * @return <code>true</code> to indicate that this transaction can only be
 	 *         terminated by the right thread.
 	 */
 
-	protected boolean checkForCurrent ()
-	{
+	protected boolean checkForCurrent() {
 		return true;
 	}
 

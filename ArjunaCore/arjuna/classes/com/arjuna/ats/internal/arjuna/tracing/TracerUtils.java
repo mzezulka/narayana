@@ -1,5 +1,7 @@
 package com.arjuna.ats.internal.arjuna.tracing;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import io.opentracing.Span;
@@ -25,7 +27,24 @@ public class TracerUtils {
 	public static Span getSpanWithName(String name) {
 		Objects.requireNonNull(name, "Name of the span cannot be null");
 		SpanBuilder bldr = getTracer().buildSpan(name);
-		bldr.asChildOf(getTracer().activeSpan());
+	    return bldr.start().setTag("NARAYANA", true);
+	}
+	
+	/**
+	 * Takes a constructed span and inserts all (key, value) pairs into the span as tags.
+	 */
+	public static Span decorateSpan(Span span, String... vals)  {
+		if(vals.length % 2 != 0) {
+			throw new IllegalArgumentException("The number of vals is not even.");
+		}
+		for(int i = 0; i < vals.length; i+=2) {
+			span = span.setTag(vals[i], vals[i+1]);
+		}
+		return span;
+	}
+	
+	public static Span getRootSpan() {
+		SpanBuilder bldr = getTracer().buildSpan("TX");
 	    return bldr.start().setTag("NARAYANA", true);
 	}
 	

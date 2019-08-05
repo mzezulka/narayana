@@ -31,6 +31,9 @@
 
 package com.arjuna.ats.arjuna.coordinator;
 
+import static com.arjuna.ats.internal.arjuna.tracing.TracerUtils.decorateSpan;
+import static com.arjuna.ats.internal.arjuna.tracing.TracerUtils.getSpanWithName;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,6 +58,7 @@ import com.arjuna.ats.arjuna.utils.Utility;
 import com.arjuna.ats.internal.arjuna.Header;
 import com.arjuna.ats.internal.arjuna.thread.ThreadActionData;
 import com.arjuna.ats.internal.arjuna.tracing.TracerUtils;
+import com.google.common.collect.ImmutableMap;
 
 import io.opentracing.Scope;
 import io.opentracing.Span;
@@ -774,8 +778,10 @@ public class BasicAction extends StateManager
 
     public boolean save_state (OutputObjectState os, int ot)
     {
-    	Span span = TracerUtils.getSpanWithName("BasicAction.save_state");
-    	
+    	Span span = TracerUtils.decorateSpan(TracerUtils.getSpanWithName("StateManager.save_state"), 
+    			"OutputObjectState", os.toString(),
+    			"ObjectType", ObjectType.toString(ot),
+    			"BasicAction.this", toString());
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("BasicAction::save_state ()");
         }
@@ -1374,7 +1380,9 @@ public class BasicAction extends StateManager
 
     protected synchronized int Begin (BasicAction parentAct)
     {
-    	Span span = TracerUtils.getSpanWithName("BasicAction.Begin");
+    	Span span = TracerUtils.decorateSpan(TracerUtils.getSpanWithName("BasicAction.Begin"),
+    			"BasicAction.parent", parentAct == null ? "null" : parentAct.toString(),
+    			"BasicAction.this", toString());
     	try(Scope scope = GlobalTracer.get().activateSpan(span)) {
 	        if (tsLogger.logger.isTraceEnabled()) {
 	            tsLogger.logger.trace("BasicAction::Begin() for action-id "
@@ -1855,7 +1863,11 @@ public class BasicAction extends StateManager
 
     protected synchronized final void phase2Commit (boolean reportHeuristics) throws Error
     {
-    	Span span = TracerUtils.getSpanWithName("BasicAction.doCommit - RecordList");
+    	Span span = TracerUtils.decorateSpan(TracerUtils.getSpanWithName("BasicAction.phase2Commit"),
+    			"reportHeuristics", String.valueOf(reportHeuristics),
+    			"BasicAction.this", toString(),
+    			"preparedList", preparedList.toString(),
+    			"pendingList", pendingList.toString());
 		try(Scope scope = GlobalTracer.get().activateSpan(span)) {
 	        if (tsLogger.logger.isTraceEnabled()) {
 	            tsLogger.logger.trace("BasicAction::phase2Commit() for action-id "
@@ -2816,7 +2828,10 @@ public class BasicAction extends StateManager
 
     protected int doCommit (RecordList rl, boolean reportHeuristics)
     {
-		Span span = TracerUtils.getSpanWithName("BasicAction.doCommit - RecordList");
+		Span span = TracerUtils.decorateSpan(TracerUtils.getSpanWithName("BasicAction.doCommit"),
+				"reportHeuristics", String.valueOf(reportHeuristics),
+				"RecordList", rl == null ? "null" : rl.toString(),
+				"BasicAction.this", toString());
 		try(Scope scope = GlobalTracer.get().activateSpan(span)) {
 	        if ((rl != null) && (rl.size() > 0))
 	        {
@@ -2891,7 +2906,10 @@ public class BasicAction extends StateManager
 
     protected int doCommit (boolean reportHeuristics, AbstractRecord record)
     {
-		Span span = TracerUtils.getSpanWithName("BasicAction.doCommit - AbstractRecord");
+		Span span = TracerUtils.decorateSpan(TracerUtils.getSpanWithName("BasicAction.doCommit"),
+				"reportHeuristics", String.valueOf(reportHeuristics),
+				"AbstractRecord", record == null ? "null" : record.toString(),
+				"BasicAction.this", toString());
 		try(Scope scope = GlobalTracer.get().activateSpan(span)) {
 	        if (tsLogger.logger.isTraceEnabled()) {
 	            tsLogger.logger.trace("BasicAction::doCommit ("

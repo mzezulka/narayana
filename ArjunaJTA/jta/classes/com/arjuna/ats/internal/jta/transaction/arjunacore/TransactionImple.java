@@ -48,6 +48,7 @@ import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
+import org.jboss.logging.processor.util.Strings;
 import org.jboss.tm.ConnectableResource;
 import org.jboss.tm.XAResourceWrapper;
 
@@ -186,7 +187,10 @@ public class TransactionImple implements javax.transaction.Transaction,
 			java.lang.SecurityException, javax.transaction.SystemException,
 			java.lang.IllegalStateException
 	{
-		Span span = TracerUtils.getSpanWithName("TransactionImple.commit");
+		Span span = TracerUtils.decorateSpan(TracerUtils.getSpanWithName("TransactionImple.commit"),
+				"transaction", _theTransaction == null ? "null" : _theTransaction.toString(),
+				"txLocalResources", _txLocalResources == null ? "null" : _txLocalResources.toString(),
+				"resources", _resources == null ? "null" :_resources.toString());
     	try(Scope scope = GlobalTracer.get().activateSpan(span)) {
 			if (jtaLogger.logger.isTraceEnabled()) {
 	            jtaLogger.logger.trace("TransactionImple.commit");
@@ -472,7 +476,12 @@ public class TransactionImple implements javax.transaction.Transaction,
 			}
 		}
 
-		Span span = TracerUtils.getSpanWithName("TransactionImple.enlistResource");
+		Span span = TracerUtils.decorateSpan(TracerUtils.getSpanWithName("TransactionImple.enlistResource"),
+    			"XAResource", xaRes == null ? "null" : xaRes.toString(),
+    			"params", params == null ? "null" : params.toString(),
+    			"transaction", _theTransaction == null ? "null" :_theTransaction.toString(),
+				"txLocalResources", _txLocalResources == null ? "null" : _txLocalResources.toString(),
+				"resources", _resources == null ? "null" : _resources.toString());
 		try(Scope scope = GlobalTracer.get().activateSpan(span))
 		{
 			/*
@@ -802,7 +811,13 @@ public class TransactionImple implements javax.transaction.Transaction,
      */
     private AbstractRecord createRecord(XAResource xaRes, Object[] params, Xid xid)
     {
-    	Span span = TracerUtils.getSpanWithName("TransactionImple.createRecord");
+    	Span span = TracerUtils.decorateSpan(TracerUtils.getSpanWithName("TransactionImple.createRecord"),
+    			"XAResource", xaRes == null ? "null" : xaRes.toString(),
+    			"params", params == null ? "null" : params.toString(),
+    			"Xid", xid == null ? "null" : xid.toString(),
+    			"transaction", _theTransaction == null ? "null" : _theTransaction.toString(),
+				"txLocalResources", _txLocalResources == null ? "null" : _txLocalResources.toString(),
+				"resources", _resources == null ? "null" : _resources.toString());
     	try(Scope scope = GlobalTracer.get().activateSpan(span)) {
             if ((xaRes instanceof LastResourceCommitOptimisation)
                     || ((LAST_RESOURCE_OPTIMISATION_INTERFACE != null) && LAST_RESOURCE_OPTIMISATION_INTERFACE

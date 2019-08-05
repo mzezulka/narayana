@@ -197,7 +197,8 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
 
 	public int topLevelPrepare()
 	{
-		Span span = TracerUtils.getSpanWithName("XAResourceRecord.topLevelPrepare");
+		Span span = TracerUtils.decorateSpan(TracerUtils.getSpanWithName("XAResourceRecord.topLevelPrepare"),
+				"this", toString());
     	try(Scope scope = GlobalTracer.get().activateSpan(span)) {
 			if (jtaLogger.logger.isTraceEnabled()) {
 	            jtaLogger.logger.trace("XAResourceRecord.topLevelPrepare for " + this + ", record id=" + order());
@@ -450,7 +451,8 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
 
 	public int topLevelCommit()
 	{
-		Span span = TracerUtils.getSpanWithName("XAResourceRecord.topLevelCommit");
+		Span span = TracerUtils.decorateSpan(TracerUtils.getSpanWithName("XAResourceRecord.topLevelCommit"),
+				"this", toString());
     	try(Scope scope = GlobalTracer.get().activateSpan(span)) {
 			if (jtaLogger.logger.isTraceEnabled()) {
 	            jtaLogger.logger.trace("XAResourceRecord.topLevelCommit for " + this + ", record id=" + order());

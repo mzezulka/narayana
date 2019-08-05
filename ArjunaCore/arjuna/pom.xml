@@ -77,6 +77,13 @@
     </plugins>
   </build>
   <dependencies>
+  	<!-- AOP -->
+  	<dependency>
+        <groupId>org.aspectj</groupId>
+        <artifactId>aspectjrt</artifactId>
+        <version>1.8.13</version>
+	</dependency>
+  	
 <!--     Opentracing API - be very careful when updating the API version as there might yet not be any implementations with the given API version! -->
 <!--     <dependency> -->
 <!--       <groupId>io.opentracing</groupId> -->
@@ -491,7 +498,6 @@
           <excludes>
           </excludes>
         </configuration>
-
         </plugin>
       </plugins>
     </build>
