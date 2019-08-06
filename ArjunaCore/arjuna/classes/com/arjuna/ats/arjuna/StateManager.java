@@ -66,7 +66,7 @@ import com.arjuna.ats.internal.arjuna.abstractrecords.RecoveryRecord;
 import com.arjuna.ats.internal.arjuna.common.UidHelper;
 import com.arjuna.ats.internal.arjuna.objectstore.TwoPhaseVolatileStore;
 
-import io.narayana.tracing.TracerUtils;
+import io.narayana.tracing.TracingUtils;
 import io.opentracing.Scope;
 import io.opentracing.Span;
 import io.opentracing.util.GlobalTracer;
@@ -83,47 +83,36 @@ import io.opentracing.util.GlobalTracer;
 public class StateManager {
 
 	/**
-     * These methods must be used by a derived class. They are responsible for
-     * packing and unpacking an object's state to/from a state buffer.
-     * StateManager calls them at appropriate times during the lifetime of the
-     * object, and may then pass the buffer to a persistent object store for
-     * saving.
-     * 
-     * If a derived class calls super.save_state then it must be called before
-     * packing any other data item.
-     *
-     * @return <code>true</code> on success, <code>false</code> otherwise.
-     */
+	 * These methods must be used by a derived class. They are responsible for
+	 * packing and unpacking an object's state to/from a state buffer. StateManager
+	 * calls them at appropriate times during the lifetime of the object, and may
+	 * then pass the buffer to a persistent object store for saving.
+	 * 
+	 * If a derived class calls super.save_state then it must be called before
+	 * packing any other data item.
+	 *
+	 * @return <code>true</code> on success, <code>false</code> otherwise.
+	 */
 
-    public synchronized boolean save_state (OutputObjectState os, int ot)
-    {
-    	Span span = TracerUtils.decorateSpan(TracerUtils.getSpanWithName("StateManager.save_state"), 
-    			"OutputObjectState", os.toString(), "ObjectType", ObjectType.toString(ot));
-    	try(Scope scope = GlobalTracer.get().activateSpan(span)) {
-            /*
-             * Only pack additional information if this is for a persistent state
-             * modification.
-             */
-            if (ot == ObjectType.ANDPERSISTENT)
-            {
-                try
-                {
-                    BasicAction action = BasicAction.Current();
-                    if (action == null)
-                        packHeader(os, new Header(null, Utility.getProcessUid()));
-                    else
-                        packHeader(os, new Header(action.get_uid(), Utility.getProcessUid()));
-                }
-                catch (IOException e)
-                {
-                    return false;
-                }
-            }	
-    	} finally {
-    		span.finish();
-    	}
-        return true;
-    }
+	public synchronized boolean save_state(OutputObjectState os, int ot) {
+		/*
+		 * Only pack additional information if this is for a persistent state
+		 * modification.
+		 */
+		if (ot == ObjectType.ANDPERSISTENT) {
+			try {
+				BasicAction action = BasicAction.Current();
+				if (action == null)
+					packHeader(os, new Header(null, Utility.getProcessUid()));
+				else
+					packHeader(os, new Header(action.get_uid(), Utility.getProcessUid()));
+			} catch (IOException e) {
+				return false;
+			}
+		}
+
+		return true;
+	}
 
 	/**
 	 * These methods must be provided by a derived class. They are responsible for

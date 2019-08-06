@@ -121,7 +121,7 @@
     </dependency>
     <dependency>
         <groupId>io.narayana.tracing</groupId>
-        <artifactId>tracing</artifactId>
+        <artifactId>narayanatracing</artifactId>
         <version>${project.version}</version>
     </dependency>
     <dependency>

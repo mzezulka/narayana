@@ -80,6 +80,7 @@ updateModuleXml "$JBOSS_HOME/modules/system/layers/base/org/jboss/jts/main" "$TX
 updateModuleXml "$JBOSS_HOME/modules/system/layers/base/org/jboss/jts/integration/main" "narayana-jts-integration"
 updateModuleXml "$JBOSS_HOME/modules/system/layers/base/org/jboss/xts/main" 'jbossxts'
 updateModuleXml "$JBOSS_HOME/modules/system/layers/base/org/jboss/xts/main" 'jbosstxbridge'
+updateModuleXml "$JBOSS_HOME/modules/system/layers/base/io/narayana/tracing/main" 'narayanatracing'
  
 popd > /dev/null
 pushd rts/at
