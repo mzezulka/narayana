@@ -9,6 +9,9 @@ public enum TagNames {
 	
 	UID("UID"),
 	XID("XID"),
+	ASYNCHRONOUS("asynchronous"),
+	XARES("XAResource"),
+	TXINFO("transaction"),
 	REPORT_HEURISTICS("report heuristics");
 	
 	private final String name;

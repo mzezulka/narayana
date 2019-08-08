@@ -1,11 +1,6 @@
 package io.narayana.tracing;
 
-import java.util.Objects;
-
-import io.opentracing.Scope;
-import io.opentracing.Span;
 import io.opentracing.Tracer;
-import io.opentracing.Tracer.SpanBuilder;
 import io.opentracing.util.GlobalTracer;
 
 /**
@@ -24,13 +19,21 @@ public class TracingUtils {
 	public static void addCurrentSpanTag(TagNames name, String val) {
 		getTracer().activeSpan().setTag(name.toString(), val);
 	}
+	
+	public static void addCurrentSpanTag(TagNames name, Object obj) {
+		addCurrentSpanTag(name, obj == null ? "null" : obj.toString());
+	}
+	
+	public static void log(String message) {
+		getTracer().activeSpan().log(message);
+	}
 
 	/**
 	 * This is package private on purpose. Users of the tracing module shouldn't be encumbered with tracers.
 	 * Nevertheless, this method is used outside of this class.
 	 * @return
 	 */
-	static Tracer getTracer() {
+	public static Tracer getTracer() {
 		return GlobalTracer.get();
 	}
 }

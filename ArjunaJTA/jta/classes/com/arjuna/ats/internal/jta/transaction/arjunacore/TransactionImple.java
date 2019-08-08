@@ -84,6 +84,7 @@ import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
 
 import io.narayana.tracing.ScopeBuilder;
 import io.narayana.tracing.SpanName;
+import io.narayana.tracing.TagNames;
 import io.narayana.tracing.TracingUtils;
 import io.opentracing.Scope;
 import io.opentracing.Span;
@@ -177,57 +178,55 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
 	public void commit() throws javax.transaction.RollbackException, javax.transaction.HeuristicMixedException,
 			javax.transaction.HeuristicRollbackException, java.lang.SecurityException,
 			javax.transaction.SystemException, java.lang.IllegalStateException {
-		try (Scope scope = new ScopeBuilder(SpanName.GLOBAL_COMMIT).start()) {
-			if (jtaLogger.logger.isTraceEnabled()) {
-				jtaLogger.logger.trace("TransactionImple.commit");
+		if (jtaLogger.logger.isTraceEnabled()) {
+			jtaLogger.logger.trace("TransactionImple.commit");
+		}
+
+		if (_theTransaction != null) {
+			switch (_theTransaction.status()) {
+			case ActionStatus.RUNNING:
+			case ActionStatus.ABORT_ONLY:
+				break;
+			default:
+				throw new IllegalStateException(
+						jtaLogger.i18NLogger.get_transaction_arjunacore_inactive(_theTransaction.get_uid()));
 			}
 
-			if (_theTransaction != null) {
-				switch (_theTransaction.status()) {
-				case ActionStatus.RUNNING:
-				case ActionStatus.ABORT_ONLY:
-					break;
-				default:
-					throw new IllegalStateException(
-							jtaLogger.i18NLogger.get_transaction_arjunacore_inactive(_theTransaction.get_uid()));
+			/*
+			 * Call end on any suspended resources. If this fails, then the transaction will
+			 * be rolled back.
+			 */
+
+			if (!endSuspendedRMs())
+				_theTransaction.preventCommit();
+
+			// use end of TwoPhaseCoordinator to avoid thread changes.
+
+			int status = _theTransaction.end(true);
+
+			TransactionImple.removeTransaction(this);
+
+			switch (status) {
+			case ActionStatus.COMMITTED:
+			case ActionStatus.COMMITTING: // in case of async commit
+				break;
+			case ActionStatus.H_MIXED:
+				throw addSuppressedThrowables(new javax.transaction.HeuristicMixedException());
+			case ActionStatus.H_HAZARD:
+				throw addSuppressedThrowables(new javax.transaction.HeuristicMixedException());
+			case ActionStatus.H_ROLLBACK:
+			case ActionStatus.ABORTED:
+				RollbackException rollbackException = new RollbackException(
+						jtaLogger.i18NLogger.get_transaction_arjunacore_commitwhenaborted());
+				if (_theTransaction.getDeferredThrowable() != null) {
+					rollbackException.initCause(_theTransaction.getDeferredThrowable());
 				}
-
-				/*
-				 * Call end on any suspended resources. If this fails, then the transaction will
-				 * be rolled back.
-				 */
-
-				if (!endSuspendedRMs())
-					_theTransaction.preventCommit();
-
-				// use end of TwoPhaseCoordinator to avoid thread changes.
-
-				int status = _theTransaction.end(true);
-
-				TransactionImple.removeTransaction(this);
-
-				switch (status) {
-				case ActionStatus.COMMITTED:
-				case ActionStatus.COMMITTING: // in case of async commit
-					break;
-				case ActionStatus.H_MIXED:
-					throw addSuppressedThrowables(new javax.transaction.HeuristicMixedException());
-				case ActionStatus.H_HAZARD:
-					throw addSuppressedThrowables(new javax.transaction.HeuristicMixedException());
-				case ActionStatus.H_ROLLBACK:
-				case ActionStatus.ABORTED:
-					RollbackException rollbackException = new RollbackException(
-							jtaLogger.i18NLogger.get_transaction_arjunacore_commitwhenaborted());
-					if (_theTransaction.getDeferredThrowable() != null) {
-						rollbackException.initCause(_theTransaction.getDeferredThrowable());
-					}
-					throw addSuppressedThrowables(rollbackException);
-				default:
-					throw new IllegalStateException(jtaLogger.i18NLogger.get_transaction_arjunacore_invalidstate());
-				}
-			} else
-				throw new IllegalStateException(jtaLogger.i18NLogger.get_transaction_arjunacore_inactive());
-		}
+				throw addSuppressedThrowables(rollbackException);
+			default:
+				throw new IllegalStateException(jtaLogger.i18NLogger.get_transaction_arjunacore_invalidstate());
+			}
+		} else
+			throw new IllegalStateException(jtaLogger.i18NLogger.get_transaction_arjunacore_inactive());
 	}
 
 	/**
@@ -429,14 +428,13 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
 				}
 			}
 		}
-
-		try (Scope scope = new ScopeBuilder(SpanName.RESOURCE_ENLISTMENT, xaRes).start()) {
+		try (Scope scope = new ScopeBuilder(SpanName.RESOURCE_ENLISTMENT)
+				.tag(TagNames.XARES, xaRes).start()) {
 			/*
 			 * For each transaction we maintain a list of resources registered with it. Each
 			 * element on this list also contains a list of threads which have registered
 			 * this resource, and what their XID was for that registration.
 			 */
-
 			TxInfo info = null;
 
 			/*
@@ -457,7 +455,7 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
 						info = (TxInfo) _duplicateResources.get(xaRes);
 					}
 				}
-
+				TracingUtils.addCurrentSpanTag(TagNames.TXINFO, info);
 				if (info != null) {
 					switch (info.getState()) {
 					case TxInfo.ASSOCIATION_SUSPENDED: {
@@ -703,9 +701,7 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
 			 * Some exceptional condition arose and we probably could not enlist the
 			 * resouce. So, for safety mark the transaction as rollback only.
 			 */
-
 			markRollbackOnly();
-
 			return false;
 		}
 	}

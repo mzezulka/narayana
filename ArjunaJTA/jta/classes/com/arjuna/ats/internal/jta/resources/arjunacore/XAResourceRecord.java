@@ -185,88 +185,73 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
 		return TwoPhaseOutcome.PREPARE_OK; // do nothing
 	}
 
-	public int topLevelPrepare()
-	{
-    	try(Scope scope = new ScopeBuilder(SpanName.GLOBAL_PREPARE)
-    			.tag(TagNames.XID, this._tranID).start()) {
-			if (jtaLogger.logger.isTraceEnabled()) {
-	            jtaLogger.logger.trace("XAResourceRecord.topLevelPrepare for " + this + ", record id=" + order());
-	        }
-	
-			if (!_valid || (_theXAResource == null) || (_tranID == null))
-			{
-	            jtaLogger.i18NLogger.warn_resources_arjunacore_preparenulltx("XAResourceRecord.prepare");
-	
-	                    removeConnection();
-	
-				return TwoPhaseOutcome.PREPARE_NOTOK;
-			}
-	
-			try
-			{
-				endAssociation(XAResource.TMSUCCESS, TxInfo.NOT_ASSOCIATED);
-	
-				_prepared = true;
-	
-				if (_theXAResource.prepare(_tranID) == XAResource.XA_RDONLY)
-				{
-				    if (TxControl.isReadonlyOptimisation())
-				    {
-				        // we won't be called again, so we need to tidy up now
-				        removeConnection();
-				    }
-				    
-				    return TwoPhaseOutcome.PREPARE_READONLY;
-				}
-				else
-					return TwoPhaseOutcome.PREPARE_OK;
-			}
-			catch (XAException e1)
-			{
-			    addDeferredThrowable(e1);
-			   
-	            jtaLogger.i18NLogger.warn_resources_arjunacore_preparefailed(XAHelper.xidToString(_tranID),
-	                    _theXAResource.toString(), XAHelper.printXAErrorCode(e1), e1);
-	
-				/*
-				 * XA_RB*, XAER_RMERR, XAER_RMFAIL, XAER_NOTA, XAER_INVAL, or
-				 * XAER_PROTO.
-				 */
-	
-				if (_rollbackOptimization) // won't have rollback called on it
+	public int topLevelPrepare() {
+		if (jtaLogger.logger.isTraceEnabled()) {
+			jtaLogger.logger.trace("XAResourceRecord.topLevelPrepare for " + this + ", record id=" + order());
+		}
+
+		if (!_valid || (_theXAResource == null) || (_tranID == null)) {
+			jtaLogger.i18NLogger.warn_resources_arjunacore_preparenulltx("XAResourceRecord.prepare");
+
+			removeConnection();
+
+			return TwoPhaseOutcome.PREPARE_NOTOK;
+		}
+
+		try {
+			endAssociation(XAResource.TMSUCCESS, TxInfo.NOT_ASSOCIATED);
+
+			_prepared = true;
+
+			if (_theXAResource.prepare(_tranID) == XAResource.XA_RDONLY) {
+				if (TxControl.isReadonlyOptimisation()) {
+					// we won't be called again, so we need to tidy up now
 					removeConnection();
-	
-				switch (e1.errorCode)
-				{
-				case XAException.XAER_RMERR:
-				case XAException.XAER_RMFAIL:
-				case XAException.XA_RBROLLBACK:
-				case XAException.XA_RBEND:
-				case XAException.XA_RBCOMMFAIL:
-				case XAException.XA_RBDEADLOCK:
-				case XAException.XA_RBINTEGRITY:
-				case XAException.XA_RBOTHER:
-				case XAException.XA_RBPROTO:
-				case XAException.XA_RBTIMEOUT:
-				case XAException.XAER_INVAL:
-				case XAException.XAER_PROTO:
-				case XAException.XAER_NOTA: // resource may have arbitrarily rolled back (shouldn't, but ...)
-					return TwoPhaseOutcome.PREPARE_NOTOK;  // will not call rollback
-				default:
-					return TwoPhaseOutcome.HEURISTIC_HAZARD; // we're not really sure (shouldn't get here though).
 				}
+
+				return TwoPhaseOutcome.PREPARE_READONLY;
+			} else
+				return TwoPhaseOutcome.PREPARE_OK;
+		} catch (XAException e1) {
+			addDeferredThrowable(e1);
+
+			jtaLogger.i18NLogger.warn_resources_arjunacore_preparefailed(XAHelper.xidToString(_tranID),
+					_theXAResource.toString(), XAHelper.printXAErrorCode(e1), e1);
+
+			/*
+			 * XA_RB*, XAER_RMERR, XAER_RMFAIL, XAER_NOTA, XAER_INVAL, or XAER_PROTO.
+			 */
+
+			if (_rollbackOptimization) // won't have rollback called on it
+				removeConnection();
+
+			switch (e1.errorCode) {
+			case XAException.XAER_RMERR:
+			case XAException.XAER_RMFAIL:
+			case XAException.XA_RBROLLBACK:
+			case XAException.XA_RBEND:
+			case XAException.XA_RBCOMMFAIL:
+			case XAException.XA_RBDEADLOCK:
+			case XAException.XA_RBINTEGRITY:
+			case XAException.XA_RBOTHER:
+			case XAException.XA_RBPROTO:
+			case XAException.XA_RBTIMEOUT:
+			case XAException.XAER_INVAL:
+			case XAException.XAER_PROTO:
+			case XAException.XAER_NOTA: // resource may have arbitrarily rolled back (shouldn't, but ...)
+				return TwoPhaseOutcome.PREPARE_NOTOK; // will not call rollback
+			default:
+				return TwoPhaseOutcome.HEURISTIC_HAZARD; // we're not really sure (shouldn't get here though).
 			}
-			catch (Exception e2)
-			{
-	            jtaLogger.i18NLogger.warn_resources_arjunacore_preparefailed(XAHelper.xidToString(_tranID),
-	                    _theXAResource.toString(), "-", e2);
-	
-				if (_rollbackOptimization) // won't have rollback called on it
-					removeConnection();
-	
-				return TwoPhaseOutcome.PREPARE_NOTOK;
-			}
-    	}
+		} catch (Exception e2) {
+			jtaLogger.i18NLogger.warn_resources_arjunacore_preparefailed(XAHelper.xidToString(_tranID),
+					_theXAResource.toString(), "-", e2);
+
+			if (_rollbackOptimization) // won't have rollback called on it
+				removeConnection();
+
+			return TwoPhaseOutcome.PREPARE_NOTOK;
+		}
 	}
 
 	public int topLevelAbort() {
@@ -404,120 +389,118 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
 	}
 
 	public int topLevelCommit() {
-		try (Scope scope = new ScopeBuilder(SpanName.GLOBAL_COMMIT).start()) {
-			if (jtaLogger.logger.isTraceEnabled()) {
-				jtaLogger.logger.trace("XAResourceRecord.topLevelCommit for " + this + ", record id=" + order());
-			}
+		if (jtaLogger.logger.isTraceEnabled()) {
+			jtaLogger.logger.trace("XAResourceRecord.topLevelCommit for " + this + ", record id=" + order());
+		}
 
-			if (!_prepared)
-				return TwoPhaseOutcome.NOT_PREPARED;
+		if (!_prepared)
+			return TwoPhaseOutcome.NOT_PREPARED;
 
-			if (_tranID == null) {
-				jtaLogger.i18NLogger.warn_resources_arjunacore_commitnulltx("XAResourceRecord.commit");
+		if (_tranID == null) {
+			jtaLogger.i18NLogger.warn_resources_arjunacore_commitnulltx("XAResourceRecord.commit");
 
-				return TwoPhaseOutcome.FINISH_ERROR;
-			} else {
-				if (_theXAResource == null)
-					_theXAResource = getNewXAResource();
+			return TwoPhaseOutcome.FINISH_ERROR;
+		} else {
+			if (_theXAResource == null)
+				_theXAResource = getNewXAResource();
 
-				if (_theXAResource != null) {
-					if (_heuristic != TwoPhaseOutcome.FINISH_OK)
-						return _heuristic;
+			if (_theXAResource != null) {
+				if (_heuristic != TwoPhaseOutcome.FINISH_OK)
+					return _heuristic;
 
-					/*
-					 * No need for end call here since we can only get to this point by going
-					 * through prepare.
-					 */
+				/*
+				 * No need for end call here since we can only get to this point by going
+				 * through prepare.
+				 */
 
-					try {
-						_theXAResource.commit(_tranID, false);
-					} catch (XAException e1) {
-						if (notAProblem(e1, true)) {
-							// some other thread got there first (probably)
-						} else {
-							addDeferredThrowable(e1);
+				try {
+					_theXAResource.commit(_tranID, false);
+				} catch (XAException e1) {
+					if (notAProblem(e1, true)) {
+						// some other thread got there first (probably)
+					} else {
+						addDeferredThrowable(e1);
 
-							jtaLogger.i18NLogger.warn_resources_arjunacore_commitxaerror(XAHelper.xidToString(_tranID),
-									_theXAResource.toString(), XAHelper.printXAErrorCode(e1), e1);
+						jtaLogger.i18NLogger.warn_resources_arjunacore_commitxaerror(XAHelper.xidToString(_tranID),
+								_theXAResource.toString(), XAHelper.printXAErrorCode(e1), e1);
+
+						/*
+						 * XA_HEURHAZ, XA_HEURCOM, XA_HEURRB, XA_HEURMIX, XAER_RMERR, XAER_RMFAIL,
+						 * XAER_NOTA, XAER_INVAL, or XAER_PROTO.
+						 */
+
+						switch (e1.errorCode) {
+						case XAException.XA_HEURHAZ:
+							_heuristic = TwoPhaseOutcome.HEURISTIC_HAZARD;
+							return TwoPhaseOutcome.HEURISTIC_HAZARD;
+						case XAException.XA_HEURCOM: // what about forget?
+														// OTS doesn't support
+														// this code here.
+							break;
+						case XAException.XA_HEURRB:
+						case XAException.XA_RBROLLBACK: // could really do with an ABORTED status in TwoPhaseOutcome
+														// to differentiate
+						case XAException.XA_RBCOMMFAIL:
+						case XAException.XA_RBDEADLOCK:
+						case XAException.XA_RBINTEGRITY:
+						case XAException.XA_RBOTHER:
+						case XAException.XA_RBPROTO:
+						case XAException.XA_RBTIMEOUT:
+						case XAException.XA_RBTRANSIENT:
+						case XAException.XAER_RMERR:
+						case XAException.XAER_PROTO: // XA spec implies rollback
+							_heuristic = TwoPhaseOutcome.HEURISTIC_ROLLBACK;
+							return TwoPhaseOutcome.HEURISTIC_ROLLBACK;
+						case XAException.XA_HEURMIX:
+							return TwoPhaseOutcome.HEURISTIC_MIXED;
+						case XAException.XAER_NOTA:
+							if (_recovered)
+								break; // committed previously and recovery completed
+							else {
+								_heuristic = TwoPhaseOutcome.HEURISTIC_HAZARD;
+								return TwoPhaseOutcome.HEURISTIC_HAZARD; // something terminated the transaction!
+							}
+						case XAException.XA_RETRY:
+						case XAException.XAER_RMFAIL:
+							_committed = true; // will cause log to be rewritten
 
 							/*
-							 * XA_HEURHAZ, XA_HEURCOM, XA_HEURRB, XA_HEURMIX, XAER_RMERR, XAER_RMFAIL,
-							 * XAER_NOTA, XAER_INVAL, or XAER_PROTO.
+							 * Could do timeout retry here, but that could cause other resources in the list
+							 * to go down the heuristic path (some are far too keen to do this). Fail and
+							 * let recovery retry. Meanwhile the coordinator will continue to commit the
+							 * other resources immediately.
 							 */
-
-							switch (e1.errorCode) {
-							case XAException.XA_HEURHAZ:
-								_heuristic = TwoPhaseOutcome.HEURISTIC_HAZARD;
-								return TwoPhaseOutcome.HEURISTIC_HAZARD;
-							case XAException.XA_HEURCOM: // what about forget?
-															// OTS doesn't support
-															// this code here.
-								break;
-							case XAException.XA_HEURRB:
-							case XAException.XA_RBROLLBACK: // could really do with an ABORTED status in TwoPhaseOutcome
-															// to differentiate
-							case XAException.XA_RBCOMMFAIL:
-							case XAException.XA_RBDEADLOCK:
-							case XAException.XA_RBINTEGRITY:
-							case XAException.XA_RBOTHER:
-							case XAException.XA_RBPROTO:
-							case XAException.XA_RBTIMEOUT:
-							case XAException.XA_RBTRANSIENT:
-							case XAException.XAER_RMERR:
-							case XAException.XAER_PROTO: // XA spec implies rollback
-								_heuristic = TwoPhaseOutcome.HEURISTIC_ROLLBACK;
-								return TwoPhaseOutcome.HEURISTIC_ROLLBACK;
-							case XAException.XA_HEURMIX:
-								return TwoPhaseOutcome.HEURISTIC_MIXED;
-							case XAException.XAER_NOTA:
-								if (_recovered)
-									break; // committed previously and recovery completed
-								else {
-									_heuristic = TwoPhaseOutcome.HEURISTIC_HAZARD;
-									return TwoPhaseOutcome.HEURISTIC_HAZARD; // something terminated the transaction!
-								}
-							case XAException.XA_RETRY:
-							case XAException.XAER_RMFAIL:
-								_committed = true; // will cause log to be rewritten
-
-								/*
-								 * Could do timeout retry here, but that could cause other resources in the list
-								 * to go down the heuristic path (some are far too keen to do this). Fail and
-								 * let recovery retry. Meanwhile the coordinator will continue to commit the
-								 * other resources immediately.
-								 */
-								return TwoPhaseOutcome.FINISH_ERROR;
-							case XAException.XAER_INVAL: // resource manager failed, did it rollback?
-							default:
-								_heuristic = TwoPhaseOutcome.HEURISTIC_HAZARD;
-								return TwoPhaseOutcome.HEURISTIC_HAZARD;
-							}
+							return TwoPhaseOutcome.FINISH_ERROR;
+						case XAException.XAER_INVAL: // resource manager failed, did it rollback?
+						default:
+							_heuristic = TwoPhaseOutcome.HEURISTIC_HAZARD;
+							return TwoPhaseOutcome.HEURISTIC_HAZARD;
 						}
-					} catch (Exception e2) {
-						jtaLogger.i18NLogger.warn_resources_arjunacore_commitxaerror(XAHelper.xidToString(_tranID),
-								_theXAResource.toString(), "-", e2);
-
-						return TwoPhaseOutcome.FINISH_ERROR;
-					} finally {
-						removeConnection();
 					}
-				} else {
-					jtaLogger.i18NLogger.warn_resources_arjunacore_noresource(XAHelper.xidToString(_tranID));
+				} catch (Exception e2) {
+					jtaLogger.i18NLogger.warn_resources_arjunacore_commitxaerror(XAHelper.xidToString(_tranID),
+							_theXAResource.toString(), "-", e2);
 
-					if (XAResourceRecord._assumedComplete) {
-						jtaLogger.i18NLogger.info_resources_arjunacore_assumecomplete(XAHelper.xidToString(_tranID));
-
-						return TwoPhaseOutcome.FINISH_OK;
-					} else if (_jndiName != null && wasResourceContactedByRecoveryModule(_jndiName)) {
-						jtaLogger.i18NLogger.info_resources_arjunacore_rmcompleted(XAHelper.xidToString(_tranID));
-						return TwoPhaseOutcome.FINISH_OK;
-					} else
-						return TwoPhaseOutcome.FINISH_ERROR;
+					return TwoPhaseOutcome.FINISH_ERROR;
+				} finally {
+					removeConnection();
 				}
-			}
+			} else {
+				jtaLogger.i18NLogger.warn_resources_arjunacore_noresource(XAHelper.xidToString(_tranID));
 
-			return TwoPhaseOutcome.FINISH_OK;
+				if (XAResourceRecord._assumedComplete) {
+					jtaLogger.i18NLogger.info_resources_arjunacore_assumecomplete(XAHelper.xidToString(_tranID));
+
+					return TwoPhaseOutcome.FINISH_OK;
+				} else if (_jndiName != null && wasResourceContactedByRecoveryModule(_jndiName)) {
+					jtaLogger.i18NLogger.info_resources_arjunacore_rmcompleted(XAHelper.xidToString(_tranID));
+					return TwoPhaseOutcome.FINISH_OK;
+				} else
+					return TwoPhaseOutcome.FINISH_ERROR;
+			}
 		}
+
+		return TwoPhaseOutcome.FINISH_OK;
 	}
 
 	/**

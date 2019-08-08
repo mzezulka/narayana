@@ -19,9 +19,10 @@ public enum SpanName {
 	 * template params:
 	 * 1: resource description
 	 */
-	RESOURCE_ENLISTMENT("Enlistment of resource: %s"),
+	RESOURCE_ENLISTMENT("Enlistment of resource"),
 	GLOBAL_PREPARE("Global prepare (1st phase)"),
 	GLOBAL_COMMIT("Commit (2nd phase)"),
+	GLOBAL_ABORT("Abort (2nd phase)"),
 	GLOBAL_ROLLBACK("Rollback (2nd phase)"),
 	/**
 	 * template params:
