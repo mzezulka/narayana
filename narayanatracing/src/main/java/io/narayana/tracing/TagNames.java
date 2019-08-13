@@ -12,6 +12,7 @@ public enum TagNames {
 	ASYNCHRONOUS("asynchronous"),
 	XARES("XAResource"),
 	TXINFO("transaction"),
+	APPLICATION_ABORT("application initiated abort"),
 	REPORT_HEURISTICS("report heuristics");
 	
 	private final String name;

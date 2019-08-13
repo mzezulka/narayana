@@ -198,7 +198,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
 			return TwoPhaseOutcome.PREPARE_NOTOK;
 		}
 
-		try {
+		try(Scope scope = new ScopeBuilder(SpanName.LOCAL_PREPARE, _theXAResource).start()) {
 			endAssociation(XAResource.TMSUCCESS, TxInfo.NOT_ASSOCIATED);
 
 			_prepared = true;
@@ -413,7 +413,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
 				 * through prepare.
 				 */
 
-				try {
+				try(Scope scope = new ScopeBuilder(SpanName.LOCAL_COMMIT, _theXAResource).start()) {
 					_theXAResource.commit(_tranID, false);
 				} catch (XAException e1) {
 					if (notAProblem(e1, true)) {

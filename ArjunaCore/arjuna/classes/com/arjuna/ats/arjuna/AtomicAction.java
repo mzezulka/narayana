@@ -40,6 +40,8 @@ import com.arjuna.ats.arjuna.coordinator.TxControl;
 import com.arjuna.ats.arjuna.logging.tsLogger;
 import com.arjuna.ats.internal.arjuna.thread.ThreadActionData;
 
+import io.narayana.tracing.ScopeBuilder;
+import io.narayana.tracing.SpanName;
 import io.narayana.tracing.TracingUtils;
 import io.opentracing.Scope;
 import io.opentracing.Span;

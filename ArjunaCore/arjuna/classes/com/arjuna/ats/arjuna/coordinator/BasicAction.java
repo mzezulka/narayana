@@ -58,7 +58,10 @@ import com.arjuna.ats.internal.arjuna.thread.ThreadActionData;
 import io.narayana.tracing.ScopeBuilder;
 import io.narayana.tracing.SpanName;
 import io.narayana.tracing.TagNames;
+import io.narayana.tracing.TracingUtils;
 import io.opentracing.Scope;
+import io.opentracing.log.Fields;
+import io.opentracing.tag.Tags;
 
 /**
  * BasicAction does most of the work of an atomic action, but does not manage
@@ -1334,6 +1337,10 @@ public class BasicAction extends StateManager {
 
 				if (prepareStatus == TwoPhaseOutcome.PREPARE_NOTOK
 						|| prepareStatus == TwoPhaseOutcome.ONE_PHASE_ERROR) {
+					TracingUtils.addCurrentSpanTag(Tags.ERROR, true);
+					TracingUtils.log(Fields.EVENT, "error");
+					TracingUtils.log(Fields.ERROR_KIND, TwoPhaseOutcome.stringForm(prepareStatus));
+					
 					tsLogger.i18NLogger.warn_coordinator_BasicAction_36(get_uid());
 
 					if (heuristicDecision != TwoPhaseOutcome.PREPARE_OK) {
@@ -1442,68 +1449,76 @@ public class BasicAction extends StateManager {
 	 * @return <code>ActionStatus</code> indicating outcome.
 	 */
 	protected synchronized int Abort(boolean applicationAbort) {
-		if (tsLogger.logger.isTraceEnabled()) {
-			tsLogger.logger.trace("BasicAction::Abort() for action-id " + get_uid());
-		}
-
-		/* Check for superfluous invocation */
-
-		if ((actionStatus != ActionStatus.RUNNING) && (actionStatus != ActionStatus.ABORT_ONLY)
-				&& (actionStatus != ActionStatus.COMMITTING)) {
-			switch (actionStatus) {
-			case ActionStatus.CREATED:
-				tsLogger.i18NLogger.warn_coordinator_BasicAction_39(get_uid());
-				break;
-			case ActionStatus.ABORTED:
-				tsLogger.i18NLogger.warn_coordinator_BasicAction_40(get_uid());
-				break;
-			default:
-				tsLogger.i18NLogger.warn_coordinator_BasicAction_41(get_uid());
-				break;
+		// We know in advance that this transaction will not finish with a commit, so set the error flag to true
+		try (Scope _s = new ScopeBuilder(SpanName.GLOBAL_ABORT)
+				.tag(TagNames.APPLICATION_ABORT, String.valueOf(applicationAbort))
+				.tag(TagNames.UID, get_uid())
+				.tag(TagNames.ASYNCHRONOUS, false)
+				.tag(Tags.ERROR, true)
+				.start()) {
+			if (tsLogger.logger.isTraceEnabled()) {
+				tsLogger.logger.trace("BasicAction::Abort() for action-id " + get_uid());
 			}
-
+	
+			/* Check for superfluous invocation */
+	
+			if ((actionStatus != ActionStatus.RUNNING) && (actionStatus != ActionStatus.ABORT_ONLY)
+					&& (actionStatus != ActionStatus.COMMITTING)) {
+				switch (actionStatus) {
+				case ActionStatus.CREATED:
+					tsLogger.i18NLogger.warn_coordinator_BasicAction_39(get_uid());
+					break;
+				case ActionStatus.ABORTED:
+					tsLogger.i18NLogger.warn_coordinator_BasicAction_40(get_uid());
+					break;
+				default:
+					tsLogger.i18NLogger.warn_coordinator_BasicAction_41(get_uid());
+					break;
+				}
+	
+				return actionStatus;
+			}
+	
+			/*
+			 * Check we are the current action. Abort parents if not true. Some
+			 * implementations may want to override this.
+			 */
+	
+			checkIsCurrent();
+	
+			/*
+			 * Check we have no children (threads or actions).
+			 */
+	
+			checkChildren(false);
+	
+			if (pendingList != null) {
+				actionStatus = ActionStatus.ABORTING;
+	
+				while (pendingList.size() > 0)
+					doAbort(pendingList, false); // turn off heuristics reporting
+	
+				/*
+				 * In case we get here because an End has failed. In this case we still need to
+				 * tell the heuristic resources to forget their decision.
+				 */
+	
+				forgetHeuristics();
+			}
+	
+			ActionManager.manager().remove(get_uid());
+	
+			actionStatus = ActionStatus.ABORTED;
+	
+			if (TxStats.enabled()) {
+				TxStats.getInstance().incrementAbortedTransactions();
+	
+				if (applicationAbort)
+					TxStats.getInstance().incrementApplicationRollbacks();
+			}
+			
 			return actionStatus;
 		}
-
-		/*
-		 * Check we are the current action. Abort parents if not true. Some
-		 * implementations may want to override this.
-		 */
-
-		checkIsCurrent();
-
-		/*
-		 * Check we have no children (threads or actions).
-		 */
-
-		checkChildren(false);
-
-		if (pendingList != null) {
-			actionStatus = ActionStatus.ABORTING;
-
-			while (pendingList.size() > 0)
-				doAbort(pendingList, false); // turn off heuristics reporting
-
-			/*
-			 * In case we get here because an End has failed. In this case we still need to
-			 * tell the heuristic resources to forget their decision.
-			 */
-
-			forgetHeuristics();
-		}
-
-		ActionManager.manager().remove(get_uid());
-
-		actionStatus = ActionStatus.ABORTED;
-
-		if (TxStats.enabled()) {
-			TxStats.getInstance().incrementAbortedTransactions();
-
-			if (applicationAbort)
-				TxStats.getInstance().incrementApplicationRollbacks();
-		}
-
-		return actionStatus;
 	}
 
 	/**

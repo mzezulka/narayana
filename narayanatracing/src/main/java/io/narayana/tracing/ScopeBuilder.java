@@ -1,11 +1,10 @@
 package io.narayana.tracing;
 
-import java.io.IOException;
 import java.util.Objects;
 
 import io.opentracing.Scope;
-import io.opentracing.Span;
 import io.opentracing.Tracer.SpanBuilder;
+import io.opentracing.tag.Tag;
 import io.opentracing.tag.Tags;
 
 /**
@@ -30,6 +29,14 @@ public final class ScopeBuilder {
 	}
 
 	/**
+	 * Construct a span with a special Narayana-specific component tag "narayana"
+	 */
+	private static SpanBuilder prepareSpan(String name) {
+		Objects.requireNonNull(name, "Name of the span cannot be null");
+		return TracingUtils.getTracer().buildSpan(name);
+	}
+	
+	/**
 	 * Adds tag to the started span.
 	 */
 	public ScopeBuilder tag(TagNames name, Object val) {
@@ -37,16 +44,18 @@ public final class ScopeBuilder {
 		spanBldr = spanBldr.withTag(name.toString(), val == null ? "null" : val.toString());
 		return this;
 	}
-
-	/**
-	 * Construct a span with a special Narayana-specific component tag "narayana"
-	 */
-	private static SpanBuilder prepareSpan(String name) {
-		Objects.requireNonNull(name, "Name of the span cannot be null");
-		return TracingUtils.getTracer().buildSpan(name);
+	
+	public <T> ScopeBuilder tag(Tag<T> tag, T value) {
+		Objects.requireNonNull(tag, "Tag cannot be null.");
+		spanBldr = spanBldr.withTag(tag, value);
+		return this;
 	}
 
 	public Scope start() {
 		return TracingUtils.getTracer().scopeManager().activate(spanBldr.withTag(Tags.COMPONENT, "narayana").start(), true);
+	}
+	
+	public Scope startButDontFinish() {
+		return TracingUtils.getTracer().scopeManager().activate(spanBldr.withTag(Tags.COMPONENT, "narayana").start());
 	}
 }
