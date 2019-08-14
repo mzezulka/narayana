@@ -84,7 +84,7 @@ import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
 
 import io.narayana.tracing.ScopeBuilder;
 import io.narayana.tracing.SpanName;
-import io.narayana.tracing.TagNames;
+import io.narayana.tracing.TagName;
 import io.narayana.tracing.TracingUtils;
 import io.opentracing.Scope;
 import io.opentracing.Span;
@@ -429,7 +429,7 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
 			}
 		}
 		try (Scope scope = new ScopeBuilder(SpanName.RESOURCE_ENLISTMENT)
-				.tag(TagNames.XARES, xaRes).start()) {
+				.tag(TagName.XARES, xaRes).start()) {
 			/*
 			 * For each transaction we maintain a list of resources registered with it. Each
 			 * element on this list also contains a list of threads which have registered
@@ -455,7 +455,7 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
 						info = (TxInfo) _duplicateResources.get(xaRes);
 					}
 				}
-				TracingUtils.addCurrentSpanTag(TagNames.TXINFO, info);
+				TracingUtils.addCurrentSpanTag(TagName.TXINFO, info);
 				if (info != null) {
 					switch (info.getState()) {
 					case TxInfo.ASSOCIATION_SUSPENDED: {

@@ -5,7 +5,7 @@ package io.narayana.tracing;
  * String constants to be used when creating span tags.
  * @author Miloslav Zezulka (mzezulka@redhat.com)
  */
-public enum TagNames {
+public enum TagName {
 	
 	UID("UID"),
 	XID("XID"),
@@ -17,7 +17,7 @@ public enum TagNames {
 	
 	private final String name;
 	
-	private TagNames(String name) {
+	private TagName(String name) {
 		this.name = name;
 	}
 	

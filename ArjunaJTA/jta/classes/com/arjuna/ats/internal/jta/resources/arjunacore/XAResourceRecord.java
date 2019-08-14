@@ -57,7 +57,7 @@ import com.arjuna.common.internal.util.ClassloadingUtility;
 
 import io.narayana.tracing.ScopeBuilder;
 import io.narayana.tracing.SpanName;
-import io.narayana.tracing.TagNames;
+import io.narayana.tracing.TagName;
 import io.narayana.tracing.TracingUtils;
 import io.opentracing.Scope;
 import io.opentracing.Span;
@@ -198,7 +198,9 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
 			return TwoPhaseOutcome.PREPARE_NOTOK;
 		}
 
-		try(Scope scope = new ScopeBuilder(SpanName.LOCAL_PREPARE, _theXAResource).start()) {
+		try(Scope scope = new ScopeBuilder(SpanName.LOCAL_PREPARE)
+				.tag(TagName.XARES, _theXAResource)
+				.start()) {
 			endAssociation(XAResource.TMSUCCESS, TxInfo.NOT_ASSOCIATED);
 
 			_prepared = true;
@@ -413,7 +415,9 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
 				 * through prepare.
 				 */
 
-				try(Scope scope = new ScopeBuilder(SpanName.LOCAL_COMMIT, _theXAResource).start()) {
+				try(Scope scope = new ScopeBuilder(SpanName.LOCAL_COMMIT)
+						.tag(TagName.XARES, _theXAResource)
+						.start()) {
 					_theXAResource.commit(_tranID, false);
 				} catch (XAException e1) {
 					if (notAProblem(e1, true)) {

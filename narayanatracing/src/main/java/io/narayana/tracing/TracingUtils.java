@@ -4,7 +4,6 @@ import java.util.Collections;
 
 import io.opentracing.Span;
 import io.opentracing.Tracer;
-import io.opentracing.log.Fields;
 import io.opentracing.tag.Tag;
 import io.opentracing.util.GlobalTracer;
 
@@ -23,11 +22,11 @@ public class TracingUtils {
 	 * Useful when the user wishes to add tags whose existence / value
 	 * is dependent on the context (i.e. status of the transaction).
 	 */
-	public static void addCurrentSpanTag(TagNames name, String val) {
+	public static void addCurrentSpanTag(TagName name, String val) {
 		getTracer().activeSpan().setTag(name.toString(), val);
 	}
 	
-	public static void addCurrentSpanTag(TagNames name, Object obj) {
+	public static void addCurrentSpanTag(TagName name, Object obj) {
 		addCurrentSpanTag(name, obj == null ? "null" : obj.toString());
 	}
 	

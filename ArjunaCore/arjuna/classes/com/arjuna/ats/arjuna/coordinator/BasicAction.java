@@ -57,7 +57,7 @@ import com.arjuna.ats.internal.arjuna.thread.ThreadActionData;
 
 import io.narayana.tracing.ScopeBuilder;
 import io.narayana.tracing.SpanName;
-import io.narayana.tracing.TagNames;
+import io.narayana.tracing.TagName;
 import io.narayana.tracing.TracingUtils;
 import io.opentracing.Scope;
 import io.opentracing.log.Fields;
@@ -1217,6 +1217,8 @@ public class BasicAction extends StateManager {
 	 */
 
 	protected synchronized int Begin(BasicAction parentAct) {
+		new ScopeBuilder(SpanName.TX_BEGIN).start();
+		//new ScopeBuilder(SpanName.GLOBAL_PRE_2PC).start();
 		if (tsLogger.logger.isTraceEnabled()) {
 			tsLogger.logger.trace("BasicAction::Begin() for action-id " + get_uid());
 		}
@@ -1340,7 +1342,7 @@ public class BasicAction extends StateManager {
 					TracingUtils.addCurrentSpanTag(Tags.ERROR, true);
 					TracingUtils.log(Fields.EVENT, "error");
 					TracingUtils.log(Fields.ERROR_KIND, TwoPhaseOutcome.stringForm(prepareStatus));
-					
+
 					tsLogger.i18NLogger.warn_coordinator_BasicAction_36(get_uid());
 
 					if (heuristicDecision != TwoPhaseOutcome.PREPARE_OK) {
@@ -1376,6 +1378,7 @@ public class BasicAction extends StateManager {
 			}
 		}
 
+		TracingUtils.finishActiveSpan();
 		if (tsLogger.logger.isTraceEnabled()) {
 			tsLogger.logger.tracef("BasicAction::End() result for action-id (%s) is (%s) node id: (%s)", get_uid(),
 					TwoPhaseOutcome.stringForm(heuristicDecision),
@@ -1449,19 +1452,17 @@ public class BasicAction extends StateManager {
 	 * @return <code>ActionStatus</code> indicating outcome.
 	 */
 	protected synchronized int Abort(boolean applicationAbort) {
-		// We know in advance that this transaction will not finish with a commit, so set the error flag to true
+		// We already know this transaction will not finish with a commit, so
+		// set the error flag to true
 		try (Scope _s = new ScopeBuilder(SpanName.GLOBAL_ABORT)
-				.tag(TagNames.APPLICATION_ABORT, String.valueOf(applicationAbort))
-				.tag(TagNames.UID, get_uid())
-				.tag(TagNames.ASYNCHRONOUS, false)
-				.tag(Tags.ERROR, true)
-				.start()) {
+				.tag(TagName.APPLICATION_ABORT, String.valueOf(applicationAbort)).tag(TagName.UID, get_uid())
+				.tag(TagName.ASYNCHRONOUS, false).tag(Tags.ERROR, true).start()) {
 			if (tsLogger.logger.isTraceEnabled()) {
 				tsLogger.logger.trace("BasicAction::Abort() for action-id " + get_uid());
 			}
-	
+
 			/* Check for superfluous invocation */
-	
+
 			if ((actionStatus != ActionStatus.RUNNING) && (actionStatus != ActionStatus.ABORT_ONLY)
 					&& (actionStatus != ActionStatus.COMMITTING)) {
 				switch (actionStatus) {
@@ -1475,48 +1476,48 @@ public class BasicAction extends StateManager {
 					tsLogger.i18NLogger.warn_coordinator_BasicAction_41(get_uid());
 					break;
 				}
-	
+
 				return actionStatus;
 			}
-	
+
 			/*
 			 * Check we are the current action. Abort parents if not true. Some
 			 * implementations may want to override this.
 			 */
-	
+
 			checkIsCurrent();
-	
+
 			/*
 			 * Check we have no children (threads or actions).
 			 */
-	
+
 			checkChildren(false);
-	
+
 			if (pendingList != null) {
 				actionStatus = ActionStatus.ABORTING;
-	
+
 				while (pendingList.size() > 0)
 					doAbort(pendingList, false); // turn off heuristics reporting
-	
+
 				/*
 				 * In case we get here because an End has failed. In this case we still need to
 				 * tell the heuristic resources to forget their decision.
 				 */
-	
+
 				forgetHeuristics();
 			}
-	
+
 			ActionManager.manager().remove(get_uid());
-	
+
 			actionStatus = ActionStatus.ABORTED;
-	
+
 			if (TxStats.enabled()) {
 				TxStats.getInstance().incrementAbortedTransactions();
-	
+
 				if (applicationAbort)
 					TxStats.getInstance().incrementApplicationRollbacks();
 			}
-			
+
 			return actionStatus;
 		}
 	}
@@ -1659,8 +1660,7 @@ public class BasicAction extends StateManager {
 
 	protected synchronized final void phase2Commit(boolean reportHeuristics) throws Error {
 		try (Scope _s = new ScopeBuilder(SpanName.GLOBAL_COMMIT)
-				.tag(TagNames.REPORT_HEURISTICS, String.valueOf(reportHeuristics))
-				.tag(TagNames.UID, this.get_uid())
+				.tag(TagName.REPORT_HEURISTICS, String.valueOf(reportHeuristics)).tag(TagName.UID, this.get_uid())
 				.start()) {
 
 			if (tsLogger.logger.isTraceEnabled()) {
@@ -1770,53 +1770,52 @@ public class BasicAction extends StateManager {
 
 	protected synchronized final void phase2Abort(boolean reportHeuristics) {
 		try (Scope _s = new ScopeBuilder(SpanName.GLOBAL_ABORT)
-				.tag(TagNames.REPORT_HEURISTICS, String.valueOf(reportHeuristics))
-				.tag(TagNames.UID, this.get_uid())
-				.start()) {
+				.tag(TagName.REPORT_HEURISTICS, String.valueOf(reportHeuristics)).tag(TagName.APPLICATION_ABORT, false)
+				.tag(TagName.ASYNCHRONOUS, false).tag(TagName.UID, this.get_uid()).tag(Tags.ERROR, true).start()) {
 			if (tsLogger.logger.isTraceEnabled()) {
 				tsLogger.logger.trace("BasicAction::phase2Abort() for action-id " + get_uid());
 			}
-	
+
 			criticalStart();
-	
+
 			actionStatus = ActionStatus.ABORTING;
-	
+
 			if (preparedList != null)
 				doAbort(preparedList, reportHeuristics);
-	
+
 			if (!TxControl.readonlyOptimisation) {
 				if (readonlyList != null)
 					doAbort(readonlyList, reportHeuristics);
 			}
-	
+
 			if (pendingList != null)
 				doAbort(pendingList, reportHeuristics);
-	
+
 			/*
 			 * Check heuristic decision, and try to make it match outcome.
 			 */
-	
+
 			if (heuristicDecision != TwoPhaseOutcome.PREPARE_OK) {
 				if (heuristicDecision == TwoPhaseOutcome.HEURISTIC_ROLLBACK)
 					heuristicDecision = TwoPhaseOutcome.FINISH_OK;
 			}
-	
+
 			forgetHeuristics();
-	
+
 			actionStatus = abortStatus();
-	
+
 			updateState(); // we may end up saving more than the heuristic list
 			// here!
-	
+
 			ActionManager.manager().remove(get_uid());
-	
+
 			criticalEnd();
-	
+
 			/*
 			 * To get to this stage we had to try to commit, which means that we're rolling
 			 * back because of a resource problem or an internal error.
 			 */
-	
+
 			if (TxStats.enabled()) {
 				if (internalError)
 					TxStats.getInstance().incrementSystemRollbacks();
@@ -1835,61 +1834,55 @@ public class BasicAction extends StateManager {
 	 */
 
 	protected int async_prepare(boolean reportHeuristics) {
-		try (Scope _s = new ScopeBuilder(SpanName.GLOBAL_PREPARE)
-				.tag(TagNames.REPORT_HEURISTICS, String.valueOf(reportHeuristics))
-				.tag(TagNames.UID, get_uid())
-				.tag(TagNames.ASYNCHRONOUS, true)
-				.start()) {
-			int p = TwoPhaseOutcome.PREPARE_OK;
-			Collection<AbstractRecord> lastResourceRecords = new ArrayList<AbstractRecord>();
-			Collection<Future<Integer>> tasks = new ArrayList<Future<Integer>>();
-	
-			AbstractRecord last2PCAwareRecord = pendingList.getRear();
-	
-			// Get 1PC aware resources
-			while (last2PCAwareRecord != null && last2PCAwareRecord.typeIs() == RecordType.LASTRESOURCE) {
-				lastResourceRecords.add(last2PCAwareRecord);
-				last2PCAwareRecord = pendingList.getRear();
-			}
-	
-			// Prepare 2PC aware resources
-			while (pendingList.size() != 0) {
-				tasks.add(TwoPhaseCommitThreadPool
-						.submitJob(new AsyncPrepare(this, reportHeuristics, pendingList.getFront())));
-			}
-	
-			// Prepare the last (or only) 2PC aware resource on the callers thread
-			if (last2PCAwareRecord != null) {
-				p = doPrepare(reportHeuristics, last2PCAwareRecord);
-			}
-	
-			// Get results of the 2PC aware resources prepare
-			for (Future<Integer> task : tasks) {
-				try {
-					int outcome = task.get();
-	
-					if (p == TwoPhaseOutcome.PREPARE_OK) {
-						p = outcome;
-					}
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				} catch (ExecutionException e) {
-					e.printStackTrace();
-				}
-			}
-	
-			// Commit one phase aware resources
-			for (AbstractRecord lastResourceRecord : lastResourceRecords) {
-				if (p == TwoPhaseOutcome.PREPARE_OK) {
-					p = doPrepare(reportHeuristics, lastResourceRecord);
-				} else {
-					// Prepare failed, put remaining records back to the pendingList.
-					pendingList.insert(lastResourceRecord);
-				}
-			}
-	
-			return p;
+		int p = TwoPhaseOutcome.PREPARE_OK;
+		Collection<AbstractRecord> lastResourceRecords = new ArrayList<AbstractRecord>();
+		Collection<Future<Integer>> tasks = new ArrayList<Future<Integer>>();
+
+		AbstractRecord last2PCAwareRecord = pendingList.getRear();
+
+		// Get 1PC aware resources
+		while (last2PCAwareRecord != null && last2PCAwareRecord.typeIs() == RecordType.LASTRESOURCE) {
+			lastResourceRecords.add(last2PCAwareRecord);
+			last2PCAwareRecord = pendingList.getRear();
 		}
+
+		// Prepare 2PC aware resources
+		while (pendingList.size() != 0) {
+			tasks.add(TwoPhaseCommitThreadPool
+					.submitJob(new AsyncPrepare(this, reportHeuristics, pendingList.getFront())));
+		}
+
+		// Prepare the last (or only) 2PC aware resource on the callers thread
+		if (last2PCAwareRecord != null) {
+			p = doPrepare(reportHeuristics, last2PCAwareRecord);
+		}
+
+		// Get results of the 2PC aware resources prepare
+		for (Future<Integer> task : tasks) {
+			try {
+				int outcome = task.get();
+
+				if (p == TwoPhaseOutcome.PREPARE_OK) {
+					p = outcome;
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// Commit one phase aware resources
+		for (AbstractRecord lastResourceRecord : lastResourceRecords) {
+			if (p == TwoPhaseOutcome.PREPARE_OK) {
+				p = doPrepare(reportHeuristics, lastResourceRecord);
+			} else {
+				// Prepare failed, put remaining records back to the pendingList.
+				pendingList.insert(lastResourceRecord);
+			}
+		}
+
+		return p;
 	}
 
 	/**
@@ -1907,33 +1900,32 @@ public class BasicAction extends StateManager {
 	 */
 
 	protected synchronized final int prepare(boolean reportHeuristics) {
+		// Finish the pre 2PC wrapping span
+		// TracingUtils.finishActiveSpan();
 		try (Scope _s = new ScopeBuilder(SpanName.GLOBAL_PREPARE)
-				.tag(TagNames.REPORT_HEURISTICS, String.valueOf(reportHeuristics))
-				.tag(TagNames.UID, get_uid())
-				.tag(TagNames.ASYNCHRONOUS, false)
-				.start()) {
+				.tag(TagName.REPORT_HEURISTICS, String.valueOf(reportHeuristics)).tag(TagName.UID, get_uid()).start()) {
 			if (tsLogger.logger.isTraceEnabled()) {
 				tsLogger.logger.trace("BasicAction::prepare () for action-id " + get_uid());
 			}
-	
+
 			boolean commitAllowed = (actionStatus != ActionStatus.ABORT_ONLY);
-	
+
 			actionStatus = ActionStatus.PREPARING;
-	
+
 			/* If we cannot commit - say the prepare failed */
-	
+
 			if (!commitAllowed) {
 				tsLogger.i18NLogger.warn_coordinator_BasicAction_43(get_uid());
-	
+
 				actionStatus = ActionStatus.PREPARED;
-	
+
 				return TwoPhaseOutcome.PREPARE_NOTOK;
 			}
-	
+
 			/*
 			 * Make sure the object store is set up for a top-level atomic action.
 			 */
-	
+
 			if (actionType == ActionType.TOP_LEVEL) {
 				if (getStore() == null) {
 					actionStatus = ActionStatus.ABORT_ONLY;
@@ -1941,11 +1933,11 @@ public class BasicAction extends StateManager {
 					return TwoPhaseOutcome.PREPARE_NOTOK;
 				}
 			}
-	
+
 			criticalStart();
-	
+
 			createPreparedLists();
-	
+
 			/*
 			 * Here is the start of the hard work. Walk down the pendingList invoking the
 			 * appropriate prepare operation. If it succeeds put the record on either the
@@ -1955,41 +1947,41 @@ public class BasicAction extends StateManager {
 			 * If prepare fails on any record stop processing immediately and put the
 			 * offending record back on the pendingList
 			 */
-	
+
 			int p = TwoPhaseOutcome.PREPARE_OK;
-	
+
 			/*
 			 * If asynchronous prepare, then spawn a separate thread to handle each entry in
 			 * the intentions list. Could have some configurable option to allow more
 			 * limited number of threads to divide up the intentions list.
 			 */
-	
+
 			if ((actionType == ActionType.TOP_LEVEL) && (TxControl.asyncPrepare)) {
 				p = async_prepare(reportHeuristics);
 			} else {
 				// single threaded prepare
-	
+
 				// createPreparedLists will have ensured list exists, but it may be empty
 				if (pendingList.size() > 0) {
 					p = doPrepare(reportHeuristics);
 				}
 			}
-	
+
 			/*
 			 * Now let's see if we are able to dynamically optimise 1PC. As we went through
 			 * prepare, if the first N-1 participants returned read-only then we returned
 			 * read-only from doPrepare but left one entry on the intentions list.
 			 */
-	
+
 			if ((p == TwoPhaseOutcome.PREPARE_READONLY) && (pendingList.size() == 1)) {
 				onePhaseCommit(reportHeuristics);
-	
+
 				ActionManager.manager().remove(get_uid());
-	
+
 				return actionStatus == ActionStatus.ABORTED ? TwoPhaseOutcome.ONE_PHASE_ERROR
 						: TwoPhaseOutcome.PREPARE_ONE_PHASE_COMMITTED;
 			}
-	
+
 			if ((p != TwoPhaseOutcome.PREPARE_OK) && (p != TwoPhaseOutcome.PREPARE_READONLY)) {
 				if ((actionType == ActionType.NESTED)
 						&& ((preparedList.size() > 0) && (p == TwoPhaseOutcome.ONE_PHASE_ERROR))) {
@@ -1998,72 +1990,72 @@ public class BasicAction extends StateManager {
 					 * the rollback invocation must come from that since they have already been told
 					 * this transaction has committed!
 					 */
-	
+
 					AbstractRecord tmpRec = preparedList.getFront();
-	
+
 					while (tmpRec != null) {
 						merge(tmpRec);
 						tmpRec = preparedList.getFront();
 					}
-	
+
 					if (parentAction != null)
 						parentAction.preventCommit();
 					else {
 						tsLogger.i18NLogger.warn_coordinator_BasicAction_44();
 					}
 				}
-	
+
 				criticalEnd();
-	
+
 				return TwoPhaseOutcome.PREPARE_NOTOK;
 			}
-	
+
 			/*
 			 * Now work out whether there is any state to save. Since we should be single
 			 * threaded once again, there is no need to protect the lists with a
 			 * synchronization.
 			 */
-	
+
 			/*
 			 * Could do this as we traverse the lists above, but would need some compound
 			 * class for return values.
 			 */
-	
+
 			boolean stateToSave = false;
 			RecordListIterator iter = new RecordListIterator(preparedList);
-	
+
 			/*
 			 * First check the prepared list.
 			 */
-	
+
 			while (((recordBeingHandled = iter.iterate()) != null)) {
 				if (!stateToSave)
 					stateToSave = recordBeingHandled.doSave();
-	
+
 				if (stateToSave)
 					break;
 			}
-	
+
 			iter = null;
-	
+
 			if (!stateToSave) {
 				iter = new RecordListIterator(heuristicList);
-	
+
 				/*
 				 * Now check the heuristic list.
 				 */
-	
+
 				while (((recordBeingHandled = heuristicList.getFront()) != null)) {
 					if (!stateToSave)
 						stateToSave = recordBeingHandled.doSave();
-	
+
 					if (stateToSave)
 						break;
 				}
-	
+
 				iter = null;
 			}
-	
+
 			/*
 			 * The actual state we want to write depends upon whether or not we are in
 			 * charge of the transaction outcome:
@@ -2079,59 +2071,59 @@ public class BasicAction extends StateManager {
 			 * (iii) nested transactions never write state, so the state is set to prepared
 			 * anyway.
 			 */
-	
+
 			if (actionType == ActionType.TOP_LEVEL)
 				actionStatus = preparedStatus();
 			else
 				actionStatus = ActionStatus.PREPARED;
-	
+
 			/*
 			 * If we are here then everything went okay so save the intention list in the
 			 * ObjectStore in case of a node crash providing that its not empty
 			 */
-	
+
 			if ((actionType == ActionType.TOP_LEVEL) && (stateToSave)
 					&& ((preparedList.size() > 0) || (heuristicList.size() > 0))) {
 				/* Only do this if we have some records worth saving! */
-	
+
 				Uid u = getSavingUid();
 				String tn = type();
 				OutputObjectState state = new OutputObjectState(u, tn);
-	
+
 				if (!save_state(state, ObjectType.ANDPERSISTENT)) {
 					tsLogger.i18NLogger.warn_coordinator_BasicAction_45(get_uid());
-	
+
 					criticalEnd();
-	
+
 					internalError = true;
-	
+
 					return TwoPhaseOutcome.PREPARE_NOTOK;
 				}
-	
+
 				if (state.notempty()) {
 					try {
 						if (!transactionStore.write_committed(u, tn, state)) {
 							tsLogger.i18NLogger.warn_coordinator_BasicAction_46(get_uid());
-	
+
 							criticalEnd();
-	
+
 							internalError = true;
-	
+
 							return TwoPhaseOutcome.PREPARE_NOTOK;
 						} else
 							savedIntentionList = true;
 					} catch (ObjectStoreException e) {
 						criticalEnd();
-	
+
 						internalError = true;
-	
+
 						return TwoPhaseOutcome.PREPARE_NOTOK;
 					}
 				}
 			}
-	
+
 			criticalEnd();
-	
+
 			if ((preparedList.size() == 0) && (readonlyList.size() >= 0))
 				return TwoPhaseOutcome.PREPARE_READONLY;
 			else
