@@ -40,7 +40,7 @@ import com.arjuna.ats.arjuna.state.OutputObjectState;
 
 /**
  * A null implementation. Useful for performance tuning.
- * 
+ *
  * @author Mark Little (mark@arjuna.com)
  * @version $Id: NullActionStore.java 2342 2006-03-30 13:06:17Z $
  * @since JTS 1.0.
@@ -117,7 +117,7 @@ public class NullActionStore extends ShadowNoFileLockStore
     {
         return false;
     }
-    
+
     public NullActionStore(ObjectStoreEnvironmentBean objectStoreEnvironmentBean) throws ObjectStoreException
     {
         super(objectStoreEnvironmentBean);

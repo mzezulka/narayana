@@ -597,7 +597,7 @@ public class SubordinateTestCase
         final XATerminator xaTerminator = SubordinationManager.getXATerminator();
         Xid[] recover1 = xaTerminator.recover(XAResource.TMSTARTRSCAN);
         xaTerminator.recover(XAResource.TMENDRSCAN);
-        
+
         xaTerminator.prepare(xid);
 
         /*
@@ -613,7 +613,7 @@ public class SubordinateTestCase
         } catch (XAException e) {
             assertTrue(e.errorCode == XAException.XAER_RMFAIL);
         }
-        
+
         Xid[] recover2 = xaTerminator.recover(XAResource.TMSTARTRSCAN);
         xaTerminator.recover(XAResource.TMENDRSCAN);
 

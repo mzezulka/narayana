@@ -82,7 +82,7 @@ public class WSCOORClient
 
         return port;
     }
-    
+
     // don't think we ever need this as we get a registration port from the endpoint ref returned by
     // the activation port request
     public static RegistrationPortType getRegistrationPort(final W3CEndpointReference endpointReference, String action, String messageID)
@@ -105,7 +105,7 @@ public class WSCOORClient
         AddressingHelper.configureRequestContext(requestContext, map.getTo(), action);
         return port;
     }
-    
+
     private static MAP getRegistrationPortMap(Map<String, Object> requestContext) {
         final WSCEnvironmentBean wscEnvironmentBean = XTSPropertyManager.getWSCEnvironmentBean();
         MAP map;

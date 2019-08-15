@@ -218,7 +218,7 @@ class ActionTestClientTestService implements Service
             throws IOException
     {
         System.err.println("starting to work");
-        
+
         _in = new BufferedReader(new InputStreamReader(is));
         _out = new PrintWriter(new OutputStreamWriter(os));
 
@@ -280,24 +280,24 @@ public class ActionTestClient
     public void test() throws Exception
     {
         assertTrue(test_setup());
-        
+
         ActionTestClientTestService test_service = new ActionTestClientTestService();
         Listener listener = new Listener(_test_service_socket, test_service);
 
         listener.start();
-        
+
         test_service.waitForFinished();
 
         listener.stopListener();
-        
+
         assertEquals(3, ActionTestClientTestService._tests_passed);
         assertEquals(0, ActionTestClientTestService._tests_failed);
     }
-    
+
     /**
      * Pre-test setup.
      */
-    
+
     private static boolean test_setup()
     {
         boolean setupOk = false;
@@ -314,7 +314,7 @@ public class ActionTestClient
 
             _to_test_service.write(Utility.getProcessUid().stringForm()+"\n");
             _to_test_service.write(Utility.intToHexString(Utility.getpid())+"\n");
-            
+
             for (int i = 0; i < _number; i++)
             {
                 _tx[i] = new AtomicAction();
@@ -322,9 +322,9 @@ public class ActionTestClient
                 AtomicAction.suspend();
                 _to_test_service.write(_tx[i].type()+"\n");
                 _to_test_service.write(_tx[i].get_uid().stringForm()+"\n");
-            }           
-            
-            terminateTx(_tx[0], false);  
+            }
+
+            terminateTx(_tx[0], false);
             // 1 is RUNNING
             terminateTx(_tx[2], true);
             terminateTx(_tx[3], false);
@@ -335,7 +335,7 @@ public class ActionTestClient
             terminateTx(_tx[8], false);
 
             _to_test_service.flush();
-            
+
             setupOk = true;
         }
         catch (Exception ex) {
@@ -344,27 +344,27 @@ public class ActionTestClient
 
         return setupOk;
     }
-    
+
     static private void terminateTx (AtomicAction tx, boolean commit)
     {
         AtomicAction.resume(tx);
-        
+
         if (commit)
             tx.commit();
         else
             tx.abort();
-        
+
         ActionManager.manager().put(tx);  // put it back on list to simulate running condition.
     }
-    
+
     private static int _port = 4321;
     private static int _number = 9;
-    
+
     private static Socket _test_socket;
     private static ServerSocket _test_service_socket;
 
     private static BufferedReader _from_test_service;
     private static PrintWriter _to_test_service;
-    
+
     private static AtomicAction[] _tx = new AtomicAction[_number];
 }

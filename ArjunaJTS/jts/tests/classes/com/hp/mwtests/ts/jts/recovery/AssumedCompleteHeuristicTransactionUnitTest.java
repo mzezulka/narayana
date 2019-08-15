@@ -39,47 +39,47 @@ import com.arjuna.ats.internal.jts.recovery.transactions.AssumedCompleteHeuristi
  * @author <a href="gytis@redhat.com">Gytis Trikleris</a>
  */
 public final class AssumedCompleteHeuristicTransactionUnitTest {
-    
+
     private Uid uid;
-    
+
     private AssumedCompleteHeuristicTransaction transaction;
-    
+
     @Before
     public void before() {
         uid = new Uid();
         transaction = new AssumedCompleteHeuristicTransaction(uid);
     }
-    
+
     @Test
     public void testGetOriginalStatus() {
         Assert.assertEquals(Status.StatusNoTransaction, transaction.getOriginalStatus());
     }
-    
+
     @Test
     public void testType() {
         Assert.assertEquals(AssumedCompleteHeuristicTransaction.typeName(), transaction.type());
     }
-    
+
     @Test
     public void testToString() {
         Assert.assertEquals("AssumedCompleteHeuristicTransaction <" + uid + ">", transaction.toString());
     }
-    
+
     @Test
     public void testAssumeComplete() {
         Assert.assertEquals(false, transaction.assumeComplete());
     }
-    
+
     @Test
     public void testSaveAndRestoreState() throws IOException {
         final OutputObjectState outputObjectState = new OutputObjectState();
         Assert.assertTrue(transaction.save_state(outputObjectState, ObjectType.ANDPERSISTENT));
-        
+
         final Date lastActiveTime = transaction.getLastActiveTime();
-        
+
         final InputObjectState inputObjectState = new InputObjectState(outputObjectState);
         Assert.assertTrue(transaction.restore_state(inputObjectState, ObjectType.ANDPERSISTENT));
         Assert.assertEquals(lastActiveTime.getTime(), inputObjectState.unpackLong());
     }
-    
+
 }

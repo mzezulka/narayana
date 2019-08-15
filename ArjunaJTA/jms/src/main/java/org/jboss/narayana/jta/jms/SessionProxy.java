@@ -68,7 +68,7 @@ public class SessionProxy implements Session {
     /**
      * Simply close proxied session if there is no active transaction. Or if transaction exists, delist session's XA resource
      * and register a {@link SessionClosingSynchronization} to close the proxied session.
-     * 
+     *
      * @throws JMSException
      */
     @Override

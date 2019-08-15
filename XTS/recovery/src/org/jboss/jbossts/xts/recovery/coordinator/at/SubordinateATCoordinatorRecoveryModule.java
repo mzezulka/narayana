@@ -153,7 +153,7 @@ public class SubordinateATCoordinatorRecoveryModule implements XTSRecoveryModule
         }
 
         // if there is no entry and there is still a log entry then we need to create a new coordinator
-        
+
         // Retrieve the transaction status from its original process.
         // n.b. for a non-active XTS TX this status will always be committed even
         // if it aborted or had a heuristic outcome. in that case we need to use

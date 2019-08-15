@@ -127,17 +127,17 @@ public class JDBC2Test
         url = "jdbc:arjuna:";
         Properties p = System.getProperties();
         p.put("jdbc.drivers", Driver.class.getName());
-        
+
         System.setProperties(p);
         DriverManager.registerDriver(new TransactionalDriver());
 
         dbProperties = new Properties();
-        
+
         JdbcDataSource ds = new JdbcDataSource();
 		ds.setURL("jdbc:h2:./h2/foo");
         dbProperties.put(TransactionalDriver.XADataSource, ds);
         dbProperties.put(TransactionalDriver.poolConnections, "false");
-		
+
 		conn = DriverManager.getConnection(url, dbProperties);
 	}
 

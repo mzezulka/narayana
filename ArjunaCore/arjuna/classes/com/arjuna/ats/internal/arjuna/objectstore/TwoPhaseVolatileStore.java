@@ -35,13 +35,13 @@ import com.arjuna.ats.arjuna.state.OutputObjectState;
  * Two phase volatile store. Allows for recoverable and shared object instances to
  * participate in a transaction. Does not support all recovery methods that are
  * specific to persistent (durable) object stores.
- * 
+ *
  * @author marklittle
  */
 
 public class TwoPhaseVolatileStore extends ObjectStore
 {
-    public TwoPhaseVolatileStore(ObjectStoreEnvironmentBean objectStoreEnvironmentBean) throws ObjectStoreException 
+    public TwoPhaseVolatileStore(ObjectStoreEnvironmentBean objectStoreEnvironmentBean) throws ObjectStoreException
     {
         super(objectStoreEnvironmentBean);
 
@@ -97,7 +97,7 @@ public class TwoPhaseVolatileStore extends ObjectStore
         }
 
         StateInstance inst = _stateMap.get(u);
-        
+
         if (inst != null)
         {
             if (inst.original != null)
@@ -108,7 +108,7 @@ public class TwoPhaseVolatileStore extends ObjectStore
                     return StateStatus.OS_UNCOMMITTED;
             }
         }
-        
+
         return StateStatus.OS_UNKNOWN;
     }
 
@@ -145,7 +145,7 @@ public class TwoPhaseVolatileStore extends ObjectStore
                 {
                     inst.original = inst.shadow;
                     inst.shadow = null;
-                    
+
                     return true;
                 }
                 else
@@ -196,7 +196,7 @@ public class TwoPhaseVolatileStore extends ObjectStore
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("TwoPhaseVolatileStore.read_committed(Uid=" + u + ", typeName=" + tn + ")");
         }
- 
+
         synchronized (_stateMap)
         {
             StateInstance inst = _stateMap.get(u);
@@ -272,7 +272,7 @@ public class TwoPhaseVolatileStore extends ObjectStore
                 if (inst.original != null)
                 {
                     inst.original = null;
-                    
+
                     return true;
                 }
                 else
@@ -304,7 +304,7 @@ public class TwoPhaseVolatileStore extends ObjectStore
                 if (inst.shadow != null)
                 {
                     inst.shadow = null;
-                    
+
                     return true;
                 }
                 else
@@ -376,7 +376,7 @@ public class TwoPhaseVolatileStore extends ObjectStore
             if (inst == null)
             {
                 inst = new StateInstance(null, buff, tn, u);
-                
+
                 _stateMap.put(u, inst);
             }
             else
@@ -385,12 +385,12 @@ public class TwoPhaseVolatileStore extends ObjectStore
                 {
                     return false; // probably another thread trying to commit optimistically.
                 }
-                else              
+                else
                 {
                     inst.shadow = buff;
                 }
             }
-    
+
             return true;
         }
     }
@@ -404,7 +404,7 @@ public class TwoPhaseVolatileStore extends ObjectStore
     {
         return false;
     }
-    
+
     private class StateInstance
     {
         public StateInstance (OutputObjectState orig, OutputObjectState sd, String tn, Uid u)
@@ -414,24 +414,24 @@ public class TwoPhaseVolatileStore extends ObjectStore
             typeName = tn;
             uid = u;
         }
-        
+
         public String toString ()
         {
             return "StateInstance < original "+(original == null ? "empty" : "present")+", shadow "+(shadow == null ? "empty" : "present")+", "+typeName+" "+uid+" >";
         }
-        
+
         public OutputObjectState original;
         public OutputObjectState shadow;
         public String typeName;
         public Uid uid;
     }
-    
+
     /*
      * This could potentially grow indefinitely. Place a limit on the size?
      */
-    
+
     //private WeakHashMap<Uid, StateInstance> _stateMap = new WeakHashMap<Uid, StateInstance>();
-    
+
     private ConcurrentHashMap<Uid, StateInstance> _stateMap = new ConcurrentHashMap<Uid, StateInstance>();
 
     private VolatileStore store;

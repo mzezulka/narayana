@@ -104,7 +104,7 @@ public class CompletionCoordinatorClient
         AddressingHelper.installFromFaultTo(map, initiator, identifier);
         CompletionCoordinatorPortType port = getPort(endpoint, map, rollbackAction);
         Notification rollback = new Notification();
-                
+
         port.rollbackOperation(rollback);
     }
 

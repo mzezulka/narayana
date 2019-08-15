@@ -80,7 +80,7 @@ public class XTSServiceTestRunnerBean
         log.info("Starting XTSServiceTestRunner");
 
         // ensure that the xts service test AT recovery helper module is registered
-        
+
         TestATRecoveryModule.register();
         TestBARecoveryModule.register();
 

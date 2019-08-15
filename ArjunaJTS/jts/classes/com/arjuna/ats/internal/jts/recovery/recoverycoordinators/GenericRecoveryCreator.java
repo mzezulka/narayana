@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -44,12 +44,12 @@ import com.arjuna.ats.jts.logging.jtsLogger;
 
 /**
  * Implementation of {@link com.arjuna.ats.internal.jts.recovery.RecoveryCreator}.
- * Orb-specific aspects, especially the specific construction of the 
+ * Orb-specific aspects, especially the specific construction of the
  * RecoveryCoordinator IOR are delegated to an implementation of {@link RcvCoManager}.
  * The RCs may be created locally (depends on the orb-specific mechanisms) but
  * will be recreated in the RecoveryManager if called there (possibly following
  * a crash of this process).
- * 
+ *
  */
 
 public class GenericRecoveryCreator extends RecoveryCreator
@@ -63,16 +63,16 @@ private GenericRecoveryCreator (RcvCoManager specificManager)
 
 /**
  * Create an instance of this class, which will delegate the orb-specific
- * aspects to the supplied RcvCoManager instance and register it with 
+ * aspects to the supplied RcvCoManager instance and register it with
  * the transaction service.
  */
 public static void register(RcvCoManager theManager)
     {
 	RecoveryCreator theCreator = new GenericRecoveryCreator(theManager);
-	
+
 	RecoveryCreator.setCreator(theCreator);
     }
-    
+
 
     /**
      * Create a new RecoveryCoordinator for Resource res. The params
@@ -89,7 +89,7 @@ public static void register(RcvCoManager theManager)
 	if (jtsLogger.logger.isDebugEnabled()) {
         jtsLogger.logger.debug("GenericRecoveryCreator.create()");
     }
-	
+
 	// we dont use the res parameter in this version
 	if ((params != null) && (params[0] != null) )
 	{
@@ -107,9 +107,9 @@ public static void register(RcvCoManager theManager)
 
 	    Uid rootActionUid = rootAction.getSavingUid();
 
-	    //Uid processUid = Utility.getProcessUid(); 
+	    //Uid processUid = Utility.getProcessUid();
 	    Uid processUid = com.arjuna.ats.arjuna.utils.Utility.getProcessUid();
-	    
+
 	    // Create a Uid for the new RecoveryCoordinator
 	    Uid RCUid = new Uid();
 
@@ -137,7 +137,7 @@ public static void register(RcvCoManager theManager)
 
     /**
      * The RC instance is not longer needed by the application. This is a null-op
-     * for orb environments that do not actually create RC objects in the original 
+     * for orb environments that do not actually create RC objects in the original
      * process.
      */
 public void destroy (RecoveryCoordinator rc) throws SystemException
@@ -148,7 +148,7 @@ public void destroy (RecoveryCoordinator rc) throws SystemException
 
     /**
      * Destroy all RC instances for the transactions identified in params.
-     * This is a null-op for orb environments that do not actually create 
+     * This is a null-op for orb environments that do not actually create
      * RC objects in the original process.
      */
 public void destroyAll (Object[] params) throws SystemException
@@ -158,7 +158,7 @@ public void destroyAll (Object[] params) throws SystemException
     }
 
     /**
-     * Get the service name. This ties the recoverycoordinators whose IOR's 
+     * Get the service name. This ties the recoverycoordinators whose IOR's
      * are created here with the RecoveryManager that will recreate them
      * in recovery.
      */
@@ -178,5 +178,5 @@ private RcvCoManager _orbSpecificManager;
 private static final char   _RecCoordServiceObjKeyDelimiter = '*';
 private static final String _RecCoordServiceBaseName = "RecCoService_";
 
-    
+
 };

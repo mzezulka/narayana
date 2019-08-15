@@ -45,11 +45,11 @@ public class StartStopUnitTest
     {
         StartupOTS start = new StartupOTS();
         ShutdownOTS shutdown = new ShutdownOTS();
-        
+
         try
         {
             shutdown.work();
- 
+
             fail();
         }
         catch (final Throwable ex)

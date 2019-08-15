@@ -33,8 +33,8 @@ import com.arjuna.ats.jta.logging.jtaLogger;
  */
 public class SubordinationManager
 {
-    public enum TxType { JTA, JTS }    
-    
+    public enum TxType { JTA, JTS }
+
     private static TransactionImporter transactionImporter = null;
     private static XATerminator xaTerminator = null;
     private static TxType txType;
@@ -45,7 +45,7 @@ public class SubordinationManager
         {
             initTransactionImporter();
         }
-        
+
         return transactionImporter;
     }
 
@@ -55,7 +55,7 @@ public class SubordinationManager
         {
             initXATerminator();
         }
-        
+
         return xaTerminator;
     }
 
@@ -69,12 +69,12 @@ public class SubordinationManager
 		if (jtaLogger.logger.isTraceEnabled()) {
             jtaLogger.logger.trace("SubordinationManager.setTxType(" + txType + ")");
         }
-        
+
         if(SubordinationManager.txType != null && SubordinationManager.txType != txType)
         {
             throw new IllegalStateException("SubordinationManager can't change txType once it has been set.");
         }
-        
+
         SubordinationManager.txType = txType;
     }
 
@@ -83,7 +83,7 @@ public class SubordinationManager
         if(txType == null) {
             setTxType( guessTxType() );
         }
-        
+
         if(txType == TxType.JTA)
         {
             // we are running in JTA mode
@@ -104,7 +104,7 @@ public class SubordinationManager
             }
         }
     }
-    
+
     private static void initXATerminator()
     {
         if(txType == null) {
@@ -112,7 +112,7 @@ public class SubordinationManager
         }
 
         TransactionManager tm = com.arjuna.ats.jta.TransactionManager.transactionManager();
-        
+
         if(txType == TxType.JTA)
         {
             // we are running in JTA mode
@@ -138,12 +138,12 @@ public class SubordinationManager
      * Its rather tricky to figure out if we are running in JTA or JTAX(JTS) mode. We can make a reasonable guess
      * based on the transaction manager implementation that is running, but it's going to break if some unknown
      * or derived impl comes along. It's therefore safer to use setTxType explicitly in such cases.
-     * 
+     *
      * @return best guess at the currently configured TxType.
      */
     private static TxType guessTxType() {
         TransactionManager tm = com.arjuna.ats.jta.TransactionManager.transactionManager();
-        
+
         if(tm instanceof com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionManagerImple)
         {
             return TxType.JTA;

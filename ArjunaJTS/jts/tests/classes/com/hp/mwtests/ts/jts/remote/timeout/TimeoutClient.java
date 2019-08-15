@@ -50,7 +50,7 @@ public class TimeoutClient
 {
 	static int timeout = 8;
 	static int mfactor = arjPropertyManager.getCoreEnvironmentBean().getTimeoutFactor();
-	
+
     public static void main(String[] args) throws Exception
     {
         ORB myORB = null;
@@ -75,7 +75,7 @@ public class TimeoutClient
 
             current.begin();
             current.begin();
-            
+
             long startTime = System.currentTimeMillis();
 
             try
@@ -111,7 +111,7 @@ public class TimeoutClient
             	long timeNow = System.currentTimeMillis();
             	long setTime = (timeNow - startTime);
             	long timeoutTime = (timeout * 1000L * mfactor);
-            	long sleepTime =  timeoutTime - setTime; 
+            	long sleepTime =  timeoutTime - setTime;
             	if (sleepTime > 0) {
             		System.out.println("Now sleeping for " + sleepTime*mfactor + " milliseconds.");
 

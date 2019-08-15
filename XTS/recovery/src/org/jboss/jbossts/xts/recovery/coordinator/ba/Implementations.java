@@ -42,7 +42,7 @@ class ParticipantRecordMap implements RecordTypeMap
     {
         return ParticipantRecord.class;
     }
-    
+
     public int getType ()
     {
         return RecordType.XTS_WSBA_RECORD;
@@ -58,7 +58,7 @@ public class Implementations {
         if (!_added)
         {
             RecordTypeManager.manager().add(new ParticipantRecordMap());
-            
+
             _added = true;
         }
     }

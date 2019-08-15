@@ -40,11 +40,11 @@ public class LastResourceUnitTest
     public void test ()
     {
         LastResourceRecord cr = new LastResourceRecord(null); // force errors!
-        
+
         assertFalse(cr.propagateOnAbort());
         assertFalse(cr.propagateOnCommit());
         assertEquals(cr.typeIs(), RecordType.LASTRESOURCE);
-        
+
         assertTrue(cr.type() != null);
         assertFalse(cr.doSave());
 
@@ -52,37 +52,37 @@ public class LastResourceUnitTest
         assertEquals(cr.nestedAbort(), TwoPhaseOutcome.FINISH_OK);
 
         cr = new LastResourceRecord(null);
-        
+
         assertEquals(cr.nestedPrepare(), TwoPhaseOutcome.PREPARE_NOTOK);
         assertEquals(cr.nestedCommit(), TwoPhaseOutcome.FINISH_ERROR);
-        
+
         cr = new LastResourceRecord(null);
-        
+
         assertEquals(cr.topLevelPrepare(), TwoPhaseOutcome.PREPARE_NOTOK);
         assertEquals(cr.topLevelAbort(), TwoPhaseOutcome.FINISH_OK);
- 
+
         cr = new LastResourceRecord(null);
-        
+
         assertEquals(cr.topLevelPrepare(), TwoPhaseOutcome.PREPARE_NOTOK);
         assertEquals(cr.topLevelCommit(), TwoPhaseOutcome.FINISH_OK);
-        
+
         cr = new LastResourceRecord(null);
-        
+
         assertEquals(cr.topLevelPrepare(), TwoPhaseOutcome.PREPARE_NOTOK);
         assertEquals(cr.topLevelAbort(), TwoPhaseOutcome.FINISH_OK);
 
         cr.print(new PrintWriter(new ByteArrayOutputStream()));
-        
+
         assertEquals(cr.value(), null);
         cr.setValue(null);
-        
+
         assertFalse(cr.shouldAdd(new PersistenceRecord()));
         assertFalse(cr.shouldAlter(new PersistenceRecord()));
         assertFalse(cr.shouldMerge(new PersistenceRecord()));
         assertFalse(cr.shouldReplace(new PersistenceRecord()));
-        
+
         cr = new LastResourceRecord();
-        
+
         cr.merge(new PersistenceRecord());
         cr.alter(new PersistenceRecord());
     }

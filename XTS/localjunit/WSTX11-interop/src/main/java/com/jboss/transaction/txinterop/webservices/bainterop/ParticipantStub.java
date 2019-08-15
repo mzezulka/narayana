@@ -39,7 +39,7 @@ public interface ParticipantStub
      */
     public void cancel(final String serviceURI, final CoordinationContextType coordinationContext)
         throws SoapFault, IOException ;
-    
+
     /**
      * Send a exit request.
      * @param serviceURI The target service URI.
@@ -49,7 +49,7 @@ public interface ParticipantStub
      */
     public void exit(final String serviceURI, final CoordinationContextType coordinationContext)
         throws SoapFault, IOException ;
-    
+
     /**
      * Send a fail request.
      * @param serviceURI The target service URI.
@@ -59,7 +59,7 @@ public interface ParticipantStub
      */
     public void fail(final String serviceURI, final CoordinationContextType coordinationContext)
         throws SoapFault, IOException ;
-    
+
     /**
      * Send a cannotComplete request.
      * @param serviceURI The target service URI.
@@ -69,7 +69,7 @@ public interface ParticipantStub
      */
     public void cannotComplete(final String serviceURI, final CoordinationContextType coordinationContext)
         throws SoapFault, IOException ;
-    
+
     /**
      * Send a participantCompleteClose request.
      * @param serviceURI The target service URI.
@@ -79,7 +79,7 @@ public interface ParticipantStub
      */
     public void participantCompleteClose(final String serviceURI, final CoordinationContextType coordinationContext)
         throws SoapFault, IOException ;
-    
+
     /**
      * Send a coordinatorCompleteClose request.
      * @param serviceURI The target service URI.
@@ -89,7 +89,7 @@ public interface ParticipantStub
      */
     public void coordinatorCompleteClose(final String serviceURI, final CoordinationContextType coordinationContext)
         throws SoapFault, IOException ;
-    
+
     /**
      * Send a unsolicitedComplete request.
      * @param serviceURI The target service URI.
@@ -99,7 +99,7 @@ public interface ParticipantStub
      */
     public void unsolicitedComplete(final String serviceURI, final CoordinationContextType coordinationContext)
         throws SoapFault, IOException ;
-    
+
     /**
      * Send a compensate request.
      * @param serviceURI The target service URI.
@@ -109,7 +109,7 @@ public interface ParticipantStub
      */
     public void compensate(final String serviceURI, final CoordinationContextType coordinationContext)
         throws SoapFault, IOException ;
-    
+
     /**
      * Send a compensationFail request.
      * @param serviceURI The target service URI.
@@ -119,7 +119,7 @@ public interface ParticipantStub
      */
     public void compensationFail(final String serviceURI, final CoordinationContextType coordinationContext)
         throws SoapFault, IOException ;
-    
+
     /**
      * Send a participantCancelCompletedRace request.
      * @param serviceURI The target service URI.
@@ -129,7 +129,7 @@ public interface ParticipantStub
      */
     public void participantCancelCompletedRace(final String serviceURI, final CoordinationContextType coordinationContext)
         throws SoapFault, IOException ;
-    
+
     /**
      * Send a messageLossAndRecovery request.
      * @param serviceURI The target service URI.
@@ -139,7 +139,7 @@ public interface ParticipantStub
      */
     public void messageLossAndRecovery(final String serviceURI, final CoordinationContextType coordinationContext)
         throws SoapFault, IOException ;
-    
+
     /**
      * Send a mixedOutcome request.
      * @param serviceURI The target service URI.

@@ -104,12 +104,12 @@ public class BaseCrashTest
             if(contentDir.exists())
             {
                 File[] files = contentDir.listFiles();
-                if(files != null) 
+                if(files != null)
                 {
                     int i = 0;
-                    for(i=0;i<files.length;i++) 
+                    for(i=0;i<files.length;i++)
                     {
-                        if(files[i].isDirectory()) 
+                        if(files[i].isDirectory())
                         {
                             deleteDirectory(files[i]);
                             System.out.println("remove " + files[i].getPath());
@@ -117,10 +117,10 @@ public class BaseCrashTest
                     }
                 }
             }
-            
+
             File exampleXTSconfig = new File(jbossHome + File.separator + "docs" + File.separator + "examples" + File.separator + "configs" + File.separator + "standalone-xts.xml");
             File XTSconfig = new File(jbossHome + File.separator + "standalone" + File.separator + "configuration" + File.separator + "standalone-xts.xml");
-            if(exampleXTSconfig.exists()) 
+            if(exampleXTSconfig.exists())
             {
                 //copy example config to configuration directory
                 try {
@@ -129,7 +129,7 @@ public class BaseCrashTest
                     byte[] buffer = new byte[1024];
 
                     int length;
-                    //copy the file content in bytes 
+                    //copy the file content in bytes
                     while ((length = in.read(buffer)) > 0)
                     {
                         out.write(buffer, 0, length);
@@ -144,7 +144,7 @@ public class BaseCrashTest
                 {
                     Assert.fail("copy " + exampleXTSconfig.getPath() + " fail with " + e);
                 }
-            } 
+            }
             else
             {
                 Assert.fail(exampleXTSconfig.getPath() + " not exists");
@@ -154,7 +154,7 @@ public class BaseCrashTest
 
     @After
     public void tearDown()
-    {     
+    {
         String log = "target/log";
 
         String jbossHome = System.getenv().get("JBOSS_HOME");
@@ -218,7 +218,7 @@ public class BaseCrashTest
         logger.info("Test completed, server should be down: " + scriptName + ":" + testName);
     }
 
-    private boolean deleteDirectory(File path) 
+    private boolean deleteDirectory(File path)
     {
         if (path.exists())
         {
@@ -238,8 +238,8 @@ public class BaseCrashTest
         return (path.delete());
     }
 
-    private boolean checkTxObjectStore(File objectStore) 
-    {    
+    private boolean checkTxObjectStore(File objectStore)
+    {
         if(objectStore.exists() && objectStore.isDirectory())
         {
             File[] files = objectStore.listFiles();

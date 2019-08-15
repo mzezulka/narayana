@@ -1,20 +1,20 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors 
- * as indicated by the @author tags. 
+ * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * as indicated by the @author tags.
  * See the copyright.txt in the distribution for a
- * full listing of individual contributors. 
+ * full listing of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
  * of the GNU Lesser General Public License, v. 2.1.
- * This program is distributed in the hope that it will be useful, but WITHOUT A 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT A
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
  * You should have received a copy of the GNU Lesser General Public License,
  * v.2.1 along with this distribution; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Arjuna Solutions Limited,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.  
+ * UK.
  *
  * $Id: LockRecord.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -46,10 +46,10 @@ import com.arjuna.ats.internal.txoj.abstractrecords.LockRecord;
 /*
  * Optimistic cc in operation. Grab a copy of the current state so we can check against
  * the state again when we commit.
- * 
+ *
  * During commit we check the current state on disk against what we had initially. If they
  * are not identical then we force the transaction to abort.
- * 
+ *
  * Note, this can mean that multiple transactions may have committed during the interim but as
  * long as they keep the state the same then we are ok.
  */
@@ -68,15 +68,15 @@ class OptimisticLockRecord extends LockRecord
         {
             _state = null;
         }
-        
+
 	_status = lm.status();
 	_check = check;
     }
-    
+
     public OptimisticLockRecord (OptimisticLockManager lm, boolean rdOnly, BasicAction currAct, boolean check)
     {
         super(lm, rdOnly, currAct);
-	
+
         try
         {
             _state = lm.getStore().read_committed(lm.get_uid(), lm.type());
@@ -85,7 +85,7 @@ class OptimisticLockRecord extends LockRecord
         {
             _state = null;
         }
-        
+
 	_status = lm.status();
 	_check = check;
     }
@@ -94,20 +94,20 @@ class OptimisticLockRecord extends LockRecord
     {
         return RecordType.USER_DEF_FIRST0;
     }
-    
+
     public int nestedAbort ()
     {
         if (txojLogger.logger.isTraceEnabled())
         {
             txojLogger.logger.trace("OptimisticLockRecord::nestedAbort() for "+order());
         }
-        
+
 	/*
 	 * Optimistic cc means we just throw away the state.
 	 */
 
 	_state = null;
-	
+
 	return super.nestedAbort();
     }
 
@@ -117,24 +117,24 @@ class OptimisticLockRecord extends LockRecord
         {
             txojLogger.logger.trace("OptimisticLockRecord::nestedPrepare() for "+order());
         }
-        
+
 	if (value() == null)
             return TwoPhaseOutcome.PREPARE_NOTOK;
-	
+
 	if (checkState())
 	    return super.topLevelPrepare();
 	else
 	{
 	    txojLogger.i18NLogger.warn_OptimisticLockRecord_1((LockManager) value());
-	    
+
 	    return TwoPhaseOutcome.PREPARE_NOTOK;
 	}
     }
-    
+
     public int topLevelCommit ()
-    {       
+    {
         boolean stateOK = checkState();
-        
+
         if (!stateOK)
         {
             txojLogger.i18NLogger.warn_OptimisticLockRecord_2((LockManager) value());
@@ -150,12 +150,12 @@ class OptimisticLockRecord extends LockRecord
     {
 	return "/StateManager/AbstractRecord/LockRecord/OptimisticLockRecord";
     }
-    
+
     public String toString ()
     {
         return _myUid.stringForm();
     }
-    
+
     protected OptimisticLockRecord ()
     {
 	super();
@@ -168,16 +168,16 @@ class OptimisticLockRecord extends LockRecord
 
         if (_state == null)
             return false;
-        
+
         /*
          * If the object is recoverable then we can just check the local state.
          * If the object is persistent then we have to check the state on disk.
          */
-        
+
         OutputObjectState tempState = new OutputObjectState();
         OptimisticLockManager man = (OptimisticLockManager) value();
         int objectType = man.objectType();
-        
+
         synchronized (man)
         {
             /*
@@ -186,49 +186,49 @@ class OptimisticLockRecord extends LockRecord
              * suffer heuristic by checking during commit - though this still leaves a window
              * of vulnerability.
              */
-            
+
             /*
              * Assume initially that this will only work if the objects are all in the same
              * address space, since sharing across spaces will impose performance overhead
              * anyway. In that case, we can maintain a list of all objects that are being
              * managed optimistically and check them directly as well as lock them.
-             * 
+             *
              * Problem is that it's the state that needs to be checked and there may be
              * multiple instances of the state active in memory at the same time. So would
              * need to keep each instance per Uid.
              */
-            
+
             /*
              * Could even make this specific to STM and in which case we have even more control.
              */
-    
+
             if (objectType == ObjectType.RECOVERABLE)
             {
                 if (man.save_state(tempState, objectType))
                 {
                     boolean identical = true;
-                    
+
                     if (tempState.length() == _state.length())
                     {
                         for (int i = 0; (i < tempState.length()) && identical; i++)
-                        {   
+                        {
                             if (tempState.buffer()[i] != _state.buffer()[i])
                                 identical = false;
                         }
-                        
+
                         if (identical)
                             return true;
                     }
                 }
             }
-            
+
             if (objectType == ObjectType.ANDPERSISTENT)
             {
                 /*
                  * Don't need the state - could just check the time of the file update if we are using
                  * a file based object store.
                  */
-                
+
                 try
                 {
                     InputObjectState s = man.getStore().read_committed(man.get_uid(), man.type());
@@ -244,7 +244,7 @@ class OptimisticLockRecord extends LockRecord
                                 if (s.buffer()[i] != _state.buffer()[i])
                                     identical = false;
                             }
-                            
+
                             if (identical)
                                 return true;
                         }
@@ -260,7 +260,7 @@ class OptimisticLockRecord extends LockRecord
                 }
             }
         }
-        
+
         return false;
     }
 
@@ -273,13 +273,13 @@ class OptimisticLockRecord extends LockRecord
                 if (!((OptimisticLockRecord) ar)._check && _check)
                     return true;
             }
-            
+
             return false;
         }
         else
             return true;
     }
-    
+
     private InputObjectState _state = new InputObjectState();
     private int _status = ObjectStatus.ACTIVE_NEW;
     private boolean _check = true;

@@ -37,17 +37,17 @@ public class HeuristicNotificationUnitTest
     {
         AtomicAction A = new AtomicAction();
         DummyHeuristic dh = new DummyHeuristic();
-        
+
         A.begin();
-        
+
         A.add(new BasicRecord());
         A.add(new BasicRecord());
         A.add(new HeuristicRecord());
-        
+
         A.addSynchronization(dh);
-        
+
         A.commit(false);
-        
+
         assertEquals(TwoPhaseOutcome.HEURISTIC_MIXED, dh.getStatus());
     }
 }

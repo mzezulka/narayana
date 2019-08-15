@@ -48,7 +48,7 @@ import com.arjuna.ats.arjuna.utils.Utility;
 
 /**
  * Implements a unique identity class. Since 4.9 each instance is immutable.
- * 
+ *
  * @author Mark Little (mark@arjuna.com)
  * @version $Id: Uid.java 2342 2006-03-30 13:06:17Z $
  * @since 1.0.
@@ -108,23 +108,23 @@ public class Uid implements Cloneable, Serializable
     {
         if (byteForm == null)
             throw new IllegalArgumentException();
-        
+
         hostAddr = new long[2];
         _hashValue = -1;
         _stringForm = null;
         _byteForm = null;
-        
+
         try
         {
             ByteArrayInputStream ba = new ByteArrayInputStream(byteForm);
             DataInputStream ds = new DataInputStream(ba);
-            
+
             hostAddr[0] = ds.readLong();
             hostAddr[1] = ds.readLong();
             process = ds.readInt();
             sec = ds.readInt();
             other = ds.readInt();
-            
+
             _valid = true;
         }
         catch (final Throwable ex) {
@@ -132,10 +132,10 @@ public class Uid implements Cloneable, Serializable
 
             _valid = false;
         }
-        
+
         generateHash();
     }
-    
+
     /**
      * Create Uid from string representation. If the string does not represent a
      * valid Uid then the instance will be set to nullUid.
@@ -155,7 +155,7 @@ public class Uid implements Cloneable, Serializable
     {
         if (uidString == null)
             throw new IllegalArgumentException();
-        
+
         char theBreakChar = Uid.getBreakChar(uidString);
 
         hostAddr = new long[2];
@@ -166,7 +166,7 @@ public class Uid implements Cloneable, Serializable
         _valid = false;
         _stringForm = null;
         _byteForm = null;
-        
+
         if (uidString.length() > 0)
         {
             int startIndex = 0;
@@ -251,9 +251,9 @@ public class Uid implements Cloneable, Serializable
                      * We do this so the instance is printable, but
                      * it shouldn't be usable from here on in!
                      */
-                    
+
                     this.copy(Uid.nullUid());
-                    
+
                     _valid = false;
                 }
                 catch (Exception e)
@@ -344,26 +344,26 @@ public class Uid implements Cloneable, Serializable
                 + Utility.intToHexString(sec) + Uid.fileBreakChar
                 + Utility.intToHexString(other);
     }
-    
+
     /**
      * Get the byte representation of the Uid. Useful for packing and creating other
      * representations of transaction ids.
-     * 
+     *
      * @return the byte array. Cached once created.
      */
-    
+
     public byte[] getBytes ()
     {
         /*
          * We should only really be doing this once, so overhead should
          * be negligible.
          */
-        
+
         if (_byteForm == null)
         {
             ByteArrayOutputStream ba = new ByteArrayOutputStream(UID_SIZE);
             DataOutputStream ds = new DataOutputStream(ba);
-            
+
             try
             {
                 ds.writeLong(hostAddr[0]);
@@ -372,7 +372,7 @@ public class Uid implements Cloneable, Serializable
                 ds.writeInt(sec);
                 ds.writeInt(other);
                 //_byteForm = stringForm().getBytes(StandardCharsets.UTF_8);
-                
+
                 _byteForm = ba.toByteArray();
             }
             catch (final Throwable ex) {
@@ -623,9 +623,9 @@ public class Uid implements Cloneable, Serializable
         try
         {
             in.defaultReadObject();
-        	
+
             hostAddr = new long[2];
-            
+
             hostAddr[0] = in.readLong();
             hostAddr[1] = in.readLong();
             process = in.readInt();
@@ -740,7 +740,7 @@ public class Uid implements Cloneable, Serializable
     private volatile boolean _valid;
 
     private volatile String _stringForm;
-    
+
     private volatile byte[] _byteForm;
 
     private static final AtomicInteger uidsCreated = new AtomicInteger();

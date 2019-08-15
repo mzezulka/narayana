@@ -1,20 +1,20 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors 
- * as indicated by the @author tags. 
+ * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * as indicated by the @author tags.
  * See the copyright.txt in the distribution for a
- * full listing of individual contributors. 
+ * full listing of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
  * of the GNU Lesser General Public License, v. 2.1.
- * This program is distributed in the hope that it will be useful, but WITHOUT A 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT A
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
  * You should have received a copy of the GNU Lesser General Public License,
  * v.2.1 along with this distribution; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Arjuna Solutions Limited,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.  
+ * UK.
  *
  * $Id: OutputObjectState.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -58,20 +58,20 @@ public OutputObjectState ()
 	if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("OutputObjectState::OutputObjectState()");
     }
-	
+
 	bufferUid = new Uid();
 	super._valid = bufferUid.valid();
-	
+
 	imageType = null;
     }
-    
+
 public OutputObjectState (OutputObjectState copyFrom)
     {
 	/*
 	 * Don't use byte[] constructor as buffer is already
 	 * initialised.
 	 */
-	
+
 	super(copyFrom);
 
 	if (tsLogger.logger.isTraceEnabled()) {
@@ -82,7 +82,7 @@ public OutputObjectState (OutputObjectState copyFrom)
 	{
 	    bufferUid = new Uid(copyFrom.bufferUid);
 	    super._valid = bufferUid.valid();
-	
+
 	    imageType = new String(copyFrom.imageType);
 	}
 	catch (Exception ex)
@@ -111,7 +111,7 @@ public OutputObjectState (InputObjectState copyFrom)
 	    super._valid = false;
 	}
     }
-    
+
 public OutputObjectState (Uid newUid, String tName)
     {
 	if (tsLogger.logger.isTraceEnabled()) {
@@ -120,7 +120,7 @@ public OutputObjectState (Uid newUid, String tName)
 
 	bufferUid = new Uid(newUid);
 	super._valid = bufferUid.valid();
-	
+
 	imageType = (tName == null ? null : new String(tName));
     }
 
@@ -134,7 +134,7 @@ public OutputObjectState (Uid newUid, String tName, byte[] buffer)
 
 	bufferUid = new Uid(newUid);
 	super._valid = super._valid && bufferUid.valid();
-	
+
 	imageType = (tName == null ? null : new String(tName));
     }
 
@@ -161,7 +161,7 @@ public final String type ()
 public void print (PrintWriter strm)
     {
 	strm.println("OutputObjectState Uid   : "+bufferUid+"\n");
-	
+
 	if (imageType != null)
 	    strm.println("OutputObjectState Type  : "+imageType+"\n");
 	else
@@ -176,7 +176,7 @@ public void print (PrintWriter strm)
     public String toString ()
     {
 	String val = "OutputObjectState Uid   : "+bufferUid+"\n";
-	
+
 	if (imageType != null)
 	    val += "OutputObjectState Type  : "+imageType+"\n";
 	else
@@ -192,15 +192,15 @@ public synchronized void copy (OutputObjectState objstate)
     {
         if (tsLogger.logger.isTraceEnabled())
             tsLogger.logger.trace("OutputObjectState::copy for " + bufferUid);
-	
+
 	super.copy(objstate);
 
 	bufferUid = new Uid(objstate.bufferUid);
 	super._valid = bufferUid.valid();
-	
+
 	imageType = (objstate.imageType == null ? null : new String(objstate.imageType));
     }
-    
+
 public synchronized void packInto (OutputBuffer buff) throws IOException
     {
 	buff.packString(imageType);

@@ -44,7 +44,7 @@ public class TestRunner
      * The log message suffix.
      */
     private static final String LOG_MESSAGE_SUFFIX = "</log:log>";
-    
+
     /**
      * The AT test class.
      */
@@ -53,7 +53,7 @@ public class TestRunner
      * The BA test class.
      */
     private static final Class BA_TEST_CLASS = BATestCase.class ;
-    
+
     /**
      * Execute the specific test against the specified participant.
      * @param participantURI The URI of the participant.
@@ -118,7 +118,7 @@ public class TestRunner
         MessageLogging.appendThreadLog(LOG_MESSAGE_SUFFIX) ;
         return testResult ;
     }
-    
+
     /**
      * Create the test instance.
      * @param testClass The test class name.
@@ -138,9 +138,9 @@ public class TestRunner
         if (testObject instanceof InteropTestCase)
         {
             final InteropTestCase interopTestCase = (InteropTestCase)testObject ;
-            interopTestCase.setParticipantURI(participantURI) ; 
-            interopTestCase.setTestTimeout(testTimeout) ; 
-            interopTestCase.setAsyncTest(asyncTest) ; 
+            interopTestCase.setParticipantURI(participantURI) ;
+            interopTestCase.setTestTimeout(testTimeout) ;
+            interopTestCase.setAsyncTest(asyncTest) ;
             interopTestCase.setName(testName) ;
             return interopTestCase ;
         }

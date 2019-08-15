@@ -59,7 +59,7 @@ import com.arjuna.ats.jts.utils.Utility;
  * re-activate the state of a root (non-interposed) transaction that did not
  * terminate correctly due to failure.
  * <P>
- * 
+ *
  * @author Dave Ingham (dave@arjuna.com)
  * @version $Id: RecoveredTransaction.java 2342 2006-03-30 13:06:17Z $
  */
@@ -285,7 +285,7 @@ public class RecoveredTransaction extends ArjunaTransactionImple implements
     public boolean assumeComplete ()
     {
     	final int heuristicDecision = getHeuristicDecision();
-    	
+
     	if (heuristicDecision == TwoPhaseOutcome.HEURISTIC_COMMIT
     			|| heuristicDecision == TwoPhaseOutcome.HEURISTIC_HAZARD
     			|| heuristicDecision == TwoPhaseOutcome.HEURISTIC_MIXED
@@ -293,16 +293,16 @@ public class RecoveredTransaction extends ArjunaTransactionImple implements
 
     		_typeName = AssumedCompleteHeuristicTransaction.typeName();
     	} else {
-    	    _typeName = AssumedCompleteTransaction.typeName();    	    
+    	    _typeName = AssumedCompleteTransaction.typeName();
     	}
-	
+
         return true;
     }
 
     /**
      * Override StateManager packHeader so it gets the original processUid, not
      * this process's
-     * 
+     *
      * @since JTS 2.1.
      */
 
@@ -320,7 +320,7 @@ public class RecoveredTransaction extends ArjunaTransactionImple implements
     /**
      * Override StateManager's unpackHeader to save the processUid of the
      * original process
-     * 
+     *
      * @since JTS 2.1.
      */
 
@@ -328,7 +328,7 @@ public class RecoveredTransaction extends ArjunaTransactionImple implements
             throws IOException
     {
         super.unpackHeader(os, hdr);
-        
+
         _originalProcessUid = hdr.getProcessId();
     }
 

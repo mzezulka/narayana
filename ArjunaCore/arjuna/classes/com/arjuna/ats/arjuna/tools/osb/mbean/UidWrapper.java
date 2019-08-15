@@ -37,7 +37,7 @@ import com.arjuna.ats.arjuna.logging.tsLogger;
  * @author Mike Musgrove
  */
 /**
- * @deprecated as of 5.0.5.Final In a subsequent release we will change packages names in order to 
+ * @deprecated as of 5.0.5.Final In a subsequent release we will change packages names in order to
  * provide a better separation between public and internal classes.
  */
 @Deprecated // in order to provide a better separation between public and internal classes.
@@ -89,7 +89,7 @@ public class UidWrapper {
 
     /**
      * Refresh the management view of the whole ObjectStore
-     * @throws MBeanException 
+     * @throws MBeanException
      */
 	public void probe() throws MBeanException {
 		if (browser != null)
@@ -196,7 +196,7 @@ public class UidWrapper {
 			mbean = constructor.newInstance(this);
 		} catch (Throwable e) { // ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException
 			tsLogger.i18NLogger.warn_osb_MBeanCtorFail(e);
-			mbean = new OSEntryBean(this);           
+			mbean = new OSEntryBean(this);
         }
 
 		mbean.activate();

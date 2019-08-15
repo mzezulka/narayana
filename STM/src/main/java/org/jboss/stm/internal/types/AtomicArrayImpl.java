@@ -1,20 +1,20 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2009, JBoss Inc., and others contributors as indicated 
- * by the @authors tag. All rights reserved. 
+ * Copyright 2009, JBoss Inc., and others contributors as indicated
+ * by the @authors tag. All rights reserved.
  * See the copyright.txt in the distribution for a
- * full listing of individual contributors. 
+ * full listing of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
  * of the GNU Lesser General Public License, v. 2.1.
- * This program is distributed in the hope that it will be useful, but WITHOUT A 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT A
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
  * You should have received a copy of the GNU Lesser General Public License,
  * v.2.1 along with this distribution; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2009,
  * @author mark.little@jboss.com
  */
@@ -48,21 +48,21 @@ import com.arjuna.ats.internal.arjuna.common.UidHelper;
 public class AtomicArrayImpl<E> implements AtomicArray<E>
 {
     public static final int DEFAULT_SIZE = 10;
-    
+
     public AtomicArrayImpl ()
     {
         this(DEFAULT_SIZE);
     }
-    
+
     public AtomicArrayImpl (int size)
     {
         _size = size;
         _array = new ArrayList<E>(size);
-        
+
         for (int i = 0; i < _size; i++)
             _array.add(i, null);
     }
-    
+
     @WriteLock
     public synchronized void empty ()
     {
@@ -87,10 +87,10 @@ public class AtomicArrayImpl<E> implements AtomicArray<E>
         if (basicType(val))
             _array.set(index, val);
         else
-        {   
+        {
             if (_container == null)
                 _container = new RecoverableContainer<E>();
-            
+
             _array.set(index, _container.enlist(val));
         }
     }
@@ -100,15 +100,15 @@ public class AtomicArrayImpl<E> implements AtomicArray<E>
     {
         return _array.size();
     }
-   
+
     @SaveState
     public void save_state (OutputObjectState os) throws IOException
     {
         if (_type == null)
             _type = _array.get(0).getClass();
-        
+
        os.packInt(_size);
-       
+
        for (int i = 0; i < _array.size(); i++)
        {
            Object inst = _array.get(i);
@@ -132,20 +132,20 @@ public class AtomicArrayImpl<E> implements AtomicArray<E>
            else if (_type.equals(String.class))
                os.packString((String) inst);
            else
-           {   
+           {
                if (inst == null)
                    os.packBoolean(false);
                else
                {
                    os.packBoolean(true);
-                   
+
                    Uid temp = _container.getUidForHandle(_array.get(i));
-                   
+
                    /*
                     * Assume transactional object! Responsible for its own state, so we only
                     * track references.
                     */
-                   
+
                    try
                    {
                        UidHelper.packInto(temp, os);
@@ -158,22 +158,22 @@ public class AtomicArrayImpl<E> implements AtomicArray<E>
            }
        }
     }
-    
+
     @SuppressWarnings("unchecked")
     @RestoreState
     public void restore_state (InputObjectState os) throws IOException
     {
         _size = os.unpackInt();
         _array = new ArrayList<E>(_size);
-        
+
         for (int i = 0; i < _size; i++)
             _array.add(i, null);
-        
+
         for (int i = 0; i < _size; i++)
             _array.add(i, null);
-        
+
         for (int i = 0; i < _size; i++)
-        {   
+        {
             if (_type.equals(Boolean.class))
                 _array.set(i, (E) ((Boolean) os.unpackBoolean()));
             else if (_type.equals(Byte.class))
@@ -195,7 +195,7 @@ public class AtomicArrayImpl<E> implements AtomicArray<E>
             else
             {
                 boolean ptr = os.unpackBoolean();
-                
+
                 if (!ptr)
                     _array.set(i, null);
                 else
@@ -204,11 +204,11 @@ public class AtomicArrayImpl<E> implements AtomicArray<E>
                      * Assume transactional object! Responsible for its own state, so we only
                      * track references.
                      */
-                    
+
                     try
                     {
                         Uid temp = UidHelper.unpackFrom(os);
-                        
+
                         _array.set(i, _container.getHandle(temp));
                     }
                     catch (final Exception ex)
@@ -219,12 +219,12 @@ public class AtomicArrayImpl<E> implements AtomicArray<E>
             }
         }
     }
-    
+
     private boolean basicType (E val)
     {
         if (_type == null)
             _type = val.getClass();
-        
+
         if (_type.equals(Boolean.class))
             return true;
         else if (_type.equals(Byte.class))

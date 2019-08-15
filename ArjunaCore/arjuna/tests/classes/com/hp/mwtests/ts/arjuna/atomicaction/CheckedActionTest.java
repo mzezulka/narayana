@@ -54,7 +54,7 @@ public class CheckedActionTest
         assertTrue(DummyCheckedAction.factoryCalled());
         assertFalse(DummyCheckedAction.called());
     }
-    
+
     @Test
     public void testCheckedAction ()
     {
@@ -64,14 +64,14 @@ public class CheckedActionTest
         assertFalse(DummyCheckedAction.called());
 
         AtomicAction A = new AtomicAction();
-        
+
         A.begin();
-        
+
         /*
          * CheckedAction only called if there are multiple
          * threads active in the transaction. Simulate this.
          */
-        
+
         A.addChildThread(new Thread());
 
         A.commit();
@@ -79,7 +79,7 @@ public class CheckedActionTest
         assertTrue(DummyCheckedAction.factoryCalled());
         assertTrue(DummyCheckedAction.called());
     }
-    
+
 
 	private int factory1Called = 0;
 	private int factory2Called = 0;

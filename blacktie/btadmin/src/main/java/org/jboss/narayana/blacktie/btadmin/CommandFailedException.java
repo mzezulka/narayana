@@ -30,7 +30,7 @@ public class CommandFailedException extends Exception {
 
     /**
      * Create the exception with an exit code
-     * 
+     *
      * @param exitCode The exit code
      */
     public CommandFailedException(int exitCode) {
@@ -39,7 +39,7 @@ public class CommandFailedException extends Exception {
 
     /**
      * Get the exit code of the command.
-     * 
+     *
      * @return
      */
     public int getExitCode() {

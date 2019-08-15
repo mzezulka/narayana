@@ -94,7 +94,7 @@ public class ORB
     {
         _theORB.shutdown(waitForCompletion);
     }
-    
+
     public void shutdown () throws SystemException
     {
         _theORB.shutdown(false);

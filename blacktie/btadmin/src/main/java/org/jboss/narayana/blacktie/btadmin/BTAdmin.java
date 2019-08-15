@@ -31,7 +31,7 @@ import org.jboss.narayana.blacktie.jatmibroker.core.conf.ConfigurationException;
 
 /**
  * Launcher for the btadmin tool.
- * 
+ *
  * @author tomjenkinson
  */
 public class BTAdmin {

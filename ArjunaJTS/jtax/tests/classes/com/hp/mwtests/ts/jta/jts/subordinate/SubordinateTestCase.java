@@ -53,7 +53,7 @@ public class SubordinateTestCase extends com.hp.mwtests.ts.jta.subordinate.Subor
 {
     // we mostly reuse the JTA version of the test class, but need to ensure correct config, orb init
     // and use of the appropriate tx impl class:
-    
+
     private ORB orb ;
     private RootOA oa ;
 
@@ -63,10 +63,10 @@ public class SubordinateTestCase extends com.hp.mwtests.ts.jta.subordinate.Subor
     {
 //        System.setProperty("com.arjuna.ats.jta.jtaTMImplementation", "com.arjuna.ats.internal.jta.transaction.jts.TransactionManagerImple");
 //        System.setProperty("com.arjuna.ats.jta.jtaUTImplementation", "com.arjuna.ats.internal.jta.transaction.jts.UserTransactionImple");
-        
+
         orb = ORB.getInstance("test");
         oa = OA.getRootOA(orb);
-        
+
         orb.initORB(new String[0], null);
         oa.initOA();
 

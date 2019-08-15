@@ -42,12 +42,12 @@ public class InitiatorClient
      * The client singleton.
      */
     private static final InitiatorClient CLIENT = new InitiatorClient() ;
-    
+
     /**
      * The response action.
      */
     private static final String responseAction = InteropConstants.INTEROP_ACTION_RESPONSE ;
-    
+
     /**
      * Construct the interop synch client.
      */

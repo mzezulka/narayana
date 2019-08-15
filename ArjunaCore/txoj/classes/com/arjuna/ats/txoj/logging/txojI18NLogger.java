@@ -220,7 +220,7 @@ public interface txojI18NLogger {
 	@Message(id = 15050, value = "OptimisticLockRecord.topLevelPrepare state check failed for {0} will force rollback.", format = MESSAGE_FORMAT)
         @LogMessage(level = WARN)
         public void warn_OptimisticLockRecord_1(LockManager man);
-	
+
 	@Message(id = 15051, value = "OptimisticLockRecord.topLevelCommit state check failed for {0} will force rollback.", format = MESSAGE_FORMAT)
 	@LogMessage(level = WARN)
 	public void warn_OptimisticLockRecord_2(LockManager man);

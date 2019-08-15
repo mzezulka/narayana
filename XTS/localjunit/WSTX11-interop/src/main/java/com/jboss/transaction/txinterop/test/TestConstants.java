@@ -74,7 +74,7 @@ public class TestConstants
      * The name of the log name attribute.
      */
     public static final String ATTRIBUTE_LOG_NAME = "logName" ;
-    
+
     /**
      * test name for all tests
      */
@@ -95,7 +95,7 @@ public class TestConstants
      * The prefix for all BA tests.
      */
     public static final String PREFIX_BA_TESTS = "testBA" ;
-    
+
     /**
      * test name for AT Scenario 1.1
      */
@@ -318,11 +318,11 @@ public class TestConstants
      * The name to description map.
      */
     public static final Map DESCRIPTIONS ;
-    
+
     static
     {
         final TreeMap descriptions = new TreeMap() ;
-        
+
         descriptions.put(NAME_TEST_AT_1_1, DESCRIPTION_TEST_AT_1_1) ;
         descriptions.put(NAME_TEST_AT_1_2, DESCRIPTION_TEST_AT_1_2) ;
         descriptions.put(NAME_TEST_AT_2_1, DESCRIPTION_TEST_AT_2_1) ;
@@ -351,7 +351,7 @@ public class TestConstants
         descriptions.put(NAME_TEST_BA_1_10, DESCRIPTION_TEST_BA_1_10) ;
         descriptions.put(NAME_TEST_BA_1_11, DESCRIPTION_TEST_BA_1_11) ;
 //        descriptions.put(NAME_TEST_BA_1_12, DESCRIPTION_TEST_BA_1_12) ;
-       
+
         DESCRIPTIONS = descriptions ;
     }
 }

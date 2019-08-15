@@ -52,7 +52,7 @@ import junit.framework.TestCase;
 
 /**
  * Unit tests for the Class class.
- * 
+ *
  * @author Mark Little
  */
 
@@ -64,7 +64,7 @@ public class OptimisticUnitTest extends TestCase
         public AtomicObject()
         {
             super(ObjectType.ANDPERSISTENT, ObjectModel.MULTIPLE);
-            
+
             state = 0;
 
             AtomicAction A = new AtomicAction();
@@ -85,11 +85,11 @@ public class OptimisticUnitTest extends TestCase
                 System.out.println("setlock error.");
             }
         }
-        
+
         public AtomicObject(Uid id, int objectModel)
         {
             super(id, objectModel);
-            
+
             state = -1;
 
             AtomicAction A = new AtomicAction();
@@ -110,7 +110,7 @@ public class OptimisticUnitTest extends TestCase
                 System.out.println("setlock error.");
             }
         }
-  
+
         /*
          * In the pessimistic locking case we use Locks to guard against concurrent
          * access. In the optimistic case we don't. However, this means that multiple
@@ -119,13 +119,13 @@ public class OptimisticUnitTest extends TestCase
          * obviously this could be finer grained. Since these are language constructs they
          * are not maintained for the duration of the transaction.
          */
-        
+
         public synchronized void incr (int value) throws Exception
         {
             AtomicAction A = new AtomicAction();
 
             A.begin();
-            
+
             /*
              * setlock will activate the state and create a checkpoint. It will also
              * add a LockRecord, which takes a snapshot of the state for later comparison.
@@ -158,11 +158,11 @@ public class OptimisticUnitTest extends TestCase
             AtomicAction A = new AtomicAction();
 
             A.begin();
-            
+
             if (setlock(new OptimisticLock(LockMode.WRITE), 0) == LockResult.GRANTED)
             {
                 state = value;
-                
+
                 if (A.commit() != ActionStatus.COMMITTED)
                     throw new Exception("Action commit error.");
                 else
@@ -180,7 +180,7 @@ public class OptimisticUnitTest extends TestCase
             int value = -1;
 
             A.begin();
-            
+
             if (setlock(new OptimisticLock(LockMode.READ), 0) == LockResult.GRANTED)
             {
                 value = state;
@@ -192,7 +192,7 @@ public class OptimisticUnitTest extends TestCase
                  * but should ignore if it is write, because modified must be called later
                  * instead which will do the registration.
                  */
-                
+
                 if (A.commit() == ActionStatus.COMMITTED)
                     return value;
                 else
@@ -256,24 +256,24 @@ public class OptimisticUnitTest extends TestCase
         {
             _obj = obj;
         }
-        
+
         public void run ()
         {
             Random rand = new Random();
-            
+
             for (int i = 0; i < 10; i++)
             {
                 boolean fault;
-                
+
                 do
                 {
                     fault = false;
-                    
+
                     AtomicAction A = new AtomicAction();
                     boolean doCommit = true;
-                    
+
                     A.begin();
-                    
+
                     try
                     {
                         _obj.incr(i);
@@ -281,11 +281,11 @@ public class OptimisticUnitTest extends TestCase
                     catch (final Throwable ex)
                     {
                         ex.printStackTrace();
-                        
+
                         doCommit = false;
                         fault = true;
                     }
-                    
+
                     if (doCommit)
                     {
                         int s = A.commit();
@@ -297,11 +297,11 @@ public class OptimisticUnitTest extends TestCase
                     }
                     else
                         A.abort();
-                    
+
                 } while (fault);
             }
         }
-        
+
         private AtomicObject _obj;
     }
 
@@ -311,23 +311,23 @@ public class OptimisticUnitTest extends TestCase
 
         AtomicObject obj = new AtomicObject();
         AtomicAction a = new AtomicAction();
-        
+
         a.begin();
-        
+
         obj.set(1234);
-        
+
         a.commit();
-        
+
         assertEquals(obj.get(), 1234);
-        
+
         a = new AtomicAction();
-        
+
         a.begin();
-        
+
         obj.incr(1);
-        
+
         a.abort();
-        
+
         assertEquals(obj.get(), 1234);
     }
 
@@ -337,17 +337,17 @@ public class OptimisticUnitTest extends TestCase
 
         AtomicObject obj = new AtomicObject();
         AtomicAction a = new AtomicAction();
-        
+
         a.begin();
-        
+
         obj.set(1234);
         obj.set(345);
-        
+
         a.commit();
-        
+
         assertEquals(obj.get(), 345);
     }
-    
+
     public void testNestedAbort () throws Exception
     {
         init();
@@ -355,22 +355,22 @@ public class OptimisticUnitTest extends TestCase
         AtomicObject obj = new AtomicObject();
         AtomicAction a = new AtomicAction();
         AtomicAction b = new AtomicAction();
-        
+
         a.begin();
-        
+
         obj.set(1234);
-        
+
         b.begin();
-        
+
         obj.set(345);
-        
+
         b.abort();
-        
+
         a.commit();
-        
+
         assertEquals(obj.get(), 1234);
     }
-    
+
     public void testNestedCommit () throws Exception
     {
         init();
@@ -378,19 +378,19 @@ public class OptimisticUnitTest extends TestCase
         AtomicObject obj = new AtomicObject();
         AtomicAction a = new AtomicAction();
         AtomicAction b = new AtomicAction();
-        
+
         a.begin();
-        
+
         obj.set(1234);
-        
+
         b.begin();
-        
+
         obj.set(345);
-        
+
         b.commit();
-        
+
         a.commit();
-        
+
         assertEquals(obj.get(), 345);
     }
 
@@ -401,19 +401,19 @@ public class OptimisticUnitTest extends TestCase
         AtomicObject obj1 = new AtomicObject();
         AtomicObject obj2 = new AtomicObject(obj1.get_uid(), ObjectModel.MULTIPLE);
         AtomicAction A = new AtomicAction();
-        
+
         A.begin();
-        
+
         obj1.set(10);
-        
+
         A.commit();
-        
+
         A = new AtomicAction();
-        
+
         A.begin();
-        
+
         assertEquals(obj2.get(), obj1.get());
-        
+
         A.commit();
     }
 
@@ -422,10 +422,10 @@ public class OptimisticUnitTest extends TestCase
         if (!_init)
         {
             StoreManager sm = new StoreManager(null, new TwoPhaseVolatileStore(new ObjectStoreEnvironmentBean()), null);
-            
+
             _init = true;
         }
     }
-    
+
     private static boolean _init = false;
 }

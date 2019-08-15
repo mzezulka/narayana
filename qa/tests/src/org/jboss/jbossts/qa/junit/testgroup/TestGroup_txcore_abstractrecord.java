@@ -65,7 +65,7 @@ public class TestGroup_txcore_abstractrecord extends TestGroupBase
 	{
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.AbstractRecord.client.Client002.class, "$(CALLS)", "10");
 	}
-    
+
 
 	@Test public void AbstractRecord_Thread_Test001()
 	{

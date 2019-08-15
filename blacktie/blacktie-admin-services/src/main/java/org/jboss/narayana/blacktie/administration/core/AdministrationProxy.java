@@ -51,11 +51,11 @@ public class AdministrationProxy implements BlacktieAdministration {
 
     public AdministrationProxy() throws ConfigurationException {
         log.debug("Administration Proxy");
-                
+
         beanServerConnection = java.lang.management.ManagementFactory.getPlatformMBeanServer();
         log.debug("Created Administration Proxy");
     }
-    
+
     public void onConstruct() throws ConfigurationException {
         log.info("onConstruct load btconfig.xml");
         XMLParser.loadProperties("btconfig.xsd", "btconfig.xml", prop);
@@ -337,7 +337,7 @@ public class AdministrationProxy implements BlacktieAdministration {
 
     public Boolean shutdown(String serverName, int id) {
         log.trace("shutdown");
-        List<String> servers = listRunningServers(); 
+        List<String> servers = listRunningServers();
         if (servers.contains(serverName)) {
             String command = "serverdone";
             boolean shutdown = false;

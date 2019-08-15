@@ -43,7 +43,7 @@ import java.util.List;
  * can be used to register participants and script their behaviour. This differs from the
  * service in the parent package only in one detail It employs a handler which checks for
  * an existing context, creates a subordinate transaction and installs the subordinate
- * context. 
+ * context.
  */
 @WebService(targetNamespace = "http://jbossts.jboss.org/xts/servicetests/generated",
         wsdlLocation = "WEB-INF/wsdl/xtsservicetests.wsdl",

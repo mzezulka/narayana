@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -58,7 +58,7 @@ public class ExpiredContactScanner implements ExpiryScanner
     }
 	_recoveryStore = StoreManager.getRecoveryStore();
 	_itemTypeName = FactoryContactItem.getTypeName();
-    
+
     }
 
     /**
@@ -77,7 +77,7 @@ public class ExpiredContactScanner implements ExpiryScanner
 	{
 
 	    InputObjectState uids = new InputObjectState();
-	    
+
 	    // find the uids of all the contact items
 	    if (_recoveryStore.allObjUids(_itemTypeName, uids))
 	    {
@@ -95,12 +95,12 @@ public class ExpiredContactScanner implements ExpiryScanner
 		    else
 		    {
 			Uid newUid = new Uid(theUid);
-			
+
 			FactoryContactItem anItem = FactoryContactItem.recreate(newUid);
-			if (anItem != null) 
+			if (anItem != null)
 			{
 			    Date timeOfDeath = anItem.getDeadTime();
-			    if (timeOfDeath != null && timeOfDeath.before(oldestSurviving)) 
+			    if (timeOfDeath != null && timeOfDeath.before(oldestSurviving))
 			    {
                     jtsLogger.i18NLogger.info_recovery_ExpiredContactScanner_3(newUid);
 				_recoveryStore.remove_committed(newUid, _itemTypeName);
@@ -115,7 +115,7 @@ public class ExpiredContactScanner implements ExpiryScanner
 	    // end of uids!
 	}
     }
-    
+
     public boolean toBeUsed()
     {
 	return _expiryTime != 0;

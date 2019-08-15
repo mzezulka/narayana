@@ -66,7 +66,7 @@ import com.arjuna.ats.txoj.logging.txojLogger;
 /**
  * This class provides (transactional) concurrency control for application
  * objects.
- * 
+ *
  * @author Mark Little (mark@arjuna.com)
  * @version $Id: LockManager.java 2342 2006-03-30 13:06:17Z $
  * @since JTS 1.0.
@@ -79,7 +79,7 @@ public class LockManager extends StateManager
     /**
      * The default retry value which will be used by setlock if no other value
      * is given.
-     * 
+     *
      * @see #setlock
      */
 
@@ -88,7 +88,7 @@ public class LockManager extends StateManager
     /**
      * The default timeout value which will be used by setlock if no other value
      * is given. Milliseconds.
-     * 
+     *
      * @see #setlock
      */
 
@@ -101,7 +101,7 @@ public class LockManager extends StateManager
      * period is set to this value, then such threads will sleep for their total
      * wait period and be signalled if the lock is released within this period
      * of time.
-     * 
+     *
      * @see #setlock
      * @since JTS 2.1.
      */
@@ -124,7 +124,7 @@ public class LockManager extends StateManager
          * terminate should have been called. Check and warn/do something about it if this
          * is not the case!
          */
-        
+
         if (status() == ObjectStatus.ACTIVE_NEW)
         {
             BasicAction action = BasicAction.Current();
@@ -134,7 +134,7 @@ public class LockManager extends StateManager
                 cleanup(false);
             }
         }
-        
+
         boolean doSignal = false;
 
         cleanUp();
@@ -264,7 +264,7 @@ public class LockManager extends StateManager
                     freeState();
                 }
             }
-            
+
             unlockMutex();
         }
 
@@ -282,7 +282,7 @@ public class LockManager extends StateManager
         if (txojLogger.logger.isTraceEnabled()) {
             txojLogger.logger.trace("LockManager::releaseAll(" + actionUid + ")");
         }
-        
+
         return doRelease(actionUid, true);
     }
 
@@ -332,9 +332,9 @@ public class LockManager extends StateManager
      * on the current object. If lock cannot be set, then the lock attempt is
      * retried retry times before giving up and returning an error. This gives a
      * simple handle on deadlock.
-     * 
+     *
      * sleepTime is milliseconds.
-     * 
+     *
      * @return <code>LockResult</code> indicating outcome.
      */
 
@@ -344,20 +344,20 @@ public class LockManager extends StateManager
             txojLogger.logger.trace("LockManager::setlock(" + toSet + ", " + retry + ", "
                     + sleepTime + ")");
         }
-        
+
         int returnStatus = LockResult.REFUSED;
-        
-        // JBTM-2098, we need to have the action locked in case a simultaneous abort 
+
+        // JBTM-2098, we need to have the action locked in case a simultaneous abort
         // is issued which would try to lock the mutex before we can call modified
         Object toLock = BasicAction.Current();
         if (toLock == null) {
         	toLock = new Object();
         }
-        
+
         synchronized (toLock) {
         if (!lockMutex())
             return LockResult.REFUSED;
-        
+
         try
         {
             int conflict = ConflictType.CONFLICT;
@@ -534,7 +534,7 @@ public class LockManager extends StateManager
             unlockMutex();
         }
         }
-        
+
         return returnStatus;
     }
 
@@ -612,13 +612,13 @@ public class LockManager extends StateManager
     {
         this(storeUid, ot, ObjectModel.SINGLE);
     }
-    
+
     // make default SINGLE
 
     protected LockManager (Uid storeUid, int ot, int om)
     {
         super(storeUid, ot, om);
-        
+
         if (txojLogger.logger.isTraceEnabled()) {
             txojLogger.logger.trace("LockManager::LockManager(" + storeUid + ")");
         }
@@ -631,7 +631,7 @@ public class LockManager extends StateManager
         objectLocked = false;
         conflictManager = new LockConflictManager(mutex);
     }
-    
+
     /*
      * Pass on some args to StateManager and initialise internal state. The lock
      * store and semaphore are set up lazily since they depend upon the result
@@ -652,7 +652,7 @@ public class LockManager extends StateManager
     protected LockManager (int ot, int om)
     {
         super(ot, om);
-        
+
         if (txojLogger.logger.isTraceEnabled()) {
             txojLogger.logger.trace("LockManager::LockManager(" + ot + ")");
         }
@@ -665,7 +665,7 @@ public class LockManager extends StateManager
         objectLocked = false;
         conflictManager = new LockConflictManager(mutex);
     }
-    
+
     /**
      * This method *must* be called in the finalizer of every object. It ensures
      * that any necessary cleanup work is done in the event that the object goes
@@ -762,10 +762,10 @@ public class LockManager extends StateManager
         if (txojLogger.logger.isTraceEnabled()) {
             txojLogger.logger.trace("LockManager::doRelease(" + u + ", " + all + ")");
         }
-        
+
         if (!lockMutex())
             return false;
-        
+
         Lock previous = null;
         Lock current = null;
         boolean deleted = false;
@@ -902,9 +902,9 @@ public class LockManager extends StateManager
         }
         finally
         {
-            unlockMutex();            
+            unlockMutex();
         }
-        
+
         return releasedOK;
     }
 
@@ -939,7 +939,7 @@ public class LockManager extends StateManager
                 if (objectLocked)
                 {
                     objectLocked = false;
-                    
+
                     mutex.unlock();
                 }
             }
@@ -979,7 +979,7 @@ public class LockManager extends StateManager
                  * At some point we may want to add a factory to hide this, but
                  * since we only have two implementations at the moment it is perhaps
                  * overkill.
-                 * 
+                 *
                  * TODO add factory.
                  */
 
@@ -1038,7 +1038,7 @@ public class LockManager extends StateManager
     /*
      * Return to 'protected final boolean' if we address https://issues.jboss.org/browse/JBTM-2399
      */
-    
+
     protected boolean loadState ()
     {
         if (txojLogger.logger.isTraceEnabled()) {
@@ -1164,10 +1164,10 @@ public class LockManager extends StateManager
             {
                 mutex.unlock(); // and exit mutual exclusion
             }
-            
+
             objectLocked = false;
         }
-        
+
         return stateLoaded;
     }
 
@@ -1267,7 +1267,7 @@ public class LockManager extends StateManager
                     S.packInt(lockCount);
 
                     unloadOk = true;
-                    
+
                     while ((current = locksHeld.pop()) != null)
                     {
                         UidHelper.packInto(current.get_uid(), S);
@@ -1284,7 +1284,7 @@ public class LockManager extends StateManager
                     if (unloadOk)
                     {
                         unloadOk = false;
-                        
+
                         /* load image into store */
 
                         if (S.valid() && lockStore.write_committed(u, otype, S))
@@ -1341,9 +1341,9 @@ public class LockManager extends StateManager
     protected boolean hasBeenLocked;/* Locked at least once */
 
     protected boolean objectLocked;/* Semaphore grabbed */
-    
+
     protected ReentrantLock mutex = new ReentrantLock();  /* Controls access to the lock store */
-    
+
     protected LockConflictManager conflictManager;
 
     protected static final int DOZE_TIME = 1000000;

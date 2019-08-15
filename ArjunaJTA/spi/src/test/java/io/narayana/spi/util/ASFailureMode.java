@@ -28,7 +28,7 @@ import java.io.Serializable;
 public enum ASFailureMode implements Serializable
 {
     NONE(false)
-    
+
     ,HALT(true)    // halt the JVM
     ,EXIT(true)   // exit the JVM
     ,SUSPEND(false)  // suspend the calling thread

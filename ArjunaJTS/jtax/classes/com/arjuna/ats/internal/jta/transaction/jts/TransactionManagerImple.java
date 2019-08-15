@@ -88,7 +88,7 @@ public class TransactionManagerImple extends BaseTransaction implements
 	            javax.transaction.SystemException systemException = new javax.transaction.SystemException(e.toString());
 	            systemException.initCause(e);
 	            throw systemException;
-			}	
+			}
 		}
 		catch (Exception e)
 		{

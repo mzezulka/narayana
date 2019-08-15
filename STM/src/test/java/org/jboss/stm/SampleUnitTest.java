@@ -34,14 +34,14 @@ import junit.framework.TestCase;
  */
 
 public class SampleUnitTest extends TestCase
-{   
+{
     @Transactional
     @Optimistic
     public interface Sample
     {
        public void increment ();
        public void decrement ();
-       
+
        public int value ();
     }
 
@@ -51,12 +51,12 @@ public class SampleUnitTest extends TestCase
         {
             this(0);
         }
-        
+
         public SampleLockable (int init)
         {
             _isState = init;
         }
-        
+
         public int value ()
         {
             return _isState;
@@ -80,23 +80,23 @@ public class SampleUnitTest extends TestCase
         Container<Sample> theContainer = new Container<Sample>();
         Sample obj1 = theContainer.create(new SampleLockable(10));
         Sample obj2 = theContainer.clone(new SampleLockable(), obj1);
-        
+
         assertTrue(obj2 != null);
-        
+
         AtomicAction act = new AtomicAction();
-        
+
         act.begin();
-        
+
         obj1.increment();
-        
+
         act.commit();
-        
+
         act = new AtomicAction();
-        
+
         act.begin();
-        
+
         assertEquals(obj2.value(), 11);
-        
+
         act.commit();
     }
 }

@@ -127,7 +127,7 @@ public class SubordinateAtomicAction extends
 	public int doPrepare ()
 	{
         int status = super.status();
-        
+
         // JBTM-927 it is possible this transaction has been aborted by the TransactionReaper
         if (status == ActionStatus.ABORTED) {
         	return TwoPhaseOutcome.PREPARE_NOTOK;
@@ -232,7 +232,7 @@ public class SubordinateAtomicAction extends
 	public int doOnePhaseCommit ()
 	{
 	    int status = super.status();
-	    
+
 	    // In JTA spec, beforeCompletions are run on commit attempts only, not rollbacks.
 	    // We attempt to mimic that here, even though we are outside the scope of the spec.
 	    // note it's not perfect- async timeout/rollback means there is a race condition in which we
@@ -267,7 +267,7 @@ public class SubordinateAtomicAction extends
 	    afterCompletion(status);
 
 		TransactionReaper.transactionReaper().remove(this);
-	    
+
 	    return status;
 	}
 
@@ -282,17 +282,17 @@ public class SubordinateAtomicAction extends
 	public boolean doBeforeCompletion ()
 	{
 	    // should not need synchronizing at this level
-	    
+
 	    if (!_doneBefore)
 	    {
 	        _beforeOutcome = super.beforeCompletion();
-	        
+
 	        _doneBefore = true;
 	    }
-	    
+
 	    return _beforeOutcome;
 	}
-	
+
 	/**
 	 * For crash recovery purposes.
 	 *
@@ -322,7 +322,7 @@ public class SubordinateAtomicAction extends
     {
     	return true;
     }
-    
+
     /*
      * We have these here because it's possible that synchronizations aren't
      * called explicitly either side of commit/rollback due to JCA API not supporting
@@ -330,7 +330,7 @@ public class SubordinateAtomicAction extends
      * can be driven through two routes and we don't want to get into a mess
      * due to that.
      */
-    
+
     private boolean _doneBefore = false;
     private boolean _beforeOutcome = false;
 }

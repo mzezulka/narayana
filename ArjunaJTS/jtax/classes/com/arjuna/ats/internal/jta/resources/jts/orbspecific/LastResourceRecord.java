@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -50,7 +50,7 @@ import com.arjuna.ats.internal.jta.utils.jtaxLogger;
 
 /**
  * XAResourceRecord implementing the Last Resource Commit Optimisation.
- * 
+ *
  * @author Kevin Conner (Kevin.Conner@arjuna.com)
  * @version $Id$
  * @since ATS 4.1
@@ -61,9 +61,9 @@ public class LastResourceRecord extends XAResourceRecord
      * The Uid for all last xa resource records.
      */
     private static final String UID = Uid.lastResourceUid().stringForm() ;
-    
+
     /**
-     * Construct the record for last resource commit optimisation. 
+     * Construct the record for last resource commit optimisation.
      * @param tx The current transaction.
      * @param xaResource The associated XA resource.
      * @param xid The X/Open transaction identifier.
@@ -73,7 +73,7 @@ public class LastResourceRecord extends XAResourceRecord
     {
         super(tx, xaResource, xid, params) ;
     }
-    
+
     /**
      * The type id for this record.
      */
@@ -82,7 +82,7 @@ public class LastResourceRecord extends XAResourceRecord
     {
         return RecordType.LASTRESOURCE ;
     }
-    
+
     /**
      * The UID for this resource.
      */
@@ -91,7 +91,7 @@ public class LastResourceRecord extends XAResourceRecord
     {
         return UID ;
     }
-    
+
     /**
      * Commit this resource.
      */
@@ -99,7 +99,7 @@ public class LastResourceRecord extends XAResourceRecord
         throws SystemException, NotPrepared, HeuristicRollback, HeuristicMixed, HeuristicHazard
     {
     }
-    
+
     /**
      * Prepare this resource.
      */
@@ -116,7 +116,7 @@ public class LastResourceRecord extends XAResourceRecord
     		return Vote.VoteRollback ;
     	}
     }
-    
+
     /**
      * The type for saving state.
      */
@@ -129,7 +129,7 @@ public class LastResourceRecord extends XAResourceRecord
 	{
 		return false;
 	}
-    
+
     public boolean shouldAdd(OTSAbstractRecord record) throws SystemException
     {
         if( record.type_id() == type_id() )

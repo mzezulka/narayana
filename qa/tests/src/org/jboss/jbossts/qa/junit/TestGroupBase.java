@@ -93,7 +93,7 @@ public class TestGroupBase
     /**
      * By default the group name for a test method is the name of the class
      * with any TestGroup_ prefix removed.
-     * 
+     *
      * @return the test group name for the current test.
      */
     protected String getTestGroupName() {
@@ -195,7 +195,7 @@ public class TestGroupBase
     }
 
     /**
-     * 
+     *
      */
     protected void removeServerIORStore(String name, String... params) {
         // the old, slow way spawned a cleanup task:

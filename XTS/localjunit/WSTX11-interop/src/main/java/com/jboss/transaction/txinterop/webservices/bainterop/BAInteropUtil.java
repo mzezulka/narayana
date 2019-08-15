@@ -57,7 +57,7 @@ public class BAInteropUtil
     {
         return createCoordinationContext(coordinatorURI, BusinessActivityConstants.WSBA_PROTOCOL_ATOMIC_OUTCOME) ;
     }
-    
+
     /**
      * Get a mixed outcome coordination context.
      * @param coordinatorURI The coordinator URI.
@@ -69,7 +69,7 @@ public class BAInteropUtil
     {
         return createCoordinationContext(coordinatorURI, BusinessActivityConstants.WSBA_PROTOCOL_MIXED_OUTCOME) ;
     }
-    
+
     /**
      * Get a coordination context for the specified protocol.
      * @param coordinatorURI The coordinator URI.
@@ -96,7 +96,7 @@ public class BAInteropUtil
         final W3CEndpointReference completionCoordinator = register(context, getTerminatorParticipant(id), ArjunaTXConstants.WSARJTX_PROTOCOL_TERMINATION) ;
         return new BusinessActivityTerminatorStub(id, completionCoordinator);
     }
-    
+
     /**
      * Register a participant completion participant in the specified coordination context.
      * @param context The coordination context.
@@ -115,7 +115,7 @@ public class BAInteropUtil
         ParticipantCompletionParticipantProcessor.getProcessor().activateParticipant(engine, id) ;
         return engine ;
     }
-    
+
     /**
      * Register a coordinator completion participant in the specified coordination context.
      * @param context The coordination context.
@@ -134,7 +134,7 @@ public class BAInteropUtil
         CoordinatorCompletionParticipantProcessor.getProcessor().activateParticipant(engine, id) ;
         return engine ;
     }
-    
+
     /**
      * Register for a sub protocol.
      * @param context The coordination context.
@@ -148,7 +148,7 @@ public class BAInteropUtil
     {
         return RegistrationCoordinator.register(context, MessageId.getMessageId(), participant, protocol) ;
     }
-    
+
     /**
      * Get the endpoint reference for a terminator participant.
      * @param id The participant id.
@@ -165,7 +165,7 @@ public class BAInteropUtil
         InstanceIdentifier.setEndpointInstanceIdentifier(builder, id) ;
         return builder.build();
     }
-    
+
     /**
      * Get the endpoint reference for a participant completion participant.
      * @param id The participant id.
@@ -182,7 +182,7 @@ public class BAInteropUtil
         InstanceIdentifier.setEndpointInstanceIdentifier(builder, id) ;
         return builder.build();
     }
-    
+
     /**
      * Get the endpoint reference for a coordinator completion participant.
      * @param id The participant id.

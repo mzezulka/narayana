@@ -82,8 +82,8 @@ public class BlacktieStompAdministrationService extends MDBBlacktieService imple
         public ServerInfo(String name, boolean conversational, String type) {
            this.name = name;
            this.conversational = conversational;
-           this.type = type; 
-        } 
+           this.type = type;
+        }
     }
 
     public BlacktieStompAdministrationService() throws ConfigurationException {

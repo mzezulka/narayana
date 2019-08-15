@@ -52,7 +52,7 @@ public class AtomicObjectTest4
     public static final int EXPECTED_RESULT = START_VALUE_1 + START_VALUE_2;
 
     public static final int NUMBER_THREADS = 20;
-    
+
     @Test
     public void test () throws TestException
     {
@@ -82,7 +82,7 @@ public class AtomicObjectTest4
         }
 
         ThreadObject2[] thrs = new ThreadObject2[NUMBER_THREADS];
-        
+
         for (int i = 0; i < NUMBER_THREADS; i++)
             thrs[i] = new ThreadObject2(i+1);
 

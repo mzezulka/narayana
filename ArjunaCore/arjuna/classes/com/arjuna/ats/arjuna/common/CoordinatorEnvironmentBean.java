@@ -80,8 +80,8 @@ public class CoordinatorEnvironmentBean implements CoordinatorEnvironmentBeanMBe
     @FullPropertyName(name = "com.arjuna.ats.coordinator.checkedActionFactory")
     private volatile String checkedActionFactoryClassName = "com.arjuna.ats.internal.arjuna.coordinator.CheckedActionFactoryImple";
     private volatile CheckedActionFactory checkedActionFactory = null;
-    
-    private volatile boolean allowCheckedActionFactoryOverride; 
+
+    private volatile boolean allowCheckedActionFactoryOverride;
 
     private volatile boolean alternativeRecordOrdering = false;
 
@@ -210,7 +210,7 @@ public class CoordinatorEnvironmentBean implements CoordinatorEnvironmentBeanMBe
     {
         this.commitOnePhase = commitOnePhase;
     }
-    
+
     /**
      * Returns true if dynamic one phase commit optimization is to be used. This means that
      * if the first N-1 participants in the intentions list return read-only then commit_one_phase
@@ -611,8 +611,8 @@ public class CoordinatorEnvironmentBean implements CoordinatorEnvironmentBeanMBe
     {
         synchronized(this)
         {
-        	if (checkedActionFactoryClassName == null || allowCheckedActionFactoryOverride) 
-        	{	
+        	if (checkedActionFactoryClassName == null || allowCheckedActionFactoryOverride)
+        	{
 	            if(checkedActionFactoryClassName == null)
 	            {
 	                this.checkedActionFactory = null;
@@ -662,7 +662,7 @@ public class CoordinatorEnvironmentBean implements CoordinatorEnvironmentBeanMBe
         	{
 	            CheckedActionFactory oldInstance = this.checkedActionFactory;
 	            checkedActionFactory = instance;
-	
+
 	            if(instance == null)
 	            {
 	                this.checkedActionFactoryClassName = null;
@@ -825,6 +825,6 @@ public class CoordinatorEnvironmentBean implements CoordinatorEnvironmentBeanMBe
     public void setAllowCheckedActionFactoryOverride(
 			boolean allowCheckedActionFactoryOverride) {
 		this.allowCheckedActionFactoryOverride = allowCheckedActionFactoryOverride;
-	}   
-    
+	}
+
 }

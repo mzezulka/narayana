@@ -91,7 +91,7 @@ public class TMApplication extends Application
         HttpResponseMapper.class,
         NotFoundMapper.class
     };
-    
+
     private static Class<?>[] resourceClasses = {
             Coordinator.class,
     };

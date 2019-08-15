@@ -30,9 +30,9 @@ public abstract class MDBBlacktieService extends BlackTieService implements Mess
 
     /**
      * This will allow the connection factory to be failed
-     * 
+     *
      * @param name
-     * 
+     *
      * @throws ConfigurationException
      */
     protected MDBBlacktieService(String name) throws ConfigurationException {
@@ -41,7 +41,7 @@ public abstract class MDBBlacktieService extends BlackTieService implements Mess
 
     /**
      * The onMessage method formats the JMS received bytes message into a format understood by the XATMI API.
-     * 
+     *
      * @param message The message received wrapping an XATMI invocation
      */
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)

@@ -37,10 +37,10 @@ public interface SerializableXAResourceDeserializer {
 	/**
 	 * Can this {@link SerializableXAResourceDeserializer} handle the specified
 	 * classname.
-	 * 
+	 *
 	 * @param className
 	 *            The name of the class to deserialize.
-	 * 
+	 *
 	 * @return A flag to indicate where the deserializer is aware of the
 	 *         Serializable XAResource.
 	 */
@@ -48,7 +48,7 @@ public interface SerializableXAResourceDeserializer {
 
 	/**
 	 * Deserialize the XAResource.
-	 * 
+	 *
 	 * @param ois
 	 *            The input stream to read from.
 	 * @throws IOException

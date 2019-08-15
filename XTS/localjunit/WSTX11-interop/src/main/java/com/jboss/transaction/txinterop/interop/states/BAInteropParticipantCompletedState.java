@@ -36,7 +36,7 @@ public class BAInteropParticipantCompletedState extends BaseState
      * The participant completed flag.
      */
     private boolean participantCompleted ;
-    
+
     /**
      * Construct the participant completed test.
      * @param lastAction The last action.
@@ -45,7 +45,7 @@ public class BAInteropParticipantCompletedState extends BaseState
     {
 	this.lastAction = lastAction ;
     }
-    
+
     /**
      * Handle the next action in the sequence.
      * @param action The SOAP action.
@@ -65,7 +65,7 @@ public class BAInteropParticipantCompletedState extends BaseState
         }
         return false ;
     }
-    
+
     /**
      * Wait for the participant to complete.
      * @param timeout The timeout.
@@ -90,10 +90,10 @@ public class BAInteropParticipantCompletedState extends BaseState
                 }
                 catch (final InterruptedException ie) {}
 	    }
-	    
+
 	    result = participantCompleted ;
 	}
-	
+
 	if (result)
 	{
 	    // If it is completd then wait to allow processing of message.

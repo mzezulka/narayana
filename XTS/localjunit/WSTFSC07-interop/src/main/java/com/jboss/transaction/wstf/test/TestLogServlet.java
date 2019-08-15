@@ -40,7 +40,7 @@ public class TestLogServlet extends HttpServlet
      * The servlet serial version UID.
      */
     private static final long serialVersionUID = 2566877081747112520L ;
-    
+
     /**
      * The not found HTML page.
      */
@@ -49,7 +49,7 @@ public class TestLogServlet extends HttpServlet
      * The directory contents HTML page.
      */
     private String directoryContents ;
-    
+
     /**
      * Initialise the servlet.
      * @param servletConfig The servlet configuration.
@@ -68,7 +68,7 @@ public class TestLogServlet extends HttpServlet
             throw new ServletException("Failed to load HTML pages", ioe) ;
         }
     }
-    
+
     /**
      * Return the specified logs
      * @param request The HTTP servlet request.
@@ -106,7 +106,7 @@ public class TestLogServlet extends HttpServlet
                 response.getOutputStream().print(notFoundResponse) ;
                 return ;
             }
-            
+
             response.setContentType("text/xml") ;
             response.setStatus(HttpServletResponse.SC_OK) ;
             response.setContentLength(contents.length()) ;

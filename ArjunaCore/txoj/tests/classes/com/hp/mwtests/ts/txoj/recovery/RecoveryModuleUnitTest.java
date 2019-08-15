@@ -49,21 +49,21 @@ public class RecoveryModuleUnitTest
     {
         DummyTOModule trm = new DummyTOModule();
         AtomicAction A = new AtomicAction();
-        
+
         trm.intialise();
-        
+
         A.begin();
-        
+
         AtomicObject obj = new AtomicObject();
         OutputObjectState os = new OutputObjectState();
         Uid u = new Uid();
-        
+
         assertTrue(obj.save_state(os, ObjectType.ANDPERSISTENT));
-        
+
         assertTrue(StoreManager.getParticipantStore().write_uncommitted(u, obj.type(), os));
-        
+
         A.abort();
-        
+
         trm.periodicWorkFirstPass();
         trm.periodicWorkSecondPass();
     }

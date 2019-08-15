@@ -1,20 +1,20 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors 
- * as indicated by the @author tags. 
+ * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * as indicated by the @author tags.
  * See the copyright.txt in the distribution for a
- * full listing of individual contributors. 
+ * full listing of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
  * of the GNU Lesser General Public License, v. 2.1.
- * This program is distributed in the hope that it will be useful, but WITHOUT A 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT A
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
  * You should have received a copy of the GNU Lesser General Public License,
  * v.2.1 along with this distribution; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Arjuna Technologies Limited,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.  
+ * UK.
  *
  * $Id: TxLogWritePersistenceRecord.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -53,7 +53,7 @@ public class TxLogWritePersistenceRecord extends PersistenceRecord
     {
 	super(state, participantStore, sm);
     }
-    
+
     public int typeIs ()
     {
 	return RecordType.TXLOG_PERSISTENCE;
@@ -68,7 +68,7 @@ public class TxLogWritePersistenceRecord extends PersistenceRecord
 	boolean result = false;
 	LogWriteStateManager sm = null;
 	boolean writeToLog = true;
-	
+
 	try
 	{
 	    sm = (LogWriteStateManager) super.objectAddr;
@@ -79,7 +79,7 @@ public class TxLogWritePersistenceRecord extends PersistenceRecord
 	{
 	    writeToLog = false;
 	}
-	
+
 	if (targetParticipantStore != null)
 	{
 	    try
@@ -87,7 +87,7 @@ public class TxLogWritePersistenceRecord extends PersistenceRecord
 		if (shadowMade)
 		{
 		    result = targetParticipantStore.commit_state(order(), super.getTypeOfObject());
-			    
+
 		    if (!result) {
                 tsLogger.i18NLogger.warn_PersistenceRecord_2(order());
             }
@@ -111,16 +111,16 @@ public class TxLogWritePersistenceRecord extends PersistenceRecord
 	else
 	{
 	}
-	
+
 	if (!result)
 	{
 	}
-	
+
 	super.forgetAction(true);
-	
+
 	return ((result) ? TwoPhaseOutcome.FINISH_OK : TwoPhaseOutcome.FINISH_ERROR);
     }
-	
+
     /**
      * topLevelPrepare attempts to save the object.
      * It will either do this in the action intention list or directly
@@ -144,18 +144,18 @@ public class TxLogWritePersistenceRecord extends PersistenceRecord
 	try
 	{
 	    lwsm = (LogWriteStateManager) sm;
-	    
+
 	    writeToLog = lwsm.writeOptimisation();
 	}
 	catch (ClassCastException ex)
 	{
 	    writeToLog = false;
 	}
-	
+
 	if ((sm != null) && (targetParticipantStore != null))
 	{
 	    topLevelState = new OutputObjectState(sm.get_uid(), sm.type());
-	    
+
 	    if (writeToLog || (!targetParticipantStore.fullCommitNeeded() &&
 			       (sm.save_state(topLevelState, ObjectType.ANDPERSISTENT)) &&
 			       (topLevelState.size() <= PersistenceRecord.MAX_OBJECT_SIZE)))
@@ -169,7 +169,7 @@ public class TxLogWritePersistenceRecord extends PersistenceRecord
 		     * one exists, and to prevent bogus activation in the case
 		     * where crash recovery hasn't run yet.
 		     */
-		    
+
 		    try
 		    {
 			targetParticipantStore.write_uncommitted(sm.get_uid(), sm.type(), dummy);
@@ -178,7 +178,7 @@ public class TxLogWritePersistenceRecord extends PersistenceRecord
 		    catch (ObjectStoreException e) {
                 tsLogger.i18NLogger.warn_PersistenceRecord_21(e);
             }
-		
+
 		    dummy = null;
 		}
 		else
@@ -191,7 +191,7 @@ public class TxLogWritePersistenceRecord extends PersistenceRecord
 		if (sm.deactivate(targetParticipantStore.getStoreName(), false))
 		{
  		    shadowMade = true;
-		    
+
 		    result = TwoPhaseOutcome.PREPARE_OK;
 		}
 		else {

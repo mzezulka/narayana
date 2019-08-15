@@ -46,7 +46,7 @@ package com.arjuna.ats.jta.exceptions;
 public class InvalidTerminationStateException extends IllegalStateException
 {
     static final long serialVersionUID = 2194094002071886192L;
-    
+
     public InvalidTerminationStateException ()
     {
 	super();

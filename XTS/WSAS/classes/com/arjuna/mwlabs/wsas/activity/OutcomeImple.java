@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -59,7 +59,7 @@ public class OutcomeImple implements Outcome
 	_status = cs;
 	_exception = ex;
     }
-    
+
     /**
      * Give a name for this outcome.
      *
@@ -81,12 +81,12 @@ public class OutcomeImple implements Outcome
      * @return the final completion status of the transaction. Any additional
      * information (e.g., exception types) may be provided by the data method.
      */
- 
+
     public CompletionStatus completedStatus () throws SystemException
     {
 	return _status;
     }
- 
+
     /**
      * Outcome specific information that can be used to determine finer
      * level details about the outcome instance.
@@ -110,5 +110,5 @@ public class OutcomeImple implements Outcome
 
     private CompletionStatus _status;
     private HLSException     _exception;
-    
+
 }

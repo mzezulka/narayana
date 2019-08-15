@@ -77,7 +77,7 @@ public class ATCoordinatorRecoveryModule implements XTSRecoveryModule
             XTSATRecoveryManager atRecoveryManager = new XTSATRecoveryManagerImple(_recoveryStore);
             XTSATRecoveryManager.setRecoveryManager(atRecoveryManager);
         }
-        
+
         Implementations.install();
     }
 

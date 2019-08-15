@@ -1,20 +1,20 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors 
- * as indicated by the @author tags. 
+ * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * as indicated by the @author tags.
  * See the copyright.txt in the distribution for a
- * full listing of individual contributors. 
+ * full listing of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
  * of the GNU Lesser General Public License, v. 2.1.
- * This program is distributed in the hope that it will be useful, but WITHOUT A 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT A
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
  * You should have received a copy of the GNU Lesser General Public License,
  * v.2.1 along with this distribution; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Arjuna Solutions Limited,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.  
+ * UK.
  *
  * $Id: TxControl.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -39,7 +39,7 @@ import com.arjuna.ats.arjuna.recovery.TransactionStatusManager;
 /**
  * Transaction configuration object. We have a separate object for this so that
  * other classes can enquire of (and use) this information.
- * 
+ *
  * @author Mark Little (mark@arjuna.com)
  * @version $Id: TxControl.java 2342 2006-03-30 13:06:17Z $
  * @since JTS 2.2.
@@ -49,7 +49,7 @@ public class TxControl
 {
     public static final int NODE_NAME_SIZE = 28;
     public static final String DEFAULT_NODE_NAME = "Arjuna:";
-    
+
     public static class Shutdown extends Thread
     {
         public void run()
@@ -66,7 +66,7 @@ public class TxControl
             }
         }
     };
-    
+
     /**
      * If a timeout is not associated with a transaction when it is created then
      * this value will be used. A value of 0 means that the transaction will
@@ -80,7 +80,7 @@ public class TxControl
 	/**
 	 * Set the timeout to be associated with a newly created transaction if there is no
 	 * other timeout to be used.
-	 * 
+	 *
 	 * @param timeout
 	 */
 	public static final void setDefaultTimeout(int timeout)
@@ -92,11 +92,11 @@ public class TxControl
 	 * Start the transaction system. This allows new transactions to be created
 	 * and for recovery to execute.
 	 */
-	
+
 	public static final synchronized void enable()
 	{
 	    createTransactionStatusManager();
-	    
+
 	    TxControl.enable = true;
 	}
 
@@ -104,20 +104,20 @@ public class TxControl
 	 * Stop the transaction system. New transactions will be prevented but
 	 * recovery will be allowed to continue.
 	 */
-	
+
 	public static final synchronized void disable()
 	{
 	    disable(false);
 	}
-	
+
 	/**
          * Stop the transaction system. New transactions will be prevented and
          * recovery will cease.
-         * 
+         *
          * WARNING: make sure you know what you are doing when you call this
          * routine!
          */
-	
+
 	public static final synchronized void disable (boolean disableRecovery)
         {
             /*
@@ -138,7 +138,7 @@ public class TxControl
 	{
 		return TxControl.enable;
 	}
-        
+
 	/**
 	 * @return the <code>ObjectStore</code> implementation which the
 	 *         transaction coordinator will use.
@@ -172,7 +172,7 @@ public class TxControl
 
             throw new IllegalArgumentException();
         }
-	    
+
 		xaNodeName = name;
 	}
 
@@ -188,18 +188,18 @@ public class TxControl
 	        transactionStatusManager = new TransactionStatusManager();
 
 	        _shutdownHook = new Shutdown();
-	        
+
 	        // add hook to ensure finalize gets called.
 	        Runtime.getRuntime().addShutdownHook(_shutdownHook);
 	    }
 	}
-	
+
 	private final static synchronized void removeTransactionStatusManager ()
 	{
 	    if (_shutdownHook != null)
 	    {
 	        Runtime.getRuntime().removeShutdownHook(_shutdownHook);
-	        
+
             _shutdownHook = null;
 
 	        if (transactionStatusManager != null)
@@ -209,7 +209,7 @@ public class TxControl
 	        }
 	    }
 	}
-	
+
 	static final boolean maintainHeuristics = arjPropertyManager.getCoordinatorEnvironmentBean().isMaintainHeuristics();
 
 	static final boolean asyncCommit = arjPropertyManager.getCoordinatorEnvironmentBean().isAsyncCommit();
@@ -227,7 +227,7 @@ public class TxControl
 	static final boolean readonlyOptimisation = arjPropertyManager.getCoordinatorEnvironmentBean().isReadonlyOptimisation();
 
 	static final boolean dynamic1PC = arjPropertyManager.getCoordinatorEnvironmentBean().getDynamic1PC();
-	
+
     /**
      * flag which is true if transaction service is enabled and false if it is disabled
      */
@@ -246,11 +246,11 @@ public class TxControl
      * to value "NO"
      */
 	static final boolean _enableTSM = arjPropertyManager.getCoordinatorEnvironmentBean().isTransactionStatusManagerEnable();
-    
+
     static final boolean beforeCompletionWhenRollbackOnly = arjPropertyManager.getCoordinatorEnvironmentBean().isBeforeCompletionWhenRollbackOnly();
-	
+
 	static Thread _shutdownHook = null;
-	
+
 	static Object _lock = new Object();
 
     /**

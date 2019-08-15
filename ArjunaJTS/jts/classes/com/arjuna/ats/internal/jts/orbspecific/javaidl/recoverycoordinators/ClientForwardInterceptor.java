@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -46,16 +46,16 @@ import org.omg.PortableInterceptor.ForwardRequest;
 
 /**
  * This interceptor redirects requests towards the RecoveryCoordinator returned on register_resource
- * to another target, a Recovery Coordinator located in the Recovery Manager, by throwing a ForwardRequest 
+ * to another target, a Recovery Coordinator located in the Recovery Manager, by throwing a ForwardRequest
  * exception.
  *
  * @author Malik Saheb
  */
 public class ClientForwardInterceptor
-    extends org.omg.CORBA.LocalObject 
+    extends org.omg.CORBA.LocalObject
     implements ClientRequestInterceptor
 {
-    public ClientForwardInterceptor(org.omg.CORBA.ORB orb, 
+    public ClientForwardInterceptor(org.omg.CORBA.ORB orb,
 				    org.omg.PortableInterceptor.Current _piCurrent,
 				    int _IndicatorSlotId)
     {
@@ -68,10 +68,10 @@ public class ClientForwardInterceptor
 	IndicatorSlotId = _IndicatorSlotId;
 	org.omg.CORBA.Object obj = null ;
 	_ourOrb = orb;
-	
+
     }
 
-    public String name() 
+    public String name()
     {
         return "arjuna.ClientForwardInterceptor";
     }
@@ -84,7 +84,7 @@ public class ClientForwardInterceptor
     /**
      * Throws a ForwardRequest
      */
-    public void send_request(ClientRequestInfo ri) 
+    public void send_request(ClientRequestInfo ri)
         throws ForwardRequest
     {
 
@@ -93,7 +93,7 @@ public class ClientForwardInterceptor
 	try  {
 	    RCobjectId = JavaIdlRCServiceInit._poa.reference_to_id(ri.effective_target());
 	    objectIdString = new String(RCobjectId);
-	    	    
+
 	    if ( JavaIdlRCServiceInit.RC_ID.equals(objectIdString) )
 		{
 		    Any indicator = ri.get_slot(IndicatorSlotId);
@@ -116,7 +116,7 @@ public class ClientForwardInterceptor
 		    if (ri.effective_target()._is_a(RecoveryCoordinatorHelper.id()))
 			{
 			    /*
-			     * Extract the substring of the ObjectId that contains the Uid and 
+			     * Extract the substring of the ObjectId that contains the Uid and
 			     * the Process Id and pass it to the data of the service context
 			     */
 			    RCobjectId = extractObjectId(objectIdString).getBytes(StandardCharsets.UTF_8);
@@ -131,7 +131,7 @@ public class ClientForwardInterceptor
 		}
 		in_loop = false;
 	    }
-	
+
     }
 
     public void send_poll(ClientRequestInfo ri){
@@ -140,11 +140,11 @@ public class ClientForwardInterceptor
     public void receive_reply(ClientRequestInfo ri){
     }
 
-    public void receive_exception(ClientRequestInfo ri) 
+    public void receive_exception(ClientRequestInfo ri)
         throws ForwardRequest{
     }
 
-    public void receive_other(ClientRequestInfo ri) 
+    public void receive_other(ClientRequestInfo ri)
         throws ForwardRequest{
     }
 
@@ -165,7 +165,7 @@ public class ClientForwardInterceptor
         jtsLogger.logger.debug("RecoveryCoordinatorId(" + encodedRCData + ")");
     }
 
-	String ObjectId2SvcCtx = null; 
+	String ObjectId2SvcCtx = null;
 	char delimiter = '#';
 	boolean ok = (encodedRCData != null);
 
@@ -173,7 +173,7 @@ public class ClientForwardInterceptor
 	{
 	    int index1 = encodedRCData.indexOf(delimiter);
 	    int index2 = 0;
-	    
+
 	    if (index1 != -1)
 	    {
 		ObjectId2SvcCtx = encodedRCData.substring(0, index1);
@@ -183,7 +183,7 @@ public class ClientForwardInterceptor
 
 	    if (ok)
 	    {
-		try 
+		try
 		    {
 			String  RCDefaultObjectReference = encodedRCData.substring(index1 +1);
 			org.omg.CORBA.Object obj = _ourOrb.string_to_object(RCDefaultObjectReference) ;
@@ -192,28 +192,28 @@ public class ClientForwardInterceptor
 		catch (Exception e) {
             jtsLogger.i18NLogger.warn_orbspecific_jacorb_recoverycoordinators_ClientForwardInterceptor_2(e);
         }
-		
+
 	    }
-	    
+
 	}
 
 	return ObjectId2SvcCtx;
-	
+
     }
 
 
 
     private RecoveryCoordinator reco = null;
-    
+
     private boolean first_loop = false;
 
     private boolean in_loop = false;
     private org.omg.CORBA.ORB _ourOrb = null;
-    
+
     ServiceContext RCctx = null;
 
     // The following tag should be placed somewhere else and advertise it should not be used by applications
-    int RecoveryContextId = 100001; 
+    int RecoveryContextId = 100001;
 
     byte[] RCobjectId;
 

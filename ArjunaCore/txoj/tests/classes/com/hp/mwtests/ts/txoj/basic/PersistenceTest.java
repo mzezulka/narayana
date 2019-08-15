@@ -67,18 +67,18 @@ public class PersistenceTest
         assertNotNull(inputState);
         store.stop();
     }
-    
+
     @Test
     public void testAtomicObject () throws Throwable
     {
         //StoreManager sm = new StoreManager(null, new TwoPhaseVolatileStore(new ObjectStoreEnvironmentBean()), null);
 
         AtomicObject obj1 = new AtomicObject(ObjectModel.MULTIPLE);
-        
+
         obj1.set(50);
-        
+
         AtomicObject obj2 = new AtomicObject(obj1.get_uid(), ObjectModel.MULTIPLE);
-       
+
 //        assertTrue(obj1.getStore().getClass().getName().equals(TwoPhaseVolatileStore.class.getName()));
 
         obj1.set(101);

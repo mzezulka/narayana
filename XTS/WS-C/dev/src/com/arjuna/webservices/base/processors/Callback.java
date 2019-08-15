@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -34,7 +34,7 @@ public abstract class Callback
      * The failed flag.
      */
     private boolean failed ;
-    
+
     /**
      * Has the callback triggered.
      * @return true if triggered, false otherwise.
@@ -43,7 +43,7 @@ public abstract class Callback
     {
         return triggered ;
     }
-    
+
     /**
      * Set the triggered flag.
      */
@@ -52,7 +52,7 @@ public abstract class Callback
         triggered = true ;
         notifyAll() ;
     }
-    
+
     /**
      * Has the callback failed.
      * @return true if failed, false otherwise.
@@ -61,7 +61,7 @@ public abstract class Callback
     {
         return failed ;
     }
-    
+
     /**
      * Set the failed flag.
      */
@@ -70,7 +70,7 @@ public abstract class Callback
         failed = true ;
         notifyAll() ;
     }
-    
+
     /**
      * Wait until the callback has triggered or failed.
      */
@@ -78,7 +78,7 @@ public abstract class Callback
     {
         waitUntilTriggered(0) ;
     }
-    
+
     /**
      * Wait until the callback has triggered or failed.
      * @param delay the timeout period in milliseconds.

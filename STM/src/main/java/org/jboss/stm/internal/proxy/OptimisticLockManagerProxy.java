@@ -1,20 +1,20 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2009, JBoss Inc., and others contributors as indicated 
- * by the @authors tag. All rights reserved. 
+ * Copyright 2009, JBoss Inc., and others contributors as indicated
+ * by the @authors tag. All rights reserved.
  * See the copyright.txt in the distribution for a
- * full listing of individual contributors. 
+ * full listing of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
  * of the GNU Lesser General Public License, v. 2.1.
- * This program is distributed in the hope that it will be useful, but WITHOUT A 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT A
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
  * You should have received a copy of the GNU Lesser General Public License,
  * v.2.1 along with this distribution; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2009,
  * @author mark.little@jboss.com
  */
@@ -46,11 +46,11 @@ public class OptimisticLockManagerProxy<T> extends OptimisticLockManager
     public OptimisticLockManagerProxy (T candidate)
     {
         super();
-        
+
         _theObject = candidate;
         _container = null;
     }
-    
+
     public OptimisticLockManagerProxy (T candidate, RecoverableContainer<T> cont)
     {
         super(cont.objectType(), cont.objectModel());
@@ -58,15 +58,15 @@ public class OptimisticLockManagerProxy<T> extends OptimisticLockManager
         _theObject = candidate;
         _container = cont;
     }
-    
+
     public OptimisticLockManagerProxy (T candidate, int ot)
     {
         super(ot, ObjectModel.SINGLE);
-        
+
         _theObject = candidate;
         _container = null;
     }
-      
+
     public OptimisticLockManagerProxy (T candidate, int ot, int om, RecoverableContainer<T> cont)
     {
         super(ot, om);
@@ -74,43 +74,43 @@ public class OptimisticLockManagerProxy<T> extends OptimisticLockManager
         _theObject = candidate;
         _container = cont;
     }
-       
+
     public OptimisticLockManagerProxy (T candidate, Uid u)
     {
         super(u, ObjectModel.SINGLE);
-        
+
         _theObject = candidate;
         _container = null;
     }
-    
+
     // if there's a Uid then this is a persistent object
-    
+
     public OptimisticLockManagerProxy (T candidate, Uid u, RecoverableContainer<T> cont)
     {
         this(candidate, u, ObjectModel.SINGLE, cont);
     }
-    
+
     public OptimisticLockManagerProxy (T candidate, Uid u, int om, RecoverableContainer<T> cont)
     {
         super(u, om);  // TODO make configurable through annotation
-        
+
         _theObject = candidate;
         _container = cont;
     }
-    
+
     public synchronized boolean save_state (OutputObjectState os, int ot)
     {
         if (!super.save_state(os, ot))
             return false;
 
         boolean res = false;
-        
+
         try
         {
             /*
              * Priority is for @SaveState and @RestoreState first.
              */
-            
+
             try
             {
                 res = saveState(os);
@@ -118,18 +118,18 @@ public class OptimisticLockManagerProxy<T> extends OptimisticLockManager
             catch (final InvalidAnnotationException ex)
             {
                 ex.printStackTrace();  // TODO logging
-                
+
                 return false;
             }
-    
+
             if (!res)  // no save_state/restore_state
             {
                 res = true;
-                
+
                 if (_fields == null)
                 {
                     Field[] fields = _theObject.getClass().getDeclaredFields(); // get all fields including private
-                
+
                     _fields = new ArrayList<Field>();
 
                     try
@@ -149,26 +149,26 @@ public class OptimisticLockManagerProxy<T> extends OptimisticLockManager
                         res = false;
                     }
                 }
-                
+
                 for (int i = 0; (i < _fields.size()) && res; i++)
                 {
                     Field afield = _fields.get(i);
-                    
+
                     synchronized (afield)
                     {
                         afield.setAccessible(true);
-        
+
                         /*
                          * TODO check that the user hasn't marked statics, finals etc.
                          */
-        
+
                         if (afield.getType().isPrimitive())
                         {
                             res = packPrimitive(afield, os);
                         }
                         else
                             res = packObjectType(afield, os);
-        
+
                         afield.setAccessible(false);
                     }
                 }
@@ -178,23 +178,23 @@ public class OptimisticLockManagerProxy<T> extends OptimisticLockManager
         {
             res = false;
         }
-        
+
         return res;
     }
-    
+
     public synchronized boolean restore_state (InputObjectState os, int ot)
     {
         if (!super.restore_state(os, ot))
             return false;
-        
+
         boolean res = false;
-        
+
         try
         {
             /*
              * Priority is for @SaveState and @RestoreState first.
              */
-            
+
             try
             {
                 res = restoreState(os);
@@ -202,26 +202,26 @@ public class OptimisticLockManagerProxy<T> extends OptimisticLockManager
             catch (final InvalidAnnotationException ex)
             {
                 ex.printStackTrace();  // TODO logging
-                
+
                 return false;
             }
-            
+
             if (!res)
             {
                 res = true;
-                
+
                 if (_fields == null)
                 {
                     Field[] fields = _theObject.getClass().getDeclaredFields(); // get all fields including private
-                    
+
                     _fields = new ArrayList<Field>();
-                    
+
                     try
                     {
                         for (Field afield : fields)
                         {
                             // ignore if flagged with @NotState
-                            
+
                             if (!afield.isAnnotationPresent(NotState.class) && (!THIS_NAME.equals(afield.getName())) &&
                                     !((afield.getModifiers() & Modifier.TRANSIENT) == Modifier.TRANSIENT))
                             {
@@ -232,30 +232,30 @@ public class OptimisticLockManagerProxy<T> extends OptimisticLockManager
                     catch (final Throwable ex)
                     {
                         ex.printStackTrace();
-                        
+
                         res = false;
                     }
                 }
-                
+
                 for (int i = 0; (i < _fields.size()) && res; i++)
                 {
                     Field afield = _fields.get(i);
-                    
+
                     synchronized (afield)
                     {
                         afield.setAccessible(true);
-                        
+
                         /*
                          * TODO check that the user hasn't marked statics, finals etc.
                          */
-                        
+
                         if (afield.getType().isPrimitive())
                         {
                             res = unpackPrimitive(afield, os);
                         }
                         else
                             res = unpackObjectType(afield, os);
-                        
+
                         afield.setAccessible(false);
                     }
                 }
@@ -264,33 +264,33 @@ public class OptimisticLockManagerProxy<T> extends OptimisticLockManager
         catch (final Throwable ex)
         {
             ex.printStackTrace();
-            
+
             res = false;
         }
-        
+
         return res;
     }
-    
+
     public String type ()
     {
         return "/StateManager/LockManager/OptimisticLockManager/"+_theObject.getClass().getCanonicalName();
     }
-    
+
     public final RecoverableContainer<T> getContainer ()
     {
-        return _container; 
+        return _container;
     }
-    
+
     private boolean packPrimitive (final Field afield, OutputObjectState os)
     {
         try
         {
             /*
              * TODO deal with arrays of primitive types.
-             * 
+             *
              * Workaround - provide saveState and restoreState annotations.
              */
-            
+
             if (afield.getType().equals(Boolean.TYPE))
                 os.packBoolean(afield.getBoolean(_theObject));
             else if (afield.getType().equals(Byte.TYPE))
@@ -318,10 +318,10 @@ public class OptimisticLockManagerProxy<T> extends OptimisticLockManager
         {
             return false;
         }
-        
+
         return true;
     }
-    
+
     private boolean packObjectType (final Field afield, OutputObjectState os)
     {
         try
@@ -352,28 +352,28 @@ public class OptimisticLockManagerProxy<T> extends OptimisticLockManager
         catch (final Exception ex)
         {
             ex.printStackTrace();
-            
+
             return false;
         }
-        
+
         return true;
     }
-    
+
     /*
      * This only works if this type and the types we're packing share the same container.
      * So we need a way to specify (or determine) the container for all transactional
      * instances.
      */
-    
+
     @SuppressWarnings("unchecked")
     private boolean packTransactionalInstance (final Field afield, OutputObjectState os)
     {
         Object ptr = null;
-        
+
         try
         {
             ptr = afield.get(_theObject);
-            
+
             if (ptr == null)
             {
                 os.packBoolean(false);
@@ -387,31 +387,31 @@ public class OptimisticLockManagerProxy<T> extends OptimisticLockManager
         catch (final ClassCastException ex)
         {
             System.err.println("Field "+ptr+" is not a transactional instance!");
-            
+
             return false;
         }
         catch (final Exception ex)
         {
             ex.printStackTrace();
-            
+
             return false;
         }
-        
+
         return true;
     }
-    
+
     private boolean saveState (OutputObjectState os) throws InvalidAnnotationException
     {
         boolean res = false;
-        
+
         checkValidity(_theObject.getClass());
-        
+
         if (_saveState != null)
         {
             try
             {
                 _saveState.invoke(_theObject, os);
-                
+
                 res = true;
             }
             catch (final Throwable ex)
@@ -419,22 +419,22 @@ public class OptimisticLockManagerProxy<T> extends OptimisticLockManager
                 ex.printStackTrace();
             }
         }
-        
+
         return res;
     }
-    
+
     private boolean restoreState (InputObjectState os) throws InvalidAnnotationException
     {
         boolean res = false;
-        
+
         checkValidity(_theObject.getClass());
-        
+
         if (_restoreState != null)
         {
             try
             {
                 _restoreState.invoke(_theObject, os);
-                
+
                 res = true;
             }
             catch (final Throwable ex)
@@ -442,19 +442,19 @@ public class OptimisticLockManagerProxy<T> extends OptimisticLockManager
                 ex.printStackTrace();
             }
         }
-        
+
         return res;
     }
-    
+
     private void checkValidity (Class<?> toCheck) throws InvalidAnnotationException
     {
         if (_checkSaveRestore)
             return;
-        
+
         try
         {
             Method[] methods = toCheck.getDeclaredMethods();
-    
+
             if (methods != null)
             {
                 for (Method mt : methods)
@@ -463,14 +463,14 @@ public class OptimisticLockManagerProxy<T> extends OptimisticLockManager
                     {
                         _saveState = mt;
                     }
-                    
+
                     if ((mt.isAnnotationPresent(RestoreState.class) && (_restoreState == null)))
                     {
                         _restoreState = mt;
                     }
                 }
             }
-            
+
             if ((_saveState != null) && (_restoreState != null))
             {
                 return;
@@ -480,7 +480,7 @@ public class OptimisticLockManagerProxy<T> extends OptimisticLockManager
                 if ((_restoreState == null) && (_saveState == null))
                 {
                     Class<?> superClass = toCheck.getSuperclass();
-    
+
                     if (superClass != Object.class)
                         checkValidity(superClass);
                 }
@@ -489,11 +489,11 @@ public class OptimisticLockManagerProxy<T> extends OptimisticLockManager
             }
         }
         finally
-        {      
+        {
             _checkSaveRestore = true;
         }
     }
-    
+
     private boolean unpackPrimitive (final Field afield, InputObjectState os)
     {
         try
@@ -522,25 +522,25 @@ public class OptimisticLockManagerProxy<T> extends OptimisticLockManager
         catch (final IOException ex)
         {
             ex.printStackTrace();
-            
+
             return false;
         }
         catch (final Exception ex)
         {
             ex.printStackTrace();
-            
+
             return false;
         }
-        
+
         return true;
     }
-    
+
     private boolean unpackObjectType (final Field afield, InputObjectState os)
     {
         try
         {
             // TODO arrays
-            
+
             if (afield.getType().equals(Boolean.class))
                 afield.set(_theObject, new Boolean(os.unpackBoolean()));
             else if (afield.getType().equals(Byte.class))
@@ -567,62 +567,62 @@ public class OptimisticLockManagerProxy<T> extends OptimisticLockManager
         catch (final IOException ex)
         {
             ex.printStackTrace();
-            
+
             return false;
         }
         catch (final Exception ex)
         {
             ex.printStackTrace();
-            
+
             return false;
         }
-        
+
         return true;
     }
-    
+
     /*
      * This only works if this type and the types we're packing share the same container.
      * So we need a way to specify (or determine) the container for all transactional
      * instances.
      */
-    
+
     private boolean unpackTransactionalInstance (final Field afield, InputObjectState os)
     {
         try
         {
             boolean ptr = os.unpackBoolean();
-            
+
             if (!ptr)
                 afield.set(_theObject, null);
             else
             {
                 Uid u = UidHelper.unpackFrom(os);
-                
+
                 afield.set(_theObject, _container.getHandle(u));
             }
         }
         catch (final Exception ex)
         {
             ex.printStackTrace();
-            
+
             return false;
         }
-        
+
         return true;
     }
-    
+
     // the object we are working on.
-    
+
     private T _theObject;
-    
+
     // the cached methods/fields
-    
+
     private boolean _checkSaveRestore = false;
     private Method _saveState = null;
     private Method _restoreState = null;
     private RecoverableContainer<T> _container = null;
-    
+
     private ArrayList<Field> _fields = null;
-    
+
     private static final String THIS_NAME = "this$0";  // stop us trying to pack this!
 }

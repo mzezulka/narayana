@@ -61,7 +61,7 @@ public class JVMStats
         } catch(InterruptedException e) {
 
         }
-        
+
         JBTM-555: use jboss profiler agent to invoke gc via jvmti.
         This requires native code, so tests using this will only
         execute on supported environments.

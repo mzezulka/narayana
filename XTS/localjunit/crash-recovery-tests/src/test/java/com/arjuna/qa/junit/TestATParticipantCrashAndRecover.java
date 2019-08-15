@@ -10,7 +10,7 @@ public class TestATParticipantCrashAndRecover extends BaseCrashTest {
 	public TestATParticipantCrashAndRecover() {
 		scriptName = "ATParticipantCrashAndRecover";
 	}
-	
+
 	@Ignore("Not complete")
 	@Test
 	public void SingleParticipantPrepareAndCommit() throws Exception {
@@ -18,7 +18,7 @@ public class TestATParticipantCrashAndRecover extends BaseCrashTest {
 		String testClass = "org.jboss.jbossts.xts.servicetests.test.at.SingleParticipantPrepareAndCommitTest";
 		runTest(testClass);
 	}
-	
+
 	@Ignore("Not complete")
 	@Test
 	public void MultiParticipantPrepareAndCommitTest() throws Exception {
@@ -26,7 +26,7 @@ public class TestATParticipantCrashAndRecover extends BaseCrashTest {
 		String testClass = "org.jboss.jbossts.xts.servicetests.test.at.MultiParticipantPrepareAndCommitTest";
 		runTest(testClass);
 	}
-	
+
 	@Ignore("Not complete")
 	@Test
 	public void MultiServicePrepareAndCommitTest() throws Exception {

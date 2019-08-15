@@ -108,7 +108,7 @@ public class RecoveryManager
 
     public static synchronized final RecoveryManager manager () throws IllegalArgumentException
     {
-   	if (_recoveryManager == null)    		
+   	if (_recoveryManager == null)
    		return manager(RecoveryManager.INDIRECT_MANAGEMENT);
     return _recoveryManager;
     }
@@ -329,17 +329,17 @@ public class RecoveryManager
 
     /**
      * Remove all modules.
-     * 
+     *
      * WARNING: Use with extreme care as this will stop recovery from doing anything!
      */
-    
+
     public final void removeAllModules (boolean waitOnScan)
     {
         checkState();
-        
+
         _theImple.removeAllModules(waitOnScan);
     }
-    
+
     /**
      * Obtain a snapshot list of available recovery modules.
      *

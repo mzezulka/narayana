@@ -24,7 +24,7 @@ package org.jboss.stm;
 
 /**
  * Thrown when an error occurs during lock acquisition or release.
- * 
+ *
  * @author marklittle
  *
  */
@@ -35,6 +35,6 @@ public class LockException extends RuntimeException
     {
         super(reason);
     }
-    
+
     private static final long serialVersionUID = 1L;
 }

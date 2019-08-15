@@ -49,19 +49,19 @@ import junit.framework.TestCase;
  */
 
 public class ArrayIntUnitTest extends TestCase
-{   
+{
     @Transactional
     public interface Atomic
     {
         public void change (int index, int value) throws Exception;
-        
+
         public void set (int index, int value) throws Exception;
-        
+
         public int get (int index) throws Exception;
     }
-    
+
     public class ArrayType implements Atomic
-    {   
+    {
         @ReadLock
         public int get (int index) throws Exception
         {
@@ -73,7 +73,7 @@ public class ArrayIntUnitTest extends TestCase
         {
             state[index] = value;
         }
-        
+
         @WriteLock
         public void change (int index, int value) throws Exception
         {
@@ -82,9 +82,9 @@ public class ArrayIntUnitTest extends TestCase
 
         private int[] state = new int[10];  // ignore error checking for now
     }
-    
+
     public class MultiArrayType implements Atomic
-    {   
+    {
         @ReadLock
         public int get (int index) throws Exception
         {
@@ -96,7 +96,7 @@ public class ArrayIntUnitTest extends TestCase
         {
             state[0][index] = value;
         }
-        
+
         @WriteLock
         public void change (int index, int value) throws Exception
         {
@@ -105,7 +105,7 @@ public class ArrayIntUnitTest extends TestCase
 
         private int[][] state = new int[10][10];  // ignore error checking for now
     }
-    
+
     public void testArrayType () throws Exception
     {
         RecoverableContainer<Atomic> theContainer = new RecoverableContainer<Atomic>();
@@ -113,7 +113,7 @@ public class ArrayIntUnitTest extends TestCase
         boolean success = true;
         Atomic obj = null;
         int index = 5; // arbitrary value
-        
+
         try
         {
             obj = theContainer.enlist(basic);
@@ -121,33 +121,33 @@ public class ArrayIntUnitTest extends TestCase
         catch (final Throwable ex)
         {
             ex.printStackTrace();
-            
+
             success = false;
         }
-        
+
         assertTrue(success);
-        
+
         AtomicAction a = new AtomicAction();
-        
+
         a.begin();
-        
+
         obj.set(index, 1234);
-        
+
         a.commit();
 
         assertEquals(obj.get(index), 1234);
-        
+
         a = new AtomicAction();
 
         a.begin();
 
         obj.change(index, 1);
-        
+
         a.abort();
 
         assertEquals(obj.get(index), 1234);
     }
-    
+
     public void testMultiArrayType () throws Exception
     {
         RecoverableContainer<Atomic> theContainer = new RecoverableContainer<Atomic>();
@@ -155,7 +155,7 @@ public class ArrayIntUnitTest extends TestCase
         boolean success = true;
         Atomic obj = null;
         int index = 5; // arbitrary value
-        
+
         try
         {
             obj = theContainer.enlist(basic);
@@ -163,28 +163,28 @@ public class ArrayIntUnitTest extends TestCase
         catch (final Throwable ex)
         {
             ex.printStackTrace();
-            
+
             success = false;
         }
-        
+
         assertTrue(success);
-        
+
         AtomicAction a = new AtomicAction();
-        
+
         a.begin();
-        
+
         obj.set(index, 1234);
-        
+
         a.commit();
 
         assertEquals(obj.get(index), 1234);
-        
+
         a = new AtomicAction();
 
         a.begin();
 
         obj.change(index, 1);
-        
+
         a.abort();
 
         assertEquals(obj.get(index), 1234);

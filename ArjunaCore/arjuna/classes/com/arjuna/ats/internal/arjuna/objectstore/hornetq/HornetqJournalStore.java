@@ -153,7 +153,7 @@ public class HornetqJournalStore
             journal.appendDeleteRecord(id, syncDeletes);
 
             return true;
-        } catch (IllegalStateException e) { 
+        } catch (IllegalStateException e) {
             tsLogger.i18NLogger.warn_hornetqobjectstore_remove_state_exception(e);
 
             return false;

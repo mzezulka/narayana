@@ -102,9 +102,9 @@ public class TestASRecovery
             if (!startTest(com.arjuna.ats.jta.TransactionManager.transactionManager().getTransaction()))
                 ut.rollback();
             else
-            {                
+            {
                 ut.commit();
-                
+
                 return !expectException;
             }
         }
@@ -112,7 +112,7 @@ public class TestASRecovery
         {
             if (expectException)
                 return true; // TODO should check each specific exception type
-            
+
             e.printStackTrace();
         }
 

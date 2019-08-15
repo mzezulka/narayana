@@ -47,17 +47,17 @@ public class InteropTestCase extends TestCase
      * The log message suffix.
      */
     private static final String LOG_MESSAGE_SUFFIX = "</log:content></log:message>" ;
-    
+
     /**
      * The URI of the participant.
      */
     private String participantURI ;
-    
+
     /**
      * The conversation id for the test.
      */
     private String conversationId ;
-    
+
     /**
      * The test timeout value.
      */
@@ -66,7 +66,7 @@ public class InteropTestCase extends TestCase
      * The asynchronous test flag.
      */
     private boolean asyncTest ;
-    
+
     /**
      * Set the participant URI.
      * @param participantURI The participant URI.
@@ -75,7 +75,7 @@ public class InteropTestCase extends TestCase
     {
         this.participantURI = participantURI ;
     }
-    
+
     /**
      * Get the participant URI.
      * @return The participant URI.
@@ -84,7 +84,7 @@ public class InteropTestCase extends TestCase
     {
         return participantURI ;
     }
-    
+
     /**
      * Set the test timeout value.
      * testTimeout The test timeout value.
@@ -93,7 +93,7 @@ public class InteropTestCase extends TestCase
     {
         this.testTimeout = testTimeout ;
     }
-    
+
     /**
      * Get the asynchronous test flag.
      * @return The asynchronous test flag.
@@ -102,7 +102,7 @@ public class InteropTestCase extends TestCase
     {
         return asyncTest ;
     }
-    
+
     /**
      * Set the asynchronous test flag.
      * asyncTest The asynchronous test flag.
@@ -111,7 +111,7 @@ public class InteropTestCase extends TestCase
     {
         this.asyncTest = asyncTest ;
     }
-    
+
     /**
      * Get the test timeout value.
      * @return The test timeout value.
@@ -120,7 +120,7 @@ public class InteropTestCase extends TestCase
     {
         return testTimeout ;
     }
-    
+
     /**
      * Get the conversation id.
      * @return The conversation id.
@@ -129,14 +129,14 @@ public class InteropTestCase extends TestCase
     {
         return conversationId ;
     }
-    
+
     protected void setConversationId(String conversationId) {
         this.conversationId = conversationId;
     }
-    
+
     /**
      * Wraps the run method to include logging of message interactions.
-     * @param result The test result. 
+     * @param result The test result.
      */
     public void run(final TestResult result)
     {
@@ -174,7 +174,7 @@ public class InteropTestCase extends TestCase
             }
         }
     }
-    
+
     /**
      * Return the string represenation of this test.
      * @return the string representation.

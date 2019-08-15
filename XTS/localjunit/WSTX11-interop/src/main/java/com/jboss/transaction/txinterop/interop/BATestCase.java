@@ -47,7 +47,7 @@ public class BATestCase extends InteropTestCase
      * The service URI of the participant.
      */
     private static final String SOURCE_PARTICIPANT_URI ;
-    
+
     /**
      * Construct the named test case.
      */
@@ -75,10 +75,10 @@ public class BATestCase extends InteropTestCase
             final String serviceURI = ProxyURIRewriting.rewriteURI(conversationId, getParticipantURI()) ;
             final CoordinationContextType context = BAInteropUtil.createAtomicOutcomeCoordinationContext(getSourceCoordinatorURI()) ;
             getParticipantStub().cancel(serviceURI, context) ;
-            
+
             final BusinessActivityTerminator terminator = BAInteropUtil.registerTerminator(context, context.getIdentifier().getValue()) ;
             terminator.cancel() ;
-            
+
             state.waitForCompletion(0) ;
         }
         finally
@@ -104,9 +104,9 @@ public class BATestCase extends InteropTestCase
             final String serviceURI = ProxyURIRewriting.rewriteURI(conversationId, getParticipantURI()) ;
             final CoordinationContextType context = BAInteropUtil.createAtomicOutcomeCoordinationContext(getSourceCoordinatorURI()) ;
             getParticipantStub().exit(serviceURI, context) ;
-            
+
             state.waitForCompletion(getTestTimeout()) ;
-            
+
             final BusinessActivityTerminator terminator = BAInteropUtil.registerTerminator(context, context.getIdentifier().getValue()) ;
             terminator.cancel() ;
         }
@@ -133,9 +133,9 @@ public class BATestCase extends InteropTestCase
             final String serviceURI = ProxyURIRewriting.rewriteURI(conversationId, getParticipantURI()) ;
             final CoordinationContextType context = BAInteropUtil.createAtomicOutcomeCoordinationContext(getSourceCoordinatorURI()) ;
             getParticipantStub().fail(serviceURI, context) ;
-            
+
             state.waitForCompletion(getTestTimeout()) ;
-            
+
             final BusinessActivityTerminator terminator = BAInteropUtil.registerTerminator(context, context.getIdentifier().getValue()) ;
             terminator.cancel() ;
         }
@@ -162,9 +162,9 @@ public class BATestCase extends InteropTestCase
             final String serviceURI = ProxyURIRewriting.rewriteURI(conversationId, getParticipantURI()) ;
             final CoordinationContextType context = BAInteropUtil.createAtomicOutcomeCoordinationContext(getSourceCoordinatorURI()) ;
             getParticipantStub().cannotComplete(serviceURI, context) ;
-            
+
             state.waitForCompletion(getTestTimeout()) ;
-            
+
             final BusinessActivityTerminator terminator = BAInteropUtil.registerTerminator(context, context.getIdentifier().getValue()) ;
             terminator.cancel() ;
         }
@@ -193,10 +193,10 @@ public class BATestCase extends InteropTestCase
             getParticipantStub().participantCompleteClose(serviceURI, context) ;
 
             assertTrue("Participant did not issue Completed", state.waitForParticipantCompleted(getTestTimeout())) ;
-            
+
             final BusinessActivityTerminator terminator = BAInteropUtil.registerTerminator(context, context.getIdentifier().getValue()) ;
             terminator.close() ;
-            
+
             state.waitForCompletion(0) ;
         }
         finally
@@ -222,11 +222,11 @@ public class BATestCase extends InteropTestCase
             final String serviceURI = ProxyURIRewriting.rewriteURI(conversationId, getParticipantURI()) ;
             final CoordinationContextType context = BAInteropUtil.createAtomicOutcomeCoordinationContext(getSourceCoordinatorURI()) ;
             getParticipantStub().coordinatorCompleteClose(serviceURI, context) ;
-            
+
             final BusinessActivityTerminator terminator = BAInteropUtil.registerTerminator(context, context.getIdentifier().getValue()) ;
             terminator.complete() ;
             terminator.close() ;
-            
+
             state.waitForCompletion(0) ;
         }
         finally
@@ -247,7 +247,7 @@ public class BATestCase extends InteropTestCase
      * completion coordinator. unfortunately, since the endpoint nwo contains service and port metadata the
      * send fails. so this test has had to be decommissioned.
      */
-    
+
     /*
     public void testBA1_7()
         throws Exception
@@ -260,9 +260,9 @@ public class BATestCase extends InteropTestCase
             final String serviceURI = ProxyURIRewriting.rewriteURI(conversationId, getParticipantURI()) ;
             final CoordinationContextType context = BAInteropUtil.createAtomicOutcomeCoordinationContext(getSourceCoordinatorURI()) ;
             getParticipantStub().unsolicitedComplete(serviceURI, context) ;
-            
+
             state.waitForCompletion(getTestTimeout()) ;
-            
+
             final BusinessActivityTerminator terminator = BAInteropUtil.registerTerminator(context, context.getIdentifier().getValue()) ;
             terminator.cancel() ;
         }
@@ -292,10 +292,10 @@ public class BATestCase extends InteropTestCase
             getParticipantStub().participantCompleteClose(serviceURI, context) ;
 
             assertTrue("Participant did not issue Completed", state.waitForParticipantCompleted(getTestTimeout())) ;
-            
+
             final BusinessActivityTerminator terminator = BAInteropUtil.registerTerminator(context, context.getIdentifier().getValue()) ;
             terminator.cancel() ;
-            
+
             state.waitForCompletion(0) ;
         }
         finally
@@ -323,10 +323,10 @@ public class BATestCase extends InteropTestCase
             getParticipantStub().compensationFail(serviceURI, context) ;
 
             assertTrue("Participant did not issue Completed", state.waitForParticipantCompleted(getTestTimeout())) ;
-            
+
             final BusinessActivityTerminator terminator = BAInteropUtil.registerTerminator(context, context.getIdentifier().getValue()) ;
             terminator.cancel() ;
-            
+
             state.waitForCompletion(getTestTimeout()) ;
         }
         finally
@@ -352,12 +352,12 @@ public class BATestCase extends InteropTestCase
             final String serviceURI = ProxyURIRewriting.rewriteURI(conversationId, getParticipantURI()) ;
             final CoordinationContextType context = BAInteropUtil.createAtomicOutcomeCoordinationContext(getSourceCoordinatorURI()) ;
             getParticipantStub().participantCancelCompletedRace(serviceURI, context) ;
-            
+
             assertTrue("Participant did not issue Completed", state.waitForParticipantCompleted(getTestTimeout())) ;
-            
+
             final BusinessActivityTerminator terminator = BAInteropUtil.registerTerminator(context, context.getIdentifier().getValue()) ;
             terminator.cancel() ;
-            
+
             state.waitForCompletion(getTestTimeout()) ;
         }
         finally
@@ -383,11 +383,11 @@ public class BATestCase extends InteropTestCase
             final String serviceURI = ProxyURIRewriting.rewriteURI(conversationId, getParticipantURI()) ;
             final CoordinationContextType context = BAInteropUtil.createAtomicOutcomeCoordinationContext(getSourceCoordinatorURI()) ;
             getParticipantStub().messageLossAndRecovery(serviceURI, context) ;
-            
+
             final BusinessActivityTerminator terminator = BAInteropUtil.registerTerminator(context, context.getIdentifier().getValue()) ;
             terminator.complete() ;
             terminator.cancel() ;
-            
+
             state.waitForCompletion(0) ;
         }
         finally
@@ -413,10 +413,10 @@ public class BATestCase extends InteropTestCase
 //            final String serviceURI = ProxyURIRewriting.rewriteURI(conversationId, getParticipantURI()) ;
 //            final CoordinationContextType context = BAInteropUtil.createMixedOutcomeCoordinationContext(getSourceCoordinatorURI()) ;
 //            getParticipantStub().commit(serviceURI, context) ;
-//            
+//
 //            final CompletionCoordinatorParticipant participant = BAInteropUtil.registerCompletion(context, context.getIdentifier().getValue()) ;
 //            participant.commit() ;
-//            
+//
 //            state.waitForCompletion(getTestTimeout()) ;
 //        }
 //        finally
@@ -434,7 +434,7 @@ public class BATestCase extends InteropTestCase
     {
         return SOURCE_COORDINATOR_URI ;
     }
-    
+
     /**
      * Get the source participant URI.
      * @return The source participant uri.
@@ -443,7 +443,7 @@ public class BATestCase extends InteropTestCase
     {
         return SOURCE_PARTICIPANT_URI ;
     }
-    
+
     /**
      * Get the participant stub for the test.
      * @return The participant stub.
@@ -452,7 +452,7 @@ public class BATestCase extends InteropTestCase
     {
         return (getAsyncTest() ? AsyncParticipantStub.getParticipantStub() : SyncParticipantStub.getParticipantStub()) ;
     }
-    
+
     static
     {
         final ServiceRegistry serviceRegistry = ServiceRegistry.getRegistry() ;

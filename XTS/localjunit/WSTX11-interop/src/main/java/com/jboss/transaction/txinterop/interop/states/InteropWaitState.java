@@ -33,7 +33,7 @@ public class InteropWaitState extends BaseState
      * The action count.
      */
     private int count ;
-    
+
     /**
      * Construct the conversation state.
      * @param lastAction The last action of the conversation.
@@ -42,7 +42,7 @@ public class InteropWaitState extends BaseState
     {
         this(lastAction, 1) ;
     }
-    
+
     /**
      * Construct the conversation state.
      * @param lastAction The last action of the conversation.
@@ -53,7 +53,7 @@ public class InteropWaitState extends BaseState
         this.lastAction = lastAction ;
         this.count = count ;
     }
-    
+
     /**
      * Handle the next action in the sequence.
      * @param action The SOAP action.

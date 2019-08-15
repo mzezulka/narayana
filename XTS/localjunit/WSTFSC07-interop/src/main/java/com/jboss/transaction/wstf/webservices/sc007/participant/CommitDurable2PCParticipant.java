@@ -38,5 +38,5 @@ public class CommitDurable2PCParticipant extends ParticipantAdapter implements D
         throws WrongStateException, SystemException
     {
         return new Prepared() ;
-    }    
+    }
 }

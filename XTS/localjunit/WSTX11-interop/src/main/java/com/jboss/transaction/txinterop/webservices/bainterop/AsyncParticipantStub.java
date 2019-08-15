@@ -42,7 +42,7 @@ public class AsyncParticipantStub implements ParticipantStub
      * The participant stub singletong.
      */
     private static final ParticipantStub PARTICIPANT_STUB = new AsyncParticipantStub() ;
-    
+
     /**
      * Get the participant stub singleton.
      * @return The participant stub singleton.
@@ -51,7 +51,7 @@ public class AsyncParticipantStub implements ParticipantStub
     {
         return PARTICIPANT_STUB ;
     }
-    
+
     /**
      * Send a cancel request.
      * @param serviceURI The target service URI.
@@ -64,7 +64,7 @@ public class AsyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         final RequestCallback callback = new RequestCallback() ;
         final BAInitiatorProcessor initiator = BAInitiatorProcessor.getInitiator() ;
         initiator.registerCallback(messageId, callback) ;
@@ -77,10 +77,10 @@ public class AsyncParticipantStub implements ParticipantStub
         {
             initiator.removeCallback(messageId) ;
         }
-        
+
         handleCallback(callback) ;
     }
-    
+
     /**
      * Send a exit request.
      * @param serviceURI The target service URI.
@@ -93,7 +93,7 @@ public class AsyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         final RequestCallback callback = new RequestCallback() ;
         final BAInitiatorProcessor initiator = BAInitiatorProcessor.getInitiator() ;
         initiator.registerCallback(messageId, callback) ;
@@ -106,10 +106,10 @@ public class AsyncParticipantStub implements ParticipantStub
         {
             initiator.removeCallback(messageId) ;
         }
-        
+
         handleCallback(callback) ;
     }
-    
+
     /**
      * Send a fail request.
      * @param serviceURI The target service URI.
@@ -122,7 +122,7 @@ public class AsyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         final RequestCallback callback = new RequestCallback() ;
         final BAInitiatorProcessor initiator = BAInitiatorProcessor.getInitiator() ;
         initiator.registerCallback(messageId, callback) ;
@@ -135,10 +135,10 @@ public class AsyncParticipantStub implements ParticipantStub
         {
             initiator.removeCallback(messageId) ;
         }
-        
+
         handleCallback(callback) ;
     }
-    
+
     /**
      * Send a cannotComplete request.
      * @param serviceURI The target service URI.
@@ -151,7 +151,7 @@ public class AsyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         final RequestCallback callback = new RequestCallback() ;
         final BAInitiatorProcessor initiator = BAInitiatorProcessor.getInitiator() ;
         initiator.registerCallback(messageId, callback) ;
@@ -164,10 +164,10 @@ public class AsyncParticipantStub implements ParticipantStub
         {
             initiator.removeCallback(messageId) ;
         }
-        
+
         handleCallback(callback) ;
     }
-    
+
     /**
      * Send a participantCompleteClose request.
      * @param serviceURI The target service URI.
@@ -180,7 +180,7 @@ public class AsyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         final RequestCallback callback = new RequestCallback() ;
         final BAInitiatorProcessor initiator = BAInitiatorProcessor.getInitiator() ;
         initiator.registerCallback(messageId, callback) ;
@@ -193,10 +193,10 @@ public class AsyncParticipantStub implements ParticipantStub
         {
             initiator.removeCallback(messageId) ;
         }
-        
+
         handleCallback(callback) ;
     }
-    
+
     /**
      * Send a coordinatorCompleteClose request.
      * @param serviceURI The target service URI.
@@ -209,7 +209,7 @@ public class AsyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         final RequestCallback callback = new RequestCallback() ;
         final BAInitiatorProcessor initiator = BAInitiatorProcessor.getInitiator() ;
         initiator.registerCallback(messageId, callback) ;
@@ -222,10 +222,10 @@ public class AsyncParticipantStub implements ParticipantStub
         {
             initiator.removeCallback(messageId) ;
         }
-        
+
         handleCallback(callback) ;
     }
-    
+
     /**
      * Send a unsolicitedComplete request.
      * @param serviceURI The target service URI.
@@ -238,7 +238,7 @@ public class AsyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         final RequestCallback callback = new RequestCallback() ;
         final BAInitiatorProcessor initiator = BAInitiatorProcessor.getInitiator() ;
         initiator.registerCallback(messageId, callback) ;
@@ -251,10 +251,10 @@ public class AsyncParticipantStub implements ParticipantStub
         {
             initiator.removeCallback(messageId) ;
         }
-        
+
         handleCallback(callback) ;
     }
-    
+
     /**
      * Send a compensate request.
      * @param serviceURI The target service URI.
@@ -267,7 +267,7 @@ public class AsyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         final RequestCallback callback = new RequestCallback() ;
         final BAInitiatorProcessor initiator = BAInitiatorProcessor.getInitiator() ;
         initiator.registerCallback(messageId, callback) ;
@@ -280,10 +280,10 @@ public class AsyncParticipantStub implements ParticipantStub
         {
             initiator.removeCallback(messageId) ;
         }
-        
+
         handleCallback(callback) ;
     }
-    
+
     /**
      * Send a compensationFail request.
      * @param serviceURI The target service URI.
@@ -296,7 +296,7 @@ public class AsyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         final RequestCallback callback = new RequestCallback() ;
         final BAInitiatorProcessor initiator = BAInitiatorProcessor.getInitiator() ;
         initiator.registerCallback(messageId, callback) ;
@@ -309,10 +309,10 @@ public class AsyncParticipantStub implements ParticipantStub
         {
             initiator.removeCallback(messageId) ;
         }
-        
+
         handleCallback(callback) ;
     }
-    
+
     /**
      * Send a participantCancelCompletedRace request.
      * @param serviceURI The target service URI.
@@ -325,7 +325,7 @@ public class AsyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         final RequestCallback callback = new RequestCallback() ;
         final BAInitiatorProcessor initiator = BAInitiatorProcessor.getInitiator() ;
         initiator.registerCallback(messageId, callback) ;
@@ -338,10 +338,10 @@ public class AsyncParticipantStub implements ParticipantStub
         {
             initiator.removeCallback(messageId) ;
         }
-        
+
         handleCallback(callback) ;
     }
-    
+
     /**
      * Send a messageLossAndRecovery request.
      * @param serviceURI The target service URI.
@@ -354,7 +354,7 @@ public class AsyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         final RequestCallback callback = new RequestCallback() ;
         final BAInitiatorProcessor initiator = BAInitiatorProcessor.getInitiator() ;
         initiator.registerCallback(messageId, callback) ;
@@ -367,10 +367,10 @@ public class AsyncParticipantStub implements ParticipantStub
         {
             initiator.removeCallback(messageId) ;
         }
-        
+
         handleCallback(callback) ;
     }
-    
+
     /**
      * Send a mixedOutcome request.
      * @param serviceURI The target service URI.
@@ -383,7 +383,7 @@ public class AsyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         final RequestCallback callback = new RequestCallback() ;
         final BAInitiatorProcessor initiator = BAInitiatorProcessor.getInitiator() ;
         initiator.registerCallback(messageId, callback) ;
@@ -396,7 +396,7 @@ public class AsyncParticipantStub implements ParticipantStub
         {
             initiator.removeCallback(messageId) ;
         }
-        
+
         handleCallback(callback) ;
     }
 
@@ -421,7 +421,7 @@ public class AsyncParticipantStub implements ParticipantStub
             throw callback.getSoapFault() ;
         }
     }
-    
+
     /**
      * The request callback class.
      */
@@ -435,7 +435,7 @@ public class AsyncParticipantStub implements ParticipantStub
          * The SOAP fault response.
          */
         private SoapFault soapFault ;
-        
+
         /**
          * A response.
          * @param map The current addressing context.
@@ -454,7 +454,7 @@ public class AsyncParticipantStub implements ParticipantStub
         {
             this.soapFault = soapFault ;
         }
-        
+
         /**
          * Was a response received?
          * @return true if a response was received, false otherwise.
@@ -463,7 +463,7 @@ public class AsyncParticipantStub implements ParticipantStub
         {
             return response ;
         }
-        
+
         /**
          * Get the SOAP fault.
          * @return The SOAP fault or null.

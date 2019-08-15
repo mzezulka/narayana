@@ -182,7 +182,7 @@ public class SocketServer implements Runnable {
     }
 
     /* running to accept client connection and handle the message.
-     * 
+     *
      */
     public void run() {
         while(!shutdown) {
@@ -192,14 +192,14 @@ public class SocketServer implements Runnable {
                 Client client = new Client(this, clientSocket);
                 clients.add(client);
                 Thread thread = new Thread(client);
-                threads.add(thread);                
+                threads.add(thread);
                 thread.start();
             } catch(SocketException e) {
             } catch(IOException e) {
                 log.error("run server failed with " + e);
             }
         }
-    }  
+    }
 }
 
 class Client implements Runnable {
@@ -321,7 +321,7 @@ class Client implements Runnable {
                     }
                 }
             }
-            socket.shutdownInput();   
+            socket.shutdownInput();
             isClose = true;
         } catch (EOFException e) {
             log.debug("client " + socket + " close");
@@ -330,7 +330,7 @@ class Client implements Runnable {
             isClose = true;
         } catch (IOException e) {
             log.error("client " + socket + " run failed with " + e);
-        }       
+        }
     }
 }
 
@@ -366,7 +366,7 @@ class ClientContext {
     }
 
     public void setResponseMonitor(ResponseMonitor responseMonitor) {
-        this.responseMonitor = responseMonitor;        
+        this.responseMonitor = responseMonitor;
     }
 
     public ResponseMonitor getResponseMonitor() {

@@ -37,14 +37,14 @@ public class SyncParticipantClient
      * The client singleton.
      */
     private static final SyncParticipantClient CLIENT = new SyncParticipantClient() ;
-    
+
     /**
      * Construct the interop synch client.
      */
     private SyncParticipantClient()
     {
     }
-    
+
     /**
      * Send a cancel request.
      * @param coordinationContext The coordination context.
@@ -56,7 +56,7 @@ public class SyncParticipantClient
         throws SoapFault, IOException
     {
     }
-    
+
     /**
      * Send a exit request.
      * @param coordinationContext The coordination context.
@@ -68,7 +68,7 @@ public class SyncParticipantClient
         throws SoapFault, IOException
     {
     }
-    
+
     /**
      * Send a fail request.
      * @param coordinationContext The coordination context.
@@ -80,7 +80,7 @@ public class SyncParticipantClient
         throws SoapFault, IOException
     {
     }
-    
+
     /**
      * Send a cannot complete request.
      * @param coordinationContext The coordination context.
@@ -92,7 +92,7 @@ public class SyncParticipantClient
         throws SoapFault, IOException
     {
     }
-    
+
     /**
      * Send a participant complete close request.
      * @param coordinationContext The coordination context.
@@ -104,7 +104,7 @@ public class SyncParticipantClient
         throws SoapFault, IOException
     {
     }
-    
+
     /**
      * Send a coordinator complete close request.
      * @param coordinationContext The coordination context.
@@ -116,7 +116,7 @@ public class SyncParticipantClient
         throws SoapFault, IOException
     {
     }
-    
+
     /**
      * Send a unsolicited complete request.
      * @param coordinationContext The coordination context.
@@ -128,7 +128,7 @@ public class SyncParticipantClient
         throws SoapFault, IOException
     {
     }
-    
+
     /**
      * Send a compensate request.
      * @param coordinationContext The coordination context.
@@ -140,7 +140,7 @@ public class SyncParticipantClient
         throws SoapFault, IOException
     {
     }
-    
+
     /**
      * Send a compensation fail request.
      * @param coordinationContext The coordination context.
@@ -152,7 +152,7 @@ public class SyncParticipantClient
         throws SoapFault, IOException
     {
     }
-    
+
     /**
      * Send a participant cancel completed race request.
      * @param coordinationContext The coordination context.
@@ -164,7 +164,7 @@ public class SyncParticipantClient
         throws SoapFault, IOException
     {
     }
-    
+
     /**
      * Send a message loss and recovery request.
      * @param coordinationContext The coordination context.
@@ -176,7 +176,7 @@ public class SyncParticipantClient
         throws SoapFault, IOException
     {
     }
-    
+
     /**
      * Send a mixed outcome request.
      * @param coordinationContext The coordination context.
@@ -188,7 +188,7 @@ public class SyncParticipantClient
         throws SoapFault, IOException
     {
     }
-    
+
     /**
      * Get the Interop client singleton.
      * @return The Interop client singleton.

@@ -9,7 +9,7 @@ public class TestATSubordinateCrashDuringCommit extends BaseCrashTest {
 	public TestATSubordinateCrashDuringCommit() {
 		scriptName = "ATSubordinateCrashDuringCommit";
 	}
-	
+
 	@Test
 	public void subordinateMultiParticipantPrepareAndCommitTest() throws Exception {
 		testName = "subordinate.MultiParticipantPrepareAndCommitTest";

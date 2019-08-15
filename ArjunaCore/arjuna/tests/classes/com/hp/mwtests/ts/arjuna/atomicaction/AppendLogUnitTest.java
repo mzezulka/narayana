@@ -31,12 +31,12 @@ public class AppendLogUnitTest
     {
         AppendLogTransaction alog1 = new AppendLogTransaction();
         AppendLogTransaction alog2 = new AppendLogTransaction();
-        
+
         alog1.begin();
         alog2.begin();
-        
+
         alog1.setLoggedTransaction(alog2);
-        
+
         alog2.commit();
         alog1.commit();
     }

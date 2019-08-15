@@ -33,14 +33,14 @@ public interface Command {
 
     /**
      * Get an quickstart of the usage of the command.
-     * 
+     *
      * @return A string showing the usage of the command
      */
     public String getQuickstartUsage();
 
     /**
      * This will initialize the arguments for the command, if the arguments are not sufficient it will raise an exception.
-     * 
+     *
      * @param args The arguments as received on the command line
      * @throws IncompatibleArgsException If the arguments are invalid
      */
@@ -48,11 +48,11 @@ public interface Command {
 
     /**
      * Issue the command on the mbean server connection
-     * 
+     *
      * @param configuration TODO
      * @param beanServerConnection The connection to use
      * @param blacktieAdmin The mbean to user
-     * 
+     *
      * @throws InstanceNotFoundException If the mbean does not exist
      * @throws MBeanException If there is an mbean error
      * @throws ReflectionException Reflective errors

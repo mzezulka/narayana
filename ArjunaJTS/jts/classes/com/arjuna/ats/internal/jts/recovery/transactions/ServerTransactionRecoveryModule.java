@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -57,7 +57,7 @@ public class ServerTransactionRecoveryModule extends TransactionRecoveryModule
 	if (jtsLogger.logger.isDebugEnabled()) {
         jtsLogger.logger.debug("ServerTransactionRecoveryModule created");
     }
-	
+
 	if (_transactionType == null)
 	    _transactionType = ServerTransaction.typeName();
     }
@@ -77,14 +77,14 @@ public class ServerTransactionRecoveryModule extends TransactionRecoveryModule
 	//super.periodicWorkSecondPass();
 
 
-	
+
 	// Process the Vector of transaction Uids
-	
+
 	Enumeration transactionUidEnum = _transactionUidVector.elements();
 	while (transactionUidEnum.hasMoreElements())
 	    {
 		Uid currentUid = (Uid) transactionUidEnum.nextElement();
-		
+
 		try
 		    {
 		     // Is the intentions list still there? Is this the best way to check?
@@ -107,7 +107,7 @@ public class ServerTransactionRecoveryModule extends TransactionRecoveryModule
 	    }
 
     }
-    
+
     /**
      * Set-up routine
      */
@@ -122,32 +122,32 @@ public class ServerTransactionRecoveryModule extends TransactionRecoveryModule
 
 
     protected void recoverTransaction (Uid tranUid)
-    { 
+    {
 	if (jtsLogger.logger.isDebugEnabled()) {
         jtsLogger.logger.debug("ServerTransactionRecoveryModule.recoverTransaction()" + tranUid + ")");
     }
        Status currentStatus = Status.StatusUnknown;
-       
+
        CachedRecoveredTransaction cachedRecoveredTransaction = new CachedRecoveredTransaction (tranUid, _transactionType);
-       
+
        currentStatus = cachedRecoveredTransaction.get_status();
-      
+
        if (jtsLogger.logger.isDebugEnabled()) {
            jtsLogger.logger.debug("Activated transaction "+tranUid+" status = "+Utility.stringStatus(currentStatus));
        }
        // but first check that the original transaction isn't in mid-flight
-       if ( cachedRecoveredTransaction.originalBusy() && (currentStatus != Status.StatusPrepared) ) 
+       if ( cachedRecoveredTransaction.originalBusy() && (currentStatus != Status.StatusPrepared) )
 	   {
 	       if (jtsLogger.logger.isDebugEnabled()) {
                jtsLogger.logger.debug("Transaction "+tranUid+" still busy");
            }
 	       return;
 	   }
-       
+
        cachedRecoveredTransaction.replayPhase2();
        cachedRecoveredTransaction = null;
     }
-	
+
 }
 
 

@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -66,11 +66,11 @@ import com.arjuna.mw.wsas.exceptions.*;
  * The user portion of the coordinator API. An implementation of this interface
  * presents each thread with the capability to create and manage coordinators.
  * It is very similar to the OTS Current and JTA UserTransaction.
- * 
+ *
  * @author Mark Little (mark.little@arjuna.com)
  * @version $Id: CoordinatorServiceImple.java,v 1.8 2005/05/19 12:13:38 nmcl Exp $
  * @since 1.0.
- * 
+ *
  */
 
 public class CoordinatorServiceImple implements UserCoordinator,
@@ -88,7 +88,7 @@ public class CoordinatorServiceImple implements UserCoordinator,
 	 * Start a new activity. If there is already an activity associated with the
 	 * thread then it will be nested. An implementation specific timeout will be
 	 * associated with the activity (which may be no timeout).
-	 * 
+	 *
 	 * @exception WrongStateException
 	 *                Thrown if the any currently associated activity is in a
 	 *                state that does not allow a new activity to be enlisted.
@@ -104,7 +104,7 @@ public class CoordinatorServiceImple implements UserCoordinator,
 	/**
 	 * Start a new activity. If there is already an activity associated with the
 	 * thread then it will be nested.
-	 * 
+	 *
 	 * @param timeout
 	 *            timeout The timeout associated with the activity. If the
 	 *            activity has not been terminated by the time this period
@@ -128,7 +128,7 @@ public class CoordinatorServiceImple implements UserCoordinator,
 
 	/**
 	 * Confirm the activity.
-	 * 
+	 *
 	 * @exception InvalidActivityException
 	 *                Thrown if the current activity is a parent activity with
 	 *                active children.
@@ -157,7 +157,7 @@ public class CoordinatorServiceImple implements UserCoordinator,
 
 			/*
 			 * TODO
-			 * 
+			 *
 			 * What happens if the coordinator has already been terminated?
 			 */
 
@@ -168,7 +168,7 @@ public class CoordinatorServiceImple implements UserCoordinator,
 				if (res instanceof CoordinationOutcome)
 				{
 					CoordinationOutcome co = (CoordinationOutcome) res;
-					
+
 					switch (co.result())
 					{
 					case TwoPhaseResult.FINISH_OK:
@@ -208,7 +208,7 @@ public class CoordinatorServiceImple implements UserCoordinator,
 
 	/**
 	 * Cancel the activity.
-	 * 
+	 *
 	 * @exception InvalidActivityException
 	 *                Thrown if the current activity is a parent activity with
 	 *                active children.
@@ -280,7 +280,7 @@ public class CoordinatorServiceImple implements UserCoordinator,
 
 	/**
 	 * Set the termination status for the current activity to cancel only.
-	 * 
+	 *
 	 * @exception WrongStateException
 	 *                Thrown if the completion status is incompatible with the
 	 *                current state of the activity.
@@ -303,10 +303,10 @@ public class CoordinatorServiceImple implements UserCoordinator,
 
 	/**
 	 * Get the timeout value currently associated with activities.
-	 * 
+	 *
 	 * @exception SystemException
 	 *                Thrown if any error occurs.
-	 * 
+	 *
 	 * @return the timeout value in seconds, or 0 if no application specified
 	 *         timeout has been provided.
 	 */
@@ -321,12 +321,12 @@ public class CoordinatorServiceImple implements UserCoordinator,
 	 * activities. A default value of 0 is automatically associated with each
 	 * thread and this means that no application specified timeout is set for
 	 * activities.
-	 * 
+	 *
 	 * @param timeout
 	 *            timeout The timeout (in seconds) to associate with all
 	 *            subsequently created activities. This value must be 0 or
 	 *            greater.
-	 * 
+	 *
 	 * @exception InvalidTimeoutException
 	 *                Thrown if the timeout value provided is negative, too
 	 *                large, or if timeouts are simply not supported by the
@@ -344,10 +344,10 @@ public class CoordinatorServiceImple implements UserCoordinator,
 	/**
 	 * @exception SystemException
 	 *                Thrown if any error occurs.
-	 * 
+	 *
 	 * @return the status of the current activity. If there is no activity
 	 *         associated with the thread then NoActivity will be returned.
-	 * 
+	 *
 	 * @see com.arjuna.mw.wsas.status.Status
 	 */
 
@@ -365,10 +365,10 @@ public class CoordinatorServiceImple implements UserCoordinator,
 	 * Suspend the current activity from this thread and return the token
 	 * representing the context, if any, or null otherwise. Once called, the
 	 * thread will have no activities associated with it.
-	 * 
+	 *
 	 * @exception SystemException
 	 *                Thrown if any error occurs.
-	 * 
+	 *
 	 * @return the token representing the current context, if any, or null
 	 *         otherwise.
 	 */
@@ -383,12 +383,12 @@ public class CoordinatorServiceImple implements UserCoordinator,
 	 * thread of control. This will implicitly disassociate the thread from any
 	 * activities that it may already be associated with. If the parameter is
 	 * null then the thread is associated with no activity.
-	 * 
+	 *
 	 * @param ActivityHierarchy
 	 *            tx The activity to associate with this thread. This may be
 	 *            null in which case the current thread becomes associated with
 	 *            no activity.
-	 * 
+	 *
 	 * @exception InvalidActivityException
 	 *                Thrown if the activity handle is invalid in this context.
 	 * @exception SystemException
@@ -404,10 +404,10 @@ public class CoordinatorServiceImple implements UserCoordinator,
 	/**
 	 * Enrol the specified participant with the coordinator associated with the
 	 * current thread.
-	 * 
+	 *
 	 * @param Participant
 	 *            act The participant.
-	 * 
+	 *
 	 * @exception WrongStateException
 	 *                Thrown if the coordinator is not in a state that allows
 	 *                participants to be enrolled.
@@ -430,7 +430,7 @@ public class CoordinatorServiceImple implements UserCoordinator,
 
 	/**
 	 * Remove the specified participant from the coordinator's list.
-	 * 
+	 *
 	 * @exception InvalidParticipantException
 	 *                Thrown if the participant is not known of by the
 	 *                coordinator.
@@ -452,10 +452,10 @@ public class CoordinatorServiceImple implements UserCoordinator,
 	/**
 	 * Enrol the specified synchronization with the coordinator associated with
 	 * the current thread.
-	 * 
+	 *
 	 * @param Synchronization
 	 *            act The synchronization to remove.
-	 * 
+	 *
 	 * @exception WrongStateException
 	 *                Thrown if the coordinator is not in a state that allows
 	 *                participants to be enrolled.
@@ -479,7 +479,7 @@ public class CoordinatorServiceImple implements UserCoordinator,
 
 	/**
 	 * Remove the specified synchronization from the coordinator's list.
-	 * 
+	 *
 	 * @exception InvalidSynchronizationException
 	 *                Thrown if the participant is not known of by the
 	 *                coordinator.
@@ -500,10 +500,10 @@ public class CoordinatorServiceImple implements UserCoordinator,
 
 	/**
 	 * The participant has rolled back. Mark the transaction as rolled back.
-	 * 
+	 *
 	 * @param Participant
 	 *            act The participant.
-	 * 
+	 *
 	 * @exception NoActivityException
 	 *                Thrown if there is no activity associated with the current
 	 *                thread.
@@ -534,10 +534,10 @@ public class CoordinatorServiceImple implements UserCoordinator,
 
 	/**
 	 * A participant is readonly. Remove it from the list.
-	 * 
+	 *
 	 * @param Participant
 	 *            act The participant.
-	 * 
+	 *
 	 * @exception NoActivityException
 	 *                Thrown if there is no activity associated with the current
 	 *                thread.
@@ -557,7 +557,7 @@ public class CoordinatorServiceImple implements UserCoordinator,
 	/**
 	 * @return the token representing the current activity context hierarchy, or
 	 *         null if there is none associated with the invoking thread.
-	 * 
+	 *
 	 * @exception SystemException
 	 *                Thrown if any error occurs.
 	 */
@@ -588,7 +588,7 @@ public class CoordinatorServiceImple implements UserCoordinator,
 
 		return imple.current();
 	}
-	
+
 	public final CoordinatorControl coordinatorControl ()
 	{
 		return _coordManager;

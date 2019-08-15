@@ -51,7 +51,7 @@ public abstract class TxLogBean extends BaseStoreBean implements TxLogBeanMBean 
 	public boolean write_committed (Uid u, String tn, OutputObjectStateWrapper buff) throws ObjectStoreException {
 		return store.write_committed (u, tn, buff.getOOS());
 	}
-    
+
 	public boolean remove_committed (Uid u, String tn) throws ObjectStoreException {
 		return store.remove_committed(u, tn);
 	}

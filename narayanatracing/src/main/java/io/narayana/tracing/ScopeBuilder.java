@@ -11,8 +11,8 @@ import static io.narayana.tracing.TracingUtils.getTracer;
 
 /**
  * Create a new span and activate it under new active scope.
- * 
- * 
+ *
+ *
  * Note: it is important to call the Scope.close() method (Scope implements
  * java.io.Closeable, so it is highly recommended to use the try-with-resources
  * idiom whenever possible)
@@ -35,7 +35,7 @@ public final class ScopeBuilder {
 		Objects.requireNonNull(name, "Name of the span cannot be null");
 		return getTracer().buildSpan(name.toString());
 	}
-	
+
 	/**
 	 * Adds tag to the started span.
 	 */
@@ -44,7 +44,7 @@ public final class ScopeBuilder {
 		spanBldr = spanBldr.withTag(name.toString(), val == null ? "null" : val.toString());
 		return this;
 	}
-	
+
 	public <T> ScopeBuilder tag(Tag<T> tag, T value) {
 		Objects.requireNonNull(tag, "Tag cannot be null.");
 		spanBldr = spanBldr.withTag(tag, value);
@@ -54,7 +54,7 @@ public final class ScopeBuilder {
 	public Scope start() {
 		return getTracer().scopeManager().activate(spanBldr.withTag(Tags.COMPONENT, "narayana").start(), true);
 	}
-	
+
 	public Scope startButDontFinish() {
 		return getTracer().scopeManager().activate(spanBldr.withTag(Tags.COMPONENT, "narayana").start());
 	}

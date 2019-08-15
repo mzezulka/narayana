@@ -34,18 +34,18 @@ import com.arjuna.ats.internal.arjuna.tools.log.EditableTransaction;
 
 /**
  * Commands:
- * 
+ *
  * ls <type> - list logs for specified type. If no type specified then
  * must be already attached.
  * select [<type] - browse a specific type of transaction. Automatically detaches.
  * attach <log> - cannot be attached to another log
- * detach - must be attached to log 
+ * detach - must be attached to log
  * forget <pid> - must be attached to log
- * delete <pid> - must be attached to log 
+ * delete <pid> - must be attached to log
  * types - lists supported transaction types
  * quit - exit
  * help - help
- * 
+ *
  * @author marklittle
  */
 
@@ -68,10 +68,10 @@ class LogConsole
     public static final String select = "select";
     public static final String types = "types";
     public static final String help = "help";
-    
+
     private static final String SPACE = " ";
     private static final String END = "\n";
-    
+
     public void doWork ()
     {
         boolean attached = false;  // move these to member variables
@@ -81,7 +81,7 @@ class LogConsole
         while (!exit)
         {
             byte[] command = new byte[MAX_COMMAND_LEN];
-            
+
             try
             {
                 System.out.print("\n"+_transactionType+" - "+_currentLog+ " > ");
@@ -111,27 +111,27 @@ class LogConsole
                     }
 
                     System.out.println();
-                    
+
                     break;
                 case select:
                     if (attached)
                     {
                         System.out.println("Detaching from existing log.");
-                        
+
                         attached = false;
                     }
 
                     setTransactionType(commandString);
-                    
+
                     if ("".equals(_transactionType))
                     {
                         System.err.println("Unsupported type.");
-                        
+
                         selected = false;
                     }
                     else
                         selected = true;
-                    
+
                     break;
                 case attach:
                     if (attached)
@@ -139,7 +139,7 @@ class LogConsole
                     else
                     {
                         setLogId(commandString);
-                        
+
                         if ("".equals(_currentLog))
                         {
                             System.err.println("Invalid log id.");
@@ -151,18 +151,18 @@ class LogConsole
                 case detach:
                     if (!attached)
                         System.err.println("Not attached.");
-                    
+
                     _currentLog = "";
-                    
+
                     attached = false;
                     break;
                 case forget:
                     if (!attached)
                         System.err.println("Not attached.");
-                    
+
                     Uid u = new Uid(_currentLog);
                     EditableTransaction act = TransactionTypeManager.getInstance().getTransaction(_transactionType, u);
-                    
+
                     try
                     {
                         act.moveHeuristicToPrepared(getIndex(commandString));
@@ -177,10 +177,10 @@ class LogConsole
                 case delete:
                     if (!attached)
                         System.err.println("Not attached.");
-                    
+
                     Uid uid = new Uid(_currentLog);
                     EditableTransaction ract = TransactionTypeManager.getInstance().getTransaction(_transactionType, uid);
-                    
+
                     try
                     {
                         ract.deleteHeuristicParticipant(getIndex(commandString));
@@ -189,9 +189,9 @@ class LogConsole
                     {
                         System.err.println("Invalid index.");
                     }
-                    
+
                     dumpLog(uid);
-                    
+
                     break;
                 case types:
                     printSupportedTypes();
@@ -208,22 +208,22 @@ class LogConsole
             }
         }
     }
-    
+
     private void dumpLog (final Uid u)
     {
         EditableTransaction act = TransactionTypeManager.getInstance().getTransaction(_transactionType, u);
-        
+
         if (act == null)
             System.out.println("Dump failed! Unknown type "+_transactionType);
         else
             System.out.println(act.toString());
     }
-    
+
     private void printSupportedTypes ()
     {
         System.out.println(DEFAULT_TYPE);
     }
-    
+
     private final Command validCommand (String command)
     {
         if (command == null)
@@ -279,25 +279,25 @@ class LogConsole
     {
         int index = command.indexOf(SPACE);
         int end = command.indexOf(END);
-        
+
         if (index != -1)
             _transactionType = new String(command.substring(index + 1, end).trim());
         else
             _transactionType = DEFAULT_TYPE;
-        
+
         if (!TransactionTypeManager.getInstance().present(_transactionType))
         {
-            System.err.println("Transaction log type "+_transactionType+" not supported.");            
+            System.err.println("Transaction log type "+_transactionType+" not supported.");
 
             _transactionType = "";
         }
     }
-    
+
     private final void setLogId (String command) throws ObjectStoreException, IOException
     {
         int index = command.indexOf(SPACE);
         int end = command.indexOf(END);
-        
+
         if (index != -1)
         {
             _currentLog = new String(command.substring(index + 1, end).trim());
@@ -308,12 +308,12 @@ class LogConsole
         else
             _currentLog = "";
     }
-    
+
     private final int getIndex (String command)
     {
         int index = command.indexOf(SPACE);
         int end = command.indexOf(END);
-        
+
         if (index != -1)
         {
             try
@@ -332,11 +332,11 @@ class LogConsole
     /*
      * Go through the log and print out all of the instances.
      */
-    
+
     private final void listLogs (String type) throws IOException
     {
         InputObjectState buff = new InputObjectState();
-        
+
         try
         {
             if (StoreManager.getRecoveryStore().allObjUids(TransactionTypeManager.getInstance().getTransactionType(type), buff))
@@ -360,15 +360,15 @@ class LogConsole
             throw new IOException();
         }
     }
-    
+
     /*
      * Is this a type/instance in the log that we support?
      */
-    
+
     private final boolean supportedLog (String logID) throws ObjectStoreException, IOException
     {
         Uid id = new Uid(logID);
-        
+
         if (id.equals(Uid.nullUid()))
             return false;
 
@@ -386,7 +386,7 @@ class LogConsole
 
         return false;
     }
-    
+
     private final void help ()
     {
         System.out.println("\nls <type> - list logs for specified type. If no type specified then must be already attached.");
@@ -399,7 +399,7 @@ class LogConsole
         System.out.println("quit - exit.");
         System.out.println("help - print out commands.\n");
     }
-    
+
     private String _currentLog = "";
     private String _transactionType = "";  // short hand for the log type (we don't want users having to write the real type string as it can be long!)
 }

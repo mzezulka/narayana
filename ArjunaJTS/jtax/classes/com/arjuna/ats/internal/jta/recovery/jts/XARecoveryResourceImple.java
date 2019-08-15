@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -59,7 +59,7 @@ public class XARecoveryResourceImple extends XAResourceRecord implements XARecov
     {
 	return super._theXAResource;
     }
-    
+
     public int recoverable ()
     {
 	/*
@@ -70,7 +70,7 @@ public class XARecoveryResourceImple extends XAResourceRecord implements XARecov
 
 	if (getXid() == null)
 	    return XARecoveryResource.INFLIGHT_TRANSACTION;
-	
+
 	/*
 	 * If we don't have an XAResource then we cannot recover at
 	 * this stage. The XAResource will have to be provided for
@@ -82,7 +82,7 @@ public class XARecoveryResourceImple extends XAResourceRecord implements XARecov
 	else
 	    return XARecoveryResource.RECOVERY_REQUIRED;
     }
-    
+
     public int recover ()
     {
 	return super.recover();
@@ -100,12 +100,12 @@ public class XARecoveryResourceImple extends XAResourceRecord implements XARecov
     protected boolean notAProblem (XAException ex, boolean commit)
     {
 	if (ex.errorCode == XAException.XAER_NOTA)
-	{ 
+	{
 	    if (jtaxLogger.logger.isDebugEnabled()) {
             jtaxLogger.logger.debug("XARecoveryResourceImple.notAProblem - no error with XAER_NOTA on "
                     + (commit ? " commit" : " rollback"));
         }
-	    
+
 	    return true;
 	}
 	return false;

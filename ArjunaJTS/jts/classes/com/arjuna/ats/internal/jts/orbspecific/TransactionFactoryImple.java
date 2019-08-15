@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Hewlett-Packard Arjuna Labs,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.  
+ * UK.
  *
  * $Id: TransactionFactoryImple.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -78,7 +78,7 @@ import com.arjuna.ats.jts.utils.Utility;
 
 /**
  * An implementation of ArjunaOTS::ArjunaFactory.
- * 
+ *
  * Problem: garbage collection! If a user keeps a reference to a Control, say,
  * then we will delete the implementation object when the action terminates.
  * However, the user's reference is still valid, only the thing it points to is
@@ -88,7 +88,7 @@ import com.arjuna.ats.jts.utils.Utility;
  * (unless we decide never to garbage collect!) apart from warn against using
  * Control, Coordinator, and Terminator explicitly - if you go via Current then
  * everything's ok.
- * 
+ *
  * @author Mark Little (mark@arjuna.com)
  * @version $Id: TransactionFactoryImple.java 2342 2006-03-30 13:06:17Z  $
  * @since JTS 1.0.
@@ -213,7 +213,7 @@ public class TransactionFactoryImple extends
 		/*
 		 * Now take the propagation context and create a local proxy for it
 		 * which matches.
-		 * 
+		 *
 		 * We maintain a proxy for each top-level action. If we already have a
 		 * proxy for this action, then pass it the context and let it figure out
 		 * what the hierarchy should be - we may already have created it, or
@@ -357,11 +357,11 @@ public class TransactionFactoryImple extends
 	 * Now methods to return the identities of the currently running
 	 * transactions, and those which have terminated but left entries in the
 	 * object store.
-	 * 
+	 *
 	 * WARNING: these methods should be used sparingly since they *must* lock
 	 * the transaction database while examining it, and this will prevent any
 	 * new transactions from being created/started.
-	 * 
+	 *
 	 * @param the
 	 *            type of transaction (active, unresolved) to get data on.
 	 * @since JTS 2.1.
@@ -591,14 +591,14 @@ public class TransactionFactoryImple extends
 				{
 				case StateStatus.OS_UNKNOWN:
 				    final Status heuristicStatus = getHeuristicStatus(u, recoveryStore);
-				    
+
 				    if (org.omg.CosTransactions.Status.StatusNoTransaction.equals(heuristicStatus)
 				            || org.omg.CosTransactions.Status.StatusUnknown.equals(heuristicStatus)) {
-				        
+
 				        // means no state present, so check if server transaction
 				        return ServerFactory.getOSStatus(u);
 				    }
-				    
+
 				    return heuristicStatus;
 				case StateStatus.OS_COMMITTED:
 					return org.omg.CosTransactions.Status.StatusCommitted;
@@ -622,7 +622,7 @@ public class TransactionFactoryImple extends
 
 	/*
 	 * @return information on the transactions known by this object.
-	 * 
+	 *
 	 * @since JTS 2.1.
 	 */
 
@@ -871,12 +871,12 @@ public class TransactionFactoryImple extends
 			return ids;
 		}
 	}
-	
+
 	private org.omg.CosTransactions.Status getHeuristicStatus(final Uid uid, final RecoveryStore recoveryStore)
 	        throws ObjectStoreException
 	{
 	    final int status = recoveryStore.currentState(uid, AssumedCompleteHeuristicTransaction.typeName());
-	    
+
         switch (status) {
         case StateStatus.OS_UNKNOWN:
             return org.omg.CosTransactions.Status.StatusNoTransaction;

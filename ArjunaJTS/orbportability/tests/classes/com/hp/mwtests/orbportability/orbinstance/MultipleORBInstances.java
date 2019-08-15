@@ -133,7 +133,7 @@ public class MultipleORBInstances
 
             assertNotNull(orb);
 
-            assertNotNull( OA.getRootOA(orb) );            
+            assertNotNull( OA.getRootOA(orb) );
         }
 
         System.out.println("Destroying all ORBs and OAs");

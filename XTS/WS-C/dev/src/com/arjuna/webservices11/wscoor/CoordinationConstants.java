@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, JBoss Inc., and individual contributors as indicated
- * by the @authors tag.  All rights reserved. 
- * See the copyright.txt in the distribution for a full listing 
+ * by the @authors tag.  All rights reserved.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -37,9 +37,9 @@ public interface CoordinationConstants
     public String WSCOOR_PREFIX = "wscoor" ;
 
     public String REGISTRATION_SERVICE_NAME = "RegistrationService";
-    
+
     public String REGISTRATION_RESPONSE_SERVICE_NAME = "RegistrationResponseService";
-    
+
     public String COORDINATION_SOAP_FAULT_SERVICE_NAME = "CoordinationFaultService";
 
     public String ACTIVATION_SERVICE_NAME = "ActivationService";
@@ -63,7 +63,7 @@ public interface CoordinationConstants
      * The Expires QName.
      */
     public QName WSCOOR_ELEMENT_EXPIRES_QNAME = new QName(WSCOOR_NAMESPACE, WSCOOR_ELEMENT_EXPIRES, WSCOOR_PREFIX) ;
-    
+
     /**
      * The Identifier element.
      */
@@ -72,7 +72,7 @@ public interface CoordinationConstants
      * The Identifier QName.
      */
     public QName WSCOOR_ELEMENT_IDENTIFIER_QNAME = new QName(WSCOOR_NAMESPACE, WSCOOR_ELEMENT_IDENTIFIER, WSCOOR_PREFIX) ;
-    
+
     /**
      * The RegistrationService element.
      */
@@ -81,7 +81,7 @@ public interface CoordinationConstants
      * The RegistrationService QName.
      */
     public QName WSCOOR_ELEMENT_REGISTRATION_SERVICE_QNAME = new QName(WSCOOR_NAMESPACE, WSCOOR_ELEMENT_REGISTRATION_SERVICE, WSCOOR_PREFIX) ;
-    
+
     /**
      * The CoordinationContext element.
      */
@@ -90,7 +90,7 @@ public interface CoordinationConstants
      * The CoordinationContext QName.
      */
     public QName WSCOOR_ELEMENT_COORDINATION_CONTEXT_QNAME = new QName(WSCOOR_NAMESPACE, WSCOOR_ELEMENT_COORDINATION_CONTEXT, WSCOOR_PREFIX) ;
-    
+
     /**
      * The CurrentContext element.
      */
@@ -99,7 +99,7 @@ public interface CoordinationConstants
      * The CurrentContext QName.
      */
     public QName WSCOOR_ELEMENT_CURRENT_CONTEXT_QNAME = new QName(WSCOOR_NAMESPACE, WSCOOR_ELEMENT_CURRENT_CONTEXT, WSCOOR_PREFIX) ;
-    
+
     /**
      * The CoordinationType element.
      */
@@ -108,7 +108,7 @@ public interface CoordinationConstants
      * The CoordinationType QName.
      */
     public QName WSCOOR_ELEMENT_COORDINATION_TYPE_QNAME = new QName(WSCOOR_NAMESPACE, WSCOOR_ELEMENT_COORDINATION_TYPE, WSCOOR_PREFIX) ;
-    
+
     /**
      * The CreateCoordinationContext element.
      */
@@ -121,7 +121,7 @@ public interface CoordinationConstants
      * The CreateCoordinationContext Action.
      */
     public String WSCOOR_ACTION_CREATE_COORDINATION_CONTEXT = WSCOOR_NAMESPACE + "/" + WSCOOR_ELEMENT_CREATE_COORDINATION_CONTEXT ;
-    
+
     /**
      * The CreateCoordinationContextResponse element.
      */
@@ -143,7 +143,7 @@ public interface CoordinationConstants
      * The ProtocolIdentifier QName.
      */
     public QName WSCOOR_ELEMENT_PROTOCOL_IDENTIFIER_QNAME = new QName(WSCOOR_NAMESPACE, WSCOOR_ELEMENT_PROTOCOL_IDENTIFIER, WSCOOR_PREFIX) ;
-    
+
     /**
      * The ParticipantProtocolService element.
      */
@@ -152,7 +152,7 @@ public interface CoordinationConstants
      * The ParticipantProtocolService QName.
      */
     public QName WSCOOR_ELEMENT_PARTICIPANT_PROTOCOL_SERVICE_QNAME = new QName(WSCOOR_NAMESPACE, WSCOOR_ELEMENT_PARTICIPANT_PROTOCOL_SERVICE, WSCOOR_PREFIX) ;
-    
+
     /**
      * The Register element.
      */
@@ -165,7 +165,7 @@ public interface CoordinationConstants
      * The Register Action.
      */
     public String WSCOOR_ACTION_REGISTER = WSCOOR_NAMESPACE + "/" + WSCOOR_ELEMENT_REGISTER ;
-    
+
     /**
      * The CoordinatorProtocolService element.
      */
@@ -174,7 +174,7 @@ public interface CoordinationConstants
      * The CoordinatorProtocolService QName.
      */
     public QName WSCOOR_ELEMENT_COORDINATOR_PROTOCOL_SERVICE_QNAME = new QName(WSCOOR_NAMESPACE, WSCOOR_ELEMENT_COORDINATOR_PROTOCOL_SERVICE, WSCOOR_PREFIX) ;
-    
+
     /**
      * The RegisterResponse element.
      */
@@ -187,7 +187,7 @@ public interface CoordinationConstants
      * The Register Action.
      */
     public String WSCOOR_ACTION_REGISTER_RESPONSE = WSCOOR_NAMESPACE + "/" + WSCOOR_ELEMENT_REGISTER_RESPONSE ;
-    
+
     /**
      * The Fault Action.
      */

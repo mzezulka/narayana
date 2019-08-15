@@ -59,7 +59,7 @@ public class Client08
 			for (int index = 0; index < 10; index++)
 			{
                 System.out.println(""+new Date()+" loop iteration "+index);
-                
+
 				String name = "Name_" + index;
 				String value = "Value_" + (9 - index);
 

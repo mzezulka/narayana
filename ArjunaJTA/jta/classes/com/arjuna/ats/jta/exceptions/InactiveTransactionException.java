@@ -46,7 +46,7 @@ package com.arjuna.ats.jta.exceptions;
 public class InactiveTransactionException extends IllegalStateException
 {
     static final long serialVersionUID = -8288622240488128416L;
-    
+
     public InactiveTransactionException ()
     {
 	super();

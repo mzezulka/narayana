@@ -75,15 +75,15 @@ public class ObjectStoreEnvironmentBean implements ObjectStoreEnvironmentBeanMBe
     private volatile long purgeTime = 100000; // in milliseconds
 
     private volatile boolean androidDirCheck = false;
-    
+
 	private volatile String jdbcAccess;
 
 	private volatile String tablePrefix;
 
 	private volatile boolean dropTable;
-	
+
 	private volatile boolean createTable = true;
-    
+
     private volatile boolean exposeAllLogRecordsAsMBeans = false;
 
     private volatile boolean ignoreMBeanHeuristics = true;
@@ -322,20 +322,20 @@ public class ObjectStoreEnvironmentBean implements ObjectStoreEnvironmentBeanMBe
                  * Use reflection so we can build this in an environment that does
                  * not have the various Android libraries available.
                  */
-                     
+
                 Class<?> instance = Class.forName("android.os.Environment");
-                
+
                 Method[] mthds = instance.getDeclaredMethods();
                 Method m = null;
-                
+
                 for (int i = 0; (i < mthds.length) && (m == null); i++)
                 {
                     if ("getExternalStorageDirectory".equals(mthds[i].getName()))
                         m = mthds[i];
                 }
-                
+
                 objectStoreDir = ((File) m.invoke(null)).toString() + File.separator + "ObjectStore";
-                
+
                 androidDirCheck = true;
             }
             catch (final Throwable ex)
@@ -343,7 +343,7 @@ public class ObjectStoreEnvironmentBean implements ObjectStoreEnvironmentBeanMBe
                 ex.printStackTrace();
             }
         }
-        
+
         return objectStoreDir;
     }
 
@@ -686,7 +686,7 @@ public class ObjectStoreEnvironmentBean implements ObjectStoreEnvironmentBeanMBe
 
 	/**
 	 * Returns an instance of a class implementing JDBCAccess.
-	 * 
+	 *
 	 * @return a JDBCAccess implementation instance, or null.
 	 */
 	public String getJdbcAccess() {
@@ -695,7 +695,7 @@ public class ObjectStoreEnvironmentBean implements ObjectStoreEnvironmentBeanMBe
 
 	/**
 	 * Sets the instance of JDBCAccess
-	 * 
+	 *
 	 * @param connectionDetails
 	 *            an Object that provides JDBCAccess, or null.
 	 */
@@ -705,7 +705,7 @@ public class ObjectStoreEnvironmentBean implements ObjectStoreEnvironmentBeanMBe
 
 	/**
 	 * Get the table prefix
-	 * 
+	 *
 	 * @return The prefix to apply to the table
 	 */
 	public String getTablePrefix() {
@@ -714,7 +714,7 @@ public class ObjectStoreEnvironmentBean implements ObjectStoreEnvironmentBeanMBe
 
 	/**
 	 * Set the table prefix
-	 * 
+	 *
 	 * @param tablePrefix
 	 *            A prefix to use on the tables
 	 */
@@ -724,7 +724,7 @@ public class ObjectStoreEnvironmentBean implements ObjectStoreEnvironmentBeanMBe
 
 	/**
 	 * Should the store drop the table
-	 * 
+	 *
 	 * @return Whether to drop the table
 	 */
 	public boolean getDropTable() {
@@ -733,7 +733,7 @@ public class ObjectStoreEnvironmentBean implements ObjectStoreEnvironmentBeanMBe
 
 	/**
 	 * Set whether to drop the table.
-	 * 
+	 *
 	 * @param dropTable
 	 *            Drop the table
 	 */
@@ -743,7 +743,7 @@ public class ObjectStoreEnvironmentBean implements ObjectStoreEnvironmentBeanMBe
 
 	/**
 	 * Should the store create the table
-	 * 
+	 *
 	 * @return Whether to create the table
 	 */
 	public boolean getCreateTable() {
@@ -752,7 +752,7 @@ public class ObjectStoreEnvironmentBean implements ObjectStoreEnvironmentBeanMBe
 
 	/**
 	 * Set whether to create the table.
-	 * 
+	 *
 	 * @param createTable
 	 *            Create the table
 	 */
@@ -777,7 +777,7 @@ public class ObjectStoreEnvironmentBean implements ObjectStoreEnvironmentBeanMBe
      *
      * You can also set this behaviour via JMX using
      * {@link com.arjuna.ats.arjuna.tools.osb.mbean.ObjStoreBrowserMBean#setExposeAllRecordsAsMBeans JMX}
-     * 
+     *
      * @param exposeAllLogRecords
      *            Set to true to expose basic information about all log records
      */

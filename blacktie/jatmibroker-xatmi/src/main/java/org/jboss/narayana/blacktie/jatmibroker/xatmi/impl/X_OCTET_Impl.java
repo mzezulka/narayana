@@ -51,9 +51,9 @@ public class X_OCTET_Impl extends BufferImpl implements X_OCTET {
 
     /**
      * The constructor is hidden as it should be created from the Connection factory method.
-     * 
+     *
      * @param subtype Ignored, provided for reflective ease
-     * 
+     *
      * @throws ConnectionException
      * @throws ConfigurationException
      */
@@ -63,7 +63,7 @@ public class X_OCTET_Impl extends BufferImpl implements X_OCTET {
 
     /**
      * Set the data of the buffer.
-     * 
+     *
      * @param bytes The data to set.
      */
     public void setByteArray(byte[] bytes) {
@@ -73,7 +73,7 @@ public class X_OCTET_Impl extends BufferImpl implements X_OCTET {
 
     /**
      * Get the content of the buffer.
-     * 
+     *
      * @return The content of the buffer.
      */
     public byte[] getByteArray() {

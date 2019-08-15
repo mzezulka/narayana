@@ -223,9 +223,9 @@ public class TransactionImple extends
 	}
 
 	/**
-	 * 
+	 *
 	 * @throws IllegalStateException
-	 * 
+	 *
 	 * @deprecated Only called from a test
 	 */
 	public void doForget () throws IllegalStateException
@@ -291,13 +291,13 @@ public class TransactionImple extends
 			throw unexpectedConditionException;
 		}
 	}
-	
+
 	public boolean doBeforeCompletion () throws javax.transaction.SystemException
 	{
 	    try
 	    {
 	        SubordinateAtomicAction subAct = (SubordinateAtomicAction) super._theTransaction;
-	        
+
 	        return subAct.doBeforeCompletion();
 	    }
 	    catch (final Exception ex)
@@ -306,7 +306,7 @@ public class TransactionImple extends
 
 	        UnexpectedConditionException unexpectedConditionException = new UnexpectedConditionException(ex.toString());
 	        unexpectedConditionException.initCause(ex);
-	        
+
 	        throw unexpectedConditionException;
 	    }
 	}

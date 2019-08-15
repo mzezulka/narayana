@@ -42,12 +42,12 @@ class ParticipantMap implements RecordTypeMap
     {
         return ParticipantRecord.class;
     }
-    
+
     public int getType ()
     {
         return RecordType.XTS_WSAT_RECORD;
     }
-    
+
 }
 public class Implementations {
 
@@ -58,7 +58,7 @@ public class Implementations {
         if (!_added)
         {
             RecordTypeManager.manager().add(new ParticipantMap());
-            
+
             _added = true;
         }
     }

@@ -218,7 +218,7 @@ public class ActivityImple
 	 *
      *
      * @param cs The CompletionStatus to use.
-     * 
+     *
 	 * @exception InvalidActivityException
 	 *                Thrown if the current activity is not known about by the
 	 *                activity system.

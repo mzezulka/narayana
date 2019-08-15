@@ -64,7 +64,7 @@ public class RegistrationCoordinator
         }
     }
 
-    private static void throwException(QName subcode, String detail, SOAPFaultException sfe, Fault fault) 
+    private static void throwException(QName subcode, String detail, SOAPFaultException sfe, Fault fault)
             throws CannotRegisterException, InvalidProtocolException, InvalidStateException, SoapFault {
         if (CoordinationConstants.WSCOOR_ERROR_CODE_CANNOT_REGISTER_QNAME.equals(subcode)) {
             throw new CannotRegisterException(detail);
@@ -82,7 +82,7 @@ public class RegistrationCoordinator
 
     private static RegisterResponseType registerOperation(String messageID, final RegistrationPortType port,
             final RegisterType registerType) throws CannotRegisterException, InvalidProtocolException,
-            InvalidStateException, SoapFault 
+            InvalidStateException, SoapFault
     {
         final WSCEnvironmentBean wscEnvironmentBean = XTSPropertyManager.getWSCEnvironmentBean();
         if (!WSCEnvironmentBean.NO_ASYNC_REQUEST.equals(wscEnvironmentBean.getUseAsynchronousRequest())) {
@@ -107,8 +107,8 @@ public class RegistrationCoordinator
             FaultOrResponse res = AsynchronousRegistrationMapper.getInstance().waitForResponse(messageID, wscEnvironmentBean.getAsyncRequestWait());
             if (res.isFault()) {
                 String detail = res.getFault().getFaultstring();
-                if (res.getFault().getDetail()!= null && 
-                        res.getFault().getDetail().getAny() != null && 
+                if (res.getFault().getDetail()!= null &&
+                        res.getFault().getDetail().getAny() != null &&
                         !res.getFault().getDetail().getAny().isEmpty()) {
                     detail = res.getFault().getDetail().getAny().get(0).toString();
                 }

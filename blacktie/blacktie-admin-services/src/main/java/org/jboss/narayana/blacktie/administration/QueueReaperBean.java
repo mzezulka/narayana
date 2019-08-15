@@ -77,7 +77,7 @@ public class QueueReaperBean {
             log.info("QueueReaper create timer with " + interval + "ms");
 	} catch (ConfigurationException e) {
             log.error("btconfig.xml is not valid: " + e);
-	} 
+	}
     }
 
     @PreDestroy
@@ -109,7 +109,7 @@ public class QueueReaperBean {
                             + " as consumer count is 0, will check again in " + interval + "ms");
                     long queueReapCheck = System.currentTimeMillis();
 
-                    Thread.sleep(this.interval);   
+                    Thread.sleep(this.interval);
                     // double check consumer is 0
                     if (BlacktieStompAdministrationService.isOlderThanReapCheck(serviceComponentOfObjectName, queueReapCheck)
                             && consumerCount(serviceComponentOfObjectName) == 0) {

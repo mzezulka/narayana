@@ -10,7 +10,7 @@ public class SampleLockable implements Sample
     {
         _isState = init;
     }
-        
+
     @ReadLock
     public int value ()
     {
@@ -22,7 +22,7 @@ public class SampleLockable implements Sample
     {
         _isState++;
     }
-        
+
     @WriteLock
     public void decrement ()
     {

@@ -75,7 +75,7 @@ public class FailureBusinessParticipant implements BusinessAgreementWithParticip
         throw new WrongStateException();
         }
     }
-	
+
 	_passed = true;
     }
 
@@ -85,7 +85,7 @@ public class FailureBusinessParticipant implements BusinessAgreementWithParticip
 
 	if (_failurePoint == FAIL_IN_CANCEL)
 	    throw new FaultedException();
-	
+
 	_passed = true;
     }
 
@@ -95,7 +95,7 @@ public class FailureBusinessParticipant implements BusinessAgreementWithParticip
 
 	if (_failurePoint == FAIL_IN_COMPENSATE)
 	    throw new FaultedException();
-	
+
 	_passed = true;
     }
 
@@ -128,15 +128,15 @@ public class FailureBusinessParticipant implements BusinessAgreementWithParticip
 
 	}
     }
-    
+
     public String identifier () throws SystemException
     {
 	return _id;
     }
-    
+
     private boolean _passed = false;
     private String  _id = null;
     private int     _failurePoint;
-    
+
 }
 

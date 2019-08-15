@@ -38,17 +38,17 @@ class AtomicActionTypeMap implements TransactionTypeManager.TransactionTypeMap
     {
         return new EditableAtomicAction(u);
     }
-    
+
     public String getType ()
     {
         return "AtomicAction";
     }
-    
+
     public String getRealType ()
     {
         return _type;
     }
-    
+
     private static final String _type = new AtomicAction().type();
 }
 
@@ -65,7 +65,7 @@ public class TransactionTypeManager
         public EditableTransaction getTransaction (final Uid u);
 
         public String getType (); // the shorthand name (could be the same as getRealType iff we want people to write really loooong strings).
-        
+
         public String getRealType ();  // the real type (used by object store operations)
     }
 
@@ -81,7 +81,7 @@ public class TransactionTypeManager
         else
             return null;
     }
-    
+
     public String getTransactionType (final String type)
     {
         if (type == null)
@@ -94,14 +94,14 @@ public class TransactionTypeManager
         else
             return null;
     }
-    
+
     /**
      * Is this transaction log one we support?
-     * 
+     *
      * @param type the name of the log.
      * @return true if supported, false otherwise.
      */
-    
+
     public boolean present (final String type)
     {
         return (_maps.get(type) != null);
@@ -134,9 +134,9 @@ public class TransactionTypeManager
      * have a rapidly growing number of object stores anyway to justify that
      * overhead.
      */
-    
+
     private TransactionTypeManager()
-    {   
+    {
         addTransaction(new AtomicActionTypeMap());
     }
 

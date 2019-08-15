@@ -8,18 +8,18 @@ import javax.xml.namespace.QName;
 
 
 /**
- * This object contains factory methods for each 
- * Java content interface and Java element interface 
- * generated in the org.oasis_open.docs.ws_tx.wsba._2006._06 package. 
- * <p>An ObjectFactory allows you to programatically 
- * construct new instances of the Java representation 
- * for XML content. The Java representation of XML 
- * content can consist of schema derived interfaces 
- * and classes representing the binding of schema 
- * type definitions, element declarations and model 
- * groups.  Factory methods for each of these are 
+ * This object contains factory methods for each
+ * Java content interface and Java element interface
+ * generated in the org.oasis_open.docs.ws_tx.wsba._2006._06 package.
+ * <p>An ObjectFactory allows you to programatically
+ * construct new instances of the Java representation
+ * for XML content. The Java representation of XML
+ * content can consist of schema derived interfaces
+ * and classes representing the binding of schema
+ * type definitions, element declarations and model
+ * groups.  Factory methods for each of these are
  * provided in this class.
- * 
+ *
  */
 @XmlRegistry
 public class ObjectFactory {
@@ -43,14 +43,14 @@ public class ObjectFactory {
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: org.oasis_open.docs.ws_tx.wsba._2006._06
-     * 
+     *
      */
     public ObjectFactory() {
     }
 
     /**
      * Create an instance of {@link ExceptionType }
-     * 
+     *
      */
     public ExceptionType createExceptionType() {
         return new ExceptionType();
@@ -58,7 +58,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link BAMixedOutcomeAssertion }
-     * 
+     *
      */
     public BAMixedOutcomeAssertion createBAMixedOutcomeAssertion() {
         return new BAMixedOutcomeAssertion();
@@ -66,7 +66,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link StatusType }
-     * 
+     *
      */
     public StatusType createStatusType() {
         return new StatusType();
@@ -74,7 +74,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link NotificationType }
-     * 
+     *
      */
     public NotificationType createNotificationType() {
         return new NotificationType();
@@ -82,7 +82,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link BAAtomicOutcomeAssertion }
-     * 
+     *
      */
     public BAAtomicOutcomeAssertion createBAAtomicOutcomeAssertion() {
         return new BAAtomicOutcomeAssertion();
@@ -90,7 +90,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link NotificationType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://docs.oasis-open.org/ws-tx/wsba/2006/06", name = "Canceled")
     public JAXBElement<NotificationType> createCanceled(NotificationType value) {
@@ -99,7 +99,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link NotificationType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://docs.oasis-open.org/ws-tx/wsba/2006/06", name = "Cancel")
     public JAXBElement<NotificationType> createCancel(NotificationType value) {
@@ -108,7 +108,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link StatusType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://docs.oasis-open.org/ws-tx/wsba/2006/06", name = "Status")
     public JAXBElement<StatusType> createStatus(StatusType value) {
@@ -117,7 +117,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link NotificationType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://docs.oasis-open.org/ws-tx/wsba/2006/06", name = "Close")
     public JAXBElement<NotificationType> createClose(NotificationType value) {
@@ -126,7 +126,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link NotificationType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://docs.oasis-open.org/ws-tx/wsba/2006/06", name = "Exited")
     public JAXBElement<NotificationType> createExited(NotificationType value) {
@@ -135,7 +135,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link NotificationType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://docs.oasis-open.org/ws-tx/wsba/2006/06", name = "Complete")
     public JAXBElement<NotificationType> createComplete(NotificationType value) {
@@ -144,7 +144,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link NotificationType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://docs.oasis-open.org/ws-tx/wsba/2006/06", name = "Failed")
     public JAXBElement<NotificationType> createFailed(NotificationType value) {
@@ -153,7 +153,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link NotificationType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://docs.oasis-open.org/ws-tx/wsba/2006/06", name = "Compensate")
     public JAXBElement<NotificationType> createCompensate(NotificationType value) {
@@ -162,7 +162,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link NotificationType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://docs.oasis-open.org/ws-tx/wsba/2006/06", name = "CannotComplete")
     public JAXBElement<NotificationType> createCannotComplete(NotificationType value) {
@@ -171,7 +171,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link NotificationType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://docs.oasis-open.org/ws-tx/wsba/2006/06", name = "Completed")
     public JAXBElement<NotificationType> createCompleted(NotificationType value) {
@@ -180,7 +180,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link NotificationType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://docs.oasis-open.org/ws-tx/wsba/2006/06", name = "Closed")
     public JAXBElement<NotificationType> createClosed(NotificationType value) {
@@ -189,7 +189,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link NotificationType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://docs.oasis-open.org/ws-tx/wsba/2006/06", name = "Compensated")
     public JAXBElement<NotificationType> createCompensated(NotificationType value) {
@@ -198,7 +198,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link NotificationType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://docs.oasis-open.org/ws-tx/wsba/2006/06", name = "Exit")
     public JAXBElement<NotificationType> createExit(NotificationType value) {
@@ -207,7 +207,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link ExceptionType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://docs.oasis-open.org/ws-tx/wsba/2006/06", name = "Fail")
     public JAXBElement<ExceptionType> createFail(ExceptionType value) {
@@ -216,7 +216,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link NotificationType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://docs.oasis-open.org/ws-tx/wsba/2006/06", name = "GetStatus")
     public JAXBElement<NotificationType> createGetStatus(NotificationType value) {
@@ -225,7 +225,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link NotificationType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://docs.oasis-open.org/ws-tx/wsba/2006/06", name = "NotCompleted")
     public JAXBElement<NotificationType> createNotCompleted(NotificationType value) {

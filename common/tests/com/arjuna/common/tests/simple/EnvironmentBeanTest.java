@@ -116,7 +116,7 @@ public class EnvironmentBeanTest
 
             inputValue = new ArrayList<String>();
             ((List)inputValue).add("1");
-            
+
         }
 
         setter.invoke(bean, new Object[] {inputValue});
@@ -136,7 +136,7 @@ public class EnvironmentBeanTest
             assertTrue(((Map)outputValue).isEmpty());
         }
 
-        // TODO if collection type is an interface (but how to know?) test matched Instance|ClassNames field sync. 
+        // TODO if collection type is an interface (but how to know?) test matched Instance|ClassNames field sync.
 
     }
 

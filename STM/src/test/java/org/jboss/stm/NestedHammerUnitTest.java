@@ -39,29 +39,29 @@ import junit.framework.TestCase;
 
 /**
  * Hammer equivalent test.
- * 
+ *
  * @author Mark Little
  */
 
 public class NestedHammerUnitTest extends TestCase
-{   
+{
     @Transactional
     @Nested
     public interface Sample
     {
        public void increment ();
        public void decrement ();
-       
+
        public int value ();
     }
-    
+
     public class SampleLockable implements Sample
     {
         public SampleLockable (int init)
         {
             _isState = init;
         }
-        
+
         @ReadLock
         public int value ()
         {
@@ -73,7 +73,7 @@ public class NestedHammerUnitTest extends TestCase
         {
             _isState++;
         }
-        
+
         @WriteLock
         public void decrement ()
         {
@@ -83,7 +83,7 @@ public class NestedHammerUnitTest extends TestCase
         @State
         private int _isState;
     }
-    
+
     public class Worker extends Thread
     {
         public Worker (Sample obj1, Sample obj2)
@@ -91,7 +91,7 @@ public class NestedHammerUnitTest extends TestCase
             _obj1 = obj1;
             _obj2 = obj2;
         }
-        
+
         public void run ()
         {
             Random rand = new Random();
@@ -100,37 +100,37 @@ public class NestedHammerUnitTest extends TestCase
             {
                 AtomicAction A = new AtomicAction();
                 boolean doCommit = true;
-                
+
                 A.begin();
-                
+
                 try
                 {
                     // always keep the two objects in sync.
-                    
+
                     _obj1.increment();
                     _obj2.decrement();
                 }
                 catch (final Throwable ex)
                 {
                     ex.printStackTrace();
-                    
+
                     doCommit = false;
                 }
-                
+
                 if (rand.nextInt() % 2 == 0)
                     doCommit = false;
-                
+
                 System.err.println("**doCommit "+doCommit);
-                
+
                 if (doCommit)
                     A.commit();
                 else
                     A.abort();
             }
-            
-            System.err.println(Thread.currentThread()+" finished");         
+
+            System.err.println(Thread.currentThread()+" finished");
         }
-        
+
         private Sample _obj1;
         private Sample _obj2;
     }
@@ -142,10 +142,10 @@ public class NestedHammerUnitTest extends TestCase
         Sample obj2 = theContainer.enlist(new SampleLockable(10));
         Worker worker1 = new Worker(obj1, obj2);
         Worker worker2 = new Worker(obj1, obj2);
-        
+
         worker1.start();
         worker2.start();
-        
+
         try
         {
             worker1.join();
@@ -154,10 +154,10 @@ public class NestedHammerUnitTest extends TestCase
         catch (final Throwable ex)
         {
         }
-        
+
         assertEquals(obj1.value()+obj2.value(), 20);
     }
-    
+
     public void testPersistentHammer ()
     {
         PersistentContainer<Sample> theContainer = new PersistentContainer<Sample>();
@@ -165,10 +165,10 @@ public class NestedHammerUnitTest extends TestCase
         Sample obj2 = theContainer.enlist(new SampleLockable(10));
         Worker worker1 = new Worker(obj1, obj2);
         Worker worker2 = new Worker(obj1, obj2);
-        
+
         worker1.start();
         worker2.start();
-        
+
         try
         {
             worker1.join();
@@ -177,10 +177,10 @@ public class NestedHammerUnitTest extends TestCase
         catch (final Throwable ex)
         {
         }
-        
+
         assertEquals(obj1.value()+obj2.value(), 20);
     }
-    
+
     public void testPersistentHammerMULTIPLE ()
     {
         PersistentContainer<Sample> theContainer = new PersistentContainer<Sample>(ObjectModel.MULTIPLE);
@@ -188,26 +188,26 @@ public class NestedHammerUnitTest extends TestCase
         Sample obj2 = theContainer.enlist(new SampleLockable(10));
         Worker worker1 = new Worker(obj1, obj2);
         Worker worker2 = new Worker(obj1, obj2);
-        
+
         AtomicAction A = new AtomicAction();
-        
+
         /*
          * Make sure the state is saved to disk before proceeding. Important
          * for the MULTIPLE option.
          */
-        
+
         A.begin();
-        
+
         obj1.increment();
         obj1.decrement();
         obj2.increment();
         obj2.decrement();
 
         A.commit();
-        
+
         worker1.start();
         worker2.start();
-        
+
         try
         {
             worker1.join();
@@ -216,7 +216,7 @@ public class NestedHammerUnitTest extends TestCase
         catch (final Throwable ex)
         {
         }
-        
+
         assertEquals(obj1.value()+obj2.value(), 20);
     }
 }

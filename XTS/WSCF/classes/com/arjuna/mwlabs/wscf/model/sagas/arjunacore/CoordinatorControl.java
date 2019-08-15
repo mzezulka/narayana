@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -82,7 +82,7 @@ public class CoordinatorControl
     public CoordinatorControl ()
     {
     }
-    
+
     /**
      * An activity has begun and is active on the current thread.
      */
@@ -93,7 +93,7 @@ public class CoordinatorControl
 	{
 	    BACoordinator coord = new BACoordinator();
 	    int status = coord.start(parentCoordinator());
-	
+
 	    if (status != ActionStatus.RUNNING)
 		throw new BegunFailedException(wscfLogger.i18NLogger.get_model_sagas_arjunacore_CoordinatorControl_1() + ActionStatus.stringForm(status));
 	    else
@@ -124,7 +124,7 @@ public class CoordinatorControl
     {
 	BACoordinator current = currentCoordinator();
 	int outcome;
-	
+
 	if ((cs != null) && (cs instanceof Success))
 	{
 	    // commit
@@ -166,7 +166,7 @@ public class CoordinatorControl
 	}
 
 	return new CoordinationOutcome(cs, result);
-    }	
+    }
 
     /**
      * The current activity is completing and informs the participants
@@ -176,7 +176,7 @@ public class CoordinatorControl
     public void complete () throws WrongStateException, SystemException
     {
 	currentCoordinator().complete();
-    }	
+    }
 
     /**
      * The activity has been suspended.
@@ -184,7 +184,7 @@ public class CoordinatorControl
 
     public void suspend () throws SystemException
     {
-    }	
+    }
 
     /**
      * The activity has been resumed on the current thread.
@@ -192,7 +192,7 @@ public class CoordinatorControl
 
     public void resume () throws SystemException
     {
-    }	
+    }
 
     /**
      * The activity has completed and is no longer active on the current
@@ -242,7 +242,7 @@ public class CoordinatorControl
     public com.arjuna.mw.wsas.status.Status status () throws SystemException
     {
 	int currentStatus = currentCoordinator().status();
-	
+
 	switch (currentStatus)
 	{
 	case ActionStatus.CREATED:
@@ -282,7 +282,7 @@ public class CoordinatorControl
      * @return the complete list of qualifiers that have been registered with
      * the current coordinator.
      */
-    
+
     public Qualifier[] qualifiers () throws NoCoordinatorException, SystemException
     {
 	return currentCoordinator().qualifiers();
@@ -329,7 +329,7 @@ public class CoordinatorControl
      * protocol the coordinator is committing.)
      * @exception SystemException Thrown if any other error occurs.
      */
-    
+
     public void delistParticipant (String participantId) throws InvalidParticipantException, NoCoordinatorException, WrongStateException, SystemException
     {
 	currentCoordinator().delistParticipant(participantId);
@@ -412,7 +412,7 @@ public class CoordinatorControl
 	try
 	{
 	    ActivityHierarchy hier = UserActivityFactory.userActivity().currentActivity();
-	
+
 	    if (hier.size() > 0)
 		return (ActivityHandleImple) hier.activity(hier.size() -1);
 	    else
@@ -425,7 +425,7 @@ public class CoordinatorControl
 	    throw new SystemException(ex.toString());
 	}
     }
-	
+
     private final BACoordinator parentCoordinator () throws SystemException
     {
 	try
@@ -446,7 +446,7 @@ public class CoordinatorControl
 	catch (Exception ex)
 	{
 	    ex.printStackTrace();
-	    
+
 	    return null;
 	}
     }

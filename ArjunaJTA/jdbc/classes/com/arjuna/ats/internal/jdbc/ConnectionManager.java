@@ -174,7 +174,7 @@ public class ConnectionManager {
     }
 
     private static boolean isSameConnection(String dbUrl, String user, String passwd, String dynamic, Object xaDataSource, ConnectionControl connControl) {
-        return 
+        return
             dbUrl.equals(connControl.url())
             && user.equals(connControl.user())
             && passwd.equals(connControl.password())

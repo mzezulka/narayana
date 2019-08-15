@@ -54,7 +54,7 @@ import javax.xml.namespace.QName;
  * in the results list of the previously executed command to the results list for the block command.
  *
  * The command syntax is defined as follows:
- *  
+ *
  * <pre>
  * command ::= simple_command | block_command ==> resultList
  *
@@ -216,7 +216,7 @@ public class XTSServiceTestInterpreter
     }
 
     /// implementation of the interpreter functionality
-    
+
     /**
      * simple command interpreter which executes the commands in the command list, inserting the
      * corresponding results in the results list and using the supplied bindings list

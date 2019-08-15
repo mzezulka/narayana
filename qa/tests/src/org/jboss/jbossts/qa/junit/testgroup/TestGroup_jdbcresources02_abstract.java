@@ -37,7 +37,7 @@ public class TestGroup_jdbcresources02_abstract extends TestGroupBase
     public String getDBName2() {
         return "THIS_DB_NAME_MUST_BE_OVERRIDDEN";
     }
-    
+
 
 	@Before public void setUp()
 	{

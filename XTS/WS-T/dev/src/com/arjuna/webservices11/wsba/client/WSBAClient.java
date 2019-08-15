@@ -181,7 +181,7 @@ public class WSBAClient
 
         return port;
     }
-    
+
     public static BusinessAgreementWithParticipantCompletionParticipantPortType
     getParticipantCompletionParticipantPort(String action, MAP map)
     {

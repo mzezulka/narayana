@@ -225,7 +225,7 @@ public class CoordinatorCompletionCoordinatorProcessorImpl extends CoordinatorCo
              }
          }
      }
-    
+
     /**
      * Completed.
      * @param completed The completed notification.
@@ -367,7 +367,7 @@ public class CoordinatorCompletionCoordinatorProcessorImpl extends CoordinatorCo
         else if (!areRecoveryLogEntriesAccountedFor())
         {
             // drop the request until we have ensured that there is no recovered coordinator for this id
-            
+
             if (WSTLogger.logger.isTraceEnabled())
             {
                 WSTLogger.logger.tracev("GetStatus dropped for unknown coordinator completion participant {0} while waiting on recovery scan", new Object[] {instanceIdentifier}) ;

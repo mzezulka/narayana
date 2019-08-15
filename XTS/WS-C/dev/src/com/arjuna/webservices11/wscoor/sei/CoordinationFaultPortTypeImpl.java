@@ -40,16 +40,16 @@ import javax.xml.ws.soap.Addressing;
 import org.jboss.ws.api.addressing.MAP;
 
 /**
- * Asynchronous endpoint to receive fault responses to requests that used 
+ * Asynchronous endpoint to receive fault responses to requests that used
  * the <em>org.jboss.jbossts.xts.useAsynchronousRequest</em> property.
  * Microsoft WSCOOR implementation needs to receive a valid <em>FaultTo</em>
  * ws-addressing header in order to send the error. This endpoint is not
  * part of the standard.
- * 
+ *
  * @author rmartinc
  */
 @WebService(targetNamespace = "http://docs.oasis-open.org/ws-tx/wscoor/2006/06",
-        name = "CoordinationFaultPortType", 
+        name = "CoordinationFaultPortType",
         serviceName = "CoordinationFaultService",
         portName = "CoordinationFaultPortType")
 @SOAPBinding(parameterStyle = SOAPBinding.ParameterStyle.BARE)
@@ -58,19 +58,19 @@ import org.jboss.ws.api.addressing.MAP;
 public class CoordinationFaultPortTypeImpl {
 
     @Resource private WebServiceContext webServiceCtx;
-    
+
     @WebMethod(operationName = "SoapFault", action = "http://www.w3.org/2005/08/addressing/soap/fault")
     @Oneway
     @Action(input="http://www.w3.org/2005/08/addressing/soap/fault")
     public void soapFault(
         @WebParam(name = "Fault", targetNamespace = "http://schemas.xmlsoap.org/soap/envelope/", partName = "fault")
         Fault fault) {
-    
+
         MessageContext ctx = webServiceCtx.getMessageContext();
         MAP inboundMap = AddressingHelper.inboundMap(ctx);
         if (inboundMap.getRelatesTo() != null)  {
             WSCLogger.logger.tracev("CoordinationFaultPortTypeImpl receiving fault for message={0} - string={1} code={2} details={3}",
-                inboundMap.getRelatesTo().getRelatesTo(), fault.getFaultstring(), 
+                inboundMap.getRelatesTo().getRelatesTo(), fault.getFaultstring(),
                 fault.getFaultcode(), fault.getDetail() == null? "null" : fault.getDetail().getAny());
             AsynchronousRegistrationMapper.getInstance().assignFault(inboundMap.getRelatesTo().getRelatesTo(), fault);
         } else {

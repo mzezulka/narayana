@@ -63,8 +63,8 @@ public interface Transaction extends javax.transaction.Transaction
     Map<XAResource, TxInfo> getResources();
     int getTimeout(); // total lifetime set, in seconds
     long getRemainingTimeoutMills(); // time remaining until possible expire, in ms. 0 if unknown.
-    
+
     public Uid get_uid(); // get the tx id.
-    
+
     public Xid getTxId ();  // get the global Xid (no branch qualifier).
 }

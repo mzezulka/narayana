@@ -271,7 +271,7 @@ public class XTSATRecoveryManagerImple extends XTSATRecoveryManager {
             }
         }
     }
-    
+
     /**
      * return an iterator over the collection of entries in the table. n.b. this iterates
      * direct over the table so any deletions performed during iteration need to be done

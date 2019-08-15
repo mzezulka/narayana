@@ -41,7 +41,7 @@ public class ProxyConversation
      * The conversation state map.
      */
     private static Map conversationStateMap = new TreeMap() ;
-    
+
     /**
      * The marker for an internal id.
      */
@@ -50,16 +50,16 @@ public class ProxyConversation
      * The marker for an external id.
      */
     private static final char EXTERNAL_ID = 'C' ;
-    
+
     /**
      * Create a conversation.
-     * @return The id of the conversation. 
+     * @return The id of the conversation.
      */
     public static synchronized String createConversation()
     {
         final String conversationId = INTERNAL_ID + Integer.toString(++currentConversationId) ;
         conversationMap.put(mapConversationId(conversationId), new ArrayList()) ;
-System.out.println("KEV: created conversation " + conversationId) ;        
+System.out.println("KEV: created conversation " + conversationId) ;
         return conversationId ;
     }
 
@@ -71,10 +71,10 @@ System.out.println("KEV: created conversation " + conversationId) ;
     public static synchronized String[] removeConversation(final String conversationId)
     {
         final ArrayList list = (ArrayList)conversationMap.remove(mapConversationId(conversationId)) ;
-System.out.println("KEV: removed conversation " + conversationId) ;        
+System.out.println("KEV: removed conversation " + conversationId) ;
         return (list == null ? new String[0] : (String[])list.toArray(new String[list.size()])) ;
     }
-    
+
     /**
      * Append a message to the conversation.
      * @param conversationId The conversation id.
@@ -88,7 +88,7 @@ System.out.println("KEV: removed conversation " + conversationId) ;
             list.add(message) ;
         }
     }
-    
+
     /**
      * Set the conversation state for the specified conversation.
      * @param conversationId The conversation id.
@@ -98,7 +98,7 @@ System.out.println("KEV: removed conversation " + conversationId) ;
     {
         conversationStateMap.put(mapConversationId(conversationId), conversationState) ;
     }
-    
+
     /**
      * Get the conversation state for the specified conversation.
      * @param conversationId The conversation id.
@@ -108,7 +108,7 @@ System.out.println("KEV: removed conversation " + conversationId) ;
     {
         return (ProxyConversationState)conversationStateMap.get(mapConversationId(conversationId)) ;
     }
-    
+
     /**
      * Clear the conversation state for the specified conversation.
      * @param conversationId The conversation id.
@@ -117,7 +117,7 @@ System.out.println("KEV: removed conversation " + conversationId) ;
     {
         conversationStateMap.remove(mapConversationId(conversationId)) ;
     }
-    
+
     /**
      * Is the conversation id an internal id?
      * @param conversationId The conversation id.
@@ -127,7 +127,7 @@ System.out.println("KEV: removed conversation " + conversationId) ;
     {
         return ((conversationId != null) && (conversationId.length() != 0) && (conversationId.charAt(0) == INTERNAL_ID)) ;
     }
-    
+
     /**
      * Get the alternate conversation id.
      * @param conversationId The current conversation id.
@@ -148,7 +148,7 @@ System.out.println("KEV: removed conversation " + conversationId) ;
             return INTERNAL_ID + mapConversationId(conversationId) ;
         }
     }
-    
+
     /**
      * Get the map conversation id.
      * @param conversationId The full conversation id.

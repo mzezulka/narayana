@@ -40,12 +40,12 @@ import com.arjuna.ats.internal.jts.recovery.transactions.RecoveredTransaction;
 public final class RecoveredTransactionUnitTest {
 
     private RecoveredTransaction recoveredTransaction;
-    
+
     @Before
     public void before() {
         recoveredTransaction = new RecoveredTransaction(new Uid());
     }
-    
+
     @Test
     @BMRule(name = "Return TwoPhaseOutcome.PREPARE_OK from BasicAction.getHeuristicDecision",
         targetClass = "com.arjuna.ats.arjuna.coordinator.BasicAction",
@@ -56,7 +56,7 @@ public final class RecoveredTransactionUnitTest {
         Assert.assertTrue(recoveredTransaction.assumeComplete());
         Assert.assertEquals(AssumedCompleteTransaction.typeName(), recoveredTransaction.type());
     }
-    
+
     @Test
     @BMRule(name = "Return TwoPhaseOutcome.HEURISTIC_COMMIT from BasicAction.getHeuristicDecision",
         targetClass = "com.arjuna.ats.arjuna.coordinator.BasicAction",
@@ -67,7 +67,7 @@ public final class RecoveredTransactionUnitTest {
         Assert.assertTrue(recoveredTransaction.assumeComplete());
         Assert.assertEquals(AssumedCompleteHeuristicTransaction.typeName(), recoveredTransaction.type());
     }
-    
+
     @Test
     @BMRule(name = "Return TwoPhaseOutcome.HEURISTIC_ROLLBACK from BasicAction.getHeuristicDecision",
         targetClass = "com.arjuna.ats.arjuna.coordinator.BasicAction",
@@ -78,7 +78,7 @@ public final class RecoveredTransactionUnitTest {
         Assert.assertTrue(recoveredTransaction.assumeComplete());
         Assert.assertEquals(AssumedCompleteHeuristicTransaction.typeName(), recoveredTransaction.type());
     }
-    
+
     @Test
     @BMRule(name = "Return TwoPhaseOutcome.HEURISTIC_MIXED from BasicAction.getHeuristicDecision",
         targetClass = "com.arjuna.ats.arjuna.coordinator.BasicAction",
@@ -89,7 +89,7 @@ public final class RecoveredTransactionUnitTest {
         Assert.assertTrue(recoveredTransaction.assumeComplete());
         Assert.assertEquals(AssumedCompleteHeuristicTransaction.typeName(), recoveredTransaction.type());
     }
-    
+
     @Test
     @BMRule(name = "Return TwoPhaseOutcome.HEURISTIC_HAZARD from BasicAction.getHeuristicDecision",
         targetClass = "com.arjuna.ats.arjuna.coordinator.BasicAction",

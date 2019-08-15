@@ -50,7 +50,7 @@ public class TestGroup_perfprofile01_i extends TestGroupBase
 			super.tearDown();
 		}
 	}
- 
+
 	@Test public void PerfProfile01_I_AIT01_ImplicitObject_NoTran_NoTranNullOper()
 	{
 		setTestName("AIT01_ImplicitObject_NoTran_NoTranNullOper");

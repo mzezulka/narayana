@@ -25,7 +25,7 @@ public interface Receiver {
     public Message receive(long flags) throws ConnectionException;
 
     public Object getReplyTo() throws ConnectionException;
-    
+
     public Object getEndpoint() throws ConnectionException;
 
     public void close() throws ConnectionException;

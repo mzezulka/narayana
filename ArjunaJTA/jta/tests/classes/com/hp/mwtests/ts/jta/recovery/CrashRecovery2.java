@@ -79,7 +79,7 @@ public class CrashRecovery2 {
         jtaEnvironmentBean.setXaRecoveryNodes(Arrays
                 .asList(new String[] { "1" }));
     }
-    
+
 
     @BMScript("fail2pc")
 	@Test
@@ -88,7 +88,7 @@ public class CrashRecovery2 {
 			HeuristicMixedException, HeuristicRollbackException,
 			NoSuchFieldException, IllegalArgumentException,
 			IllegalAccessException {
-	    
+
 	    recoveryPropertyManager.getRecoveryEnvironmentBean()
 				.setRecoveryBackoffPeriod(1);
 
@@ -134,7 +134,7 @@ public class CrashRecovery2 {
      */
     @Test
     public void testRmFailXAResourceSerializable() throws Exception {
-        
+
         recoveryPropertyManager.getRecoveryEnvironmentBean()
                 .setRecoveryBackoffPeriod(1);
 

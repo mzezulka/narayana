@@ -977,7 +977,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
 
 	/**
 	 * Returns the resource manager product name.
-	 * 
+	 *
 	 * @return the product name
 	 */
 	public String getProductName() {
@@ -986,7 +986,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
 
 	/**
 	 * Sets the resource manager product name.
-	 * 
+	 *
 	 * @param productName the product name
 	 */
 	public void setProductName(String productName) {
@@ -995,7 +995,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
 
 	/**
 	 * Returns the resource manager product version.
-	 * 
+	 *
 	 * @return the product version
 	 */
 	public String getProductVersion() {
@@ -1004,7 +1004,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
 
 	/**
 	 * Sets the resource manager product version.
-	 * 
+	 *
 	 * @param productVersion the product version
 	 */
 	public void setProductVersion(String productVersion) {
@@ -1014,7 +1014,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
 	/**
 	 * Returns the resource manager JNDI name for e.g. xa datasource. Note this is
 	 * not used for lookup, only for information.
-	 * 
+	 *
 	 * @return the JNDI name.
 	 */
 	public String getJndiName() {
@@ -1024,7 +1024,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
 	/**
 	 * Sets the resource manager JNDI name. Note this is not used for lookup, only
 	 * for information.
-	 * 
+	 *
 	 * @param jndiName the JNDI name.
 	 */
 	public void setJndiName(String jndiName) {

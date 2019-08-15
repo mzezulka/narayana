@@ -44,7 +44,7 @@ import com.arjuna.ats.arjuna.tools.osb.util.JMXServer;
  * @author Mike Musgrove
  */
 /**
- * @deprecated as of 5.0.5.Final In a subsequent release we will change packages names in order to 
+ * @deprecated as of 5.0.5.Final In a subsequent release we will change packages names in order to
  * provide a better separation between public and internal classes.
  */
 @Deprecated // in order to provide a better separation between public and internal classes.
@@ -409,7 +409,7 @@ public class ObjStoreBrowser implements ObjStoreBrowserMBean {
     /**
      * See if any new MBeans need to be registered or if any existing MBeans no longer exist
      * as ObjectStore entries.
-     * @throws MBeanException 
+     * @throws MBeanException
      */
     public synchronized void probe() throws MBeanException {
         Map<String, Collection<Uid>> currUidsForType = new HashMap<String, Collection<Uid>>();
@@ -487,13 +487,13 @@ public class ObjStoreBrowser implements ObjStoreBrowserMBean {
         Collection<Uid> uids = new ArrayList<Uid>();
         try {
             ObjectStoreIterator iter = new ObjectStoreIterator(StoreManager.getRecoveryStore(), type);
-    
+
             while (true) {
                 Uid u = iter.iterate();
-    
+
                 if (u == null || Uid.nullUid().equals(u))
                     break;
-    
+
                 uids.add(u);
             }
         } catch (ObjectStoreException | IOException e) {

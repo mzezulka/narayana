@@ -1,20 +1,20 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors 
- * as indicated by the @author tags. 
+ * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * as indicated by the @author tags.
  * See the copyright.txt in the distribution for a
- * full listing of individual contributors. 
+ * full listing of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
  * of the GNU Lesser General Public License, v. 2.1.
- * This program is distributed in the hope that it will be useful, but WITHOUT A 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT A
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
  * You should have received a copy of the GNU Lesser General Public License,
  * v.2.1 along with this distribution; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -41,14 +41,14 @@ import com.arjuna.ats.arjuna.logging.tsLogger;
 import com.arjuna.ats.arjuna.recovery.ExpiryScanner;
 
 /**
- * Threaded object to run {@link ExpiryScanner} implementations to scan 
+ * Threaded object to run {@link ExpiryScanner} implementations to scan
  * the action store to remove items deemed expired by some algorithm.
- * Performs a scan at interval defined by the property 
+ * Performs a scan at interval defined by the property
  * com.arjuna.ats.arjuna.recovery.expiryScanInterval (hours).
  * ExpiryScanner implementations are registered as properties beginning with
  * "com.arjuna.ats.arjuna.recovery.expiryScanner".
  * <P>
- * Singleton, instantiated in the RecoveryManager. 
+ * Singleton, instantiated in the RecoveryManager.
  * <P>
  */
 
@@ -71,35 +71,35 @@ public class ExpiredEntryMonitor extends Thread
       if (!initialised) {
           initialise();
       }
-      
+
       if ( _scanIntervalSeconds == 0 )
       {
 	  // no scanning wanted
-	      
+
 	  if (tsLogger.logger.isDebugEnabled()) {
           tsLogger.logger.debug("Expiry scan zero - not scanning");
       }
-	  
+
 	  return false;
       }
 
       if ( _expiryScanners.size() == 0 )
       {
 	  // nothing to do
-	  
+
 	  if (tsLogger.logger.isDebugEnabled()) {
           tsLogger.logger.debug("No Expiry scanners loaded - not scanning");
       }
-	  
+
 	  return false;
       }
-      
+
       // create, and thus launch the monitor
 
       _theInstance = new ExpiredEntryMonitor(_skipFirst);
 
       _theInstance.start();
-      
+
       return true;
   }
 
@@ -133,7 +133,7 @@ public class ExpiredEntryMonitor extends Thread
 
     this.setDaemon(true);
   }
-    
+
   /**
    * performs periodic scans until a shutdwn is notified
    */
@@ -142,7 +142,7 @@ public class ExpiredEntryMonitor extends Thread
     while( true )
     {
 	    tsLogger.logger.debugf("ExpiredEntryMonitor running at %s", _theTimestamper.format(new Date()).toString());
-	
+
 	if (_skipNext)
     {
         // make sure we skip at most one scan
@@ -154,7 +154,7 @@ public class ExpiredEntryMonitor extends Thread
     else
 	{
 	    Enumeration scanners = _expiryScanners.elements();
-	    
+
 	    while ( scanners.hasMoreElements() )
 	    {
 		ExpiryScanner m = (ExpiryScanner)scanners.nextElement();
@@ -169,7 +169,7 @@ public class ExpiredEntryMonitor extends Thread
             // ok go ahead and scan
 
 		m.scan();
-			
+
 		if (tsLogger.logger.isDebugEnabled()) {
             tsLogger.logger.debug("  ");
             // bit of space if detailing

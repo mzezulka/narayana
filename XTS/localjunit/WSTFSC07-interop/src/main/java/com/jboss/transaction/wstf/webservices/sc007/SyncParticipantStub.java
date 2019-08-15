@@ -38,7 +38,7 @@ public class SyncParticipantStub implements ParticipantStub
      * The participant stub singletong.
      */
     private static final ParticipantStub PARTICIPANT_STUB = new SyncParticipantStub() ;
-    
+
     /**
      * Get the participant stub singleton.
      * @return The participant stub singleton.
@@ -47,7 +47,7 @@ public class SyncParticipantStub implements ParticipantStub
     {
         return PARTICIPANT_STUB ;
     }
-    
+
     /**
      * Send a completion commit request.
      * @param serviceURI The target service URI.
@@ -156,7 +156,7 @@ public class SyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         SyncParticipantClient.getClient().sendVolatileAndDurable(coordinationContext, map) ;
     }
 
@@ -172,7 +172,7 @@ public class SyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         SyncParticipantClient.getClient().sendEarlyReadonly(coordinationContext, map) ;
     }
 
@@ -188,7 +188,7 @@ public class SyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         SyncParticipantClient.getClient().sendEarlyAborted(coordinationContext, map) ;
     }
 
@@ -204,7 +204,7 @@ public class SyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         SyncParticipantClient.getClient().sendReplayCommit(coordinationContext, map) ;
     }
 
@@ -220,7 +220,7 @@ public class SyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         SyncParticipantClient.getClient().sendRetryPreparedCommit(coordinationContext, map) ;
     }
 
@@ -236,7 +236,7 @@ public class SyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         SyncParticipantClient.getClient().sendRetryPreparedAbort(coordinationContext, map) ;
     }
 
@@ -252,7 +252,7 @@ public class SyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         SyncParticipantClient.getClient().sendRetryCommit(coordinationContext, map) ;
     }
 
@@ -268,7 +268,7 @@ public class SyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         SyncParticipantClient.getClient().sendPreparedAfterTimeout(coordinationContext, map) ;
     }
 
@@ -284,7 +284,7 @@ public class SyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         SyncParticipantClient.getClient().sendLostCommitted(coordinationContext, map) ;
     }
 }

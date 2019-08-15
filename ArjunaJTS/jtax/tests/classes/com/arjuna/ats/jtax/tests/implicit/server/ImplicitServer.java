@@ -60,14 +60,14 @@ public class ImplicitServer
         oa.objectIsReady(impl);
 
         org.omg.CORBA.Object obj = oa.corbaReference(impl);
-        
+
         File file = new File("server.ior");
         file.delete();
         file.createNewFile();
         FileWriter fileWriter = new FileWriter(file);
         fileWriter.write(orb.orb().object_to_string(obj));
         fileWriter.close();
-        
+
         // TODO registerService(args[0], orb.orb().object_to_string(obj));
 
         orb.orb().run();

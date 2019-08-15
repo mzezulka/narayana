@@ -158,7 +158,7 @@ public class RecoveryXids
     // JBTM-924
     public boolean isStale() {
         long now = System.currentTimeMillis();
-        // JBTM-1255 - use a different safety declaration for staleness, if you set a safety interval of 0 (using reflection) then 
+        // JBTM-1255 - use a different safety declaration for staleness, if you set a safety interval of 0 (using reflection) then
         // you will detect everything as stale. The only time we actually set safetyIntervalMillis is in JBTM-895 unit test SimpleIsolatedServers
         // so in the normal case this will behave as before
         long threshold = _lastValidated+(2*safetyIntervalMillis < staleSafetyIntervalMillis ? staleSafetyIntervalMillis : 2*safetyIntervalMillis);
@@ -168,11 +168,11 @@ public class RecoveryXids
             tsLogger.logger.trace("RecoveryXids isStale Check " + _xares + " " + _lastValidated + " " + now + " " + result);
         return result;
     }
-    
+
     public boolean remove (Xid xid)
     {
         XidImple xidImple = new XidImple(xid);
-        
+
         if (_whenFirstSeen.containsKey(xidImple)) {
         	_whenFirstSeen.remove(xidImple);
         	if (tsLogger.logger.isTraceEnabled())
@@ -222,7 +222,7 @@ public class RecoveryXids
 
         return false;
     }
-    
+
     public int size() {
         return _whenFirstSeen.size();
     }
@@ -236,14 +236,14 @@ public class RecoveryXids
     private long _lastValidated;
 
     /**
-     * JBTM-1255 this is required to reinstate JBTM-924, see message in @see RecoveryXids#isStale() 
+     * JBTM-1255 this is required to reinstate JBTM-924, see message in @see RecoveryXids#isStale()
      */
     private static final int staleSafetyIntervalMillis; // The advice is that this (if made configurable is twice the safety interval)
-    
+
     // JBTM-916 removed final so 10000 is not inlined into source code until we make this configurable
 	// https://issues.jboss.org/browse/JBTM-842
     private static int safetyIntervalMillis; // may eventually want to make this configurable?
-    
+
     static {
         safetyIntervalMillis = jtaPropertyManager.getJTAEnvironmentBean().getOrphanSafetyInterval();
         if (safetyIntervalMillis > 0) {

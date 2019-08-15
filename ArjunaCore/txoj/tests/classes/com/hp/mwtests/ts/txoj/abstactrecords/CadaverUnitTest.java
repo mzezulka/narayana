@@ -44,89 +44,89 @@ public class CadaverUnitTest
 	AtomicAction A = new AtomicAction();
 	AtomicObject B = new AtomicObject(ObjectModel.MULTIPLE);
 	Uid u = B.get_uid();
-	
+
 	A.begin();
 
 	B.set(1234);
-	 
+
 	A.commit();
-	
-	A = new AtomicAction();	
+
+	A = new AtomicAction();
 	B = new AtomicObject(u, ObjectModel.MULTIPLE);
-	
+
 	A.begin();
-	
+
 	AtomicAction C = new AtomicAction();
-	
+
 	C.begin();
-	
+
 	assertEquals(B.get(), 1234);
-	
+
 	B.set(5678);
-	
+
 	B.terminate();
 
 	C.commit();
-	
+
 	assertEquals(A.commit(), ActionStatus.COMMITTED);
     }
-    
+
     @Test
     public void testAbort () throws Exception
     {
         AtomicAction A = new AtomicAction();
         AtomicObject B = new AtomicObject(ObjectModel.MULTIPLE);
         Uid u = B.get_uid();
-        
+
         A.begin();
 
         B.set(1234);
-         
+
         A.commit();
-        
+
         A = new AtomicAction();
-        
+
         B = new AtomicObject(u, ObjectModel.MULTIPLE);
-        
+
         A.begin();
-        
+
         AtomicAction C = new AtomicAction();
-        
+
         C.begin();
-        
+
         assertEquals(B.get(), 1234);
-        
+
         B.set(5678);
-        
+
         B.terminate();
 
         C.commit();
-        
+
         assertEquals(A.abort(), ActionStatus.ABORTED);
     }
- 
+
     @Test
     public void testMultipleNestedCommit () throws Exception
     {
         AtomicAction A = new AtomicAction();
         AtomicObject B = new AtomicObject(ObjectModel.MULTIPLE);
         Uid u = B.get_uid();
-        
+
         A.begin();
-        
+
         B.set(1234);
-         
+
         A.commit();
-        
+
         A = new AtomicAction();
         B = new AtomicObject(u, ObjectModel.MULTIPLE);
-        
+
         A.begin();
-        
+
         AtomicAction C = new AtomicAction();
-        
+
         C.begin();
-        
+
         assertEquals(B.get(), 1234);
 
         B.set(5678);
@@ -134,60 +134,60 @@ public class CadaverUnitTest
         B.terminate();
 
         C.commit();
-        
+
         assertEquals(A.commit(), ActionStatus.COMMITTED);
     }
-    
+
     @Test
     public void testMultipleNestedAbort () throws Exception
     {
         AtomicAction A = new AtomicAction();
         AtomicObject B = new AtomicObject(ObjectModel.MULTIPLE);
         Uid u = B.get_uid();
-        
+
         A.begin();
 
         B.set(1234);
-         
+
         A.commit();
-        
+
         A = new AtomicAction();
         B = new AtomicObject(u, ObjectModel.MULTIPLE);
-        
+
         A.begin();
 
         AtomicAction C = new AtomicAction();
-        
+
         C.begin();
 
         assertEquals(B.get(), 1234);
-        
+
         B.set(5678);
 
         B.terminate();
 
         C.abort();
-        
+
         assertEquals(A.commit(), ActionStatus.COMMITTED);
     }
-    
+
     @Test
     public void testBasic () throws Exception
     {
         AtomicAction A = new AtomicAction();
         AtomicObject B = new AtomicObject();
-        
+
         A.begin();
-        
+
         CadaverLockRecord clr = new CadaverLockRecord(null, B, A);
         LockRecord lr = new LockRecord(B, A);
-        
+
         assertTrue(clr.type() != null);
-        
+
         clr.print(new PrintWriter(new ByteArrayOutputStream()));
-        
+
         clr.replace(lr);
-        
+
         A.abort();
     }
 }

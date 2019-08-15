@@ -46,7 +46,7 @@ public class DestroyRecoverTest
     public void test()
     {
         arjPropertyManager.getCoordinatorEnvironmentBean().setAlternativeRecordOrdering(true);
-        
+
         AtomicAction A = new AtomicAction();
         BasicObject bo = null;
         Uid txId = null;
@@ -72,7 +72,7 @@ public class DestroyRecoverTest
         if (passed) {
             try {
                 A = new AtomicAction();
-                
+
                 txId = A.get_uid();
 
                 A.begin();
@@ -110,7 +110,7 @@ public class DestroyRecoverTest
                  * user object, meaning activation will fail. Which for this test
                  * is a successful outcome!
                  */
-                
+
                 BasicObject recoveredObject = new BasicObject(objId);
 
                 if (recoveredObject.get() == -1)
@@ -120,7 +120,7 @@ public class DestroyRecoverTest
                 ex.printStackTrace();
             }
         }
-        
+
         assertTrue(passed);
     }
 

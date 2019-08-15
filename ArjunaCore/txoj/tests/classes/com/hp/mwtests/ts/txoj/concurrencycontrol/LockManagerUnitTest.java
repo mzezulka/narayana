@@ -51,13 +51,13 @@ public class LockManagerUnitTest
         AtomicObject obj = new AtomicObject();
 
         obj = new AtomicObject();
-        
+
         assertTrue(obj.releaselock(new Uid()));
         assertEquals(obj.setlock(null), LockResult.REFUSED);
-        
+
         obj.print(new PrintWriter(new ByteArrayOutputStream()));
         obj.printState(new PrintWriter(new ByteArrayOutputStream()));
-        
+
         assertEquals(new DummyLockManager().type(), "StateManager/LockManager");
     }
 }

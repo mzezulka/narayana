@@ -50,20 +50,20 @@ public class LockUnitTest
     public void test () throws Exception
     {
         Lock lock = new Lock();
-        
+
         lock = new Lock(LockMode.WRITE);
-        
+
         assertTrue(lock.getAllOwners() != null);
         assertEquals(lock.getCurrentStatus(), LockStatus.LOCKFREE);
-        
+
         assertFalse(lock.equals(new Object()));
         assertFalse(lock.equals((Object) new Lock()));
         assertTrue(lock.equals(lock));
-        
+
         assertTrue(lock.toString() != null);
-        
+
         assertEquals(lock.type(), "/StateManager/Lock");
-        
+
         lock.print(new PrintWriter(new ByteArrayOutputStream()));
     }
 }

@@ -1,20 +1,20 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors 
- * as indicated by the @author tags. 
+ * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * as indicated by the @author tags.
  * See the copyright.txt in the distribution for a
- * full listing of individual contributors. 
+ * full listing of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
  * of the GNU Lesser General Public License, v. 2.1.
- * This program is distributed in the hope that it will be useful, but WITHOUT A 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT A
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
  * You should have received a copy of the GNU Lesser General Public License,
  * v.2.1 along with this distribution; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -45,7 +45,7 @@ import com.arjuna.ats.arjuna.state.OutputObjectState;
 
 /**
  * A cached object store implementation.
- * 
+ *
  * @author Mark Little (mark@arjuna.com)
  * @version $Id: CacheStore.java 2342 2006-03-30 13:06:17Z $
  * @since JTS 3.0.
@@ -383,7 +383,7 @@ class AsyncStore extends Thread // keep priority same as app. threads
         }
 
         int status = NOT_PRESENT;
-        
+
         if (elements == null)
             return status;
 
@@ -392,7 +392,7 @@ class AsyncStore extends Thread // keep priority same as app. threads
             for (int i = 0; i < elements.length; i++)
             {
                 StoreElement element = (StoreElement) elements[i];
-    
+
                 if ((element != null) && !element.removed
                         && element.objUid.equals(objUid))
                 {
@@ -400,15 +400,15 @@ class AsyncStore extends Thread // keep priority same as app. threads
                     {
                     case AsyncStore.REMOVE:
                         element.remove();
-    
+
                         synchronized (_workList)
                         {
                             _removedItems++;
                         }
-    
+
                         if (status != IN_USE)
                             status = REMOVED;
-    
+
                         break;
                     case AsyncStore.WRITE:
                         // if (element.fileType == ft)
@@ -417,16 +417,16 @@ class AsyncStore extends Thread // keep priority same as app. threads
                         {
                             if (element.state != null)
                                 _currentCacheSize -= element.state.size();
-    
+
                             _removedItems++;
                         }
-    
+
                         element.remove();
-    
+
                         if (status != IN_USE)
                             status = REMOVED;
                     }
-    
+
                         break;
                     default:
                         break;
@@ -442,7 +442,7 @@ class AsyncStore extends Thread // keep priority same as app. threads
                 _workList.notify();
             }
         }
-        
+
         /*
          * Does the worker thread currently have it?
          */
@@ -549,7 +549,7 @@ class AsyncStore extends Thread // keep priority same as app. threads
                 _workList.notify();
             }
         }
-        
+
         return status;
     }
 
@@ -668,12 +668,12 @@ class AsyncStore extends Thread // keep priority same as app. threads
 	                try
 	                {
 	                    _work = (StoreElement) list.removeLast();
-	
+
 	                    _numberOfEntries--;
-	
+
 	                    if ((_work.state != null) && !_work.removed)
 	                        _currentCacheSize -= _work.state.size();
-	
+
 	                    if (_work.removed)
 	                    {
 	                        _removedItems--;

@@ -99,7 +99,7 @@ public class SocketReceiverImpl implements Receiver, Runnable {
         return cd;
     }
 
-    public Message receive(long flags) throws ConnectionException {    
+    public Message receive(long flags) throws ConnectionException {
         if (closed) {
             throw new ConnectionException(Connection.TPEPROTO, "Receiver already closed");
         }
@@ -115,7 +115,7 @@ public class SocketReceiverImpl implements Receiver, Runnable {
                                 wait(determineTimeout(flags));
                             } catch (InterruptedException e) {
                             }
-                        }                  
+                        }
                     }
                     if(!data.isEmpty()) {
                         message = data.remove(0);
@@ -293,7 +293,7 @@ public class SocketReceiverImpl implements Receiver, Runnable {
         } catch (SocketException e) {
         } catch (IOException e) {
             log.error("receiver " + socket + " run failed with " + e);
-        }    
+        }
     }
 
     public Object getEndpoint() throws ConnectionException {

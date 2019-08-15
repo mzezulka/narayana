@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -57,7 +57,7 @@ import com.arjuna.orbportability.oa.PreShutdown;
  * An attempt at some ORB portable ways of interacting with the OA. NOTE:
  * initPOA *must* be called if you want to use the pre- and post- initialisation
  * mechanisms.
- * 
+ *
  * @author Mark Little (mark@arjuna.com)
  * @version $Id: OA.java 2342 2006-03-30 13:06:17Z $
  * @since JTS 2.1.
@@ -70,7 +70,7 @@ public abstract class OA
      * Ensure that all OA specific initialisation is done even if the programmer
      * uses the OA specific init routines. This method does not need to be
      * called if using initOA methods.
-     * 
+     *
      * @since JTS 2.1.1.
      */
 
@@ -194,7 +194,7 @@ public abstract class OA
                 catch (final org.omg.CORBA.INITIALIZE ex)
                 {
                     opLogger.i18NLogger.warn_OA_initialize();
-                    
+
                     throw ex;
                 }
                 catch (final Exception e)
@@ -423,7 +423,7 @@ public abstract class OA
     /**
      * OA constructor - creates an OA which represents a given POA on a given
      * ORB
-     * 
+     *
      * @param orb
      *            The ORB this OA exists in
      * @param oa
@@ -448,7 +448,7 @@ public abstract class OA
     /**
      * Retrieve an OA instance given a unique name, if an OA instance with this
      * name doesn't exist then create it.
-     * 
+     *
      * @param associatedORB
      *            The ORB this OA is being created for.
      * @return The OA instance referred to by the name given.

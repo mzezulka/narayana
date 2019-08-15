@@ -47,44 +47,44 @@ public class CadaverRecordUnitTest
     public void test ()
     {
         ParticipantStore store = StoreManager.setupStore(null, StateType.OS_UNSHARED);
-        
+
         CadaverRecord cr = new CadaverRecord(new OutputObjectState(), store, new ExtendedObject());
-        
+
         assertTrue(cr.propagateOnAbort());
         assertTrue(cr.propagateOnCommit());
         assertEquals(cr.typeIs(), RecordType.PERSISTENCE);
-        
+
         assertTrue(cr.type() != null);
         assertEquals(cr.doSave(), false);
 
         cr.merge(new PersistenceRecord(new OutputObjectState(), store, new ExtendedObject()));
-        
+
         assertEquals(cr.nestedPrepare(), TwoPhaseOutcome.PREPARE_READONLY);
         assertEquals(cr.nestedAbort(), TwoPhaseOutcome.FINISH_OK);
 
         cr = new CadaverRecord(new OutputObjectState(), store, new ExtendedObject());
         cr.merge(new PersistenceRecord(new OutputObjectState(), store, new ExtendedObject()));
-        
+
         assertEquals(cr.nestedPrepare(), TwoPhaseOutcome.PREPARE_READONLY);
         assertEquals(cr.nestedCommit(), TwoPhaseOutcome.FINISH_OK);
-        
+
         cr = new CadaverRecord(new OutputObjectState(new Uid(), "foobar"), store, new ExtendedObject());
         cr.merge(new PersistenceRecord(new OutputObjectState(new Uid(), "foobar"), store, new ExtendedObject()));
-        
+
         assertEquals(cr.topLevelPrepare(), TwoPhaseOutcome.PREPARE_OK);
         assertEquals(cr.topLevelAbort(), TwoPhaseOutcome.FINISH_OK);
- 
+
         cr = new CadaverRecord(new OutputObjectState(new Uid(), "foobar"), store, new ExtendedObject());
         cr.merge(new PersistenceRecord(new OutputObjectState(new Uid(), "foobar"), store, new ExtendedObject()));
         cr.merge(new PersistenceRecord(new OutputObjectState(new Uid(), "foobar"), store, new ExtendedObject()));
-        
+
         assertEquals(cr.topLevelPrepare(), TwoPhaseOutcome.PREPARE_OK);
         assertEquals(cr.topLevelCommit(), TwoPhaseOutcome.FINISH_OK);
 
         cr = new CadaverRecord();
-        
+
         cr.print(new PrintWriter(new ByteArrayOutputStream()));
-        
+
         assertFalse(cr.shouldMerge(new DisposeRecord()));
         assertFalse(cr.shouldReplace(new DisposeRecord()));
     }

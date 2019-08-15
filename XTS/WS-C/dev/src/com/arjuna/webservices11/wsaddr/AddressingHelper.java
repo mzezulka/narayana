@@ -280,7 +280,7 @@ public class AddressingHelper
             requestMap.setRelatesTo(relatesTo);
         }
     }
-    
+
     public static void installFaultTo(MAP map, MAPEndpoint epReference, InstanceIdentifier identifier)
     {
         final MAPBuilder builder = PrivilegedMapBuilderFactory.getInstance().getBuilderInstance();
@@ -360,7 +360,7 @@ public class AddressingHelper
             requestContext.put(BindingProvider.SOAPACTION_URI_PROPERTY, action);
         }
     }
-    
+
     /**
      * retrieve the inbound server message address properties attached to a message context
      * @param ctx the server message context
@@ -379,7 +379,7 @@ public class AddressingHelper
     public static MAP outboundMap(Map<String, Object>  ctx) {
         return PrivilegedMapBuilderFactory.getInstance().getBuilderInstance().outboundMap(ctx);
     }
-    
+
     public static MAP outboundMap(Map<String, Object>  ctx, String replyTo, String faultTo) {
         final MAPBuilder builder = PrivilegedMapBuilderFactory.getInstance().getBuilderInstance();
         MAP map = builder.outboundMap(ctx);

@@ -56,7 +56,7 @@ public class TestConstants
      * Default address of page with results.
      */
     public static final String DEFAULT_RESULT_PAGE_ADDRESS = "/results.jsp";
-    
+
     /**
      * The name of the test results attribute.
      */
@@ -73,7 +73,7 @@ public class TestConstants
      * The name of the log name attribute.
      */
     public static final String ATTRIBUTE_LOG_NAME = "logName" ;
-    
+
     /**
      * test name for all tests
      */
@@ -207,11 +207,11 @@ public class TestConstants
      * The name to description map.
      */
     public static final Map DESCRIPTIONS ;
-    
+
     static
     {
         final TreeMap descriptions = new TreeMap() ;
-        
+
         descriptions.put(NAME_TEST_AT_1_1, DESCRIPTION_TEST_1_1) ;
         descriptions.put(NAME_TEST_1_2, DESCRIPTION_TEST_1_2) ;
         descriptions.put(NAME_TEST_2_1, DESCRIPTION_TEST_2_1) ;

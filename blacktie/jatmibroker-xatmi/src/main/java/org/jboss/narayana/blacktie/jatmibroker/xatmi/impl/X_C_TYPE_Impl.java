@@ -53,7 +53,7 @@ public class X_C_TYPE_Impl extends BufferImpl implements X_C_TYPE {
 
     /**
      * The constructor is hidden as the <code>Connection</code> factory method should be used instead. ConnectionImpl#tpalloc(String, String)
-     * 
+     *
      * @param subtype The subtype of the buffer
      * @throws ConnectionException In case the buffer does not exist
      * @throws ConfigurationException
@@ -64,7 +64,7 @@ public class X_C_TYPE_Impl extends BufferImpl implements X_C_TYPE {
 
     /**
      * Get the short value identified by the key.
-     * 
+     *
      * @param key The key to use
      * @return The short value
      * @throws ConnectionException In case the key is not part of the structure.
@@ -75,7 +75,7 @@ public class X_C_TYPE_Impl extends BufferImpl implements X_C_TYPE {
 
     /**
      * Set the short value
-     * 
+     *
      * @param key The value to set
      * @param value The value to use
      * @throws ConnectionException In case the key is unknown.

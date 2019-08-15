@@ -80,7 +80,7 @@ public class TestGroup_jtsremote  extends TestGroupBase
 
         startAndWaitForClient(com.hp.mwtests.ts.jts.remote.arjuna.ExplicitArjunaClient.class, "$(1)");
 
-        server1.terminate();        
+        server1.terminate();
     }
 
     @Test public void JTSRemote_ImplicitPropagationTest() {

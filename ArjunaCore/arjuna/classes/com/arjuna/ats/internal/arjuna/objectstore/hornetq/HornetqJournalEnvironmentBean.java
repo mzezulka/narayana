@@ -299,7 +299,7 @@ public class HornetqJournalEnvironmentBean implements HornetqJournalEnvironmentB
      * Asynchronous deletes may give rise to unnecessary crash recovery complications.
      *
      * Default: true.
-     * 
+     *
      * @return true if log deletes should be synchronous, false otherwise.
      */
     public boolean isSyncDeletes()

@@ -40,7 +40,7 @@ import junit.framework.TestCase;
 
 /**
  * Unit tests for the Class class.
- * 
+ *
  * @author Mark Little
  */
 
@@ -53,42 +53,42 @@ public class PersistentContainerUnitTest extends TestCase
         {
             super(ObjectType.ANDPERSISTENT);
         }
-        
+
         public boolean save_state (OutputObjectState os)
         {
             return true;
         }
-        
+
         public boolean restore_state (InputObjectState os)
         {
             return true;
         }
-        
+
         public String type ()
         {
             return "/StateManager/LockManager/TestObject";
         }
     }
-    
+
     @Transactional
     public interface Sample
     {
        public void myWork ();
-       
+
        public void doSomeWork ();
 
        public boolean doSomeOtherWork ();
-       
+
        public void notTransactionalWork ();
     }
-    
+
     @Transactional
     public class SampleLockable implements Sample
     {
         public void myWork ()
         {
         }
-        
+
         @ReadLock
         public void doSomeWork ()
         {
@@ -100,7 +100,7 @@ public class PersistentContainerUnitTest extends TestCase
         {
             return true;
         }
-        
+
         @TransactionFree
         public void notTransactionalWork ()
         {
@@ -109,7 +109,7 @@ public class PersistentContainerUnitTest extends TestCase
         @State
         @SuppressWarnings(value={"unused"})
         private int _isState;
-        
+
         @SuppressWarnings(value={"unused"})
         private int _isNotState;
     }
@@ -119,7 +119,7 @@ public class PersistentContainerUnitTest extends TestCase
         PersistentContainer<TestObject> theContainer = new PersistentContainer<TestObject>();
         TestObject tester = new TestObject();
         boolean success = false;
-        
+
         try
         {
             theContainer.enlist(tester);
@@ -131,14 +131,14 @@ public class PersistentContainerUnitTest extends TestCase
 
         assertTrue(success);
     }
-    
+
     @SuppressWarnings(value={"unused"})
     public void testValidEnlist ()
     {
         PersistentContainer<Sample> theContainer = new PersistentContainer<Sample>();
         SampleLockable tester = new SampleLockable();
         boolean success = true;
-        
+
         try
         {
             Sample proxy = theContainer.enlist(tester);
@@ -146,56 +146,56 @@ public class PersistentContainerUnitTest extends TestCase
         catch (final Throwable ex)
         {
             ex.printStackTrace();
-            
+
             success = false;
         }
-        
+
         assertTrue(success);
     }
-    
+
     public void testGetUid ()
     {
         PersistentContainer<Sample> theContainer = new PersistentContainer<Sample>();
         SampleLockable tester = new SampleLockable();
         boolean success = true;
-        
+
         try
         {
             Sample proxy = theContainer.enlist(tester);
             Uid u = theContainer.getUidForOriginal(proxy);
-            
+
             assertNotNull(u);
         }
         catch (final Throwable ex)
         {
             ex.printStackTrace();
-            
+
             success = false;
         }
-        
+
         assertTrue(success);
     }
-    
+
     public void testMULTIPLE ()
     {
         PersistentContainer<Sample> theContainer = new PersistentContainer<Sample>(ObjectModel.MULTIPLE);
         SampleLockable tester = new SampleLockable();
         boolean success = true;
-        
+
         try
         {
             Sample proxy = theContainer.enlist(tester);
-            
+
             proxy.doSomeWork();
             proxy.doSomeOtherWork();
         }
         catch (final Throwable ex)
         {
             ex.printStackTrace();
-            
+
             success = false;
         }
-        
+
         assertTrue(success);
     }
 }

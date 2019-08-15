@@ -115,7 +115,7 @@ public class CrashRecoveryCommitReturnsXA_RETRYHeuristicRollback {
 		}
 
 		// JBTM-1354 Run a scan to make sure that the recovery thread has completed a full run before starting the test
-		// The important thing is that replayCompletion is allowed to do a scan of the transactions 
+		// The important thing is that replayCompletion is allowed to do a scan of the transactions
 		RecoveryManager.manager().scan();
 
 		XAResource firstResource = new SimpleResource();

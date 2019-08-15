@@ -158,11 +158,11 @@ public class XARecoveryModule implements ExtendedRecoveryModule
             _xaResourceOrphanFilters.remove(xaResourceOrphanFilter);
         }
     }
-    
+
 	public void addSerializableXAResourceDeserializer(SerializableXAResourceDeserializer serializableXAResourceDeserializer) {
-		_seriablizableXAResourceDeserializers.add(serializableXAResourceDeserializer);		
+		_seriablizableXAResourceDeserializers.add(serializableXAResourceDeserializer);
 	}
-	
+
 	public List<SerializableXAResourceDeserializer> getSeriablizableXAResourceDeserializers() {
 		return _seriablizableXAResourceDeserializers;
 	}
@@ -509,7 +509,7 @@ public class XARecoveryModule implements ExtendedRecoveryModule
 	}
 
 	/**
-	 * 
+	 *
 	 * JBTM-895 garbage collection is now done when we return XAResources @see XARecoveryModule#getNewXAResource(XAResourceRecord)
 	 * @see XARecoveryModule#getNewXAResource(XAResourceRecord)
 	 */
@@ -626,7 +626,7 @@ public class XARecoveryModule implements ExtendedRecoveryModule
             jtaLogger.logger.debug("xarecovery of " + xares);
         }
 
-		
+
 			Xid[] trans = null;
 
 			try
@@ -642,7 +642,7 @@ public class XARecoveryModule implements ExtendedRecoveryModule
 					for (Xid xid : trans) {
 						byte[] globalTransactionId = xid.getGlobalTransactionId();
 						byte[] branchQualifier = xid.getBranchQualifier();
-	
+
 						StringBuilder stringBuilder = new StringBuilder();
 						stringBuilder.append("< ");
 						stringBuilder.append(xid.getFormatId());
@@ -659,7 +659,7 @@ public class XARecoveryModule implements ExtendedRecoveryModule
 							stringBuilder.append(branchQualifier[i]);
 						}
 						stringBuilder.append(" >");
-	
+
 						jtaLogger.logger.debug("Recovered: "
 								+ stringBuilder.toString());
 					}
@@ -728,18 +728,18 @@ public class XARecoveryModule implements ExtendedRecoveryModule
 			xidsToRecover.nextScan(trans);
             saveContactedJndiName(xares);
 	}
-	
-	private void xaRecoverySecondPass(XAResource xares) { 
+
+	private void xaRecoverySecondPass(XAResource xares) {
 
 		if (jtaLogger.logger.isDebugEnabled()) {
             jtaLogger.logger.debug("xarecovery second pass of " + xares);
         }
-		
+
 		RecoveryXids xidsToRecover = _xidScans.get(xares);
 		if (xidsToRecover != null) {
 			try {
 				Xid[] xids = xidsToRecover.toRecover();
-	
+
 				if (xids != null)
 				{
 					if (jtaLogger.logger.isDebugEnabled()) {
@@ -747,24 +747,24 @@ public class XARecoveryModule implements ExtendedRecoveryModule
 	                            + xids.length
 	                            + " Xids to recover on this pass.");
 	                }
-	
+
 					for (int j = 0; j < xids.length; j++)
 					{
 						boolean doForget = false;
-	
+
 						/*
 						 * Check if in failure list.
 						 */
-	
+
 						Uid recordUid = null;
 						boolean foundTransaction = false;
-	
+
 						do
 						{
 							// is the xid known to be one that couldn't be recovered
-	
+
 							recordUid = previousFailure(xids[j]);
-	
+
 							if ((recordUid == null) && (foundTransaction))
 								break; // end
 							// of
@@ -772,7 +772,7 @@ public class XARecoveryModule implements ExtendedRecoveryModule
 							// for
 							// this
 							// transaction
-	
+
 							if (recordUid == null)
 	                        {
 	                            /*
@@ -785,25 +785,25 @@ public class XARecoveryModule implements ExtendedRecoveryModule
 	                        else
 							{
 								foundTransaction = true;
-	
+
 								/*
 								 * In the failures list so it may be that we just
 								 * need another XAResource to be able to recover
 								 * this.
 								 */
-	
+
 								XARecoveryResource record = _recoveryManagerClass
 										.getResource(recordUid, xares);
 								int recoveryStatus = record.recover();
-	
+
 								if (recoveryStatus != XARecoveryResource.RECOVERED_OK)
 								{
 	                                jtaLogger.i18NLogger.warn_recovery_failedtorecover(_logName+".xaRecovery", XARecoveryResourceHelper.stringForm(recoveryStatus));
 								}
-	
+
 								removeFailure(record.getXid(), record.get_uid());
 							}
-	
+
 							if (doForget)
 							{
 								try
@@ -815,7 +815,7 @@ public class XARecoveryModule implements ExtendedRecoveryModule
 	                                jtaLogger.i18NLogger.warn_recovery_forgetfailed(_logName+".xaRecovery", e);
 								}
 							}
-	
+
 						} while (recordUid != null);
 					}
 				}
@@ -824,7 +824,7 @@ public class XARecoveryModule implements ExtendedRecoveryModule
 			{
 	            jtaLogger.i18NLogger.warn_recovery_generalrecoveryerror(_logName + ".xaRecovery", e);
 			}
-	
+
 			try
 			{
 				if (xares != null)
@@ -1082,7 +1082,7 @@ public class XARecoveryModule implements ExtendedRecoveryModule
         try {
 			while (getScanState().equals(state)) {
 				this.wait();
-			} 
+			}
 
             return true;
         } catch (InterruptedException e) {

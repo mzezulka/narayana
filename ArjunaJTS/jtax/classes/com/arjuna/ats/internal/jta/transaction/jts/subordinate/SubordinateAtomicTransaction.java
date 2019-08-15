@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,15 +14,15 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
 /*
  * Copyright (C) 2003,
- * 
+ *
  * Hewlett-Packard Arjuna Labs, Newcastle upon Tyne, Tyne and Wear, UK.
- * 
+ *
  * $Id: SubordinateAtomicTransaction.java 2342 2006-03-30 13:06:17Z  $
  */
 
@@ -47,7 +47,7 @@ import com.arjuna.ats.internal.jts.orbspecific.interposition.coordinator.ServerT
 /**
  * A subordinate JTA transaction; used when importing another
  * transaction context.
- * 
+ *
  * @author mcl
  */
 
@@ -69,7 +69,7 @@ public class SubordinateAtomicTransaction extends com.arjuna.ats.internal.jta.tr
 	{
 		throw new WrongTransaction();
 	}
-	
+
 	/**
 	 * Does not change thread-to-tx association as base class rollback does.
 	 */
@@ -79,37 +79,37 @@ public class SubordinateAtomicTransaction extends com.arjuna.ats.internal.jta.tr
 	{
 		throw new WrongTransaction();
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return TwoPhaseOutcome
 	 * @throws SystemException
 	 */
-	
+
 	public int doPrepare () throws SystemException
 	{
 		ServerTransaction stx = getTransaction();
-		
+
 		// TODO make sure synchronizations go off
 		// require registration of synchronization interposed resource as well!
-		
+
 		if (stx != null)
                     return stx.doPrepare();
             else
                     return TwoPhaseOutcome.INVALID_TRANSACTION;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return ActionStatus
 	 * @throws SystemException
 	 */
-	
+
 	public int doCommit () throws SystemException
-	{	
+	{
 		ServerTransaction stx = getTransaction();
 		int outcome = ActionStatus.INVALID;
-		
+
 		try
 		{
 		    if (stx != null)
@@ -122,20 +122,20 @@ public class SubordinateAtomicTransaction extends com.arjuna.ats.internal.jta.tr
 
 		return ActionStatus.H_HAZARD;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return ActionStatus
 	 * @throws SystemException
 	 */
-	
+
 	public int doRollback () throws SystemException
 	{
 		ServerTransaction stx = getTransaction();
 		int outcome = ActionStatus.INVALID;
-		
+
 		try
-		{	
+		{
 		    if (stx != null)
                         return stx.doPhase2Abort();
 		}
@@ -143,18 +143,18 @@ public class SubordinateAtomicTransaction extends com.arjuna.ats.internal.jta.tr
 		{
 		    ex.printStackTrace();
 		}
-		
+
                 return ActionStatus.H_HAZARD;
 	}
-	
+
 	public int doOnePhaseCommit () throws SystemException
 	{
 	    // https://jira.jboss.org/jira/browse/JBTM-504
-	    
+
 	    try
 	    {
 	        // TODO check if we should be using TxControl.isBeforeCompletionWhenRollbackOnly in local JTA too.
-	        
+
 	        ServerTransaction stx = getTransaction();
 
 	        if (stx != null)
@@ -179,13 +179,13 @@ public class SubordinateAtomicTransaction extends com.arjuna.ats.internal.jta.tr
 
 	    return ActionStatus.COMMITTED;
 	}
-	
+
 	public void doForget () throws SystemException
 	{
 		ServerTransaction stx = getTransaction();
-		
+
 		try
-		{	
+		{
 			if (stx != null)
 				stx.doForget();
 		}
@@ -194,17 +194,17 @@ public class SubordinateAtomicTransaction extends com.arjuna.ats.internal.jta.tr
 		    ex.printStackTrace();
 		}
 	}
-	
+
 	public boolean doBeforeCompletion () throws SystemException
 	{
 	    ServerTransaction stx = getTransaction();
-	    
+
 	    try
 	    {
 	        if (stx != null)
 	        {
 	            stx.doBeforeCompletion();
-	            
+
 	            return true;
 	        }
 	    }
@@ -212,15 +212,15 @@ public class SubordinateAtomicTransaction extends com.arjuna.ats.internal.jta.tr
 	    {
 	        ex.printStackTrace();
 	    }
-	           
+
             return false;
 	}
-	
+
 	/**
 	 * By default the BasicAction class only allows the termination of a
 	 * transaction if it's the one currently associated with the thread. We
 	 * override this here.
-	 * 
+	 *
 	 * @return <code>false</code> to indicate that this transaction can only
 	 *         be terminated by the right thread.
 	 */
@@ -244,7 +244,7 @@ public class SubordinateAtomicTransaction extends com.arjuna.ats.internal.jta.tr
 
 	    return null;
 	}
-	
+
 	    /*
 	     * We have these here because it's possible that synchronizations aren't
 	     * called explicitly either side of commit/rollback due to JCA API not supporting
@@ -252,7 +252,7 @@ public class SubordinateAtomicTransaction extends com.arjuna.ats.internal.jta.tr
 	     * can be driven through two routes and we don't want to get into a mess
 	     * due to that.
 	     */
-	    
+
 	    private boolean _doneBefore = false;
 	    private boolean _beforeOutcome = false;
 }

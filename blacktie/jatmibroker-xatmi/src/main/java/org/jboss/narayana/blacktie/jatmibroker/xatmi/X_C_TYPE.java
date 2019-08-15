@@ -30,7 +30,7 @@ public interface X_C_TYPE extends Buffer {
 
     /**
      * Get the short value identified by the key.
-     * 
+     *
      * @param key The key to use
      * @return The short value
      * @throws ConnectionException In case the key is not part of the structure.
@@ -39,7 +39,7 @@ public interface X_C_TYPE extends Buffer {
 
     /**
      * Set the short value
-     * 
+     *
      * @param key The value to set
      * @param value The value to use
      * @throws ConnectionException In case the key is unknown.

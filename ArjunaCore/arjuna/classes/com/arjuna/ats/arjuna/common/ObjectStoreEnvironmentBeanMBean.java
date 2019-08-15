@@ -64,7 +64,7 @@ public interface ObjectStoreEnvironmentBeanMBean
     long getTxLogSize();
 
     long getPurgeTime();
-    
+
 	/**
 	 * Get the JDBCAccess details.
 	 */
@@ -72,7 +72,7 @@ public interface ObjectStoreEnvironmentBeanMBean
 
 	/**
 	 * Sets the instance of JDBCAccess
-	 * 
+	 *
 	 * @param connectionDetails
 	 *            an Object that provides JDBCAccess, or null.
 	 */
@@ -80,14 +80,14 @@ public interface ObjectStoreEnvironmentBeanMBean
 
 	/**
 	 * Get the table prefix
-	 * 
+	 *
 	 * @return The prefix to apply to the table
 	 */
 	public String getTablePrefix();
 
 	/**
 	 * Set the table prefix
-	 * 
+	 *
 	 * @param tablePrefix
 	 *            A prefix to use on the tables
 	 */
@@ -95,14 +95,14 @@ public interface ObjectStoreEnvironmentBeanMBean
 
 	/**
 	 * Should the store drop the table
-	 * 
+	 *
 	 * @return Whether to drop the table
 	 */
 	public boolean getDropTable();
 
 	/**
 	 * Set whether to drop the table.
-	 * 
+	 *
 	 * @param dropTable
 	 *            Drop the table
 	 */

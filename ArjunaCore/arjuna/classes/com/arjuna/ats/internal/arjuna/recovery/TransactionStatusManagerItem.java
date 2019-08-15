@@ -1,20 +1,20 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors 
- * as indicated by the @author tags. 
+ * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * as indicated by the @author tags.
  * See the copyright.txt in the distribution for a
- * full listing of individual contributors. 
+ * full listing of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
  * of the GNU Lesser General Public License, v. 2.1.
- * This program is distributed in the hope that it will be useful, but WITHOUT A 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT A
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
  * You should have received a copy of the GNU Lesser General Public License,
  * v.2.1 along with this distribution; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -56,11 +56,11 @@ public class TransactionStatusManagerItem
     public static boolean createAndSave( int port )
     {
 	boolean ret_status = true ;
-	
+
 	if ( _singularItem == null )
 	    {
 		_singularItem = new TransactionStatusManagerItem( port );
-		
+
 		ret_status = _singularItem.saveThis();
 	    }
 	return ret_status ;
@@ -86,7 +86,7 @@ public class TransactionStatusManagerItem
     {
         return StoreManager.getCommunicationStore();
     }
-    
+
     /**
      * Accessor method for host in format xxx.xxx.xxx.xxx
      */
@@ -94,7 +94,7 @@ public class TransactionStatusManagerItem
     {
 	return _host ;
     }
-    
+
     /**
      * Accessor method for the port used by this object.
      */
@@ -102,7 +102,7 @@ public class TransactionStatusManagerItem
     {
 	return _port ;
     }
-    
+
     /**
      * The process has died.
      */
@@ -117,23 +117,23 @@ public class TransactionStatusManagerItem
 		saveThis() ;
 	    }
     }
-    
+
     /**
      * Return time when process marked dead.
-     */ 
+     */
     public Date getDeadTime()
     {
 	return _deadTime ;
     }
-    
+
     /**
      * Returns reference to this transaction status manager item.
-     */   
+     */
     public static TransactionStatusManagerItem get()
     {
 	return _singularItem ;
     }
-    
+
     /**
     * Crash Recovery uses this method to recreate a
     * representation of the Transaction Status Managers
@@ -141,9 +141,9 @@ public class TransactionStatusManagerItem
     */
     public static TransactionStatusManagerItem recreate ( Uid uid )
     {
-	TransactionStatusManagerItem 
+	TransactionStatusManagerItem
 	    theItem = new TransactionStatusManagerItem( uid ) ;
-	
+
 	if ( theItem.restoreThis() )
 	    {
 		return theItem ;
@@ -153,14 +153,14 @@ public class TransactionStatusManagerItem
          return null;
 	    }
     }
-    
+
     /**
      * Destroy the host/port pair for the specified process Uid.
-     */ 
+     */
     public static boolean removeThis( Uid pidUid )
     {
 	boolean ret_status = false ;
-	
+
       try
 	  {
 	      ret_status = getStore().remove_committed( pidUid, _typeName ) ;
@@ -168,10 +168,10 @@ public class TransactionStatusManagerItem
       catch ( ObjectStoreException ex ) {
           tsLogger.i18NLogger.warn_recovery_TransactionStatusManagerItem_1(ex);
       }
-      
+
       return ret_status ;
     }
-    
+
     /**
      * Type used as path into object store for a TransactionStatusManagerItem.
      */
@@ -179,7 +179,7 @@ public class TransactionStatusManagerItem
     {
 	return _typeName ;
    }
-    
+
     /**
      * Read host/port pair from the ObjectStore using
      * the process Uid as a unique identifier.
@@ -187,12 +187,12 @@ public class TransactionStatusManagerItem
     private boolean restoreThis()
    {
        boolean ret_status = false ;
-       
+
        try
-      { 
+      {
 	  InputObjectState objstate = getStore().read_committed( _pidUid,
 								 _typeName ) ;
-	  
+
 	  if ( restore_state( objstate) )
 	      {
             return ret_status = true ;
@@ -203,66 +203,66 @@ public class TransactionStatusManagerItem
 
            tsLogger.i18NLogger.warn_recovery_TransactionStatusManagerItem_2(ex);
        }
-       
+
        return ret_status ;
    }
-    
+
     /**
      * Retrieve host/port pair from the Object Store.
     */
     private boolean restore_state ( InputObjectState objstate )
     {
 	boolean ret_status = false ;
-	
+
 	try
         {
 	    _host = objstate.unpackString() ;
 	    _port = objstate.unpackInt() ;
 	    _markedDead = objstate.unpackBoolean() ;
-	    
+
 	    if ( _markedDead )
 		{
 		    long deadtime = objstate.unpackLong() ;
 		    _deadTime = new Date( deadtime ) ;
-		}  
-            
+		}
+
 	    ret_status = true ;
 	}
 	catch ( IOException ex ) {
         tsLogger.i18NLogger.warn_recovery_TransactionStatusManagerItem_3(ex);
     }
-	
+
 	return ret_status ;
     }
-   
+
     /**
      * Save host/port pair to the Object Store.
      */
     private boolean save_state ( OutputObjectState objstate )
     {
 	boolean ret_status = false ;
-	
+
 	try
 	    {
 		objstate.packString( _host ) ;
 		objstate.packInt( _port ) ;
-		
+
 		objstate.packBoolean( _markedDead ) ;
-		
+
 		if ( _markedDead )
 		    {
             objstate.packLong( _deadTime.getTime() ) ;
 		    }
-		
+
 		ret_status = true ;
 	    }
 	catch ( IOException ex ) {
         tsLogger.i18NLogger.warn_recovery_TransactionStatusManagerItem_2(ex);
     }
-	
+
 	return ret_status ;
     }
-    
+
     /**
      * Write host/port pair to the ObjectStore using
      * the process Uid as a unique identifier.
@@ -270,25 +270,25 @@ public class TransactionStatusManagerItem
    private boolean saveThis()
     {
 	boolean ret_status = false ;
-	
+
 	try
 	    {
 		OutputObjectState objstate = new OutputObjectState();
-		
+
 		if ( save_state(objstate) )
 		    {
-			ret_status = getStore().write_committed ( _pidUid, 
-								  _typeName, 
+			ret_status = getStore().write_committed ( _pidUid,
+								  _typeName,
 								  objstate ) ;
          }
 	    }
 	catch ( ObjectStoreException ex ) {
         tsLogger.i18NLogger.warn_recovery_TransactionStatusManagerItem_2(ex);
     }
-	
+
 	return ret_status ;
    }
-    
+
     /**
      * Constructor which obtains the process uid and host for
      * use with the specified port.
@@ -297,11 +297,11 @@ public class TransactionStatusManagerItem
     {
 	_pidUid = Utility.getProcessUid() ;
 	_port = port ;
-	
+
 	try
 	{
 	    _host = InetAddress.getLocalHost().getHostAddress() ;
-         
+
 	    tsLogger.logger.debugf("TransactionStatusManagerItem host: {0} port: {1}", _host, Integer.toString(_port));
 	}
 	catch ( UnknownHostException ex ) {
@@ -339,23 +339,23 @@ public class TransactionStatusManagerItem
     {
 	_pidUid = new Uid( uid ) ;
     }
-    
+
     // Process Uid.
     private Uid _pidUid ;
-   
+
     // Relative location in object store for this 'type'.
     private static String _typeName = "/Recovery/TransactionStatusManager" ;
-    
+
     // Host/port pair on which to connect to the Transaction status manager.
     private String _host ;
     private int    _port ;
-    
+
     // The singleton instance of this class.
     private static TransactionStatusManagerItem _singularItem = null ;
-    
+
     // Time at which the process for this item has died.
     private Date _deadTime = null ;
-    
+
     // flag indicates dead TSM
     private boolean _markedDead = false ;
 

@@ -47,7 +47,7 @@ public class CommitFailureRecoveryDurable2PCParticipant extends ParticipantAdapt
      * The recovering flag.
      */
     private boolean recovering ;
-    
+
     /**
      * Set the participant engine.
      * @param engine The participant engine.
@@ -56,7 +56,7 @@ public class CommitFailureRecoveryDurable2PCParticipant extends ParticipantAdapt
     {
         this.engine = engine ;
     }
-    
+
     /**
      * Vote to prepare.
      */
@@ -65,7 +65,7 @@ public class CommitFailureRecoveryDurable2PCParticipant extends ParticipantAdapt
     {
         return new Prepared() ;
     }
-    
+
     public void commit()
         throws WrongStateException, SystemException
     {
@@ -80,7 +80,7 @@ public class CommitFailureRecoveryDurable2PCParticipant extends ParticipantAdapt
             } ;
             TransportTimer.getTimer().schedule(timerTask, 2000) ;
         }
-        
+
         if (!recovering)
         {
             throw new IllegalStateException("Forced failure of commit") ;

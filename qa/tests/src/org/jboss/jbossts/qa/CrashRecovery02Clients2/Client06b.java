@@ -102,7 +102,7 @@ public class Client06b
 			    OTS.current().commit(false);
 			}
 			catch (final HeuristicHazard ex)
-			{			    
+			{
 			}
 
 			if (correct)

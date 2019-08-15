@@ -67,7 +67,7 @@ public class CompletionParticipantTest extends BaseWSTTest {
             {
         origCompletionCoordinatorProcessor = CompletionCoordinatorProcessor.setProcessor(testCompletionCoordinatorProcessor) ;
             }
-    
+
     @Test
     public void testSendCommit()
             throws Exception

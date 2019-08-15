@@ -138,7 +138,7 @@ public class TransactionStatusManager
                tsLogger.i18NLogger.info_recovery_TransactionStatusManager_3(Integer.toString(socketServer.getLocalPort()),
                socketServer.getInetAddress().getHostAddress(), serviceName);
            } else {
-               tsLogger.logger.debugf("TransactionStatusManager started on port %s and host %s with service %s", 
+               tsLogger.logger.debugf("TransactionStatusManager started on port %s and host %s with service %s",
                    Integer.toString(socketServer.getLocalPort()), socketServer.getInetAddress().getHostAddress(), serviceName);
            }
        }

@@ -35,7 +35,7 @@ public class Sc007RetryPreparedAbortState extends BaseState
      * Are we dropping other messages?
      */
     private boolean drop ;
-    
+
     /**
      * Handle the next action in the sequence.
      * @param action The SOAP action.

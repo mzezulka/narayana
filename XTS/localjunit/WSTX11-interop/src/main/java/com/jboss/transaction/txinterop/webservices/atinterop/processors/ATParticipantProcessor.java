@@ -1,20 +1,20 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, JBoss Inc., and individual contributors as indicated
- * by the @authors tag.  All rights reserved. 
- * See the copyright.txt in the distribution for a full listing 
+ * by the @authors tag.  All rights reserved.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
  * of the GNU General Public License, v. 2.0.
- * This program is distributed in the hope that it will be useful, but WITHOUT A 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT A
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE.  See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License,
  * v. 2.0 along with this distribution; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -45,7 +45,7 @@ public class ATParticipantProcessor
      * The participant.
      */
     private static ATParticipantProcessor PARTICIPANT = new ATParticipantProcessor() ;
-    
+
     /**
      * Get the participant.
      * @return The participant.
@@ -54,7 +54,7 @@ public class ATParticipantProcessor
     {
         return PARTICIPANT ;
     }
-    
+
     /**
      * Execute the CompletionCommit
      * @param coordinatorURI The address of the coordinator to employ
@@ -75,7 +75,7 @@ public class ATParticipantProcessor
             throw new SoapFault11(th) ;
         }
     }
-    
+
     /**
      * Execute the CompletionRollback
      * @param coordinatorURI The address of the coordinator to employ.
@@ -97,7 +97,7 @@ public class ATParticipantProcessor
             throw new SoapFault11(th) ;
         }
     }
-    
+
     /**
      * Execute the Commit
      * @param map The current addressing context.
@@ -116,7 +116,7 @@ public class ATParticipantProcessor
             throw new SoapFault11(th) ;
         }
     }
-    
+
     /**
      * Execute the Rollback
      * @param map The current addressing context.
@@ -135,7 +135,7 @@ public class ATParticipantProcessor
             throw new SoapFault11(th) ;
         }
     }
-    
+
     /**
      * Execute the Phase2Rollback
      * @param map The current addressing context.
@@ -155,7 +155,7 @@ public class ATParticipantProcessor
             throw new SoapFault11(th) ;
         }
     }
-    
+
     /**
      * Execute the Readonly
      * @param map The current addressing context.
@@ -175,7 +175,7 @@ public class ATParticipantProcessor
             throw new SoapFault11(th) ;
         }
     }
-    
+
     /**
      * Execute the VolatileAndDurable
      * @param map The current addressing context.
@@ -194,7 +194,7 @@ public class ATParticipantProcessor
             throw new SoapFault11(th) ;
         }
     }
-    
+
     /**
      * Execute the EarlyReadonly
      * @param map The current addressing context.
@@ -215,7 +215,7 @@ public class ATParticipantProcessor
             throw new SoapFault11(th) ;
         }
     }
-    
+
     /**
      * Execute the EarlyAborted
      * @param map The current addressing context.
@@ -236,7 +236,7 @@ public class ATParticipantProcessor
             throw new SoapFault11(th) ;
         }
     }
-    
+
     /**
      * Execute the ReplayCommit
      * @param map The current addressing context.
@@ -257,7 +257,7 @@ public class ATParticipantProcessor
             throw new SoapFault11(th) ;
         }
     }
-    
+
     /**
      * Execute the RetryPreparedCommit
      * @param map The current addressing context.
@@ -277,7 +277,7 @@ public class ATParticipantProcessor
             throw new SoapFault11(th) ;
         }
     }
-    
+
     /**
      * Execute the RetryPreparedAbort
      * @param map The current addressing context.
@@ -296,7 +296,7 @@ public class ATParticipantProcessor
             throw new SoapFault11(th) ;
         }
     }
-    
+
     /**
      * Execute the RetryCommit
      * @param map The current addressing context.
@@ -315,7 +315,7 @@ public class ATParticipantProcessor
             throw new SoapFault11(th) ;
         }
     }
-    
+
     /**
      * Execute the PreparedAfterTimeout
      * @param map The current addressing context.
@@ -335,7 +335,7 @@ public class ATParticipantProcessor
             throw new SoapFault11(th) ;
         }
     }
-    
+
     /**
      * Execute the LostCommitted
      * @param map The current addressing context.

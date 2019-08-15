@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Arjuna Solutions Limited,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.  
+ * UK.
  *
  * $Id: AtomicWorker2.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -68,14 +68,14 @@ public static void randomOperation (char thr, int level)
 		    randomOperation(thr, level + 1);
 
 		    current.commit(false);
-		    
+
 		    Util.indent(thr, level);
 		    System.out.println("end");
 		}
 		catch (Exception e)
 		{
 		    e.printStackTrace();
-		    
+
 		    System.err.println(e);
 		}
 	    }
@@ -107,7 +107,7 @@ public static void randomOperation (char thr, int level)
 	break;
 	}
     }
-    
+
 public static void incr12 (char thr, int level)
     {
 	boolean res  = false;
@@ -132,7 +132,7 @@ public static void incr12 (char thr, int level)
 	    System.out.println("part1   incr12 : "+res1);
 
 	    Util.lowProbYield();
-	
+
 	    if (res)
 	    {
 		res2 = atomicObject_2.incr(-ran);
@@ -191,7 +191,7 @@ public static void incr21 (char thr, int level)
 	    System.out.println("part1   incr21 : "+res1);
 
 	    Util.lowProbYield();
-	    
+
 	    if (res)
 	    {
 		res2 = atomicObject_1.incr(-ran);
@@ -214,7 +214,7 @@ public static void incr21 (char thr, int level)
 		System.out.print("abort  ");
 		current.rollback();
 	    }
-	     
+
 	    System.out.println(" incr21 : "+res1+" : "+res2+" : "+res
 			       +" : "+ran);
 	}
@@ -252,7 +252,7 @@ public static void get12 (char thr, int level)
 	    {
 		res1 = false;
 	    }
-	    
+
 	    res  = res1;
 
 	    Util.indent(thr, level);
@@ -272,7 +272,7 @@ public static void get12 (char thr, int level)
 		{
 		    res2 = false;
 		}
-		
+
 		res  = res2;
 
 		Util.indent(thr, level);
@@ -330,12 +330,12 @@ public static void get21 (char thr, int level)
 	    {
 		res1 = false;
 	    }
-	    
+
 	    res  = res1;
 
 	    Util.indent(thr, level);
 	    System.out.println("part1   get21  : " + res1);
-	
+
 	    Util.lowProbYield();
 
 	    if (res)
@@ -350,13 +350,13 @@ public static void get21 (char thr, int level)
 		{
 		    res2 = false;
 		}
-		
+
 		res  = res2;
 
 		Util.indent(thr, level);
 		System.out.println("part2   get21  : " + res2);
 	    }
-	
+
 	    Util.lowProbYield();
 
 	    Util.indent(thr, level);
@@ -460,6 +460,6 @@ public static void get21 (char thr, int level)
     public static AtomicObject atomicObject_1 = null;
     public static AtomicObject atomicObject_2 = null;
     public static CurrentImple current = null;
-    
+
 }
 

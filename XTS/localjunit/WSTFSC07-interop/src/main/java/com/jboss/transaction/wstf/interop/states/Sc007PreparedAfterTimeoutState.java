@@ -47,7 +47,7 @@ public class Sc007PreparedAfterTimeoutState extends BaseState
      * Soap Fault flag.
      */
     private boolean soapFault ;
-    
+
     /**
      * Handle the next action in the sequence.
      * @param action The SOAP action.
@@ -79,12 +79,12 @@ public class Sc007PreparedAfterTimeoutState extends BaseState
         {
             soapFault = true ;
         }
-        
+
         if (aborted && soapFault)
         {
             success() ;
         }
-        
+
         return drop ;
     }
 }

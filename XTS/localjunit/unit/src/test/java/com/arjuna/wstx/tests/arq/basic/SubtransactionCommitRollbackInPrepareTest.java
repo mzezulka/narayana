@@ -21,7 +21,7 @@ import com.arjuna.wstx.tests.common.FailureParticipant;
 
 @RunWith(Arquillian.class)
 public class SubtransactionCommitRollbackInPrepareTest {
-    
+
     @Deployment
     public static WebArchive createDeployment() {
         return WarDeployment.getDeployment(

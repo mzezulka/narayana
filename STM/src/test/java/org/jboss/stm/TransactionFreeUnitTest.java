@@ -34,29 +34,29 @@ import junit.framework.TestCase;
  */
 
 public class TransactionFreeUnitTest extends TestCase
-{   
+{
     @Transactional
     public interface Sample
     {
        public boolean increment ();
-        
+
        public boolean decrement ();
-       
+
        public int value ();
     }
-    
+
     public class SampleLockable implements Sample
     {
         public SampleLockable ()
         {
             this(0);
         }
-        
+
         public SampleLockable (int init)
         {
             _isState = init;
         }
-        
+
         public int value ()
         {
             return _isState;
@@ -76,7 +76,7 @@ public class TransactionFreeUnitTest extends TestCase
         public boolean decrement ()
         {
             _isState--;
-            
+
             if (AtomicAction.Current() == null)
                 return false;
             else
@@ -90,25 +90,25 @@ public class TransactionFreeUnitTest extends TestCase
     {
         Container<Sample> theContainer = new Container<Sample>();
         Sample obj = theContainer.create(new SampleLockable(10));
-        
+
         assertTrue(obj != null);
-        
+
         AtomicAction act = new AtomicAction();
-        
+
         System.err.println("Started transaction: "+act);
-        
+
         act.begin();
-        
+
         boolean result = obj.increment();
-        
+
         assertTrue(result);
-        
+
         // implicitly checks that the context has been re-associated.
-        
+
         result = obj.decrement();
-        
+
         assertTrue(result);
-        
+
         act.commit();
     }
 }

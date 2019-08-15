@@ -54,10 +54,10 @@ public class DestroyTest
 
             AtomicAction B = new AtomicAction();
             AtomicAction C = new AtomicAction();
-            
+
             B.begin();
             C.begin();
-            
+
             bo.destroy();
 
             C.commit();

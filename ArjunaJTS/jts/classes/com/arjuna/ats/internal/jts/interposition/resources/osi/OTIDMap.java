@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Hewlett-Packard Arjuna Labs,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.  
+ * UK.
  *
  * $Id: OTIDMap.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -46,7 +46,7 @@ import com.arjuna.ats.arjuna.common.Uid;
 
 class OTIDWrapper
 {
-    
+
     public OTIDWrapper (otid_t otid)
     {
 	_otid = otid;
@@ -65,16 +65,16 @@ class OTIDWrapper
 
     private otid_t _otid;
     private Uid _uid;
- 
+
 };
-    
+
 public class OTIDMap
 {
 
     public static synchronized Uid find (otid_t otid)
     {
 	OTIDWrapper element = null;
-	
+
 	if (_otids.size() > 0)
 	{
 	    Enumeration e = _otids.elements();
@@ -87,13 +87,13 @@ public class OTIDMap
 		    return element.get_uid();
 	    }
 	}
-	
+
 	/*
 	 * Got here, so must be new otid.
 	 */
 
 	element = new OTIDWrapper(otid);
-    
+
 	_otids.put(element.get_uid(), element);
 
 	return element.get_uid();
@@ -116,7 +116,7 @@ public class OTIDMap
     /*
      * Only called from synchronized methods.
      */
-    
+
     private static boolean same (otid_t otid1, otid_t otid2)
     {
 	if ((otid1.formatID == otid2.formatID) &&
@@ -131,7 +131,7 @@ public class OTIDMap
 	    /*
 	     * Got here, so must be equal!
 	     */
-	    
+
 	    return true;
 	}
 	else
@@ -139,6 +139,6 @@ public class OTIDMap
     }
 
     private static Hashtable _otids = new Hashtable();
- 
+
 }
 

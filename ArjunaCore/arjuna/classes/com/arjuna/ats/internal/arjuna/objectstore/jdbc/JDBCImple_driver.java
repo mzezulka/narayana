@@ -234,7 +234,7 @@ public abstract class JDBCImple_driver {
 	 * currentState - determine the current state of an object. State search is
 	 * ordered OS_UNCOMMITTED, OS_UNCOMMITTED_HIDDEN, OS_COMMITTED,
 	 * OS_COMMITTED_HIDDEN
-	 * 
+	 *
 	 * @throws ObjectStoreException - in case the JDBC store cannot be contacted
 	 */
 	public int currentState(Uid objUid, String typeName)
@@ -668,7 +668,7 @@ public abstract class JDBCImple_driver {
     					pstmt2.setString(2, objUid.stringForm());
                         pstmt2.setInt(3, stateType);
     					pstmt2.setBytes(4, b);
-    
+
     					int executeUpdate = pstmt2.executeUpdate();
     					if (executeUpdate != 0) {
     					    result = true;
@@ -714,7 +714,7 @@ public abstract class JDBCImple_driver {
 
 	/**
 	 * Set up the store for use.
-	 * 
+	 *
 	 * @throws NamingException
      * @throws SQLException In case the configured store cannot be connected to
 	 */
@@ -738,9 +738,9 @@ public abstract class JDBCImple_driver {
 		try (Connection connection = jdbcAccess.getConnection()) {
 
     		try (Statement stmt = connection.createStatement()) {
-    
+
         		// table [type, object UID, format, blob]
-        
+
         		if (jdbcStoreEnvironmentBean.getDropTable()) {
         			try {
         				stmt.executeUpdate("DROP TABLE " + tableName);
@@ -748,7 +748,7 @@ public abstract class JDBCImple_driver {
         				checkDropTableException(connection, ex);
         			}
         		}
-        
+
         		if (jdbcStoreEnvironmentBean.getCreateTable()) {
         			try {
         				createTable(stmt, tableName);
@@ -756,7 +756,7 @@ public abstract class JDBCImple_driver {
         				checkCreateTableError(ex);
         			}
         		}
-        
+
         		// This can be the case when triggering via EmptyObjectStore
         		if (!connection.getAutoCommit()) {
         			connection.commit();

@@ -92,7 +92,7 @@ public class Cleanup01
 					Statement statement = connection.createStatement();
 
                     String tableName = JDBCProfileStore.getTableName(databaseUser, "Infotable");
-                    
+
 					System.err.println("DROP TABLE " + tableName );
 					statement.executeUpdate("DROP TABLE " + tableName);
 

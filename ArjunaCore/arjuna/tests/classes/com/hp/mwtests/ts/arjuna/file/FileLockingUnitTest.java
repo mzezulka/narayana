@@ -105,7 +105,7 @@ public class FileLockingUnitTest
         DataOutputStream ofile = new DataOutputStream(new FileOutputStream(theFile));
 
         ofile.writeInt(0);
-        
+
         ofile.close();
 
         /*
@@ -131,16 +131,16 @@ public class FileLockingUnitTest
     public void testMultipleLock () throws Exception
     {
         FileLock fl = new FileLock(System.getProperty("java.io.tmpdir")+"/barfoo");
-        
+
         assertTrue(fl.lock(FileLock.F_RDLCK, true));
         assertTrue(fl.lock(FileLock.F_RDLCK));
-        
+
         assertTrue(fl.unlock());
         assertTrue(fl.unlock());
-        
+
         assertEquals(FileLock.modeString(FileLock.F_RDLCK), "FileLock.F_RDLCK");
         assertEquals(FileLock.modeString(FileLock.F_WRLCK), "FileLock.F_WRLCK");
         assertEquals(FileLock.modeString(-1), "Unknown");
     }
-    
+
 }

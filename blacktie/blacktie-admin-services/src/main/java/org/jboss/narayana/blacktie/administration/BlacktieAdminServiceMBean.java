@@ -23,14 +23,14 @@ package org.jboss.narayana.blacktie.administration;
 public interface BlacktieAdminServiceMBean extends BlacktieAdministration {
     /**
      * Start the service
-     * 
+     *
      * @throws Exception
      */
     void start() throws Exception;
 
     /**
      * Stop the service
-     * 
+     *
      * @throws Exception
      */
     void stop() throws Exception;

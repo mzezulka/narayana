@@ -44,7 +44,7 @@ package com.arjuna.ats.arjuna.exceptions;
 public class ObjectStoreError extends Error
 {
     static final long serialVersionUID = 1951283264836760439L;
-    
+
     /**
      * Constructs a new error with <code>null</code> as its detail message.
      * The cause is not initialized, and may subsequently be initialized by a

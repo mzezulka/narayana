@@ -1,20 +1,20 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors 
- * as indicated by the @author tags. 
+ * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * as indicated by the @author tags.
  * See the copyright.txt in the distribution for a
- * full listing of individual contributors. 
+ * full listing of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
  * of the GNU Lesser General Public License, v. 2.1.
- * This program is distributed in the hope that it will be useful, but WITHOUT A 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT A
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
  * You should have received a copy of the GNU Lesser General Public License,
  * v.2.1 along with this distribution; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Arjuna Technologies Ltd,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.  
+ * UK.
  *
  * $Id: xidcheck.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -65,36 +65,36 @@ public class XARecoveryModuleUnitTest
     public void testNull ()
     {
         XARecoveryModule xarm = new XARecoveryModule();
-        
+
         xarm.periodicWorkFirstPass();
         xarm.periodicWorkSecondPass();
     }
-    
+
     @Test
     public void testRecover () throws Exception
     {
         ArrayList<String> r = new ArrayList<String>();
         TransactionImple tx = new TransactionImple();
-        
+
         assertTrue(tx.enlistResource(new RecoveryXAResource()));
-        
+
         SubordinateAtomicTransaction sat = new SubordinateAtomicTransaction(tx.get_uid(), tx.getTxId(), 0);
-        
+
         assertEquals(sat.doPrepare(), TwoPhaseOutcome.PREPARE_READONLY);
-        
+
         r.add("com.hp.mwtests.ts.jta.recovery.DummyXARecoveryResource");
 
         jtaPropertyManager.getJTAEnvironmentBean().setXaResourceRecoveryClassNames(r);
-        
+
         XARecoveryModule xarm = new XARecoveryModule();
-        
+
         for (int i = 0; i < 11; i++)
         {
             xarm.periodicWorkFirstPass();
             xarm.periodicWorkSecondPass();
         }
     }
-    
+
     /**
      * Test which uses method {@link TransactionImple#enlistResource(XAResource, Object[])} could be used
      * with empty object array and still works.
@@ -130,14 +130,14 @@ public class XARecoveryModuleUnitTest
         ORBManager.setORB(myORB);
         ORBManager.setPOA(myOA);
     }
-    
+
     @After
     public void tearDown () throws Exception
     {
         myOA.destroy();
         myORB.shutdown();
     }
-    
+
     private ORB myORB = null;
     private RootOA myOA = null;
 }

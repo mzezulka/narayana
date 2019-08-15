@@ -31,7 +31,7 @@ public class JtsTransactionImple extends TransactionImple {
 
     /**
      * Construct a transaction based on an OTS control
-     * 
+     *
      * @param wrapper the wrapped OTS control
      */
     public JtsTransactionImple(ControlWrapper wrapper) {
@@ -40,7 +40,7 @@ public class JtsTransactionImple extends TransactionImple {
 
     /**
      * check whether the calling thread is associated with a transaction
-     * 
+     *
      * @return true if there is transaction on the callers thread
      * @throws NamingException
      */
@@ -66,15 +66,15 @@ public class JtsTransactionImple extends TransactionImple {
 
     /**
      * Associated a transaction with the callers thread
-     * 
+     *
      * @param ior IOR for the corresponding OTS transaction, must not be null
      * @param control
-     * 
+     *
      * @throws SystemException
      * @throws IllegalStateException
      * @throws InvalidTransactionException
      * @throws ConfigurationException
-     * @throws TransactionException 
+     * @throws TransactionException
      */
     public static void resume(String ior) throws InvalidTransactionException, IllegalStateException, SystemException,
             ConfigurationException, TransactionException {
@@ -90,7 +90,7 @@ public class JtsTransactionImple extends TransactionImple {
 
     /**
      * Dissassociate the transaction currently associated with the callers thread
-     * 
+     *
      * @throws SystemException
      */
     public static void suspend() throws SystemException {
@@ -105,9 +105,9 @@ public class JtsTransactionImple extends TransactionImple {
 
     /**
      * Convert an IOR representing an OTS transaction into a JTA transaction
-     * 
+     *
      * @param orb
-     * 
+     *
      * @param ior the CORBA reference for the OTS transaction
      * @return a JTA transaction that wraps the OTS transaction
      */
@@ -128,7 +128,7 @@ public class JtsTransactionImple extends TransactionImple {
 
     /**
      * Lookup the JTA transaction manager
-     * 
+     *
      * @return the JTA transaction manager in the VM
      * @throws NamingException
      */
@@ -143,7 +143,7 @@ public class JtsTransactionImple extends TransactionImple {
 
     /**
      * If the current transaction represents an OTS transaction then return it IOR
-     * 
+     *
      * @return the IOR or null if the current transaction is not an OTS transaction
      * @throws NamingException
      * @throws org.omg.CORBA.SystemException

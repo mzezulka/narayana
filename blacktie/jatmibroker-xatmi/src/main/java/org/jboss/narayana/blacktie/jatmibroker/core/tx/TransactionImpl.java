@@ -75,7 +75,7 @@ public class TransactionImpl {
         } catch (org.omg.CORBA.UserException cue) {
             throw new TransactionException(cue.getMessage(), cue);
         }
-        
+
         log.debug(" creating Control");
         control = transactionFactory.create(timeout);
         ThreadActionData.pushAction(this);
@@ -213,7 +213,7 @@ public class TransactionImpl {
 
     /**
      * Add the specified thread to the list of threads associated with this transaction.
-     * 
+     *
      * @return <code>true</code> if successful, <code>false</code> otherwise.
      */
     public final boolean addChildThread(Thread t) {
@@ -238,7 +238,7 @@ public class TransactionImpl {
 
     /**
      * Remove a child thread. The current thread is removed.
-     * 
+     *
      * @return <code>true</code> if successful, <code>false</code> otherwise.
      */
     public final boolean removeChildThread() // current thread
@@ -248,7 +248,7 @@ public class TransactionImpl {
 
     /**
      * Remove the specified thread from the transaction.
-     * 
+     *
      * @return <code>true</code> if successful, <code>false</code> otherwise.
      */
     public final boolean removeChildThread(String threadId) {
@@ -272,7 +272,7 @@ public class TransactionImpl {
     /**
      * Suspend the transaction association from the invoking thread. When this operation returns, the thread will not be
      * associated with a transaction.
-     * 
+     *
      * @return a handle on the current TransactionImpl (if any) so that the thread can later resume association if required.
      */
     public static final TransactionImpl suspend() {
@@ -287,7 +287,7 @@ public class TransactionImpl {
     /**
      * Resume transaction association on the current thread. If the specified transaction is null, then this is the same as
      * doing a suspend. If the current thread is associated with a transaction then that association will be lost.
-     * 
+     *
      * @param act the transaction to associate.
      * @return <code>true</code> if association is successful, <code>false</code> otherwise.
      */

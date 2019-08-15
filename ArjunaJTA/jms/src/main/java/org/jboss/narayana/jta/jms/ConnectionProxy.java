@@ -75,7 +75,7 @@ public class ConnectionProxy implements Connection {
     /**
      * Simply close the proxied connection if there is no active transaction. Or register a
      * {@link ConnectionClosingSynchronization} if active transaction exists.
-     * 
+     *
      * @throws JMSException if transaction service has failed (in unexpected way) to obtain transaction status,
      *   or if synchronization registration, or connection closing has failed.
      */

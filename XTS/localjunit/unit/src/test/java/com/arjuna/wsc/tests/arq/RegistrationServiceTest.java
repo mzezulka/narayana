@@ -53,7 +53,7 @@ public class RegistrationServiceTest extends BaseWSCTest {
         return WarDeployment.getDeployment();
     }
 
-    private W3CEndpointReference sendRegistration(String messageId, String protocolIdentifier) 
+    private W3CEndpointReference sendRegistration(String messageId, String protocolIdentifier)
             throws CannotRegisterException, InvalidStateException, InvalidProtocolException, SoapFault {
         final CoordinationContextType coordinationContext = new CoordinationContextType() ;
         CoordinationContextType.Identifier identifierInstance = new CoordinationContextType.Identifier();
@@ -64,13 +64,13 @@ public class RegistrationServiceTest extends BaseWSCTest {
         W3CEndpointReference participantEndpoint = TestUtil11.getProtocolParticipantEndpoint("participant");
         return RegistrationCoordinator.register(coordinationContext, messageId, participantEndpoint, protocolIdentifier);
     }
-    
+
     public void testKnownProtocolIdentifierInternal()
             throws Exception
     {
         final String messageId = "testKnownCoordinationType" ;
         final String protocolIdentifier = TestUtil.PROTOCOL_IDENTIFIER ;
-        
+
         try
         {
             final W3CEndpointReference registerResponse = sendRegistration(messageId, protocolIdentifier);
@@ -87,7 +87,7 @@ public class RegistrationServiceTest extends BaseWSCTest {
     {
         final String messageId = "testUnknownCoordinationType" ;
         final String protocolIdentifier = TestUtil.UNKNOWN_PROTOCOL_IDENTIFIER ;
-        
+
         try
         {
             sendRegistration(messageId, protocolIdentifier);
@@ -99,7 +99,7 @@ public class RegistrationServiceTest extends BaseWSCTest {
             fail("Unexpected exception: " + th) ;
         }
     }
-    
+
     @Test
     public void testKnownProtocolIdentifierSync()
             throws Exception
@@ -119,7 +119,7 @@ public class RegistrationServiceTest extends BaseWSCTest {
         testUnknownProtocolIdentifierInternal();
         XTSPropertyManager.getWSCEnvironmentBean().setUseAsynchronousRequest(previousValue);
     }
-    
+
     @Test
     public void testKnownProtocolIdentifierAsync()
             throws Exception

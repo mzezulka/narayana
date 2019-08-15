@@ -45,7 +45,7 @@ public interface InteropConstants
      * The interop namespace prefix.
      */
     public String INTEROP_PREFIX = "sc007" ;
-    
+
     /**
      * The interop action Namespace for the soap action.
      */
@@ -71,7 +71,7 @@ public interface InteropConstants
      * The completion commit Action.
      */
     public String INTEROP_ACTION_COMPLETION_COMMIT = INTEROP_ACTION_PARTICIPANT_PREFIX + INTEROP_ELEMENT_COMPLETION_COMMIT ;
-    
+
     /**
      * The completion rollback element.
      */
@@ -84,7 +84,7 @@ public interface InteropConstants
      * The completion rollback Action.
      */
     public String INTEROP_ACTION_COMPLETION_ROLLBACK = INTEROP_ACTION_PARTICIPANT_PREFIX + INTEROP_ELEMENT_COMPLETION_ROLLBACK ;
-    
+
     /**
      * The commit element.
      */
@@ -97,7 +97,7 @@ public interface InteropConstants
      * The commit Action.
      */
     public String INTEROP_ACTION_COMMIT = INTEROP_ACTION_PARTICIPANT_PREFIX + INTEROP_ELEMENT_COMMIT ;
-    
+
     /**
      * The rollback element.
      */
@@ -110,7 +110,7 @@ public interface InteropConstants
      * The rollback Action.
      */
     public String INTEROP_ACTION_ROLLBACK = INTEROP_ACTION_PARTICIPANT_PREFIX + INTEROP_ELEMENT_ROLLBACK ;
-    
+
     /**
      * The phase 2 rollback element.
      */
@@ -123,7 +123,7 @@ public interface InteropConstants
      * The phase 2 rollback Action.
      */
     public String INTEROP_ACTION_PHASE_2_ROLLBACK = INTEROP_ACTION_PARTICIPANT_PREFIX + INTEROP_ELEMENT_PHASE_2_ROLLBACK ;
-    
+
     /**
      * The readonly element.
      */
@@ -136,7 +136,7 @@ public interface InteropConstants
      * The readonly Action.
      */
     public String INTEROP_ACTION_READONLY = INTEROP_ACTION_PARTICIPANT_PREFIX + INTEROP_ELEMENT_READONLY ;
-    
+
     /**
      * The volatile and durable element.
      */
@@ -149,7 +149,7 @@ public interface InteropConstants
      * The volatile and durable Action.
      */
     public String INTEROP_ACTION_VOLATILE_AND_DURABLE = INTEROP_ACTION_PARTICIPANT_PREFIX + INTEROP_ELEMENT_VOLATILE_AND_DURABLE ;
-    
+
     /**
      * The early readonly element.
      */
@@ -162,7 +162,7 @@ public interface InteropConstants
      * The early readonly Action.
      */
     public String INTEROP_ACTION_EARLY_READONLY = INTEROP_ACTION_PARTICIPANT_PREFIX + INTEROP_ELEMENT_EARLY_READONLY ;
-    
+
     /**
      * The early aborted element.
      */
@@ -175,7 +175,7 @@ public interface InteropConstants
      * The early aborted Action.
      */
     public String INTEROP_ACTION_EARLY_ABORTED = INTEROP_ACTION_PARTICIPANT_PREFIX + INTEROP_ELEMENT_EARLY_ABORTED ;
-    
+
     /**
      * The replay commit element.
      */
@@ -188,7 +188,7 @@ public interface InteropConstants
      * The replay commit Action.
      */
     public String INTEROP_ACTION_REPLAY_COMMIT = INTEROP_ACTION_PARTICIPANT_PREFIX + INTEROP_ELEMENT_REPLAY_COMMIT ;
-    
+
     /**
      * The retry prepared commit element.
      */
@@ -201,7 +201,7 @@ public interface InteropConstants
      * The retry prepared commit Action.
      */
     public String INTEROP_ACTION_RETRY_PREPARED_COMMIT = INTEROP_ACTION_PARTICIPANT_PREFIX + INTEROP_ELEMENT_RETRY_PREPARED_COMMIT ;
-    
+
     /**
      * The retry prepared abort element.
      */
@@ -214,7 +214,7 @@ public interface InteropConstants
      * The retry prepared abort Action.
      */
     public String INTEROP_ACTION_RETRY_PREPARED_ABORT = INTEROP_ACTION_PARTICIPANT_PREFIX + INTEROP_ELEMENT_RETRY_PREPARED_ABORT ;
-    
+
     /**
      * The retry commit element.
      */
@@ -227,7 +227,7 @@ public interface InteropConstants
      * The retry commit Action.
      */
     public String INTEROP_ACTION_RETRY_COMMIT = INTEROP_ACTION_PARTICIPANT_PREFIX + INTEROP_ELEMENT_RETRY_COMMIT ;
-    
+
     /**
      * The prepared after timeout element.
      */
@@ -240,7 +240,7 @@ public interface InteropConstants
      * The prepared after timeout Action.
      */
     public String INTEROP_ACTION_PREPARED_AFTER_TIMEOUT = INTEROP_ACTION_PARTICIPANT_PREFIX + INTEROP_ELEMENT_PREPARED_AFTER_TIMEOUT ;
-    
+
     /**
      * The lost committed element.
      */
@@ -253,7 +253,7 @@ public interface InteropConstants
      * The lost committed Action.
      */
     public String INTEROP_ACTION_LOST_COMMITTED = INTEROP_ACTION_PARTICIPANT_PREFIX + INTEROP_ELEMENT_LOST_COMMITTED ;
-    
+
     /**
      * The response element.
      */

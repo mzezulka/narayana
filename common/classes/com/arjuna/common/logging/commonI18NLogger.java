@@ -32,7 +32,7 @@ import org.jboss.logging.annotations.MessageLogger;
 
 /**
  * i18n log messages for the jta module.
- * 
+ *
  * @author Jonathan Halliday (jonathan.halliday@redhat.com) 2010-06
  */
 @MessageLogger(projectCode = "ARJUNA")
@@ -44,7 +44,7 @@ public interface commonI18NLogger {
 	 * you like). Allocate new messages by following instructions at the bottom
 	 * of the file.
 	 */
-	
+
 	@Message(id = 48001, value = "Could not find manifest {0}", format = MESSAGE_FORMAT)
 	@LogMessage(level = WARN)
 	public void warn_could_not_find_manifest(String arg0, @Cause() Throwable arg1);

@@ -25,14 +25,14 @@ public interface X_OCTET extends Buffer {
 
     /**
      * Set the data of the buffer.
-     * 
+     *
      * @param bytes The data to set.
      */
     public void setByteArray(byte[] bytes);
 
     /**
      * Get the content of the buffer.
-     * 
+     *
      * @return The content of the buffer.
      */
     public byte[] getByteArray();

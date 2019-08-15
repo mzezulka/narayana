@@ -453,7 +453,7 @@ public class RecoveryEnvironmentBean implements RecoveryEnvironmentBeanMBean
      *
      * If there is no pre-instantiated instance set and classloading or instantiation of one or more
      * elements fails, this method will log an appropriate warning and return a non-null set with
-     * fewer elements. 
+     * fewer elements.
      *
      * @return the set of RecoveryModule instances.
      */
@@ -492,7 +492,7 @@ public class RecoveryEnvironmentBean implements RecoveryEnvironmentBeanMBean
             }
         }
     }
-    
+
 
     /**
      * Returns a list of names of classes that implement RecoveryActivator.

@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -68,7 +68,7 @@ import com.arjuna.ats.jts.logging.jtsLogger;
 
 /**
  * An implementation of CosTransactions::Control
- * 
+ *
  * @author Mark Little (mark@arjuna.com)
  * @version $Id: ControlImple.java 2342 2006-03-30 13:06:17Z  $
  * @since JTS 1.0.
@@ -183,7 +183,7 @@ public class ControlImple extends com.arjuna.ArjunaOTS.ActionControlPOA
 		 * In C++ we had to narrow to Control for some ORBs, despite the fact
 		 * that an ArjunaControl is a Control. Does now seem to be necessary for
 		 * Java.
-		 * 
+		 *
 		 * return ControlHelper.narrow(_myControl);
 		 */
 
@@ -237,7 +237,7 @@ public class ControlImple extends com.arjuna.ArjunaOTS.ActionControlPOA
 	/**
 	 * destroy should only be called for remote Control objects. Destroy them
 	 * locally by calling DESTROY_IMPL.
-	 * 
+	 *
 	 * Since we assume that a factory will either be remote or local, we can
 	 * destroy this object and rely upon the ORB to return an exception to
 	 * subsequent clients which indicates they no longer have a valid reference.
@@ -330,17 +330,17 @@ public class ControlImple extends com.arjuna.ArjunaOTS.ActionControlPOA
 
 		return false;
 	}
-	
+
 	/**
 	 * In the case that the transaction is terminated by the reaper then it will
 	 * also be tidied up. This means that the internal handle to the real transaction
 	 * instance will be nulled out. In that case we cache the status just before removing
 	 * the handle and this method can be used to obtain it.
-	 * 
+	 *
 	 * @return the final termination status of the transaction.
 	 * @throws IllegalStateException thrown if the transaction is still available.
 	 */
-	
+
 	public org.omg.CosTransactions.Status getFinalStatus () throws IllegalStateException
 	{
 	    if (getImplHandle() != null)
@@ -544,7 +544,7 @@ public class ControlImple extends com.arjuna.ArjunaOTS.ActionControlPOA
 	/**
 	 * Transaction needs to call these methods to enable garbage collection to
 	 * occur.
-	 * 
+	 *
 	 * Note, we assume that one ContorlImple per transaction is maintained per address
 	 * space, so that overwriting a previously added ControlImple for the same tx is
 	 * not possible.
@@ -612,7 +612,7 @@ public class ControlImple extends com.arjuna.ArjunaOTS.ActionControlPOA
 			if (_transactionImpl != null)
 			{
 			    _finalStatus = _transactionImpl.get_status();
-			    
+
 				ORBManager.getPOA().shutdownObject(_transactionImpl);
 
 				_transactionHandle = null;
@@ -625,7 +625,7 @@ public class ControlImple extends com.arjuna.ArjunaOTS.ActionControlPOA
             jtsLogger.i18NLogger.warn_orbspecific_tidyfail("ControlImple.tidyup", e);
 		}
 	}
-	
+
 	/*
 	 * Make private, with public accessor.
 	 */

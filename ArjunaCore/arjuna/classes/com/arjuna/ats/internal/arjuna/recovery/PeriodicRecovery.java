@@ -113,7 +113,7 @@ public class PeriodicRecovery extends Thread
     public PeriodicRecovery (boolean threaded, boolean useListener)
     {
         super("Periodic Recovery");
-        
+
         initialise();
 
         // Load the recovery modules that actually do the work.
@@ -290,7 +290,7 @@ public class PeriodicRecovery extends Thread
             if (_socket == null)
             {
                 _socket = new ServerSocket(RecoveryManager.getRecoveryManagerPort(), Utility.BACKLOG, RecoveryManager.getRecoveryManagerHost());
-                
+
                 recoveryPropertyManager.getRecoveryEnvironmentBean().setRecoveryPort(_socket.getLocalPort());
             }
 
@@ -388,7 +388,7 @@ public class PeriodicRecovery extends Thread
                    setStatus(Status.INACTIVE);
                    // must kick any other waiting threads
                    _stateLock.notifyAll();
-                   
+
                    // check if we need to notify a listener worker that we just finished  a scan
                    if (notifyRequired && !_workerScanRequested) {
                        notifyWorker();
@@ -562,31 +562,31 @@ public class PeriodicRecovery extends Thread
                     doScanningWait();
             }
         }
-        
+
         // now remove it.
-        
+
         _recoveryModules.remove(module);
     }
-    
+
     /**
      * Remove all modules.
-     * 
+     *
      * @param waitOnScan true if the remove operation should wait for any in-progress scan to complete.
      */
-    
+
     public final void removeAllModules (boolean waitOnScan)
     {
         if (tsLogger.logger.isDebugEnabled()) {
             tsLogger.logger.debug("PeriodicRecovery: removing all modules.");
         }
-        
+
         if (waitOnScan) {
             // make sure any scan which might be using the module has completed
             synchronized (_stateLock) {
                     doScanningWait();
             }
         }
-        
+
         _recoveryModules.clear();
     }
 
@@ -755,7 +755,7 @@ public class PeriodicRecovery extends Thread
         // for the same stable set of modules.
 
         Vector copyOfModules = getModules();
-        
+
         Enumeration modules = copyOfModules.elements();
 
         while (modules.hasMoreElements())

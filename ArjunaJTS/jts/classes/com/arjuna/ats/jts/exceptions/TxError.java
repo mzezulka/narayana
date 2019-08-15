@@ -43,7 +43,7 @@ package com.arjuna.ats.jts.exceptions;
 public class TxError extends Error
 {
     static final long serialVersionUID = -175416083725473793L;
-    
+
     public TxError ()
     {
         super();

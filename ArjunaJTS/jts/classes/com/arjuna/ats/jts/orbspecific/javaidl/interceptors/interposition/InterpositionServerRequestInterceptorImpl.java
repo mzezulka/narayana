@@ -267,7 +267,7 @@ public void send_reply (ServerRequestInfo request_info) throws SystemException
 	{
         jtsLogger.i18NLogger.warn_orbspecific_javaidl_interceptors_interposition_srie(
                 "InterpositionServerRequestInterceptorImpl::send_reply", ex);
-	    
+
 	    throw ex;
 	}
 	catch (Exception e) {

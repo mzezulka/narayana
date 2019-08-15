@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -49,7 +49,7 @@ import com.arjuna.ats.internal.jts.ORBManager;
 
 public class grid_i extends com.hp.mwtests.ts.jts.TestModule.gridPOA
 {
-    
+
     public grid_i (int h, int w, String markerName)
     {
 	ORBManager.getPOA().objectIsReady(this, markerName.getBytes());
@@ -65,7 +65,7 @@ public class grid_i extends com.hp.mwtests.ts.jts.TestModule.gridPOA
     public grid_i (int h, int w)
     {
 	ORBManager.getPOA().objectIsReady(this);
-	
+
 	m_height = h;   // set up height
 	m_width = w;    // set up width
 	// now allocate the 2-D array: as an array of pointers to 1-D arrays.
@@ -78,7 +78,7 @@ public class grid_i extends com.hp.mwtests.ts.jts.TestModule.gridPOA
     {
 	return ref;
     }
- 
+
     public int height () throws SystemException
     {
 	return m_height;
@@ -94,12 +94,12 @@ public class grid_i extends com.hp.mwtests.ts.jts.TestModule.gridPOA
 	try
 	{
 	    Coordinator co = cp.get_coordinator();
-	    
+
 	    if (co != null)
 		co.register_resource(ref);
 	    else
 		System.err.println("Error - no transaction coordinator!");
-	    
+
 	    m_a[n][m] = value;
 	}
 	catch (UserException e)
@@ -120,7 +120,7 @@ public class grid_i extends com.hp.mwtests.ts.jts.TestModule.gridPOA
     public org.omg.CosTransactions.Vote prepare () throws SystemException
     {
 	System.out.println("GRID : PREPARE");
-    
+
 	return Vote.VoteCommit;
     }
 
@@ -148,6 +148,6 @@ public class grid_i extends com.hp.mwtests.ts.jts.TestModule.gridPOA
     private int m_width;   // store the width
     private int[][] m_a;      // a 2-D array to store the grid data itself
     private Resource ref;
- 
+
 }
 

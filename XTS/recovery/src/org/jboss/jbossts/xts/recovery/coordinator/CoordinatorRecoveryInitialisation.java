@@ -56,7 +56,7 @@ public class CoordinatorRecoveryInitialisation
                 RecoveryLogger.i18NLogger.error_recovery_coordinator_CoordinatorRecoveryInitialisation_2(className);
                 continue;
             }
-            
+
             try {
                 XTSRecoveryModule module = (XTSRecoveryModule)clazz.newInstance();
                 module.install();
@@ -80,7 +80,7 @@ public class CoordinatorRecoveryInitialisation
         if (!initialised) {
             return;
         }
-        
+
         Iterator<XTSRecoveryModule> iterator = recoveryModules.iterator();
 
         while (iterator.hasNext()) {
@@ -90,7 +90,7 @@ public class CoordinatorRecoveryInitialisation
         }
 
         recoveryModules.clear();
-        
+
         initialised = false;
     }
 }

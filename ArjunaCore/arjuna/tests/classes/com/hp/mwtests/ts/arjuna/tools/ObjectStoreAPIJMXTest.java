@@ -159,7 +159,7 @@ public class ObjectStoreAPIJMXTest {
         // calling stop on the MBean should generate a notification
         rsb.stop();
 
-        // make sure we wait long enough for it to be sent        
+        // make sure we wait long enough for it to be sent
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {

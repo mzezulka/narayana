@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -29,7 +29,7 @@ import com.arjuna.webservices.logging.WSCLogger;
 
 /**
  * This class manages the client side of the task manager
- * 
+ *
  * @author kevin
  */
 public class TaskManager
@@ -86,7 +86,7 @@ public class TaskManager
 
     /**
      * Get the singleton controlling the tasks.
-     * 
+     *
      * @return The task manager.
      */
     public static TaskManager getManager()
@@ -103,10 +103,10 @@ public class TaskManager
 
     /**
      * Queue the task for execution.
-     * 
+     *
      * @param task The task to be executed.
      * @return true if the task was queued, false otherwise.
-     * 
+     *
      */
     public boolean queueTask(final Task task)
     {
@@ -158,13 +158,13 @@ public class TaskManager
         {
             WSCLogger.logger.tracef("queueTask: queueing task '%s' for execution", task) ;
         }
-        
+
         return true ;
     }
 
     /**
      * Set the minimum worker count for the pool.
-     * 
+     *
      * @param minimumWorkerCount The minimum worker count.
      *
      */
@@ -215,7 +215,7 @@ public class TaskManager
 
     /**
      * Get the minimum worker count for the pool.
-     * 
+     *
      * @return The minimum worker count.
      */
     public int getMinimumWorkerCount()
@@ -228,7 +228,7 @@ public class TaskManager
 
     /**
      * Set the maximum worker count for the pool.
-     * 
+     *
      * @param maximumWorkerCount The maximum worker count.
      */
     public void setMaximumWorkerCount(final int maximumWorkerCount)
@@ -275,7 +275,7 @@ public class TaskManager
 
     /**
      * Get the maximum worker count for the pool.
-     * 
+     *
      * @return The maximum worker count.
      */
     public int getMaximumWorkerCount()
@@ -288,7 +288,7 @@ public class TaskManager
 
     /**
      * Get the current worker count for the pool.
-     * 
+     *
      * @return The current worker count.
      */
     public int getWorkerCount()
@@ -367,9 +367,9 @@ public class TaskManager
 
     /**
      * Get another task from the pool.
-     * 
+     *
      * @return The next task from the pool or null if finished.
-     * 
+     *
      */
     Task getTask()
     {

@@ -9,14 +9,14 @@ public class TestATHeuristicRecoveryAfterDelayedCommit extends BaseCrashTest {
 	public TestATHeuristicRecoveryAfterDelayedCommit() {
 		scriptName ="ATHeuristicRecoveryAfterDelayedCommit";
 	}
-	
+
 	@Test
 	public void MultiParticipantPrepareAndCommitTest() throws Exception {
 		testName = "MultiParticipantPrepareAndCommitTest";
 		String testClass = "org.jboss.jbossts.xts.servicetests.test.at.MultiParticipantPrepareAndCommitTest";
 		runTest(testClass);
 	}
-	
+
 	@Test
 	public void MultiServicePrepareAndCommitTest() throws Exception {
 		testName = "MultiServicePrepareAndCommitTest";

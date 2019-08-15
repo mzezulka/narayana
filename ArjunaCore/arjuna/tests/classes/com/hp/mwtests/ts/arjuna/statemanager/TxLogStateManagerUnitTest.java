@@ -46,7 +46,7 @@ class TxStateManager extends LogWriteStateManager
     {
         super(ObjectModel.MULTIPLE);
     }
-    
+
     public boolean modified ()
     {
         return super.modified();
@@ -60,14 +60,14 @@ public class TxLogStateManagerUnitTest
     {
         AtomicAction A = new AtomicAction();
         TxStateManager tm = new TxStateManager();
-        
+
         arjPropertyManager.getCoordinatorEnvironmentBean().setClassicPrepare(true);
-        
+
         A.begin();
-        
-        assertTrue(tm.modified());       
+
+        assertTrue(tm.modified());
         assertTrue(tm.writeOptimisation());
-        
+
         A.commit();
     }
 }

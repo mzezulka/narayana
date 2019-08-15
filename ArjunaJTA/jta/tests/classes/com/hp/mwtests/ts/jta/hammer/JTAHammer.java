@@ -1,20 +1,20 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors 
- * as indicated by the @author tags. 
+ * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * as indicated by the @author tags.
  * See the copyright.txt in the distribution for a
- * full listing of individual contributors. 
+ * full listing of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
  * of the GNU Lesser General Public License, v. 2.1.
- * This program is distributed in the hope that it will be useful, but WITHOUT A 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT A
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
  * You should have received a copy of the GNU Lesser General Public License,
  * v.2.1 along with this distribution; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -48,7 +48,7 @@ class Worker extends Thread
 	_connectionString = s;
 	_iters = iters;
     }
-    
+
     public void run ()
     {
 	for (int i = 0; i < _iters; i++)
@@ -68,7 +68,7 @@ class Worker extends Thread
 		if (tm != null)
 		{
 		    tm.begin();
-	    
+
 		    javax.transaction.Transaction theTransaction = tm.getTransaction();
 
 		    if (theTransaction != null)
@@ -77,14 +77,14 @@ class Worker extends Thread
 			{
 			    System.err.println("Error - could not enlist resource in transaction!");
 			    tm.rollback();
-			    
+
 			    System.exit(0);
 			}
 
 			/*
 			 * XA does not support subtransactions.
 			 */
-		    
+
 			/*
 			 * Do some work and decide whether to commit or
 			 * rollback. (Assume commit for example.)
@@ -110,14 +110,14 @@ class Worker extends Thread
 
 	JTAHammer.doSignal();
     }
-    
+
     private XACreator _creator;
     private String _connectionString;
     private int _iters;
 
 }
 
-    
+
 public class JTAHammer
 {
     @Test
@@ -140,19 +140,19 @@ public class JTAHammer
 	int numberOfTransactions = threads * work;
 	long stime = Calendar.getInstance().getTime().getTime();
 	Worker[] workers = new Worker[threads];
-	
+
 	for (int i = 0; i < threads; i++)
 	{
 	    workers[i] = new Worker(creator, connectionString, work);
-	    
+
 	    workers[i].start();
 	}
 
 	JTAHammer.doWait();
-	
+
 	long ftime = Calendar.getInstance().getTime().getTime();
 	long timeTaken = ftime - stime;
-	
+
 	System.out.println("time for "+numberOfTransactions+" write transactions is "+timeTaken);
 	System.out.println("number of transactions: "+numberOfTransactions);
 	System.out.println("throughput: "+(float) (numberOfTransactions/(timeTaken / 1000.0)));
@@ -181,8 +181,8 @@ public class JTAHammer
 		    sync.notify();
 	    }
     }
-	
+
     private static Object sync = new Object();
     private static int number = 0;
-    
+
 }

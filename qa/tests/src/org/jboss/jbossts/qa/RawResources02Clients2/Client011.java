@@ -110,7 +110,7 @@ public class Client011
 				correct = false;
 			}
 			catch (final TRANSACTION_ROLLEDBACK ex)
-			{			    
+			{
 			}
 			catch (HeuristicMixed heuristicMixed)
 			{

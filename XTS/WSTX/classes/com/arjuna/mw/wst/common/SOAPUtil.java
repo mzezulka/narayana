@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -40,7 +40,7 @@ public class SOAPUtil
     {
         return new SOAPElementIterator(soapElement.getChildElements()) ;
     }
-    
+
     /**
      * An iterator class that skips any nodes which are not SOAPElements.
      * @author kevin
@@ -55,7 +55,7 @@ public class SOAPUtil
          * The current object.
          */
         private Object current ;
-        
+
         /**
          * Construct the iterator.
          * @param elementIter The iterator being wrapped.
@@ -64,7 +64,7 @@ public class SOAPUtil
         {
             this.elementIter = elementIter ;
         }
-        
+
         /**
          * Are there any more elements?
          * @return true if the iterator has more elements, false otherwise.
@@ -74,7 +74,7 @@ public class SOAPUtil
             checkCurrent() ;
             return (current != null) ;
         }
-        
+
         /**
          * Get the next element.
          * @return the next element.
@@ -92,7 +92,7 @@ public class SOAPUtil
             current = null ;
             return result ;
         }
-        
+
         /**
          * Remove the current object. &nbsp;This method is not supported on this iterator.
          * @throws UnsupportedOperationException if not supported.
@@ -104,7 +104,7 @@ public class SOAPUtil
         {
             throw new UnsupportedOperationException("Remove not supported on this iterator") ;
         }
-        
+
         /**
          * Check the current element.
          */

@@ -144,7 +144,7 @@ public class TerminationParticipantPortTypeImpl implements TerminationParticipan
         final MAP inboundMap = AddressingHelper.inboundMap(ctx);
         final ArjunaContext arjunaContext = ArjunaContext.getCurrentContext(ctx);
         final SoapFault soapFault = SoapFault11.fromFault(parameters);
-    
+
         TaskManager.getManager().queueTask(new Task() {
             public void executeTask() {
                 TerminationParticipantProcessor.getProcessor().handleSoapFault(soapFault, inboundMap, arjunaContext);

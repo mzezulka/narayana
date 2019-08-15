@@ -73,7 +73,7 @@ public class SynchronizationRecord implements com.arjuna.ats.arjuna.coordinator.
     public boolean beforeCompletion ()
     {
         // Business Activity only supports afterCompletion synchronization
-        
+
         return true;
     }
 

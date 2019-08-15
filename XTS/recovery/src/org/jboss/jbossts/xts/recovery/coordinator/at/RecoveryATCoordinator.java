@@ -51,7 +51,7 @@ public class RecoveryATCoordinator extends ATCoordinator {
            // message. In either case the failed participant record(s) will be listed in the heuristic
            // list. Since this list is ignored completely by phase2Abort there is no point doing
            // anything here. there are also cases where actionStatus is a heuristic outcome. Once
-           // again it is pointless calling phase2Abort since the prepared list is empty. 
+           // again it is pointless calling phase2Abort since the prepared list is empty.
 
        if ((status == ActionStatus.PREPARED) ||
                (status == ActionStatus.COMMITTING) ||

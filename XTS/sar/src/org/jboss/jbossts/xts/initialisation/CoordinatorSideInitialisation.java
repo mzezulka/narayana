@@ -45,7 +45,7 @@ public class CoordinatorSideInitialisation implements XTSInitialisation
         WSTCoordinatorInitialisation.startup();
 
         // run WSCF startup code
-        
+
         WSCFInitialisation.startup();
 
         // there is no WSTX coordinator startup

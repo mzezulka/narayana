@@ -97,7 +97,7 @@ public class Utility
 
 	return strm;
     }
-    
+
     public static String exceptionCode (int code)
     {
         switch (code)
@@ -261,7 +261,7 @@ public class Utility
 	otid.formatID = 0;
 	otid.tid = new byte[b.length+nodeName.length];
 	otid.bqual_length = nodeName.length;
-	
+
 	/*
 	 * gtrid must be first then immediately followed by bqual.
 	 * bqual must be between 1 and 64 bytes if for XA.
@@ -288,17 +288,17 @@ public class Utility
 	{
 	    int uidLength = otid.tid.length - otid.bqual_length;
 	    byte[] theUid = new byte[uidLength];  // don't need null terminating character
-	    
+
 	    System.arraycopy(otid.tid, 0, theUid, 0, uidLength);
-	    
+
 	    Uid u = new Uid(new String(theUid, StandardCharsets.UTF_8), true);  // errors in string give NIL_UID
-	    
+
 	    /*
 	     * Currently we ignore bqual. THIS WILL BE AN ISSUE FOR INTEROPERABILITY!!
 	     */
-	    
+
 	    theUid = null;
-	    
+
 	    return u;
 	}
 	else

@@ -29,7 +29,7 @@ import junit.framework.TestCase;
 
 /**
  * Unit tests for the Class class.
- * 
+ *
  * @author Mark Little
  */
 
@@ -50,7 +50,7 @@ public class BasicUnitTest extends TestCase
         {
             return true;
         }
-        
+
         @TransactionFree
         public void notTransactionalWork ()
         {
@@ -67,14 +67,14 @@ public class BasicUnitTest extends TestCase
     public void testLockableClass ()
     {
         TestObject tester = new TestObject();
-        
+
         assertTrue(tester.getClass().isAnnotationPresent(Transactional.class));
     }
-    
+
     public void testNotLockableClass ()
     {
         BasicUnitTest tester = new BasicUnitTest();
-        
+
         assertFalse(tester.getClass().isAnnotationPresent(Transactional.class));
     }
 
@@ -86,29 +86,29 @@ public class BasicUnitTest extends TestCase
         assertNotNull(methods);
 
         Method someWork = tester.getClass().getDeclaredMethod("doSomeWork", (Class[]) null);
-        
+
         assertNotNull(someWork);
         assertTrue(someWork.isAnnotationPresent(ReadLock.class));
-        
+
         Method someOtherWork = tester.getClass().getDeclaredMethod("doSomeOtherWork", (Class[]) null);
-        
+
         assertNotNull(someOtherWork);
         assertTrue(someOtherWork.isAnnotationPresent(WriteLock.class));
-        
+
         Method someBasicWork = tester.getClass().getDeclaredMethod("notTransactionalWork", (Class[]) null);
-        
+
         assertNotNull(someBasicWork);
         assertFalse(someBasicWork.isAnnotationPresent(WriteLock.class));
         assertFalse(someBasicWork.isAnnotationPresent(ReadLock.class));
     }
-    
+
     public void testFields () throws Exception
     {
         TestObject tester = new TestObject();
         Field[] fields = tester.getClass().getDeclaredFields(); // get all fields including private
-        
+
         assertNotNull(fields);
-        
+
         for (Field afield : fields)
         {
             if (afield.getName().equals("_isState"))
@@ -116,7 +116,7 @@ public class BasicUnitTest extends TestCase
                 assertTrue(afield.isAnnotationPresent(State.class));
                 assertTrue(afield.getType().equals(Integer.TYPE));
             }
-            
+
             if (afield.getName().equals("_isNotState"))
             {
                 assertFalse(afield.isAnnotationPresent(State.class));
@@ -124,5 +124,5 @@ public class BasicUnitTest extends TestCase
             }
         }
     }
-    
+
 }

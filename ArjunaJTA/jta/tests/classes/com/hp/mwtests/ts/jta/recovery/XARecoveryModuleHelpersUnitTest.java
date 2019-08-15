@@ -195,7 +195,7 @@ public class XARecoveryModuleHelpersUnitTest
 
         System.out.printf("Finished pass 2 (%d)%n", System.currentTimeMillis() - millis);
 
-        // wait for helper removal threads to finish 
+        // wait for helper removal threads to finish
         try {
             remover.join();
             remover2.join();

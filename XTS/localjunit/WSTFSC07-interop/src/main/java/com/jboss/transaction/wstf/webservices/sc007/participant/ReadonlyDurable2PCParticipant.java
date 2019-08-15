@@ -38,5 +38,5 @@ public class ReadonlyDurable2PCParticipant extends ParticipantAdapter implements
         throws WrongStateException, SystemException
     {
         return new ReadOnly() ;
-    }    
+    }
 }

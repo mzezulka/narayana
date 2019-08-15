@@ -40,7 +40,7 @@ public class BlacktieStompAdministrationServiceTest extends TestCase {
 
     /**
      * Cannot test this without using a C server as unadvertise checks for a running server
-     * 
+     *
      * @throws ConnectionException
      */
     public void xtest() throws ConnectionException, ConfigurationException {

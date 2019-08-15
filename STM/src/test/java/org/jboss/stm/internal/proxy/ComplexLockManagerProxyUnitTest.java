@@ -37,7 +37,7 @@ import junit.framework.TestCase;
 
 /**
  * Unit tests for the Class class.
- * 
+ *
  * @author Mark Little
  */
 
@@ -52,34 +52,34 @@ public class ComplexLockManagerProxyUnitTest extends TestCase
             _isNotState = 2;
             _saved = 1234;
         }
-        
+
         public String toString ()
         {
             return "SampleLockable < "+_isState+", "+_isNotState+", "+_saved+" >";
         }
-        
+
         @SaveState
         public void save_state (OutputObjectState os) throws IOException
         {
            os.packInt(_saved);
         }
-        
+
         @RestoreState
         public void restore_state (InputObjectState os) throws IOException
         {
             _saved = os.unpackInt();
         }
-        
+
         @State // will be ignored!!
         public int _isState;
 
         public int _isNotState;
-        
+
         public int _saved;
     }
-    
+
     // this one will fail because it defined a save but no restore
-    
+
     @Transactional
     class InvalidLockable
     {
@@ -88,31 +88,31 @@ public class ComplexLockManagerProxyUnitTest extends TestCase
         {
         }
     }
-    
+
     public void testInvalidSaveRestore ()
     {
        InvalidLockable obj = new InvalidLockable();
        LockManagerProxy<InvalidLockable> proxy = new LockManagerProxy<InvalidLockable>(obj);
        OutputObjectState os = new OutputObjectState();
-       
+
        assertFalse(proxy.save_state(os, ObjectType.RECOVERABLE));
     }
-    
+
     public void testSaveRestore ()
     {
         BasicLockable obj = new BasicLockable();
         LockManagerProxy<BasicLockable> proxy = new LockManagerProxy<BasicLockable>(obj);
         OutputObjectState os = new OutputObjectState();
-        
-        assertTrue(proxy.save_state(os, ObjectType.RECOVERABLE));     
-        
+
+        assertTrue(proxy.save_state(os, ObjectType.RECOVERABLE));
+
         obj._saved = 4567;
         obj._isState = 0;  // make sure it's ignored by save/restore.
-        
+
         InputObjectState ios = new InputObjectState(os);
-        
+
         assertTrue(proxy.restore_state(ios, ObjectType.RECOVERABLE));
-        
+
         assertEquals(obj._saved, 1234);
         assertEquals(obj._isState, 0);
     }

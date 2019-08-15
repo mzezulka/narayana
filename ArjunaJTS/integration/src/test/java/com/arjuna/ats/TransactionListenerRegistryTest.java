@@ -54,11 +54,11 @@ public class TransactionListenerRegistryTest {
 		BMTROLLBACK,
 		CMTSUSPEND
 	};
-  
+
   @Test
   public void testResume() throws SystemException, InvalidTransactionException {
     TransactionManager tm = new TransactionManagerDelegate();
-		tm.resume(null); // JBTM-2385 used to cause an NPE 
+		tm.resume(null); // JBTM-2385 used to cause an NPE
   }
 
 	private EnumSet<EventType> runTxn(TransactionManager tm) throws SystemException, TransactionTypeNotSupported, NotSupportedException, HeuristicRollbackException, HeuristicMixedException, RollbackException {

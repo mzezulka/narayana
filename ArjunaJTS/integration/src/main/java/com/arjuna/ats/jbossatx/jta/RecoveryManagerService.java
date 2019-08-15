@@ -144,6 +144,6 @@ public class RecoveryManagerService implements XAResourceRecoveryRegistry
         }
 
         xaRecoveryModule.addSerializableXAResourceDeserializer(serializableXAResourceDeserializer);
-		
+
 	}
 }

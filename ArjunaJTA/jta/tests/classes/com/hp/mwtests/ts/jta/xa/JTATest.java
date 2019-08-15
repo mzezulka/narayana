@@ -271,11 +271,11 @@ public class JTATest {
 		tm.rollback();
 		assertTrue(rollbackCalled.getRollbackCalled());
 	}
-	
+
     /**
      * This is none-spec behaviour that some resource managers perform where they throw a RTE instead of return an XAException
      * This test verifies that RTE will result in rollback in Narayana
-     *  
+     *
      * @throws SecurityException
      * @throws IllegalStateException
      * @throws HeuristicMixedException
@@ -305,7 +305,7 @@ public class JTATest {
                 resource1Rollback = true;
             }
         }));
-        
+
         assertTrue(theTransaction.enlistResource(new SimpleXAResource() {
 
             @Override
@@ -322,8 +322,8 @@ public class JTATest {
             assertTrue(resource2Rollback);
         }
     }
-	
-	
+
+
 	@Test
 	public void testHeuristicRollbackSuppressedException() throws NotSupportedException, SystemException, IllegalStateException, RollbackException, SecurityException, HeuristicMixedException, HeuristicRollbackException {
 
@@ -339,13 +339,13 @@ public class JTATest {
             @Override
             public void start(Xid xid, int flags) throws XAException {
 
-                
+
             }
 
             @Override
             public void end(Xid xid, int flags) throws XAException {
 
-                
+
             }
 
             @Override
@@ -363,13 +363,13 @@ public class JTATest {
             @Override
             public void rollback(Xid xid) throws XAException {
 
-                
+
             }
 
             @Override
             public void forget(Xid xid) throws XAException {
 
-                
+
             }
 
             @Override
@@ -400,13 +400,13 @@ public class JTATest {
             @Override
             public void start(Xid xid, int flags) throws XAException {
 
-                
+
             }
 
             @Override
             public void end(Xid xid, int flags) throws XAException {
 
-                
+
             }
 
             @Override
@@ -418,19 +418,19 @@ public class JTATest {
             @Override
             public void commit(Xid xid, boolean onePhase) throws XAException {
 
-                
+
             }
 
             @Override
             public void rollback(Xid xid) throws XAException {
 
-                
+
             }
 
             @Override
             public void forget(Xid xid) throws XAException {
 
-                
+
             }
 
             @Override
@@ -464,7 +464,7 @@ public class JTATest {
             e.printStackTrace();
             assertTrue(e.getSuppressed()[0] == exception);
         }
-	    
+
 	}
 
 	private class XARMERRXAResource implements XAResource {
@@ -541,7 +541,7 @@ public class JTATest {
 		}
 
 	}
-	
+
 	private abstract class SimpleXAResource implements XAResource {
 
         @Override

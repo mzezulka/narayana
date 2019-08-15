@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -51,7 +51,7 @@ public class trangrid_i extends com.hp.mwtests.ts.jts.TestModule.TranGridPOA
     public trangrid_i (short h, short w)
     {
 	ORBManager.getPOA().objectIsReady(this);
-	
+
 	m_height = h;   // set up height
 	m_width = w;    // set up width
 	// now allocate the 2-D array: as an array of pointers to 1-D arrays.
@@ -63,7 +63,7 @@ public class trangrid_i extends com.hp.mwtests.ts.jts.TestModule.TranGridPOA
     public trangrid_i (short h, short w, String objectName)
     {
 	ORBManager.getPOA().objectIsReady(this, objectName.getBytes());
-	
+
 	m_height = h;   // set up height
 	m_width = w;    // set up width
 	// now allocate the 2-D array: as an array of pointers to 1-D arrays.
@@ -76,7 +76,7 @@ public class trangrid_i extends com.hp.mwtests.ts.jts.TestModule.TranGridPOA
     {
 	return ref;
     }
- 
+
     public short height () throws SystemException
     {
 	System.out.println("height "+Thread.currentThread());
@@ -97,7 +97,7 @@ public class trangrid_i extends com.hp.mwtests.ts.jts.TestModule.TranGridPOA
 
 	    System.exit(0);
 	}
-    
+
 	return m_height;
     }
 
@@ -119,7 +119,7 @@ public class trangrid_i extends com.hp.mwtests.ts.jts.TestModule.TranGridPOA
 
 	    System.exit(0);
 	}
-    
+
 	return m_width;
     }
 
@@ -145,7 +145,7 @@ public class trangrid_i extends com.hp.mwtests.ts.jts.TestModule.TranGridPOA
 	}
 	else
 	    System.err.println("Error - set has no transaction control, therefore will ignore!");
-	
+
 	m_a[n][m] = value;
     }
 
@@ -157,7 +157,7 @@ public class trangrid_i extends com.hp.mwtests.ts.jts.TestModule.TranGridPOA
     public org.omg.CosTransactions.Vote prepare () throws SystemException, HeuristicMixed, HeuristicHazard
     {
 	System.out.println("TRANGRID : PREPARE");
-    
+
 	return Vote.VoteCommit;
     }
 
@@ -175,7 +175,7 @@ public class trangrid_i extends com.hp.mwtests.ts.jts.TestModule.TranGridPOA
     {
 	System.out.println("TRANGRID : FORGET");
     }
-    
+
     public void commit_one_phase () throws SystemException, HeuristicHazard
     {
 	System.out.println("TRANGRID : COMMIT_ONE_PHASE");
@@ -185,5 +185,5 @@ public class trangrid_i extends com.hp.mwtests.ts.jts.TestModule.TranGridPOA
     private short m_width;   // store the width
     private short[][] m_a;   // a 2-D array to store the grid data itself
     private TranGrid ref;
- 
+
 }

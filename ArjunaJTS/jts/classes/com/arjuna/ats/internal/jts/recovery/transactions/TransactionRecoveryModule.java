@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -169,7 +169,7 @@ public abstract class TransactionRecoveryModule
 	    catch (ObjectStoreException e4)
 	    {
 		// Transaction has gone away - probably completed normally
-	
+
 		if (jtsLogger.logger.isDebugEnabled()) {
             jtsLogger.logger.debug("Transaction "+currentUid+" is not in object store - assumed completed");
         }
@@ -194,7 +194,7 @@ public abstract class TransactionRecoveryModule
 	if (jtsLogger.logger.isDebugEnabled()) {
         jtsLogger.logger.debug("TransactionRecoveryModule.recoverTransaction(" + tranUid + ")");
     }
-	
+
 	Status currentStatus = Status.StatusUnknown;
 
 	CachedRecoveredTransaction cachedRecoveredTransaction = new CachedRecoveredTransaction (tranUid, _transactionType);
@@ -206,14 +206,14 @@ public abstract class TransactionRecoveryModule
     }
 
 	// but first check that the original transaction isn't in mid-flight
-	if ( cachedRecoveredTransaction.originalBusy() ) 
+	if ( cachedRecoveredTransaction.originalBusy() )
 	{
 	    if (jtsLogger.logger.isDebugEnabled()) {
             jtsLogger.logger.debug("Transaction "+tranUid+" still busy");
         }
 	    return;
 	}
-		
+
 	cachedRecoveredTransaction.replayPhase2();
 	cachedRecoveredTransaction = null;
     }

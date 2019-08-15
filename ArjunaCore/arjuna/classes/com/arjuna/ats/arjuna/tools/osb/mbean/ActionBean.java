@@ -49,7 +49,7 @@ import com.arjuna.ats.arjuna.tools.osb.util.JMXServer;
 /**
  * MBean implementation of an ObjectStore entry that represents an AtomicAction
  *
- * @deprecated as of 5.0.5.Final In a subsequent release we will change packages names in order to 
+ * @deprecated as of 5.0.5.Final In a subsequent release we will change packages names in order to
  * provide a better separation between public and internal classes.
  *
  * @author Mike Musgrove
@@ -135,7 +135,7 @@ public class ActionBean extends OSEntryBean implements ActionBeanMBean {
     /**
      * Remove this AtomicAction from the ObjectStore
      * @return a textual indication of whether the remove operation succeeded
-     * @throws MBeanException 
+     * @throws MBeanException
      */
     public String remove() throws MBeanException {
         // first unregister each participant of this action

@@ -48,7 +48,7 @@ import com.arjuna.ats.arjuna.logging.tsLogger;
  * Note, the methods of this class do not need to be synchronized because
  * instances of this class are only used from within synchronized classes.
  * Applications should not use this class.
- * 
+ *
  * @author Mark Little (mark@arjuna.com)
  * @version $Id: RecordList.java 2342 2006-03-30 13:06:17Z $
  * @since JTS 1.0.
@@ -73,7 +73,7 @@ public class RecordList
 
     /**
      * Remove and return the element at the front of the list.
-     * 
+     *
      * @return the front element.
      */
 
@@ -100,7 +100,7 @@ public class RecordList
 
     /**
      * Remove and return the element at the tail of the list.
-     * 
+     *
      * @return the last element.
      */
 
@@ -317,7 +317,7 @@ public class RecordList
      * information, replacing the old with new, adding in new, or leaving the
      * old alone. Step 5 ensures that if no existing record exists insertion
      * takes place at the correct point
-     * 
+     *
      * @return <code>true</code> if insertion/replacement took place,
      *         <code>false</code> otherwise.
      */

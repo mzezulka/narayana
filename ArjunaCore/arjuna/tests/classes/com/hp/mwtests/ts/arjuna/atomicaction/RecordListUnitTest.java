@@ -39,30 +39,30 @@ public class RecordListUnitTest
     {
         RecordList rl = new RecordList();
         DisposeRecord dr = new DisposeRecord();
-        
+
         rl.insert(dr);
-        
+
         assertEquals(rl.getFront(), dr);
-        
+
         rl.insert(dr);
-        
+
         assertEquals(rl.getRear(), dr);
-        
+
         RecordList copy = new RecordList(rl);
         ActivationRecord ar = new ActivationRecord();
-        
+
         rl.insert(ar);
-        
+
         rl.print(new PrintWriter(new ByteArrayOutputStream()));
-        
+
         assertTrue(rl.toString() != null);
-        
+
         assertEquals(rl.getNext(dr), null);
-        
+
         assertTrue(rl.peekFront() != null);
         assertTrue(rl.peekRear() != null);
         assertEquals(rl.peekNext(dr), null);
-        
+
         assertTrue(rl.remove(dr));
     }
 }

@@ -25,7 +25,7 @@ public interface Transport {
 
     /**
      * Get the sender
-     * 
+     *
      * @param serviceName
      * @return the sender
      * @throws ConfigurationException
@@ -34,18 +34,18 @@ public interface Transport {
 
     /**
      * Create a sender to a service queue
-     * 
+     *
      * @param replyTo
      * @return the new sender
      * @throws ConfigurationException
      */
     public Sender createSender(Object replyTo) throws ConnectionException;
-    
+
     public Sender createSender(Receiver receiver) throws ConnectionException;
 
     /**
      * Create a receiver on a service queue
-     * 
+     *
      * @param serviceName
      * @return the receiver
      * @throws ConfigurationException
@@ -54,7 +54,7 @@ public interface Transport {
 
     /**
      * Create a receiver on a temporary queue.
-     * 
+     *
      * @return The receiver
      * @throws ConfigurationException
      */
@@ -62,13 +62,13 @@ public interface Transport {
 
     /**
      * Create a receiver giving it the session to receive events upon.
-     * 
+     *
      * @param session The session to receive events
      * @return The receiver
      * @throws ConnectionException Incase the received cannot be created
      */
     public Receiver createReceiver(EventListener session) throws ConnectionException;
-    
+
     /**
      * Create a receiver on a socket sender
      * @throws ConnectionException

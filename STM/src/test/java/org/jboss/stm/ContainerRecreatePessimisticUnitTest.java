@@ -40,38 +40,38 @@ import junit.framework.TestCase;
  */
 
 public class ContainerRecreatePessimisticUnitTest extends TestCase
-{   
+{
     @Transactional
     @Optimistic
     public interface Sample1
     {
        public void increment ();
        public void decrement ();
-       
+
        public int value ();
     }
-    
+
     @Transactional
     public interface Sample2
     {
        public void increment ();
        public void decrement ();
-       
+
        public int value ();
     }
-    
+
     public class Sample1Imple implements Sample1
     {
         public Sample1Imple ()
         {
             this(0);
         }
-        
+
         public Sample1Imple (int init)
         {
             _isState = init;
         }
-        
+
         @ReadLock
         public int value ()
         {
@@ -83,7 +83,7 @@ public class ContainerRecreatePessimisticUnitTest extends TestCase
         {
             _isState++;
         }
-        
+
         @WriteLock
         public void decrement ()
         {
@@ -93,19 +93,19 @@ public class ContainerRecreatePessimisticUnitTest extends TestCase
         @State
         private int _isState;
     }
-    
+
     public class Sample2Imple implements Sample2
     {
         public Sample2Imple ()
         {
             this(0);
         }
-        
+
         public Sample2Imple (int init)
         {
             _isState = init;
         }
-        
+
         @ReadLock
         public int value ()
         {
@@ -117,7 +117,7 @@ public class ContainerRecreatePessimisticUnitTest extends TestCase
         {
             _isState++;
         }
-        
+
         @WriteLock
         public void decrement ()
         {
@@ -127,7 +127,7 @@ public class ContainerRecreatePessimisticUnitTest extends TestCase
         @State
         private int _isState;
     }
-    
+
     public class Worker extends Thread
     {
         public Worker (Sample1 obj1, Sample1 obj2)
@@ -135,7 +135,7 @@ public class ContainerRecreatePessimisticUnitTest extends TestCase
             _obj1 = obj1;
             _obj2 = obj2;
         }
-        
+
         public void run ()
         {
             Random rand = new Random();
@@ -144,9 +144,9 @@ public class ContainerRecreatePessimisticUnitTest extends TestCase
             {
                 AtomicAction A = new AtomicAction();
                 boolean doCommit = true;
-                
+
                 A.begin();
-                
+
                 try
                 {
                     // always keep the two objects in sync.
@@ -157,13 +157,13 @@ public class ContainerRecreatePessimisticUnitTest extends TestCase
                 catch (final Throwable ex)
                 {
                     ex.printStackTrace();
-                    
+
                     doCommit = false;
                 }
-                
+
                 if (rand.nextInt() % 2 == 0)
                     doCommit = false;
-                
+
                 if (doCommit)
                 {
                     A.commit();
@@ -174,55 +174,55 @@ public class ContainerRecreatePessimisticUnitTest extends TestCase
                 }
             }
         }
-        
+
         private Sample1 _obj1;
         private Sample1 _obj2;
     }
-    
+
     public void testPessimisticRecreate ()
     {
         Container<Sample2> theContainer = new Container<Sample2>(Container.TYPE.PERSISTENT, Container.MODEL.SHARED);
         Sample2 obj1 = theContainer.create(new Sample2Imple(10));
-        
+
         assertTrue(obj1 != null);
-        
+
         /*
          * Do some basic checks and ensure state is in store prior to sharing.
          */
-        
+
         AtomicAction A = new AtomicAction();
-        
+
         A.begin();
-        
+
         obj1.increment();
         obj1.decrement();
-        
+
         A.commit();
-        
+
         assertEquals(obj1.value(), 10);
-        
+
         assertTrue(theContainer.getIdentifier(obj1).notEquals(Uid.nullUid()));
-        
+
         Sample2 obj2 = theContainer.clone(new Sample2Imple(), theContainer.getIdentifier(obj1));
 
         assertTrue(obj2 != null);
-        
+
         A = new AtomicAction();
-        
+
         A.begin();
-        
+
         obj2.increment();
-        
+
         A.commit();
-        
+
         assertEquals(obj2.value(), 11);
-        
+
         A = new AtomicAction();
-        
+
         A.begin();
-        
+
         assertEquals(obj1.value(), obj2.value());
-        
+
         A.commit();
     }
 }

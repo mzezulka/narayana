@@ -1,20 +1,20 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors 
- * as indicated by the @author tags. 
+ * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * as indicated by the @author tags.
  * See the copyright.txt in the distribution for a
- * full listing of individual contributors. 
+ * full listing of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
  * of the GNU Lesser General Public License, v. 2.1.
- * This program is distributed in the hope that it will be useful, but WITHOUT A 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT A
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
  * You should have received a copy of the GNU Lesser General Public License,
  * v.2.1 along with this distribution; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Arjuna Solutions Limited,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.  
+ * UK.
  *
  * $Id: DisposeRecord.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -57,9 +57,9 @@ public class DisposeRecord extends CadaverRecord
     public DisposeRecord (ParticipantStore participantStore, StateManager sm)
     {
 	super(null, participantStore, sm);
-	
+
 	this.targetParticipantStore = participantStore;
-	
+
 	if (sm != null)
 	{
 	    objectUid = sm.get_uid();
@@ -85,50 +85,50 @@ public class DisposeRecord extends CadaverRecord
     {
 	return RecordType.DISPOSE;
     }
-    
+
     public int nestedAbort ()
     {
 	if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("DisposeRecord::nestedAbort() for " + order());
     }
-	
+
 	return TwoPhaseOutcome.FINISH_OK;
     }
-    
+
     public int nestedCommit ()
     {
 	if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("DisposeRecord::nestedCommit() for " + order());
     }
-	
+
 	return TwoPhaseOutcome.FINISH_OK;
     }
-    
+
     public int nestedPrepare ()
     {
 	if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("DisposeRecord::nestedPrepare() for " + order());
     }
-	
+
 	if ((targetParticipantStore != null) && (objectUid.notEquals(Uid.nullUid())))
 	    return TwoPhaseOutcome.PREPARE_OK;
 	else
 	    return TwoPhaseOutcome.PREPARE_NOTOK;
     }
-    
+
     public int topLevelAbort ()
     {
 	if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("DisposeRecord::topLevelAbort() for " + order());
     }
-	
+
 	return TwoPhaseOutcome.FINISH_OK;
     }
-    
+
     /**
      * At topLevelCommit we remove the state from the object participantStore.
      */
-    
+
     public int topLevelCommit ()
     {
 	if (tsLogger.logger.isTraceEnabled()) {
@@ -148,7 +148,7 @@ public class DisposeRecord extends CadaverRecord
 		        StateManagerFriend.destroyed(super.objectAddr);
 			//super.objectAddr.destroyed();
 		    }
-		    
+
 		    return TwoPhaseOutcome.FINISH_OK;
 		}
 	    }
@@ -156,7 +156,7 @@ public class DisposeRecord extends CadaverRecord
             tsLogger.i18NLogger.warn_DisposeRecord_5(e);
         }
 	}
-	
+
 	return TwoPhaseOutcome.FINISH_ERROR;
     }
 
@@ -175,13 +175,13 @@ public class DisposeRecord extends CadaverRecord
         else
             return TwoPhaseOutcome.PREPARE_NOTOK;
     }
-    
+
     public void print (PrintWriter strm)
     {
 	strm.println("Dispose for:");
 	super.print(strm);
     }
-    
+
     public boolean doSave ()
     {
 	return true;
@@ -233,27 +233,27 @@ public class DisposeRecord extends CadaverRecord
 
         return res;
     }
-    
+
     public String type ()
     {
 	return "/StateManager/AbstractRecord/RecoveryRecord/PersistenceRecord/CadaverRecord/DisposeRecord";
     }
-    
+
     public boolean shouldAdd (AbstractRecord a)
     {
 	return false;
     }
-    
+
     public boolean shouldMerge (AbstractRecord a)
     {
 	return false;
     }
-    
+
     public boolean shouldReplace (AbstractRecord a)
     {
 	return false;
     }
-    
+
     public boolean shouldAlter (AbstractRecord a)
     {
 	return false;
@@ -267,7 +267,7 @@ public class DisposeRecord extends CadaverRecord
 	typeName = null;
 	targetParticipantStore = null;
     }
-    
+
     private Uid         objectUid;
     private String      typeName;
 }

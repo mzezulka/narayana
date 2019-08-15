@@ -38,5 +38,5 @@ public class VolatileAndDurableDurable2PCParticipant extends ParticipantAdapter 
         throws WrongStateException, SystemException
     {
         return new Prepared() ;
-    }    
+    }
 }

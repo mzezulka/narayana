@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -39,7 +39,7 @@ public abstract class Enumerated implements Serializable
      * The enumerated value.
      */
     private final Object value ;
-    
+
     /**
      * Construct the enumerated value.
      * @param value The string value of the enumeration.
@@ -48,7 +48,7 @@ public abstract class Enumerated implements Serializable
     {
         this.value = value ;
     }
-    
+
     /**
      * Compare the specified object to this one.
      * @param rhs The other object to compare.
@@ -59,7 +59,7 @@ public abstract class Enumerated implements Serializable
         {
             return true ;
         }
-        
+
         if ((rhs != null) && (rhs.getClass() == getClass()))
         {
             final Object rhsValue = ((Enumerated)rhs).value ;
@@ -70,7 +70,7 @@ public abstract class Enumerated implements Serializable
             return false ;
         }
     }
-    
+
     /**
      * Return a hash code for this enumerated entry.
      * @return the enumeration hash code.
@@ -79,7 +79,7 @@ public abstract class Enumerated implements Serializable
     {
         return (value == null ? 0 : value.hashCode()) ;
     }
-    
+
     /**
      * Get the key representation of this enumeration.
      * @return the key representation.
@@ -88,7 +88,7 @@ public abstract class Enumerated implements Serializable
     {
         return value ;
     }
-    
+
     /**
      * Get the string representation of this enumeration.
      * @return the string representation.
@@ -97,18 +97,18 @@ public abstract class Enumerated implements Serializable
     {
         return (value == null ? "<null>" : value.toString()) ;
     }
-    
+
     /**
      * Resolve the value of an enumeration.
      * @param value The value of the enumeration.
      * @return The enumeration.
-     * @throws InvalidEnumerationException if the enumeration value is invalid. 
+     * @throws InvalidEnumerationException if the enumeration value is invalid.
      */
     protected abstract Enumerated resolveEnum(final Object value)
         throws InvalidEnumerationException ;
-    
+
     /**
-     * Replace any serialised version of this class with the same instance. 
+     * Replace any serialised version of this class with the same instance.
      * @return The instance of the enumeration.
      * @throws ObjectStreamException
      */
@@ -124,7 +124,7 @@ public abstract class Enumerated implements Serializable
             throw new InvalidObjectException(iee.getMessage()) ;
         }
     }
-    
+
     /**
      * Generate the map of enumeration values to enumerations.
      * @param enumerations The enumerations to configure.

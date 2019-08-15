@@ -30,7 +30,7 @@ import javax.transaction.xa.Xid;
 public class TestXAResourceRmFail extends TestXAResource implements Serializable {
     private static int commitCount;
     private static int rollbackCount;
-    
+
     private static final long serialVersionUID = 1L;
     private boolean wasThrown = false;
 

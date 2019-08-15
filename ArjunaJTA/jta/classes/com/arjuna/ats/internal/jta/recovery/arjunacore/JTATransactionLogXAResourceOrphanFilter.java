@@ -86,7 +86,7 @@ public class JTATransactionLogXAResourceOrphanFilter implements XAResourceOrphan
      *
      * @return <code>boolean</code>true if there is a log file,
      *         <code>false</code> if there isn't.
-     * @throws ObjectStoreException If there is a problem accessing the object store 
+     * @throws ObjectStoreException If there is a problem accessing the object store
      * @throws IOException In case the data from the object store is corrupted
      */
     private boolean transactionLog(Xid xid) throws ObjectStoreException, IOException

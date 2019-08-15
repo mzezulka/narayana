@@ -41,7 +41,7 @@ public class BAInteropUnsolicitedCompleteState extends InteropWaitState
     {
 	super(CoordinationConstants.WSCOOR_ACTION_FAULT) ;
     }
-    
+
     /**
      * Get the Handler for rewriting the XML.
      * @param nextHandler The next handler in the sequence.
@@ -51,7 +51,7 @@ public class BAInteropUnsolicitedCompleteState extends InteropWaitState
     {
 	return new RegistrationHandler(nextHandler);
     }
-    
+
     /**
      * The registration handler.
      */
@@ -65,7 +65,7 @@ public class BAInteropUnsolicitedCompleteState extends InteropWaitState
          * The 'in protocol identifier' flag.
          */
         private boolean inProtocolIdentifier ;
-        
+
         /**
          * Construct the registration handler.
          * @param nextHandler The next handler.
@@ -74,7 +74,7 @@ public class BAInteropUnsolicitedCompleteState extends InteropWaitState
 	{
 	    super(nextHandler) ;
 	}
-	
+
 	public void startElement(final String uri, final String localName, final String qName, final Attributes attributes)
 	    throws SAXException
 	{
@@ -88,7 +88,7 @@ public class BAInteropUnsolicitedCompleteState extends InteropWaitState
 	    }
 	    super.startElement(uri, localName, qName, attributes);
 	}
-	
+
 	public void endElement(final String uri, final String localName, final String qName)
 	    throws SAXException
 	{
@@ -104,7 +104,7 @@ public class BAInteropUnsolicitedCompleteState extends InteropWaitState
 	    }
 	    super.endElement(uri, localName, qName);
 	}
-	
+
 	public void characters(final char[] chars, final int start, final int length)
 	    throws SAXException
 	{
@@ -113,6 +113,6 @@ public class BAInteropUnsolicitedCompleteState extends InteropWaitState
 		super.characters(chars, start, length);
 	    }
 	}
-	
+
     }
 }

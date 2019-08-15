@@ -54,7 +54,7 @@ public class XMLParser {
 
     /**
      * Constructor
-     * 
+     *
      * @param handler - DefaultHandler for the SAX parser
      */
     private XMLParser(String xsdFilename, String env) throws ConfigurationException {

@@ -53,7 +53,7 @@ public class X_COMMON_Impl extends BufferImpl implements X_COMMON {
 
     /**
      * The constructor is hidden as a <code>Connection</code> should be used to allocate the object. ConnectionImpl#tpalloc(String, String)
-     * 
+     *
      * @param subtype The subtype of the buffer, must be registered in the configuration
      * @throws ConnectionException In case the buffer cannot be created.
      * @throws ConfigurationException
@@ -64,7 +64,7 @@ public class X_COMMON_Impl extends BufferImpl implements X_COMMON {
 
     /**
      * Get the short value identified by the key.
-     * 
+     *
      * @param key The key to use
      * @return The short value
      * @throws ConnectionException In case the key is not part of the structure.
@@ -75,7 +75,7 @@ public class X_COMMON_Impl extends BufferImpl implements X_COMMON {
 
     /**
      * Set the short value
-     * 
+     *
      * @param key The value to set
      * @param value The value to use
      * @throws ConnectionException In case the key is unknown.

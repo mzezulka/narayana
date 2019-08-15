@@ -1,20 +1,20 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors 
- * as indicated by the @author tags. 
+ * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * as indicated by the @author tags.
  * See the copyright.txt in the distribution for a
- * full listing of individual contributors. 
+ * full listing of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
  * of the GNU Lesser General Public License, v. 2.1.
- * This program is distributed in the hope that it will be useful, but WITHOUT A 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT A
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
  * You should have received a copy of the GNU Lesser General Public License,
  * v.2.1 along with this distribution; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -28,7 +28,7 @@
  *
  * $Id: Connection.java 2342 2006-03-30 13:06:17Z  $
  */
- 
+
 package com.arjuna.ats.internal.arjuna.recovery;
 
 import java.io.IOException;
@@ -57,7 +57,7 @@ public class Connection extends Thread
     public Connection( Socket server_socket, Service service, Callback callback )
    {
       super( "Server.Connection:" + server_socket.getInetAddress().getHostAddress() + ":" + server_socket.getPort() );
-              
+
       _server_socket = server_socket;
 
       try
@@ -72,7 +72,7 @@ public class Connection extends Thread
 
        _callback = callback;
    }
-   
+
    /**
     * Obtains input and output streams and executes work
     * required by the service.
@@ -103,14 +103,14 @@ public class Connection extends Thread
 
    // What client (RecoveryManager) talks to.
    private Socket  _server_socket;
-   
+
    // What Service is provided to the client(RecoveryManager).
    private Service _service;
 
    private Callback _callback;
 
     // abstract class instantiated by clients to allow notification that a connection has been closed
-    
+
    public static abstract class Callback
    {
        abstract void run();

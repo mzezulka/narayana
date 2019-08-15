@@ -27,7 +27,7 @@ import javax.transaction.SystemException;
  * To include this class in the Performance Test Suite (ie class PerformanceTestWrapper) simply include
  * it as an argument the JVM:
  *     -DproductClass=com.hp.mwtests.performance.products.AtomikosTxWrapper
- * 
+ *
  * Before running this wrapper remember to:
  * - uncomment the lines marked with TODO;
  * - include the product jars on the classpath

@@ -42,7 +42,7 @@ public class InteropTestSuite extends TestSuite
      * The asynchronous test flag.
      */
     private final boolean asyncTest ;
-    
+
     /**
      * Construct an empty test suite with the specified participant URI.
      * @param testTimeout The test timeout.
@@ -55,7 +55,7 @@ public class InteropTestSuite extends TestSuite
         this.testTimeout = testTimeout ;
         this.asyncTest = asyncTest ;
     }
-    
+
     /**
      * Construct an empty test suite with the specified participant URI and name.
      * @param participantURI The participant URI.
@@ -88,7 +88,7 @@ public class InteropTestSuite extends TestSuite
             initialiseTest(testAt(count)) ;
         }
     }
-    
+
     /**
      * Constructs a TestSuite from the given class using the specified participant URI and name.
      * @param participantURI The participant URI.
@@ -113,7 +113,7 @@ public class InteropTestSuite extends TestSuite
         initialiseTest(test) ;
         super.addTest(test) ;
     }
-    
+
     /**
      * Perform initialisation on the test.
      * @param test The test to initialise.

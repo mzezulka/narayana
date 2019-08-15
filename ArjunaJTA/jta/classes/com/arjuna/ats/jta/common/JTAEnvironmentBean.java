@@ -97,15 +97,15 @@ public class JTAEnvironmentBean implements JTAEnvironmentBeanMBean
 	private int asyncCommitPoolSize = 10;
 
     private int orphanSafetyInterval = 20000;
-    
+
     private String commitMarkableResourceTableName = "xids";
 
 	private Map<String, String> commitMarkableResourceTableNameMap = new HashMap<String, String>();
 
 	private List<String> commitMarkableResourceJNDINames = new ArrayList<String>();
-	
+
 	private boolean performImmediateCleanupOfCommitMarkableResourceBranches = false;
-	
+
 	private boolean notifyCommitMarkableResourceRecoveryModuleOfCompleteBranches = true;
 
 	private int commitMarkableResourceRecordDeleteBatchSize = 30000;
@@ -114,7 +114,7 @@ public class JTAEnvironmentBean implements JTAEnvironmentBeanMBean
 
 	private Map<String, Integer> commitMarkableResourceRecordDeleteBatchSizeMap = new HashMap<String, Integer>();
 
-	private static final String defaultTransactionOperationsProviderClassName = ServerVMClientUserTransactionOperationsProvider.class.getName(); 
+	private static final String defaultTransactionOperationsProviderClassName = ServerVMClientUserTransactionOperationsProvider.class.getName();
 	private volatile String userTransactionOperationsProviderClassName = defaultTransactionOperationsProviderClassName;
 	private volatile UserTransactionOperationsProvider userTransactionOperationsProvider = null;
 
@@ -402,7 +402,7 @@ public class JTAEnvironmentBean implements JTAEnvironmentBeanMBean
     }
 
 
-	
+
     /**
      * Sets the node identifiers for which recovery will be performed.
      * The provided list will be copied, not retained.
@@ -417,7 +417,7 @@ public class JTAEnvironmentBean implements JTAEnvironmentBeanMBean
         }
 
         if(xaRecoveryNodes == null) {
-            this.xaRecoveryNodes = new ArrayList<String>(); 
+            this.xaRecoveryNodes = new ArrayList<String>();
         } else {
             this.xaRecoveryNodes = new ArrayList<String>(xaRecoveryNodes);
         }
@@ -431,7 +431,7 @@ public class JTAEnvironmentBean implements JTAEnvironmentBeanMBean
      * Default: empty list.
      * Equivalent deprecated property prefix: com.arjuna.ats.jta.recovery.XAResourceRecovery
      *
-     * @return the set of XAResourceRecovery implementations with their configuration data. 
+     * @return the set of XAResourceRecovery implementations with their configuration data.
      */
     public List<String> getXaResourceRecoveryClassNames()
     {
@@ -471,7 +471,7 @@ public class JTAEnvironmentBean implements JTAEnvironmentBeanMBean
      *
      * If there is no pre-instantiated instance set and classloading or instantiation of one or more
      * elements fails, this method will log an appropriate warning and return a non-null set with
-     * fewer elements. 
+     * fewer elements.
      *
      * @return the set of XAResourceRecovery instances.
      */
@@ -558,7 +558,7 @@ public class JTAEnvironmentBean implements JTAEnvironmentBeanMBean
      *
      * If there is no pre-instantiated instance set and classloading or instantiation of one or more
      * elements fails, this method will log an appropriate warning and return a non-null set with
-     * fewer elements. 
+     * fewer elements.
      *
      * @return the set of XAResourceOrphanFilter instances.
      */
@@ -762,7 +762,7 @@ public class JTAEnvironmentBean implements JTAEnvironmentBeanMBean
      *
      * If there is no pre-instantiated instance set and classloading or instantiation of one or more
      * elements fails, this method will log an appropriate warning and return a non-null set with
-     * fewer elements. 
+     * fewer elements.
      *
      * @return the set of XAResourceMap instances.
      */
@@ -1008,12 +1008,12 @@ public class JTAEnvironmentBean implements JTAEnvironmentBeanMBean
 
     /**
      * Set the amount of time to wait before deciding if the Xid is orphaned.
-     * 
+     *
      * It is important because if this is too short and a transaction completes
      * between the two recovery scan phases the xids from the RM will be considered
      * as orphaned. Although this does not cause data integrity issues it can
      * appear unsettling.
-     * 
+     *
      * @param orphanSafetyInterval
      */
     public void setOrphanSafetyInterval(int orphanSafetyInterval) {
@@ -1023,7 +1023,7 @@ public class JTAEnvironmentBean implements JTAEnvironmentBeanMBean
 	/**
 	 * Get the name of the table to use for storing commit markable resources
 	 * commit state notifiers in.
-	 * 
+	 *
 	 * @return the default table name
 	 */
 	public String getDefaultCommitMarkableTableName() {
@@ -1033,10 +1033,10 @@ public class JTAEnvironmentBean implements JTAEnvironmentBeanMBean
 	/**
 	 * Set the name of the table to use for storing commit markable resources
 	 * commit state notifiers in.
-	 * 
+	 *
 	 * @param commitMarkableResourceTableName
 	 *            The name of the table.
-	 * 
+	 *
 	 */
 	public void setDefaultCommitMarkableResourceTableName(
 			String commitMarkableResourceTableName) {
@@ -1046,7 +1046,7 @@ public class JTAEnvironmentBean implements JTAEnvironmentBeanMBean
 	/**
 	 * Get the name of the table to use for storing commit markable resources
 	 * commit state notifiers in.
-	 * 
+	 *
 	 * @return the table name map
 	 */
 	public Map<String, String> getCommitMarkableResourceTableNameMap() {
@@ -1058,10 +1058,10 @@ public class JTAEnvironmentBean implements JTAEnvironmentBeanMBean
 	/**
 	 * Set the name of the table to use for storing commit markable resources
 	 * commit state notifiers in.
-	 * 
+	 *
 	 * @param commitMarkableResourceTableNameMap
 	 *            The name of the table.
-	 * 
+	 *
 	 */
 	public void setCommitMarkableResourceTableNameMap(
 			Map<String, String> commitMarkableResourceTableNameMap) {
@@ -1079,7 +1079,7 @@ public class JTAEnvironmentBean implements JTAEnvironmentBeanMBean
 	/**
 	 * Retrieve the list of JNDI names that will be queried for committed 1PC
 	 * resources that were enlisted in 2PC transactions.
-	 * 
+	 *
 	 * @return The list of JNDI names
 	 */
 	public List<String> getCommitMarkableResourceJNDINames() {
@@ -1092,10 +1092,10 @@ public class JTAEnvironmentBean implements JTAEnvironmentBeanMBean
 	 * Set the list of JNDI names to apply a special LastResource algorithm that
 	 * allows us to store data about the transaction in the resource manager to
 	 * determine the outcome of the resource after crash/
-	 * 
+	 *
 	 * If you change the list of jndinames you _can't_ change the JNDI name of
 	 * the connections until they have been recovered.
-	 * 
+	 *
 	 * @param commitMarkableResourceJNDINames
 	 *            The list of JNDI names
 	 */
@@ -1116,7 +1116,7 @@ public class JTAEnvironmentBean implements JTAEnvironmentBeanMBean
 	 * If this returns true, a synchronization is registered by the
 	 * CommitMarkableResourceRecord to delete records as soon as the transaction
 	 * completes.
-	 * 
+	 *
 	 * @return Whether to perform immediate cleanup of CRRs
 	 */
 	public boolean isPerformImmediateCleanupOfCommitMarkableResourceBranches() {
@@ -1126,7 +1126,7 @@ public class JTAEnvironmentBean implements JTAEnvironmentBeanMBean
 	/**
 	 * Notify the transaction manager to delete resource records immediately
 	 * after a transaction commits.
-	 * 
+	 *
 	 * @param performImmediateCleanupOfCommitMarkableResourceBranches
 	 */
 	public void setPerformImmediateCleanupOfCommitMarkableResourceBranches(
@@ -1137,7 +1137,7 @@ public class JTAEnvironmentBean implements JTAEnvironmentBeanMBean
 	/**
 	 * Allow the default policy of whether to use a synchronization to remove
 	 * the branch should be overriden.
-	 * 
+	 *
 	 * @return whether to perform immediate cleanup of branches or batch them
 	 */
 	public Map<String, Boolean> getPerformImmediateCleanupOfCommitMarkableResourceBranchesMap() {
@@ -1149,10 +1149,10 @@ public class JTAEnvironmentBean implements JTAEnvironmentBeanMBean
 	/**
 	 * Allow the default policy of whether to use a synchronization to remove
 	 * the branch should be overriden.
-	 * 
+	 *
 	 * @param performImmediateCleanupOfCommitMarkableResourceBranchesMap
 	 *            The name of the table.
-	 * 
+	 *
 	 */
 	public void setPerformImmediateCleanupOfCommitMarkableResourceBranchesMap(
 			Map<String, Boolean> performImmediateCleanupOfCommitMarkableResourceBranchesMap) {
@@ -1170,7 +1170,7 @@ public class JTAEnvironmentBean implements JTAEnvironmentBeanMBean
 	/**
 	 * If this is a positive number, use a batch to delete
 	 * CommitMarkableResourceRecord from the database.
-	 * 
+	 *
 	 * @return -1 to prevent batching.
 	 */
 	public int getCommitMarkableResourceRecordDeleteBatchSize() {
@@ -1180,7 +1180,7 @@ public class JTAEnvironmentBean implements JTAEnvironmentBeanMBean
 	/**
 	 * Alter the default batch size or set to -1 to disable batch deletion of
 	 * CommitMarkableResourceRecord from the database.
-	 * 
+	 *
 	 * @param batchSize
 	 *            -1 to prevent batching.
 	 */
@@ -1191,7 +1191,7 @@ public class JTAEnvironmentBean implements JTAEnvironmentBeanMBean
 	/**
 	 * Allow the default policy of a batch size to delete
 	 * CommitMarkableResourceRecord from the database.
-	 * 
+	 *
 	 * @return the maximum batch size to clean up
 	 */
 	public Map<String, Integer> getCommitMarkableResourceRecordDeleteBatchSizeMap() {
@@ -1203,10 +1203,10 @@ public class JTAEnvironmentBean implements JTAEnvironmentBeanMBean
 	/**
 	 * Allow the default policy of a batch size to delete
 	 * CommitMarkableResourceRecord from the database.
-	 * 
+	 *
 	 * @param commitMarkableResourceRecordDeleteBatchSizeMap
 	 *            size
-	 * 
+	 *
 	 */
 	public void setCommitMarkableResourceRecordDeleteBatchSizeMap(
 			Map<String, Integer> commitMarkableResourceRecordDeleteBatchSizeMap) {
@@ -1225,7 +1225,7 @@ public class JTAEnvironmentBean implements JTAEnvironmentBeanMBean
 	 * If this is enabled we will tell the recovery module when we complete
 	 * branches. This means they will not in normal mode need fetching from the
 	 * database before we can delete them.
-	 * 
+	 *
 	 * @return whether to notify CMR module
 	 */
 	public boolean isNotifyCommitMarkableResourceRecoveryModuleOfCompleteBranches() {
@@ -1248,7 +1248,7 @@ public class JTAEnvironmentBean implements JTAEnvironmentBeanMBean
      * <p>
      * When null is set then default provider implementation is used which is
      * {@code #defaultTransactionOperationsProviderClassName}.
-     * 
+     *
      *
      * @param providerClassName  class name implementing {@link UserTransactionOperationsProvider}
      */

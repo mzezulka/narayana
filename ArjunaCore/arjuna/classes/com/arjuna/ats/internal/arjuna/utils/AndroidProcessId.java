@@ -47,7 +47,7 @@ public class AndroidProcessId implements com.arjuna.ats.arjuna.utils.Process
     /**
      * Use the Android Process instance to get myPid.
      */
-    
+
     public AndroidProcessId()
     {
         try
@@ -56,23 +56,23 @@ public class AndroidProcessId implements com.arjuna.ats.arjuna.utils.Process
              * Use reflection so we can build this in an environment that does
              * not have the various Android libraries available.
              */
-                 
+
             Class<?> instance = Class.forName(_className);
             Method[] mthds = instance.getDeclaredMethods();
             Method m = null;
-            
+
             for (int i = 0; (i < mthds.length) && (m == null); i++)
             {
                 if (_methodName.equals(mthds[i].getName()))
                     m = mthds[i];
             }
-            
+
             _thePort = ((Integer) m.invoke(null)).intValue();
         }
         catch (final Throwable ex)
         {
             ex.printStackTrace();
-            
+
             _thePort = -1;
         }
     }
@@ -87,7 +87,7 @@ public class AndroidProcessId implements com.arjuna.ats.arjuna.utils.Process
     }
 
     private int _thePort;
-    
+
     private static final String _className = "android.os.Process";
     private static final String _methodName = "myPid";
 }

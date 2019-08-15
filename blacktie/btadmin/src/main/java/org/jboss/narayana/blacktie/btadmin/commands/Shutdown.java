@@ -194,7 +194,7 @@ public class Shutdown implements Command {
                 String res = ein.readLine();
                 if(res != null) {
                     log.debug("cmd " + cmd + " output: " + res);
-                    toReturn = true; 
+                    toReturn = true;
                 }
                 is.close();
             }

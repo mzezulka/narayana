@@ -52,7 +52,7 @@ public class RegistrationServiceExceptionTest extends BaseWSCTest {
         return WarDeployment.getDeployment();
     }
 
-    private W3CEndpointReference sendRegistration(String messageId, String protocolIdentifier) 
+    private W3CEndpointReference sendRegistration(String messageId, String protocolIdentifier)
             throws CannotRegisterException, InvalidStateException, InvalidProtocolException, SoapFault {
         final CoordinationContextType coordinationContext = new CoordinationContextType() ;
         CoordinationContextType.Identifier identifierInstance = new CoordinationContextType.Identifier();
@@ -63,7 +63,7 @@ public class RegistrationServiceExceptionTest extends BaseWSCTest {
         W3CEndpointReference participantEndpoint = TestUtil11.getProtocolParticipantEndpoint("participant");
         return RegistrationCoordinator.register(coordinationContext, messageId, participantEndpoint, protocolIdentifier);
     }
-    
+
     public void testAlreadyRegisteredProtocolIdentifierExceptionInternal()
             throws Exception
     {
@@ -79,18 +79,18 @@ public class RegistrationServiceExceptionTest extends BaseWSCTest {
             fail("Unexpected exception: " + th) ;
         }
     }
-    
+
     @Test
-    public void testAlreadyRegisteredProtocolIdentifierExceptionSync() 
+    public void testAlreadyRegisteredProtocolIdentifierExceptionSync()
             throws Exception {
         final String previousValue = XTSPropertyManager.getWSCEnvironmentBean().getUseAsynchronousRequest();
         XTSPropertyManager.getWSCEnvironmentBean().setUseAsynchronousRequest(WSCEnvironmentBean.NO_ASYNC_REQUEST);
         testAlreadyRegisteredProtocolIdentifierExceptionInternal();
         XTSPropertyManager.getWSCEnvironmentBean().setUseAsynchronousRequest(previousValue);
     }
-    
+
     @Test
-    public void testAlreadyRegisteredProtocolIdentifierExceptionAsync() 
+    public void testAlreadyRegisteredProtocolIdentifierExceptionAsync()
             throws Exception {
         final String previousValue = XTSPropertyManager.getWSCEnvironmentBean().getUseAsynchronousRequest();
         XTSPropertyManager.getWSCEnvironmentBean().setUseAsynchronousRequest(WSCEnvironmentBean.PLAIN_ASYNC_REQUEST);
@@ -113,18 +113,18 @@ public class RegistrationServiceExceptionTest extends BaseWSCTest {
             fail("Unexpected exception: " + th) ;
         }
     }
-    
+
     @Test
-    public void testInvalidProtocolProtocolIdentifierExceptionSync() 
+    public void testInvalidProtocolProtocolIdentifierExceptionSync()
             throws Exception {
         final String previousValue = XTSPropertyManager.getWSCEnvironmentBean().getUseAsynchronousRequest();
         XTSPropertyManager.getWSCEnvironmentBean().setUseAsynchronousRequest(WSCEnvironmentBean.NO_ASYNC_REQUEST);
         testInvalidProtocolProtocolIdentifierExceptionInternal();
         XTSPropertyManager.getWSCEnvironmentBean().setUseAsynchronousRequest(previousValue);
     }
-    
+
     @Test
-    public void testInvalidProtocolProtocolIdentifierExceptionAsync() 
+    public void testInvalidProtocolProtocolIdentifierExceptionAsync()
             throws Exception {
         final String previousValue = XTSPropertyManager.getWSCEnvironmentBean().getUseAsynchronousRequest();
         XTSPropertyManager.getWSCEnvironmentBean().setUseAsynchronousRequest(WSCEnvironmentBean.PLAIN_ASYNC_REQUEST);
@@ -147,18 +147,18 @@ public class RegistrationServiceExceptionTest extends BaseWSCTest {
             fail("Unexpected exception: " + th) ;
         }
     }
-    
+
     @Test
-    public void testInvalidStateProtocolIdentifierExceptionSync() 
+    public void testInvalidStateProtocolIdentifierExceptionSync()
             throws Exception {
         final String previousValue = XTSPropertyManager.getWSCEnvironmentBean().getUseAsynchronousRequest();
         XTSPropertyManager.getWSCEnvironmentBean().setUseAsynchronousRequest(WSCEnvironmentBean.NO_ASYNC_REQUEST);
         testInvalidStateProtocolIdentifierExceptionInternal();
         XTSPropertyManager.getWSCEnvironmentBean().setUseAsynchronousRequest(previousValue);
     }
-    
+
     @Test
-    public void testInvalidStateProtocolIdentifierExceptionAsync() 
+    public void testInvalidStateProtocolIdentifierExceptionAsync()
             throws Exception {
         final String previousValue = XTSPropertyManager.getWSCEnvironmentBean().getUseAsynchronousRequest();
         XTSPropertyManager.getWSCEnvironmentBean().setUseAsynchronousRequest(WSCEnvironmentBean.PLAIN_ASYNC_REQUEST);
@@ -181,18 +181,18 @@ public class RegistrationServiceExceptionTest extends BaseWSCTest {
             fail("Unexpected exception: " + th) ;
         }
     }
-    
+
     @Test
-    public void testNoActivityProtocolIdentifierExceptionSync() 
+    public void testNoActivityProtocolIdentifierExceptionSync()
             throws Exception {
         final String previousValue = XTSPropertyManager.getWSCEnvironmentBean().getUseAsynchronousRequest();
         XTSPropertyManager.getWSCEnvironmentBean().setUseAsynchronousRequest(WSCEnvironmentBean.NO_ASYNC_REQUEST);
         testNoActivityProtocolIdentifierExceptionInternal();
         XTSPropertyManager.getWSCEnvironmentBean().setUseAsynchronousRequest(previousValue);
     }
-    
+
     @Test
-    public void testNoActivityProtocolIdentifierExceptionAsync() 
+    public void testNoActivityProtocolIdentifierExceptionAsync()
             throws Exception {
         final String previousValue = XTSPropertyManager.getWSCEnvironmentBean().getUseAsynchronousRequest();
         XTSPropertyManager.getWSCEnvironmentBean().setUseAsynchronousRequest(WSCEnvironmentBean.PLAIN_ASYNC_REQUEST);

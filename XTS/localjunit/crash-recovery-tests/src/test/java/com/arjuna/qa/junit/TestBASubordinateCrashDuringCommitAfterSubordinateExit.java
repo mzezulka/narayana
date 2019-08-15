@@ -10,14 +10,14 @@ public class TestBASubordinateCrashDuringCommitAfterSubordinateExit extends
 	public TestBASubordinateCrashDuringCommitAfterSubordinateExit() {
 		scriptName = "BASubordinateCrashDuringCommitAfterSubordinateExit";
 	}
-	
+
 	@Test
 	public void subordinateMultiParticipantCoordinatorCompletionParticipantCloseAndExitTest() throws Exception {
 		testName = "subordinate.MultiParticipantCoordinatorCompletionParticipantCloseAndExitTest";
 		String testClass = "org.jboss.jbossts.xts.servicetests.test.ba.subordinate.MultiParticipantCoordinatorCompletionParticipantCloseAndExitTest";
 		runTest(testClass);
 	}
-	
+
 	@Test
 	public void subordinateMultiParticipantParticipantCompletionParticipantCloseAndExitTest() throws Exception {
 		testName = "subordinate.MultiParticipantParticipantCompletionParticipantCloseAndExitTest";

@@ -28,11 +28,11 @@ import org.jboss.jbossts.xts.environment.WSCEnvironmentBean;
 import org.jboss.jbossts.xts.environment.XTSPropertyManager;
 
 /**
- * The RegistrationCoordinatorFaultService is the endpoint in charge of 
- * receiving asynchronous soap faults when <em>useAsynchronousRequest</em> is 
+ * The RegistrationCoordinatorFaultService is the endpoint in charge of
+ * receiving asynchronous soap faults when <em>useAsynchronousRequest</em> is
  * configured. This is mainly implemented for inter-operability with Microsoft
  * WS-Coordination implementation and it is not a standard endpoint.
- * 
+ *
  * @author rmartinc
  */
 public class RegistrationCoordinatorFaultInitialisation

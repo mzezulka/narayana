@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -37,7 +37,7 @@ public class SoapFaultType extends Enumerated
      * Serial version UID for serialisation.
      */
     private static final long serialVersionUID = 6597369531649776751L ;
-    
+
     /**
      * The version mismatch type.
      */
@@ -58,7 +58,7 @@ public class SoapFaultType extends Enumerated
      * The receiver type.
      */
     public static final SoapFaultType FAULT_RECEIVER = new SoapFaultType("Receiver") ;
-    
+
     /**
      * The map of enumerations.
      */
@@ -66,7 +66,7 @@ public class SoapFaultType extends Enumerated
         FAULT_VERSION_MISMATCH, FAULT_MUST_UNDERSTAND, FAULT_DATA_ENCODING_UNKNOWN,
         FAULT_SENDER, FAULT_RECEIVER
     }) ;
-    
+
     /**
      * Construct the state enumeration with the specified value.
      * @param localName The localName of the state enumeration.
@@ -75,7 +75,7 @@ public class SoapFaultType extends Enumerated
     {
         super(value) ;
     }
-    
+
     /**
      * Get the value of this enumeration.
      * @return the value.
@@ -84,7 +84,7 @@ public class SoapFaultType extends Enumerated
     {
         return (String)getKey() ;
     }
-    
+
     /**
      * Resolve the enumeration for the specified value.
      * @param value The value.
@@ -96,7 +96,7 @@ public class SoapFaultType extends Enumerated
     {
         return toState((String)value) ;
     }
-    
+
     /**
      * Return the enumeration for the specified value.
      * @param value The value.

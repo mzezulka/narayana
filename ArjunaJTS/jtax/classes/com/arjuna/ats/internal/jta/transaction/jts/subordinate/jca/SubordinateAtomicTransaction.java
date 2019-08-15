@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,15 +14,15 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
 /*
  * Copyright (C) 2003,
- * 
+ *
  * Hewlett-Packard Arjuna Labs, Newcastle upon Tyne, Tyne and Wear, UK.
- * 
+ *
  * $Id: SubordinateAtomicTransaction.java 2342 2006-03-30 13:06:17Z  $
  */
 
@@ -39,7 +39,7 @@ import com.arjuna.ats.internal.jts.orbspecific.interposition.ServerControl;
 /**
  * A subordinate JTA transaction; used when importing another
  * transaction context.
- * 
+ *
  * @author mcl
  */
 
@@ -49,28 +49,28 @@ public class SubordinateAtomicTransaction extends com.arjuna.ats.internal.jta.tr
 	public SubordinateAtomicTransaction (Uid actId, Xid xid, int timeout)
 	{
 		super(new ServerControlWrapper(new ServerControl(new ServerTransaction(actId, xid))));
-		
+
 		// add this transaction to the reaper list.
-		
+
 		if (timeout > 0)
 		{
 			TransactionReaper reaper = TransactionReaper.transactionReaper();
-			
+
 			reaper.insert(super.getControlWrapper(), timeout);
 		}
 	}
-	
+
 	/**
 	 * Failure recovery constructor.
-	 * 
+	 *
 	 * @param actId transaction to be recovered.
 	 */
-	
+
 	public SubordinateAtomicTransaction (Uid actId)
 	{
 		super(new ServerControlWrapper(new ServerControl(new ServerTransaction(actId))));
 	}
-	
+
 	public final Xid getXid ()
 	{
 		try
@@ -88,7 +88,7 @@ public class SubordinateAtomicTransaction extends com.arjuna.ats.internal.jta.tr
 		{
 			ex.printStackTrace();
 		}
-		
+
 		return null;
 	}
 

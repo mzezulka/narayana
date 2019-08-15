@@ -28,7 +28,7 @@ import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
 public class SimpleXAResource implements XAResource {
-    
+
     private List<Xid> xids = new ArrayList<Xid>();
 
 	private static boolean rollbackCalled;

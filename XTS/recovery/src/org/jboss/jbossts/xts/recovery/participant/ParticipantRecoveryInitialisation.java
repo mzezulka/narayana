@@ -59,7 +59,7 @@ public class ParticipantRecoveryInitialisation
                 RecoveryLogger.i18NLogger.error_recovery_participant_ParticipantRecoveryInitialisation_2(className);
                 continue;
             }
-            
+
             try {
                 XTSRecoveryModule module = (XTSRecoveryModule)clazz.newInstance();
                 module.install();
@@ -83,7 +83,7 @@ public class ParticipantRecoveryInitialisation
         if (!initialised) {
             return;
         }
-        
+
         Iterator<XTSRecoveryModule> iterator = recoveryModules.iterator();
 
         while (iterator.hasNext()) {

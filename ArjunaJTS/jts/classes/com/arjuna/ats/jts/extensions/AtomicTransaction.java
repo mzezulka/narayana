@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -68,7 +68,7 @@ import com.arjuna.ats.jts.utils.Utility;
  * scoping, so if an instance is garbage collected and the transaction is still
  * running, it will be rolled back automatically. It also adds some convenience
  * routines which Current does not do.
- * 
+ *
  * @author Mark Little (mark_little@hp.com)
  * @version $Id: AtomicTransaction.java 2342 2006-03-30 13:06:17Z  $
  * @since JTS 1.0.
@@ -162,11 +162,11 @@ public class AtomicTransaction
 
 	/**
 	 * Start the transaction.
-	 * 
+	 *
 	 * @exception org.omg.CosTransactions.SubtransactionsUnavailable
 	 *                if subtransactions have been disabled, and the invoking
 	 *                thread already has a transaction associated with it.
-	 * 
+	 *
 	 * @exception org.omg.CORBA.INVALID_TRANSACTION
 	 *                if the transaction has already begun or has completed.
 	 */
@@ -206,23 +206,23 @@ public class AtomicTransaction
 	 * Commit the transaction. If the current transaction associated with the
 	 * thread is not this transaction, then this transaction is rolled back and
 	 * leave current alone.
-	 * 
+	 *
 	 * @param report_heuristics indicates whether heuristic reporting is
 	 * desired.
-	 * 
+	 *
 	 * @exception org.omg.CosTransactions.NoTransaction if the transaction has
 	 * already been terminated.
-	 * 
+	 *
 	 * @exception org.omg.CORBA.TRANSACTION_ROLLEDBACK if the transaction rolls
 	 * back.
-	 * 
+	 *
 	 * @exception org.omg.CosTransactions.HeuristicMixed if some of the
 	 * transaction participants committed, while some rolled back.
-	 * 
+	 *
 	 * @exception org.omg.CosTransactions.HeuristicHazard if some of the
 	 * transaction participants committed, some rolled back, and the outcome of
 	 * others is indeterminate.
-	 * 
+	 *
 	 * @exception org.omg.CORBA.WRONG_TRANSACTION if the current transaction is
 	 * not this transaction.
 	 */
@@ -313,10 +313,10 @@ public class AtomicTransaction
 	 * Rollback the transaction. If the current transaction associated with the
 	 * thread is not this transaction, then this transaction is rolled back and
 	 * leave current alone.
-	 * 
+	 *
 	 * @exception org.omg.CosTransactions.NoTransaction if the transaction has
 	 * already been terminated.
-	 * 
+	 *
 	 * @exception org.omg.CORBA.WRONG_TRANSACTION if the current transaction is
 	 * not this transaction.
 	 */
@@ -439,9 +439,9 @@ public class AtomicTransaction
 
 	/**
 	 * @return the propagation context for this transaction.
-	 * 
+	 *
 	 * @since JTS 2.1.
-	 * 
+	 *
 	 * @exception org.omg.CosTransactions.Inactive
 	 *                if the current transaction is no longer in the active
 	 *                phase.
@@ -472,10 +472,10 @@ public class AtomicTransaction
 
 	/**
 	 * Register the specified resource with this transaction.
-	 * 
+	 *
 	 * @return the org.omg.CosTransactions.RecoveryCoordinator reference that
 	 *         can be used to later query the outcome of the transaction.
-	 * 
+	 *
 	 * @exception org.omg.CosTransactions.Inactive
 	 *                if the current transaction is no longer in the active
 	 *                phase.
@@ -505,10 +505,10 @@ public class AtomicTransaction
 	/**
 	 * Register the specified subtransaction aware resource with this
 	 * transaction. This transaction must be a subtransaction.
-	 * 
+	 *
 	 * @exception org.omg.CosTransactions.Inactive
 	 *                if this transaction is no longer in the active phase.
-	 * 
+	 *
 	 * @exception org.omg.CosTransactions.NotSubtransaction
 	 *                if this transaction is not a subtransaction.
 	 */
@@ -535,10 +535,10 @@ public class AtomicTransaction
 	/**
 	 * Register the specified synchronization with this transaction. This
 	 * transaction must be a top-level transaction.
-	 * 
+	 *
 	 * @exception org.omg.CosTransactions.Inactive
 	 *                if this transaction is no longer in the active phase.
-	 * 
+	 *
 	 * @exception org.omg.CosTransactions.SynchronizationUnavailable
 	 *                if this transaction it not a top-level transaction.
 	 */
@@ -631,10 +631,10 @@ public class AtomicTransaction
 	/**
 	 * Suspend this transaction from the current thread. This transaction must
 	 * be active on the calling thread for this method to succeed.
-	 * 
+	 *
 	 * @exception org.omg.CosTransactions.NoTransaction
 	 *                if there is no current transaction.
-	 * 
+	 *
 	 * @exception org.omg.CORBA.WrongTransaction
 	 *                if the transaction associated with the current thread is
 	 *                different from this thread.
@@ -662,11 +662,11 @@ public class AtomicTransaction
 		synchronized (_theStatus)
 		{
         		_theAction = OTSImpleManager.current().suspendWrapper();
-        		
+
         		/*
         		 * Make sure to set the status in case we get called again.
         		 */
-        		
+
         		if (_theAction == null)
         		    _theStatus = org.omg.CosTransactions.Status.StatusNoTransaction;
 		}
@@ -674,7 +674,7 @@ public class AtomicTransaction
 
 	/**
 	 * Resume this transaction.
-	 * 
+	 *
 	 * @exception org.omg.CosTransactions.InvalidControl
 	 *                if this transaction is invalid.
 	 */
@@ -757,7 +757,7 @@ public class AtomicTransaction
 	/**
 	 * If this transaction current? Assume we have checked that we are actually
 	 * a transaction!
-	 * 
+	 *
 	 * If not valid then abort this transaction here. Leave current alone.
 	 */
 
@@ -851,7 +851,7 @@ public class AtomicTransaction
 		 * It shouldn't be possible for _theAction to be null and for the status
 		 * to be unset. If it is something went wrong!!
 		 */
-		
+
 		org.omg.CosTransactions.Status stat = org.omg.CosTransactions.Status.StatusUnknown;
 
 		if (_theAction != null)

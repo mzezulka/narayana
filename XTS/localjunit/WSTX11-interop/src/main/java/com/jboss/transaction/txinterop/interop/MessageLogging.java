@@ -30,7 +30,7 @@ public class MessageLogging
      * The thread local message log.
      */
     private static final ThreadLocal MESSAGE_LOG = new ThreadLocal() ;
-    
+
     /**
      * Clear the log for the current thread.
      */
@@ -38,7 +38,7 @@ public class MessageLogging
     {
         MESSAGE_LOG.set(null) ;
     }
-    
+
     /**
      * Get the thread log.
      * @return The thread log.
@@ -48,7 +48,7 @@ public class MessageLogging
         final Object value = MESSAGE_LOG.get() ;
         return (value == null ? "" : value.toString()) ;
     }
-    
+
     /**
      * Append a message to the thread log.
      * @param message The thread message to append.

@@ -34,12 +34,12 @@ public interface TransactionImporter
 	/**
 	 * Create a subordinate transaction associated with the global transaction
 	 * inflow. No timeout is associated with the transaction.
-	 * 
+	 *
 	 * @param xid
 	 *            the global transaction.
-	 * 
+	 *
 	 * @return the subordinate transaction.
-	 * 
+	 *
 	 * @throws javax.transaction.xa.XAException
 	 *             thrown if there are any errors.
 	 */
@@ -48,14 +48,14 @@ public interface TransactionImporter
 	/**
 	 * Create a subordinate transaction associated with the global transaction
 	 * inflow and having a specified timeout.
-	 * 
+	 *
 	 * @param xid
 	 *            the global transaction.
 	 * @param timeout
 	 *            the timeout associated with the global transaction.
-	 * 
+	 *
 	 * @return the subordinate transaction.
-	 * 
+	 *
 	 * @throws javax.transaction.xa.XAException
 	 *             thrown if there are any errors.
 	 */
@@ -65,7 +65,7 @@ public interface TransactionImporter
 
 	/**
 	 * Used to recover an imported transaction.
-	 * 
+	 *
 	 * @param actId
 	 *            the state to recover.
 	 * @return the recovered transaction object.
@@ -76,13 +76,13 @@ public interface TransactionImporter
 	/**
 	 * Get the subordinate (imported) transaction associated with the global
 	 * transaction.
-	 * 
+	 *
 	 * @param xid
 	 *            the global transaction.
-	 * 
+	 *
 	 * @return the subordinate transaction or <code>null</code> if there is
 	 *         none.
-	 * 
+	 *
 	 * @throws javax.transaction.xa.XAException
 	 *             thrown if there are any errors.
 	 */
@@ -90,10 +90,10 @@ public interface TransactionImporter
 
 	/**
 	 * Remove the subordinate (imported) transaction.
-	 * 
+	 *
 	 * @param xid
 	 *            the global transaction.
-	 * 
+	 *
 	 * @throws javax.transaction.xa.XAException
 	 *             thrown if there are any errors.
 	 */

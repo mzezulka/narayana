@@ -37,29 +37,29 @@ import junit.framework.TestCase;
 
 /**
  * Hammer equivalent test.
- * 
+ *
  * @author Mark Little
  */
 
 public class OptimisticHammerUnitTest extends TestCase
-{   
+{
     @Transactional
     @Optimistic
     public interface Sample
     {
        public void increment ();
        public void decrement ();
-       
+
        public int value ();
     }
-    
+
     public class SampleLockable implements Sample
     {
         public SampleLockable (int init)
         {
             _isState = init;
         }
-        
+
         @ReadLock
         public int value ()
         {
@@ -71,7 +71,7 @@ public class OptimisticHammerUnitTest extends TestCase
         {
             _isState++;
         }
-        
+
         @WriteLock
         public void decrement ()
         {
@@ -81,7 +81,7 @@ public class OptimisticHammerUnitTest extends TestCase
         @State
         private int _isState;
     }
-    
+
     public class Worker extends Thread
     {
         public Worker (Sample obj1, Sample obj2)
@@ -89,7 +89,7 @@ public class OptimisticHammerUnitTest extends TestCase
             _obj1 = obj1;
             _obj2 = obj2;
         }
-        
+
         public void run ()
         {
             Random rand = new Random();
@@ -98,9 +98,9 @@ public class OptimisticHammerUnitTest extends TestCase
             {
                 AtomicAction A = new AtomicAction();
                 boolean doCommit = true;
-                
+
                 A.begin();
-                
+
                 try
                 {
                     // always keep the two objects in sync.
@@ -111,13 +111,13 @@ public class OptimisticHammerUnitTest extends TestCase
                 catch (final Throwable ex)
                 {
                     ex.printStackTrace();
-                    
+
                     doCommit = false;
                 }
-                
+
                 if (rand.nextInt() % 2 == 0)
                     doCommit = false;
-                
+
                 if (doCommit)
                 {
                     A.commit();
@@ -128,7 +128,7 @@ public class OptimisticHammerUnitTest extends TestCase
                 }
             }
         }
-        
+
         private Sample _obj1;
         private Sample _obj2;
     }
@@ -137,18 +137,18 @@ public class OptimisticHammerUnitTest extends TestCase
     {
         Container<Sample> theContainer = new Container<Sample>();
         Sample obj1 = theContainer.create(new SampleLockable(10));
-        Sample obj2 = theContainer.create(new SampleLockable(10));       
+        Sample obj2 = theContainer.create(new SampleLockable(10));
         Sample obj3 = theContainer.clone(new SampleLockable(0), obj1);
         Sample obj4 = theContainer.clone(new SampleLockable(0), obj1);
         int workers = 2;
         Worker[] worker = new Worker[workers];
-        
+
         worker[0] = new Worker(obj1, obj2);
         worker[1] = new Worker(obj3, obj4);
-       
+
         for (int j = 0; j < workers; j++)
             worker[j].start();
-        
+
         try
         {
             for (int k = 0; k < workers; k++)
@@ -157,7 +157,7 @@ public class OptimisticHammerUnitTest extends TestCase
         catch (final Throwable ex)
         {
         }
-        
+
         assertEquals(obj1.value()+obj2.value(), 20);
     }
 }

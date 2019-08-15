@@ -31,9 +31,9 @@ public class UserTxUnitTest
     public void test() throws Exception
     {
         UserTransaction ut = com.arjuna.ats.jta.UserTransaction.userTransaction();
-        
+
         ut.begin();
-        
+
         ut.commit();
     }
 }

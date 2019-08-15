@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -40,7 +40,7 @@ import com.arjuna.ats.jts.logging.jtsLogger;
  * allow for default servant mechanism with POA
  *
  * @author Peter Furniss (peter.furniss@arjuna.com)
- * @version $Id: RecoveryCoordinatorId.java 2342 2006-03-30 13:06:17Z  $ 
+ * @version $Id: RecoveryCoordinatorId.java 2342 2006-03-30 13:06:17Z  $
  *
  */
 
@@ -55,7 +55,7 @@ public class RecoveryCoordinatorId
     /**
      * Constructor with separate fields
      */
-    RecoveryCoordinatorId (Uid RCUid, Uid actionUid, 
+    RecoveryCoordinatorId (Uid RCUid, Uid actionUid,
 			   Uid processUid, boolean isServerTransaction)
     {
 	_RCUid = RCUid;
@@ -63,10 +63,10 @@ public class RecoveryCoordinatorId
 	_originalProcessUid = processUid;
 	_isServerTransaction = isServerTransaction;
     }
-    
+
     /**
      * Construct a string, to be used somehow in the objectkey (probably)
-     * of a RecoveryCoordinator reference. This will be deconstructed in 
+     * of a RecoveryCoordinator reference. This will be deconstructed in
      * the reconstruct() which is passed such a string, to remake the
      * necessary RecoveryCoordinator when a replay_completion is received for it.
      *
@@ -106,7 +106,7 @@ public class RecoveryCoordinatorId
 
     /**
      *  Construct an id from the encoded string
-     * @returns null if parse fails 
+     * @returns null if parse fails
      */
     public static RecoveryCoordinatorId reconstruct(String encodedRCData)
     {
@@ -124,7 +124,7 @@ public class RecoveryCoordinatorId
 	{
 	    int index1 = encodedRCData.indexOf(_ObjKeyDelimiter);
 	    int index2 = 0;
-	    
+
 	    if (index1 != -1)
 	    {
 		String stringifiedRCUid = encodedRCData.substring(0, index1);
@@ -132,11 +132,11 @@ public class RecoveryCoordinatorId
 	    }
 	    else
 		ok = false;
-	    
+
 	    if (ok)
 	    {
 		index2 = encodedRCData.indexOf(_ObjKeyDelimiter, index1 +1);
-		
+
 		if (index2 != -1)
 		{
 		    String stringifiedTranUid = encodedRCData.substring(index1 +1, index2);
@@ -146,11 +146,11 @@ public class RecoveryCoordinatorId
 		else
 		    ok = false;
 	    }
-	    
+
 	    if (ok)
 	    {
 		index2 = encodedRCData.indexOf(_ObjKeyDelimiter, index1 +1);
-		
+
 		if (index2 != -1)
 		{
 		    String stringifiedProcessUid = encodedRCData.substring(index1 +1, index2);
@@ -161,14 +161,14 @@ public class RecoveryCoordinatorId
 		    ok = false;
 	    }
 
-	    
+
 	    if (ok)
 	    {
 		String stringifiedIsServerTransaction = encodedRCData.substring(index1 +1);
 		isServerTransaction = (Boolean.valueOf(stringifiedIsServerTransaction)).booleanValue();
 	    }
 	}
-	
+
 	if (ok) {
 	    return new RecoveryCoordinatorId (RCUid, actionUid,
 				 originalProcessUid, isServerTransaction);
@@ -183,11 +183,11 @@ public class RecoveryCoordinatorId
      */
     public String toString()
     {
-	return "(" + _RCUid+", "+_actionUid+", " + _originalProcessUid 
+	return "(" + _RCUid+", "+_actionUid+", " + _originalProcessUid
 			 + (_isServerTransaction ? ", interposed-tx" : ", root-tx" ) + ")" ;
 
     }
-    
+
 
     private static final char   _ObjKeyDelimiter = '*';
 

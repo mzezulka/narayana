@@ -65,7 +65,7 @@ public class BusinessAgreementWithParticipantCompletionCoordinatorTest extends B
 
     private ParticipantCompletionParticipantProcessor origParticipantCompletionParticipantProcessor ;
     private TestParticipantCompletionParticipantProcessor testParticipantCompletionParticipantProcessor = new TestParticipantCompletionParticipantProcessor() ;
-    
+
     @Before
     public void setUp()
             throws Exception

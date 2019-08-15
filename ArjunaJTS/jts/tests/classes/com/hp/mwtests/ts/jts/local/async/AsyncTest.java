@@ -98,11 +98,11 @@ public class AsyncTest
         myOA.destroy();
         myORB.shutdown();
     }
-    
+
     public static void main (String[] args)
     {
         AsyncTest obj = new AsyncTest();
-        
+
         try
         {
             obj.test();

@@ -114,7 +114,7 @@ public abstract class TransactionalInterceptorBase implements Serializable {
                     break;
                 }
             }
-    
+
             // check existence of the stereotype on method
             Transactional transactionalMethod = getTransactionalAnnotationRecursive(currentAnnotatedMethod.getAnnotations());
             if(transactionalMethod != null) return transactionalMethod;
@@ -131,7 +131,7 @@ public abstract class TransactionalInterceptorBase implements Serializable {
             if (transactional != null) {
                 return transactional;
             }
-    
+
             Class<?> targetClass = ic.getTarget().getClass();
             transactional = targetClass.getAnnotation(Transactional.class);
             if (transactional != null) {

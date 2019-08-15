@@ -48,33 +48,33 @@ public class UtilsUnitTest
     public void testXidUtils () throws Exception
     {
         assertTrue(XidUtils.getXid(new Uid(), true) != null);
-        
+
         OTSImpleManager.current().begin();
-        
+
         AtomicTransaction tx = new AtomicTransaction(OTSImpleManager.current().getControlWrapper());
-        
+
         assertTrue(XidUtils.getXid(tx.getControlWrapper().get_control(), false) != null);
-        
+
         try
         {
             XidUtils.getXid((Control) null, true);
-            
+
             fail();
         }
         catch (final IllegalStateException ex)
         {
         }
-        
+
         assertTrue(XidUtils.getXid(OTSImpleManager.current().get_control(), true) != null);
-        
+
         OTSImpleManager.current().commit(true);
     }
-    
+
     @Test
     public void testStatusConverter () throws Exception
     {
         StatusConverter sc = new StatusConverter();
-        
+
         assertEquals(StatusConverter.convert(org.omg.CosTransactions.Status.StatusActive), Status.STATUS_ACTIVE);
         assertEquals(StatusConverter.convert(org.omg.CosTransactions.Status.StatusCommitted), Status.STATUS_COMMITTED);
         assertEquals(StatusConverter.convert(org.omg.CosTransactions.Status.StatusCommitting), Status.STATUS_COMMITTING);
@@ -86,7 +86,7 @@ public class UtilsUnitTest
         assertEquals(StatusConverter.convert(org.omg.CosTransactions.Status.StatusRollingBack), Status.STATUS_ROLLING_BACK);
         assertEquals(StatusConverter.convert(org.omg.CosTransactions.Status.StatusUnknown), Status.STATUS_UNKNOWN);
     }
-    
+
     @Before
     public void setUp () throws Exception
     {
@@ -99,14 +99,14 @@ public class UtilsUnitTest
         ORBManager.setORB(myORB);
         ORBManager.setPOA(myOA);
     }
-    
+
     @After
     public void tearDown () throws Exception
     {
         myOA.destroy();
         myORB.shutdown();
     }
-    
+
     private ORB myORB = null;
     private RootOA myOA = null;
 }

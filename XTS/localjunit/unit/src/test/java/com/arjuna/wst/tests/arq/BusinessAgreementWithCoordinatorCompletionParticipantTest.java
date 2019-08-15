@@ -197,7 +197,7 @@ public class BusinessAgreementWithCoordinatorCompletionParticipantTest extends B
         final QName subcode = ArjunaTXConstants.UNKNOWNERROR_ERROR_CODE_QNAME ;
         final SoapFault11 soapFault = new SoapFault11(soapFaultType, subcode, reason) ;
 
-        // this would be a better test if we could set the identifier as a reference parameter here 
+        // this would be a better test if we could set the identifier as a reference parameter here
         CoordinatorCompletionCoordinatorClient.getClient().sendSoapFault(soapFault, null, map, TestUtil.getBusinessActivityFaultAction()) ;
 
         final CoordinatorCompletionCoordinatorDetails details = testCoordinatorCompletionCoordinatorProcessor.getCoordinatorCompletionCoordinatorDetails(messageId, 10000) ;

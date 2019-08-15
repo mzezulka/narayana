@@ -42,24 +42,24 @@ public class InitiatorClient
      * The client singleton.
      */
     private static final InitiatorClient CLIENT = new InitiatorClient() ;
-    
+
     /**
      * The response action.
      */
     private static final String responseAction = ATInteropConstants.INTEROP_ACTION_RESPONSE ;
-    
+
     /**
      * Construct the interop synch client.
      */
     private InitiatorClient()
     {
         //final HandlerRegistry handlerRegistry = new HandlerRegistry() ;
-        
+
         // Add WS-Addressing
         //AddressingPolicy.register(handlerRegistry) ;
         // Add client policies
         //ClientPolicy.register(handlerRegistry) ;
-        
+
         //soapService = new SoapService(handlerRegistry) ;
     }
 

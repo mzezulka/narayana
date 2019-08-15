@@ -38,7 +38,7 @@ import junit.framework.TestCase;
 
 /**
  * Unit tests for the Class class.
- * 
+ *
  * @author Mark Little
  */
 
@@ -51,42 +51,42 @@ public class RecoverableContainerUnitTest extends TestCase
         {
             super();
         }
-        
+
         public boolean save_state (OutputObjectState os)
         {
             return true;
         }
-        
+
         public boolean restore_state (InputObjectState os)
         {
             return true;
         }
-        
+
         public String type ()
         {
             return "/StateManager/LockManager/TestObject";
         }
     }
-    
+
     @Transactional
     public interface Sample
     {
        public void myWork ();
-       
+
        public void doSomeWork ();
 
        public boolean doSomeOtherWork ();
-       
+
        public void notTransactionalWork ();
     }
-    
+
     @Transactional
     public class SampleLockable implements Sample
     {
         public void myWork ()
         {
         }
-        
+
         @ReadLock
         public void doSomeWork ()
         {
@@ -98,7 +98,7 @@ public class RecoverableContainerUnitTest extends TestCase
         {
             return true;
         }
-        
+
         @TransactionFree
         public void notTransactionalWork ()
         {
@@ -107,7 +107,7 @@ public class RecoverableContainerUnitTest extends TestCase
         @State
         @SuppressWarnings(value={"unused"})
         private int _isState;
-        
+
         @SuppressWarnings(value={"unused"})
         private int _isNotState;
     }
@@ -117,7 +117,7 @@ public class RecoverableContainerUnitTest extends TestCase
         RecoverableContainer<TestObject> theContainer = new RecoverableContainer<TestObject>();
         TestObject tester = new TestObject();
         boolean success = false;
-        
+
         try
         {
             theContainer.enlist(tester);
@@ -129,14 +129,14 @@ public class RecoverableContainerUnitTest extends TestCase
 
         assertTrue(success);
     }
-    
+
     @SuppressWarnings(value={"unused"})
     public void testValidEnlist ()
     {
         RecoverableContainer<Sample> theContainer = new RecoverableContainer<Sample>();
         SampleLockable tester = new SampleLockable();
         boolean success = true;
-        
+
         try
         {
             Sample proxy = theContainer.enlist(tester);
@@ -144,10 +144,10 @@ public class RecoverableContainerUnitTest extends TestCase
         catch (final Throwable ex)
         {
             ex.printStackTrace();
-            
+
             success = false;
         }
-        
+
         assertTrue(success);
     }
 }

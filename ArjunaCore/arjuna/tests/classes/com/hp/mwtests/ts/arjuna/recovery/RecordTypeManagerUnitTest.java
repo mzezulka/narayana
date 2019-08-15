@@ -54,7 +54,7 @@ class DummyMap implements RecordTypeMap
         // TODO Auto-generated method stub
         return 0;
     }
-    
+
 }
 public class RecordTypeManagerUnitTest
 {
@@ -63,10 +63,10 @@ public class RecordTypeManagerUnitTest
     {
         DummyMap map = new DummyMap();
         RecordTypeManager.manager().add(map);
-        
+
         assertEquals(RecordTypeManager.manager().getClass(0), PersistenceRecord.class);
         assertEquals(RecordTypeManager.manager().getType(PersistenceRecord.class), 0);
-        
+
         RecordTypeManager.manager().remove(map);
     }
 }

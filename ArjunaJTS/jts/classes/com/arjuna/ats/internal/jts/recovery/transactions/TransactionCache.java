@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -46,7 +46,7 @@ import com.arjuna.ats.jts.logging.jtsLogger;
  * different threads that may be working with the same
  * transaction. The cache automatically removes or refreshes
  * transactions that require no further recovery or re-recovery respectively. Various
- * volatile information for the transaction is also kept in the cache 
+ * volatile information for the transaction is also kept in the cache
  * (e.g. number of attempts to recover since first activated
  * in this RecoveryManager run)
  * <P>
@@ -230,7 +230,7 @@ public class TransactionCache
 			    }
 			}
 			// replayPhase2 will cause a re-persist unless it completes
-			// in which case it will cause a removal, so we mark it for 
+			// in which case it will cause a removal, so we mark it for
 			// removal from the cache
 			theTransaction.replayPhase2();
 
@@ -305,11 +305,11 @@ public class TransactionCache
 	}
 	else
 	{
-	    synchronized (cacheItem) 
+	    synchronized (cacheItem)
 	    {
 		_theCache.remove(theUid);
 	    }
-	    
+
 	    if (jtsLogger.logger.isDebugEnabled()) {
             jtsLogger.logger.debug("TransactionCache.remove "+theUid+": removed transaction from cache");
         }
@@ -319,7 +319,7 @@ public class TransactionCache
     public static enum ReplayPhaseReturnStatus {
         STANDARD_PROCESSING, ASSUME_COMPLETED
     }
-    
+
     private static final Hashtable _theCache = new Hashtable();
     private static final int attemptsBeforeConversion = jtsPropertyManager.getJTSEnvironmentBean()
             .getCommitedTransactionRetryLimit();

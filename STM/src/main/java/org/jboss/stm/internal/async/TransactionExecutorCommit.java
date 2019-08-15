@@ -29,7 +29,7 @@ import com.arjuna.ats.arjuna.AtomicAction;
 
 /**
  * Executes the transaction.
- * 
+ *
  * @author marklittle
  *
  */
@@ -47,7 +47,7 @@ public class TransactionExecutorCommit implements Callable<Integer>
     {
         return new Integer(_theTransaction.commit(_heuristics));
     }
-    
+
     private boolean _heuristics;
     private AtomicAction _theTransaction;
 }

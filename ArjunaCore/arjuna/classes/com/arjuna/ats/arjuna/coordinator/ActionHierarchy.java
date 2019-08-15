@@ -420,7 +420,7 @@ public class ActionHierarchy
     /*
      * Most transactions are top-level so optimise data structure for that case.
      */
-    
+
     public static final int DEFAULT_HIERARCHY_DEPTH = 1;
 
     private ActionInfo[] hierarchy;

@@ -17,7 +17,7 @@ import com.hp.mwtests.ts.jta.common.FailureXAResource.FailType;
 import com.hp.mwtests.ts.jta.common.TestResource;
 
 /**
- * 
+ *
  * @author sebplorenz
  *
  */
@@ -113,7 +113,7 @@ public class ExceptionDeferrerTest {
    public void testCheckDeferredRollbackException () throws Exception
    {
        ThreadActionData.purgeActions();
-       
+
        TransactionImple tx = new TransactionImple(0);
 
        try
@@ -124,24 +124,24 @@ public class ExceptionDeferrerTest {
        {
           fail();
        }
-       
+
        try
        {
            tx.commit();
-           
-           fail(); 
+
+           fail();
        }
        catch (final RollbackException ex)
        {
           assertEquals(XAException.XA_HEURRB, ((XAException) ex.getSuppressed()[0]).errorCode);
        }
    }
-   
+
    @Test
    public void testCheckDeferredHeuristicException () throws Exception
    {
        ThreadActionData.purgeActions();
-       
+
        TransactionImple tx = new TransactionImple(0);
 
        try
@@ -152,20 +152,20 @@ public class ExceptionDeferrerTest {
        {
           fail();
        }
-       
+
        try
        {
-           
+
            tx.commit();
-           
-           fail(); 
+
+           fail();
        }
        catch (final HeuristicMixedException ex)
        {
           assertEquals(XAException.XA_HEURMIX, ((XAException) ex.getSuppressed()[0]).errorCode);
        }
    }
-   
+
    @Test
    public void testCheckDeferredHeuristicRollbackFirstResourceFails() throws Exception
    {
@@ -182,19 +182,19 @@ public class ExceptionDeferrerTest {
        {
           fail();
        }
-       
+
        try
        {
            tx.commit();
-           
-           fail(); 
+
+           fail();
        }
        catch (final HeuristicMixedException ex)
        {
           assertEquals(XAException.XAER_NOTA, ((XAException) ex.getSuppressed()[0]).errorCode);
        }
    }
-   
+
    @Test
    public void testCheckDeferredHeuristicRollbackSecondResourceFails() throws Exception
    {
@@ -211,19 +211,19 @@ public class ExceptionDeferrerTest {
        {
           fail();
        }
-       
+
        try
        {
            tx.commit();
-           
-           fail(); 
+
+           fail();
        }
        catch (final HeuristicMixedException ex)
        {
           assertEquals(XAException.XAER_NOTA, ((XAException) ex.getSuppressed()[0]).errorCode);
        }
    }
-   
+
    @Test
    public void testCheckDeferredHeuristicRollbackSecondOfThreeFails() throws Exception
    {
@@ -241,12 +241,12 @@ public class ExceptionDeferrerTest {
       {
          fail();
       }
-      
+
       try
       {
           tx.commit();
-          
-          fail(); 
+
+          fail();
       }
       catch (final HeuristicMixedException ex)
       {

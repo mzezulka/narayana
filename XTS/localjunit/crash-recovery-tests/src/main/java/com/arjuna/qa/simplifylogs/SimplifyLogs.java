@@ -30,13 +30,13 @@ public class SimplifyLogs
 
             System.out.println("Processing: '" + file.getName() + "'");
             List<String> log = loadLog(file);
-            
+
             if (log.size() == 0)
             {
                 System.err.println("Empty file: " + file.getName());
                 continue;
             }
-            
+
             log = stripJVMExitFromLastLine(log);
             log = simplifyUUIDs(log);
             log = removeDuplicatesKeepingLastOccurrence(log);
@@ -48,7 +48,7 @@ public class SimplifyLogs
             outputProcessedFile(beforeCrash, afterCrash, outputDir, file.getName(), file);
         }
     }
-    
+
     static List<String> stripJVMExitFromLastLine(List<String> log)
     {
         int lastIndex = log.size()-1;
@@ -74,7 +74,7 @@ public class SimplifyLogs
         FileOutputStream fstream = new FileOutputStream(outFile);
         DataOutputStream out = new DataOutputStream(fstream);
         PrintStream printStream = new PrintStream(out);
-        
+
         printStream.println("Original File: " + inputFile.getAbsoluteFile());
         printStream.println();
         printStream.println();
@@ -92,7 +92,7 @@ public class SimplifyLogs
         {
             result.mkdir();
         }
-        
+
         if (!result.exists())
         {
             System.err.println("Directory does not exist: " + path);

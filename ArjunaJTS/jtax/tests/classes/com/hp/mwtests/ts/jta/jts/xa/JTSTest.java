@@ -30,7 +30,7 @@
  */
 
 package com.hp.mwtests.ts.jta.jts.xa;
- 
+
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -77,7 +77,7 @@ public class JTSTest {
         jtaPropertyManager.getJTAEnvironmentBean().setTransactionManagerClassName(com.arjuna.ats.internal.jta.transaction.jts.TransactionManagerImple.class.getName());
         jtaPropertyManager.getJTAEnvironmentBean().setUserTransactionClassName(com.arjuna.ats.internal.jta.transaction.jts.UserTransactionImple.class.getName());
     }
-    
+
     @After
     public void tearDown() {
         if (myOA != null) {
@@ -266,7 +266,7 @@ public class JTSTest {
             // Expected
         }
     }
-    
+
 	@Test
 	public void test() throws Exception {
 

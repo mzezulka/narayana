@@ -42,7 +42,7 @@ import com.arjuna.ats.arjuna.common.Uid;
  * themselves to determine the outcome of the transaction. These continue to be
  * available to the developer but this API is intended to provide a simplified interface
  * to allow clients to make use of asynchronous transactions.
- * 
+ *
  * Note, we deliberately don't derive from AtomicAction so that developers must make
  * a conscious choice between a synchronous or asynchronous transaction.
  *
@@ -179,7 +179,7 @@ public class Transaction
      *
      * If the current transaction is not an AtomicAction then this method will
      * not suspend.
-     * 
+     *
      * Note, we do not provide an async version of suspend because it would be
      * wrong for an application thread to proceed under the assumption it had
      * succeeded/happened yet. Ordering of events makes a difference here.
@@ -199,7 +199,7 @@ public class Transaction
      * transaction is null, then this is the same as doing a suspend. If the
      * current thread is associated with transactions then those associations
      * will be lost.
-     * 
+     *
      * Note, we do not provide an async version of resume because it would be
      * wrong for an application thread to proceed under the assumption it had
      * succeeded/happened yet. Ordering of events makes a difference here.
@@ -221,7 +221,7 @@ public class Transaction
     {
         _theTransaction = act;
     }
-    
+
     private AtomicAction _theTransaction;
     private final ExecutorService _threadPool = Executors.newFixedThreadPool(1);
 }

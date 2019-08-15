@@ -88,11 +88,11 @@ public class AsynchronousRegistrationMapperTest {
 
     private void testMapper(String message, long millis, Object result) {
         mapper.addClientMessage(message);
-        
+
         ClientThread client = new ClientThread(message);
         Thread clientThread = new Thread(client);
         Thread serverThread = new Thread(new ServerThread(message, millis, result));
-        
+
         clientThread.start();
         if (millis >= 0) {
             serverThread.start();
@@ -101,7 +101,7 @@ public class AsynchronousRegistrationMapperTest {
             clientThread.join(WAIT_TIME * 2);
         } catch (InterruptedException e) {
         }
-        
+
         Assert.assertFalse(clientThread.isAlive());
         FaultOrResponse r = client.getResult();
         Assert.assertNotNull(r);

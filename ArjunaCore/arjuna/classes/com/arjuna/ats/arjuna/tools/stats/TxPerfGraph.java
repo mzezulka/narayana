@@ -616,7 +616,7 @@ public class TxPerfGraph extends javax.swing.JPanel { //JFrame {
     }//GEN-LAST:event_sampleSizeBtn1ActionPerformed
 
     private void startPolling() {
-       // timer.cancel();       
+       // timer.cancel();
 
         //timer.schedule(timerTask, 0, POLL_PERIOD);
         if (swingTimer.isRunning())

@@ -82,7 +82,7 @@ public class StompManagement {
                 outputStream.write(EOL);
             }
             outputStream.write(EOL);
-            
+
             if(message.getBody() != null) {
                 outputStream.write(message.getBody());
             }

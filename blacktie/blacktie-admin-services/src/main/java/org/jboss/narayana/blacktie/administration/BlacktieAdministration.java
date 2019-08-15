@@ -19,7 +19,7 @@ package org.jboss.narayana.blacktie.administration;
 
 /**
  * This is the Admin service operations.
- * 
+ *
  * Don't forget that all the operations need to be in the select statement of the Blacktie XATMI Administration Service
  */
 public interface BlacktieAdministration {
@@ -76,7 +76,7 @@ public interface BlacktieAdministration {
 
     /**
      * Get the name of the server that this service resides at.
-     * 
+     *
      * @param serviceName The service name.
      * @return The server name.
      */

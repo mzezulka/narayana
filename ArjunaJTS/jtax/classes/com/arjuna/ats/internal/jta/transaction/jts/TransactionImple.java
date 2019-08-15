@@ -221,7 +221,7 @@ public class TransactionImple implements javax.transaction.Transaction,
         }
 
 		if (_theTransaction != null)
-		{   
+		{
 			/*
 			 * Call end on any suspended resources. If this fails, then the
 			 * transaction will be rolled back.
@@ -231,7 +231,7 @@ public class TransactionImple implements javax.transaction.Transaction,
 			{
 			    if ((getStatus() != Status.STATUS_ACTIVE) && (getStatus() != Status.STATUS_MARKED_ROLLBACK))
 		                        throw new NoTransaction();
-		             
+
 				if (!endSuspendedRMs())
 					_theTransaction.rollbackOnly();
 
@@ -304,27 +304,27 @@ public class TransactionImple implements javax.transaction.Transaction,
         }
 
 		boolean endSuspendedFailed = false;
-		
+
 		if (_theTransaction != null)
 		{
 			try
 			{
 		             if ((getStatus() != Status.STATUS_ACTIVE) && (getStatus() != Status.STATUS_MARKED_ROLLBACK))
 		                        throw new NoTransaction();
-		             
+
 		                 /*
 	                         * Call end on any suspended resources. If this fails, then there's
 	                         * not a lot else we can do because the transaction is about to roll
 	                         * back anyway!
 	                         */
-		             
+
 		              endSuspendedFailed = !endSuspendedRMs();
 
 	                        if (endSuspendedFailed)
 	                        {
                                 jtaxLogger.i18NLogger.warn_jtax_transaction_jts_endsuspendfailed1();
 	                        }
-	                        
+
 				_theTransaction.abort();
 			}
 			catch (WrongTransaction e1)
@@ -440,7 +440,7 @@ public class TransactionImple implements javax.transaction.Transaction,
 		        throw systemException;
 			}
 		}
-		
+
 		if (jtaLogger.logger.isTraceEnabled()) {
             jtaLogger.logger.trace("TransactionImple.getStatus: " + JTAHelper.stringForm(status));
         }
@@ -1101,14 +1101,14 @@ public class TransactionImple implements javax.transaction.Transaction,
 	{
 		return _theTransaction.get_uid();
 	}
-	
+
 	public final Xid getTxId ()
 	{
 	    Xid res = baseXid();
-	    
+
 	    if (res == null)
 	        return _theTransaction.get_xid(false);
-	    
+
 	    return res;
 	}
 
@@ -1265,7 +1265,7 @@ public class TransactionImple implements javax.transaction.Transaction,
 //                throw e;
 //            }
 //        }
-        
+
 
 		return tx;
 	}
@@ -1428,7 +1428,7 @@ public class TransactionImple implements javax.transaction.Transaction,
 			catch (TRANSACTION_ROLLEDBACK e4)
 			{
 			    e4.printStackTrace();
-			    
+
 				RollbackException rollbackException = new RollbackException(e4.toString());
                 if(_rollbackOnlyCallerStacktrace != null) {
                     // we rolled back beacuse the user explicitly told us not to commit. Attach the trace of who did that for debug:
@@ -1449,7 +1449,7 @@ public class TransactionImple implements javax.transaction.Transaction,
 
 				//throw new IllegalStateException(
 				//		jtaxLogger.loggerI18N.getString("com.arjuna.ats.internal.jta.transaction.jts.invalidtx2"));
-			    
+
 			    throw new IllegalStateException();
 			}
 			catch (org.omg.CORBA.SystemException e7)

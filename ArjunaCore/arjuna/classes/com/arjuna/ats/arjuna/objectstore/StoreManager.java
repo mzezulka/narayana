@@ -76,7 +76,7 @@ public class StoreManager
      * This is wrong. The participant store should not be the same as the
      * transaction log. Why has this been changed from the default?
      */
-    
+
     public static final ParticipantStore getParticipantStore() {
         return getActionStore();
     }
@@ -107,7 +107,7 @@ public class StoreManager
             if(actionStore != null) {
                 return actionStore;
             }
-            
+
             actionStore = initStore(null); // default
         }
 
@@ -118,10 +118,10 @@ public class StoreManager
 
     /*
      * Why are rootName and shareStatus not used?
-     * 
+     *
      * @param rootName ignored
      */
-    
+
     public static ParticipantStore setupStore (String rootName, int sharedStatus)
     {
         if(stateStore != null) {

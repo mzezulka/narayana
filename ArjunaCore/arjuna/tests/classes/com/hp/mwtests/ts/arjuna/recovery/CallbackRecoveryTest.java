@@ -69,15 +69,15 @@ public class CallbackRecoveryTest
     public void test()
     {
         recoveryPropertyManager.getRecoveryEnvironmentBean().setRecoveryBackoffPeriod(1);
-        
+
         RecoveryManager manager = RecoveryManager.manager(RecoveryManager.DIRECT_MANAGEMENT);
         DummyRecoveryModule module = new DummyRecoveryModule();
         RecoveryScanImple rs = new RecoveryScanImple();
 
         // make sure no other modules registered for this test
-        
+
         manager.removeAllModules(false);
-        
+
         manager.addModule(module);
 
         manager.scan(rs);

@@ -51,10 +51,10 @@ import java.net.InetAddress;
 @RunWith(Arquillian.class)
 public class Sc007Test {
     private String participantURI = "http://" + getLocalHost() + ":8080/sc007/ParticipantService";
-    
+
     @Inject
     Sc007TestCase test;
-    
+
     @Deployment
     public static WebArchive createDeployment() {
         return ShrinkWrap.create(WebArchive.class, "sc007.war")
@@ -75,7 +75,7 @@ public class Sc007Test {
                 .addPackage("org.jboss.jbossts.xts.soapfault")
                 .addPackage("org.jboss.jbossts.xts.bytemanSupport.participantReadOnly")
                 .addAsResource("sc007/participanthandlers.xml", "com/jboss/transaction/wstf/webservices/sc007/sei/participanthandlers.xml")
-                .addAsWebInfResource("sc007/wsdl/sc007.wsdl", "classes/com/jboss/transaction/wstf/webservices/sc007/generated/wsdl/sc007.wsdl")                          
+                .addAsWebInfResource("sc007/wsdl/sc007.wsdl", "classes/com/jboss/transaction/wstf/webservices/sc007/generated/wsdl/sc007.wsdl")
                 .addAsResource("soapfault/wsdl/soapfault.wsdl", "org/jboss/jbossts/xts/soapfault/soapfault.wsdl")
                 .addAsResource("soapfault/wsdl/envelope.xsd", "org/jboss/jbossts/xts/soapfault/envelope.xsd")
                 .addAsWebResource("web/index.jsp", "index.jsp")
@@ -97,85 +97,85 @@ public class Sc007Test {
     public static void removeBytemanScript() {
         BMScript.remove(ParticipantCompletionReadOnlyRules.RESOURCE_PATH);
     }
-    
+
     @Before
     public void setUp() {
         test.setParticipantURI(participantURI);
         String conversationId = ProxyConversation.createConversation();
         test.setConversationId(conversationId);
     }
-    
+
     @Test
     public void test1_1() throws Exception {
         test.test1_1();
     }
-    
+
     @Test
     public void test1_2() throws Exception {
         test.test1_2();
     }
-    
+
     @Test
     public void test2_1() throws Exception {
         test.test2_1();
     }
-    
+
     @Test
     public void test2_2() throws Exception {
         test.test2_2();
     }
-    
+
     @Test
     public void test3_1() throws Exception {
         test.test3_1();
     }
-    
+
     @Test
     public void test3_2() throws Exception {
         test.test3_2();
     }
-    
+
     @Test
     public void test3_3() throws Exception {
         test.test3_3();
     }
-    
+
     @Test
     public void test3_4() throws Exception {
         ParticipantCompletionReadOnlyRules.enableReadOnlyCheck();
         test.test3_4();
     }
-    
+
     @Test
     public void test3_5() throws Exception {
         test.test3_5();
     }
-    
+
     @Test
     public void test3_6() throws Exception {
         test.test3_6();
     }
-    
+
     @Test
     public void test3_7() throws Exception {
         test.test3_7();
     }
-    
+
     @Test
     public void test3_8() throws Exception {
         test.test3_8();
     }
-    
+
     @Test
     public void test3_9() throws Exception {
         test.test3_9();
     }
-    
+
     @Test
     public void test3_10() throws Exception {
         test.test3_10();
     }
-    
+
     @Test
     public void test3_11() throws Exception {
         test.test3_11();

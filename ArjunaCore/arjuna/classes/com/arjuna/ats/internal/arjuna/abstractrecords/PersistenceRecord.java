@@ -234,7 +234,7 @@ public class PersistenceRecord extends RecoveryRecord
 		     * sure if the state will go into its own log or be written into the
 		     * transaction log for improved performance.
 		     */
-		    
+
 			topLevelState = new OutputObjectState(sm.get_uid(), sm.type());
 
 			if (writeOptimisation
@@ -277,7 +277,7 @@ public class PersistenceRecord extends RecoveryRecord
 				    /*
 				     * Don't write anything as our state will go into the log.
 				     */
-				    
+
 					result = TwoPhaseOutcome.PREPARE_OK;
 				}
 			}
@@ -289,10 +289,10 @@ public class PersistenceRecord extends RecoveryRecord
 
 			        result = TwoPhaseOutcome.PREPARE_OK;
 			    }
-			    else 
+			    else
 			    {
 			        topLevelState = null;
-			        
+
 			        tsLogger.i18NLogger.warn_PersistenceRecord_7();
 			    }
 			}
@@ -483,6 +483,6 @@ public class PersistenceRecord extends RecoveryRecord
 	protected ParticipantStore targetParticipantStore;
 	protected OutputObjectState topLevelState;
 	protected static final boolean classicPrepare = arjPropertyManager.getCoordinatorEnvironmentBean().isClassicPrepare();
-	
+
 	private static final boolean writeOptimisation = arjPropertyManager.getCoordinatorEnvironmentBean().isWriteOptimisation();
 }

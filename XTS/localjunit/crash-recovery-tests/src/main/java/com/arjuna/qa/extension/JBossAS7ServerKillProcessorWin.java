@@ -13,18 +13,18 @@ public class JBossAS7ServerKillProcessorWin extends BaseServerKillProcessor {
 	private static final String CHECK_JBOSS_ALIVE_CMD = PS_AUX_CMD + " | findstr jboss-module | findstr /v findstr"; //skip "findstr" from output, windows workaround
 	private static final String CHECK_FOR_DEFUNCT_JAVA_CMD = PS_AUX_CMD + " | findstr defunct | findstr /v findstr"; //skip "findstr" from output, windows workaround
 	private static final String SHUTDOWN_JBOSS_CMD = "taskkill /F /T /PID %s";
-    
+
     @Override
     protected String runShellCommand(String cmd) throws Exception {
         getLogger().info("Executing shell command: '" + cmd + "'");
         ProcessBuilder pb = new ProcessBuilder("cmd", "/c", cmd);
         Process p = pb.start();
-        
+
         String res = dumpStream("std out", p.getInputStream());
         dumpStream("std error", p.getErrorStream());
-       
+
         p.waitFor();
-        
+
         p.destroy();
 
         return res;

@@ -45,7 +45,7 @@ public class UuidProcessId implements com.arjuna.ats.arjuna.utils.Process
          * UUID contains 2*64 bit fields, which we need to convert to a 32 bit number.
          * We will lose accuracy and increase the probability of a process id clash.
          */
-        
+
         synchronized (UuidProcessId._theUid)
         {
             if (_pid == -1)
@@ -54,7 +54,7 @@ public class UuidProcessId implements com.arjuna.ats.arjuna.utils.Process
             }
         }
     }
-    
+
     /**
      * @return the process id. This had better be unique between processes on
      *         the same machine. If not we're in trouble!
@@ -66,6 +66,6 @@ public class UuidProcessId implements com.arjuna.ats.arjuna.utils.Process
     }
 
     private static UUID _theUid = UUID.randomUUID();
-    
+
     private int _pid = -1;
 }

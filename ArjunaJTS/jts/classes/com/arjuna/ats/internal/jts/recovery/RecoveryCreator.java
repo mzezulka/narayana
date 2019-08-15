@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -44,7 +44,7 @@ import com.arjuna.ats.jts.logging.jtsLogger;
 
 class DummyCreator extends RecoveryCreator
 {
-    
+
 public RecoveryCoordinator create (Resource res, Object[] params) throws SystemException
     {
 	throw new NO_IMPLEMENT();
@@ -57,7 +57,7 @@ public void destroy (RecoveryCoordinator rc) throws SystemException
 public void destroyAll (Object[] params) throws SystemException
     {
     }
-    
+
 };
 
 /**
@@ -69,12 +69,12 @@ public void destroyAll (Object[] params) throws SystemException
 
 public abstract class RecoveryCreator
 {
-    
+
 public static final RecoveryCreator getCreator ()
     {
 	if (_theCreator == null)
 	    _theCreator = new DummyCreator();
-    
+
 	return _theCreator;
     }
 
@@ -86,7 +86,7 @@ public static final void setCreator (RecoveryCreator c)
     }
 	else
 	    _theCreator = c;
-	
+
     }
 
 public static final RecoveryCoordinator createRecoveryCoordinator (Resource res, Object[] params) throws SystemException
@@ -107,11 +107,11 @@ public static final void destroyAllRecoveryCoordinators (Object[] params) throws
     {
 	getCreator().destroyAll(params);
     }
-    
+
 protected abstract RecoveryCoordinator create (Resource res, Object[] params) throws SystemException;
 protected abstract void destroy (RecoveryCoordinator rc) throws SystemException;
 protected abstract void destroyAll (Object[] params) throws SystemException;
-    
+
 private static RecoveryCreator _theCreator = null;
- 
+
 }

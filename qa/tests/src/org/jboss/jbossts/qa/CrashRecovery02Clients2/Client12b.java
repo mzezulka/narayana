@@ -97,14 +97,14 @@ public class Client12b
 
 			correct = correct && service1.is_correct();
 			correct = correct && service2.is_correct();
-                        
+
 			/*
 			 * Prepare followed by a crash should eventually resolve to
 			 * a rollback, but we have no way of communicating that to the
 			 * root coordinator or guaranteeing it anyway. So heuristic outcomes
 			 * are the only option now.
 			 */
-			
+
 			try
 			{
 				OTS.current().commit(false);

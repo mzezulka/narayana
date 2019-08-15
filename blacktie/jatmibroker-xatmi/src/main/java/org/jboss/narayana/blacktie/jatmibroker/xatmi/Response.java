@@ -59,7 +59,7 @@ public class Response implements Serializable {
 
     /**
      * Services construct their responses using this constructor.
-     * 
+     *
      * @param rval The value the service wishes to use.
      * @param rcode The code the service wants to respond with.
      * @param buffer The buffer to return.
@@ -74,7 +74,7 @@ public class Response implements Serializable {
 
     /**
      * When a client receives a response this is the method that is used by the core framework to assemble the response.
-     * 
+     *
      * @param cd The connection that actually received the response (may be different to expected if {@link ConnectionImpl#TPGETANY}
      *        was used.
      * @param rval The return value.
@@ -92,7 +92,7 @@ public class Response implements Serializable {
 
     /**
      * Get the return value
-     * 
+     *
      * @return The return value
      */
     public short getRval() {
@@ -101,7 +101,7 @@ public class Response implements Serializable {
 
     /**
      * Get the return code
-     * 
+     *
      * @return The return code
      */
     public int getRcode() {
@@ -110,7 +110,7 @@ public class Response implements Serializable {
 
     /**
      * Get the flags that the service responded with.
-     * 
+     *
      * @return The flags
      */
     public int getFlags() {
@@ -119,7 +119,7 @@ public class Response implements Serializable {
 
     /**
      * Get the buffer that the service responded with.
-     * 
+     *
      * @return The buffer
      */
     public Buffer getBuffer() {
@@ -128,7 +128,7 @@ public class Response implements Serializable {
 
     /**
      * Get the cd of the service that responded (may vary based on <code>Connection#TPGETANY</code>)
-     * 
+     *
      * @return The connection descriptor
      */
     public int getCd() {

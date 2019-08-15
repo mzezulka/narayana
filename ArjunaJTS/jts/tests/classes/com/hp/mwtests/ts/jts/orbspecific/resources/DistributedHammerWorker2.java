@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Arjuna Solutions Limited,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.  
+ * UK.
  *
  * $Id: DistributedHammerWorker2.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -40,20 +40,20 @@ import com.hp.mwtests.ts.jts.utils.Util;
 
 public class DistributedHammerWorker2
 {
-    
+
 public static void incr12 (char thr, int level)
     {
 	boolean res  = false;
 	boolean res1 = false;
 	boolean res2 = false;
-    
+
 	int ran = 0;
 
 	try
 	{
 	    OTSImpleManager.current().begin();
 	    Control control = OTSImpleManager.current().get_control();
-    
+
 	    Util.indent(thr, level);
 	    System.out.println("begin   incr12");
 
@@ -79,7 +79,7 @@ public static void incr12 (char thr, int level)
 	    Util.lowProbYield();
 
 	    control = null;
-	
+
 	    Util.indent(thr, level);
 	    if (res)
 	    {
@@ -109,14 +109,14 @@ public static void incr21 (char thr, int level)
 	boolean res  = false;
 	boolean res1 = false;
 	boolean res2 = false;
-    
+
 	int ran = 0;
 
 	try
 	{
 	    OTSImpleManager.current().begin();
 	    Control control = OTSImpleManager.current().get_control();
-    
+
 	    Util.indent(thr, level);
 	    System.out.println("begin   incr21");
 
@@ -142,7 +142,7 @@ public static void incr21 (char thr, int level)
 	    Util.lowProbYield();
 
 	    control = null;
-    
+
 	    Util.indent(thr, level);
 	    if (res)
 	    {
@@ -172,7 +172,7 @@ public static void get12 (char thr, int level)
 	boolean res  = false;
 	boolean res1 = false;
 	boolean res2 = false;
-    
+
 	IntHolder value1 = new IntHolder(0);
 	IntHolder value2 = new IntHolder(0);
 
@@ -180,7 +180,7 @@ public static void get12 (char thr, int level)
 	{
 	    OTSImpleManager.current().begin();
 	    Control control = OTSImpleManager.current().get_control();
-    
+
 	    Util.indent(thr, level);
 	    System.out.println("begin   get12");
 
@@ -204,7 +204,7 @@ public static void get12 (char thr, int level)
 	    Util.lowProbYield();
 
 	    control = null;
-    
+
 	    Util.indent(thr, level);
 	    if (res)
 	    {
@@ -234,7 +234,7 @@ public static void get21 (char thr, int level)
 	boolean res  = false;
 	boolean res1 = false;
 	boolean res2 = false;
-    
+
 	IntHolder value1 = new IntHolder(0);
 	IntHolder value2 = new IntHolder(0);
 
@@ -242,7 +242,7 @@ public static void get21 (char thr, int level)
 	{
 	    OTSImpleManager.current().begin();
 	    Control control = OTSImpleManager.current().get_control();
-    
+
 	    Util.indent(thr, level);
 	    System.out.println("begin   get21");
 
@@ -258,7 +258,7 @@ public static void get21 (char thr, int level)
 	    {
 		res2 = hammerObject_1.get(value2, control);
 		res  = res2;
-	
+
 		Util.indent(thr, level);
 		System.out.println("part2   get21  : "+res2);
 	    }
@@ -266,7 +266,7 @@ public static void get21 (char thr, int level)
 	    Util.lowProbYield();
 
 	    control = null;
-	    
+
 	    Util.indent(thr, level);
 	    if (res)
 	    {
@@ -350,7 +350,7 @@ public static void randomOperation (char thr, int level)
 		catch (Exception e)
 		{
 		    System.err.println("DistributedHammerWorker2.randomOperation: "+e);
-		}		
+		}
 	    }
 	break;
 	}

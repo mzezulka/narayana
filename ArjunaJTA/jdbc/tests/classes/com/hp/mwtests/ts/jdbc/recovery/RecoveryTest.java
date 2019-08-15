@@ -249,7 +249,7 @@ public class RecoveryTest {
                     ActionManager.manager().remove(uid[0]);
                 }
                 // do not close connection here as H2 does not handle well XA txn
-                // when we close connection with failed transaction and then we want to recover it 
+                // when we close connection with failed transaction and then we want to recover it
                 // failedTxnConnection.close();
             } catch (Throwable t) {
                 fail("Error injecting byteman rule to prepare unfinished xids"

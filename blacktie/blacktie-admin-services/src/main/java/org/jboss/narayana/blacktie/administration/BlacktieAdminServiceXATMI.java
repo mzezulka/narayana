@@ -58,13 +58,13 @@ public class BlacktieAdminServiceXATMI extends MDBBlacktieService implements jav
     /**
      * Create the proxy, it will forward all requests to the "core" proxy who is responsible for invoking the individual XATMI
      * services.
-     * 
+     *
      * @throws ConfigurationException In case the configuration is invalid.
      * @throws ConnectionException
      */
     public BlacktieAdminServiceXATMI() throws ConfigurationException {
         super("BlacktieAdminServiceXATMI");
-        administrationProxy = new AdministrationProxy();     
+        administrationProxy = new AdministrationProxy();
     }
 
     @PostConstruct
@@ -292,7 +292,7 @@ public class BlacktieAdminServiceXATMI extends MDBBlacktieService implements jav
 
     /**
      * List the running ids of a specific server
-     * 
+     *
      * @param serverName The name of the server
      */
     public List<Integer> listRunningInstanceIds(String serverName) {
@@ -308,7 +308,7 @@ public class BlacktieAdminServiceXATMI extends MDBBlacktieService implements jav
 
     /**
      * List the service status for a service
-     * 
+     *
      * @param serverName The name of the server
      * @param serviceName The name of the service
      */
@@ -318,7 +318,7 @@ public class BlacktieAdminServiceXATMI extends MDBBlacktieService implements jav
 
     /**
      * Advertise a new service
-     * 
+     *
      * @param serverName The name of the server
      * @param serviceName The name of the service
      */
@@ -328,7 +328,7 @@ public class BlacktieAdminServiceXATMI extends MDBBlacktieService implements jav
 
     /**
      * Unadvertise a new service
-     * 
+     *
      * @param serverName The name of the server
      * @param serviceName The name of the service
      */
@@ -338,7 +338,7 @@ public class BlacktieAdminServiceXATMI extends MDBBlacktieService implements jav
 
     /**
      * Shutdown a server
-     * 
+     *
      * @param serverName The name of the server
      * @param id The id of the server
      */
@@ -348,7 +348,7 @@ public class BlacktieAdminServiceXATMI extends MDBBlacktieService implements jav
 
     /**
      * Get the service counter and restrict it to a certain server, 0 for all.
-     * 
+     *
      * @param serverName The name of the server
      * @param id The id of the server
      * @param serviceName The name of the service
@@ -359,7 +359,7 @@ public class BlacktieAdminServiceXATMI extends MDBBlacktieService implements jav
 
     /**
      * Get the service counter for the domain.
-     * 
+     *
      * @param serverName The name of the server
      * @param serviceName The name of the service
      */
@@ -377,7 +377,7 @@ public class BlacktieAdminServiceXATMI extends MDBBlacktieService implements jav
 
     /**
      * Reload the server (causes the server to update its configuration and restart.
-     * 
+     *
      * @param serverName The name of the server
      */
     public Boolean reloadServer(String serverName) {
@@ -386,7 +386,7 @@ public class BlacktieAdminServiceXATMI extends MDBBlacktieService implements jav
 
     /**
      * List the status of a service giving an optional id, 0 is all servers.
-     * 
+     *
      * @param serverName The name of the server
      * @param id The id of the server
      * @param serviceName The name of the service

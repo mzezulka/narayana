@@ -68,7 +68,7 @@ public class ReaperElement implements Comparable<ReaperElement>
         _bias = getBiasCounter();
 
 	}
-	
+
 	public String toString ()
 	{
 	    return "ReaperElement < "+_control+", "+_timeout+", "+statusName()+", "+_worker+" >";

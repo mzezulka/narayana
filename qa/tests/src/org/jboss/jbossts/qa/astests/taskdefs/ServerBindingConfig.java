@@ -51,7 +51,7 @@ public class ServerBindingConfig
      *
      * An mbean entry will be inserted into xmlFile with a name specified by bindingName.
      * The file bindingXml will contain an entry with the name bindingName.
-     * 
+     *
      * @param xmlFile   The file that is to recieve the binding service specification
      * @param bindingName The name of the binding definition to use
      * @param bindingXml file name of the file that contains a group of binding definitions

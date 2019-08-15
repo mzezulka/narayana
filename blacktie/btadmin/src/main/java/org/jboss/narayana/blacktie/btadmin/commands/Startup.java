@@ -104,7 +104,7 @@ public class Startup implements Command {
                             ProcessBuilder pb = new ProcessBuilder();
                             pb.command(Arrays.<String>asList(cmdarray));
                             pb.directory(dir);
-                            
+
                             String id = localMachine.getId();
                             String output_fname = id + "-out";
                             String error_fname = id + "-err";

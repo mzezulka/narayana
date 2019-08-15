@@ -1126,11 +1126,11 @@ public interface arjunaI18NLogger {
 	/*
 	 * NOTE re-used old message id and signature in case we ever need to resurrect the above warning.
 	 */
-	
+
 	@Message(id = 12280, value = "ShadowingStore::read_state() - openAndLock failed for {0}", format = MESSAGE_FORMAT)
         @LogMessage(level = WARN)
         public void warn_objectstore_ShadowingStore_5(String arg0);
-	
+
 //	@Message(id = 12281, value = "ShadowingStore.read_state - store invalid!", format = MESSAGE_FORMAT)
 //	@LogMessage(level = WARN)
 //	public void warn_objectstore_ShadowingStore_6();
@@ -1138,16 +1138,16 @@ public interface arjunaI18NLogger {
 	/*
          * NOTE re-used old message id and signature in case we ever need to resurrect the above warning.
          */
-        
+
 	/*
 	 * This should not be a warning message!
 	 * https://issues.jboss.org/browse/JBTM-2593
-	 * 
+	 *
         @Message(id = 12281, value = "ShadowingStore::read_state() - no state found for object instance {0}", format = MESSAGE_FORMAT)
         @LogMessage(level = WARN)
         public void warn_objectstore_ShadowingStore_6(String arg0);
         */
-        
+
 	@Message(id = 12282, value = "ShadowingStore::read_state() failed", format = MESSAGE_FORMAT)
 	@LogMessage(level = WARN)
 	public void warn_objectstore_ShadowingStore_7();
@@ -1518,7 +1518,7 @@ public interface arjunaI18NLogger {
     @LogMessage(level = WARN)
     public void wedged_reaperelement(String arg0);
 
-    @Message(id = 12379, value = "ExpiredTransactionScanner - {0} is assumed complete and will be moved.", format = MESSAGE_FORMAT) 
+    @Message(id = 12379, value = "ExpiredTransactionScanner - {0} is assumed complete and will be moved.", format = MESSAGE_FORMAT)
     @LogMessage(level = WARN)
     public void warn_recovery_ExpiredTransactionStatusManagerScanner_6(Uid arg0);
 
@@ -1551,7 +1551,7 @@ public interface arjunaI18NLogger {
     @Message(id = 12387, value = "Encoding {0} is not supported", format = MESSAGE_FORMAT)
     @LogMessage(level = FATAL)
     public void fatal_encoding_not_supported(String encodingName);
-    
+
     @Message(id = 12388, value = "Encoding {0} is not supported", format = MESSAGE_FORMAT)
     public String get_encoding_not_supported(String encodingName);
 
@@ -1577,6 +1577,6 @@ public interface arjunaI18NLogger {
           By convention methods with String return type have prefix get_,
             all others are log methods and have prefix <level>_
      */
-    
+
 
 }

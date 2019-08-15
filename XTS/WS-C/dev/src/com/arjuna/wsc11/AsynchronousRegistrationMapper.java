@@ -29,20 +29,20 @@ import org.xmlsoap.schemas.soap.envelope.Fault;
 
 /**
  * Class that manages the asynchronous calls when using ReplyTo.
- * 
+ *
  * @author rmartinc
  */
 public class AsynchronousRegistrationMapper {
-    
+
     // the singleton
     private static final AsynchronousRegistrationMapper mapper = new AsynchronousRegistrationMapper();
-    
+
     private Map<String, FaultOrResponse> responses = new HashMap<>();
-    
+
     public static AsynchronousRegistrationMapper getInstance() {
         return mapper;
     }
-    
+
     /**
      * Adds a new messageID that is going to be sent by the client waiting for response.
      * @param messageId The messageID hat is going to be sent
@@ -51,7 +51,7 @@ public class AsynchronousRegistrationMapper {
         WSCLogger.logger.tracev("AsynchronousRegistrationMapper addClientMessage {0}", messageId);
         this.responses.put(messageId, new FaultOrResponse());
     }
-    
+
     public FaultOrResponse waitForResponse(String messageId, long millis) {
         FaultOrResponse res = responses.get(messageId);
         if (res == null) {
@@ -74,7 +74,7 @@ public class AsynchronousRegistrationMapper {
                 res.isResponse(), res.isFault());
         return res;
     }
-    
+
     public void assignResponse(String messageId, RegisterResponseType response) {
         FaultOrResponse res = responses.get(messageId);
         if (res == null) {
@@ -86,7 +86,7 @@ public class AsynchronousRegistrationMapper {
             res.notifyAll();
         }
     }
-    
+
     public void assignFault(String messageId, Fault fault) {
         FaultOrResponse res = responses.get(messageId);
         if (res == null) {
@@ -98,7 +98,7 @@ public class AsynchronousRegistrationMapper {
             res.notifyAll();
         }
     }
-    
+
     public int size() {
         return responses.size();
     }

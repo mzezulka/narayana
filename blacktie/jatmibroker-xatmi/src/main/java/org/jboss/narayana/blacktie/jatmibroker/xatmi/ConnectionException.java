@@ -16,7 +16,7 @@ public class ConnectionException extends Exception {
 
     /**
      * Create a new exception giving it the error code.
-     * 
+     *
      * @param tperrno The error code
      */
     public ConnectionException(int tperrno, String string, Throwable t) {
@@ -26,7 +26,7 @@ public class ConnectionException extends Exception {
 
     /**
      * Create an exception without a root cause
-     * 
+     *
      * @param tperrno The error number
      * @param string The message
      */
@@ -37,7 +37,7 @@ public class ConnectionException extends Exception {
 
     /**
      * Get the error code
-     * 
+     *
      * @return The error code
      */
     public int getTperrno() {

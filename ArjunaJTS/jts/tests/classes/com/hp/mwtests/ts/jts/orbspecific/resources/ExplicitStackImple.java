@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Arjuna Solutions Limited,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.  
+ * UK.
  *
  * $Id: ExplicitStackImple.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -62,11 +62,11 @@ public class ExplicitStackImple extends LockManager implements com.hp.mwtests.ts
 	    array[i] = 0;
 
 	AtomicTransaction A = new AtomicTransaction();
-	
+
 	try
 	{
 	    A.begin();
-	    
+
 	    if (setlock(new Lock(LockMode.WRITE), 0) == LockResult.GRANTED)
 		A.commit(false);
 	    else
@@ -75,7 +75,7 @@ public class ExplicitStackImple extends LockManager implements com.hp.mwtests.ts
 	catch (Exception e1)
 	{
 	    System.err.println(e1);
-	    
+
 	    try
 	    {
 		A.rollback();
@@ -84,7 +84,7 @@ public class ExplicitStackImple extends LockManager implements com.hp.mwtests.ts
 	    {
 		System.err.println(e2);
 	    }
-	    
+
 	    System.exit(1);
 	}
     }
@@ -92,14 +92,14 @@ public class ExplicitStackImple extends LockManager implements com.hp.mwtests.ts
     public ExplicitStackImple (Uid uid)
     {
 	super(uid);
-	
+
 	top = 0;
 
 	for (int i = 0; i < ARRAY_SIZE; i++)
 	    array[i] = 0;
 
 	AtomicTransaction A = new AtomicTransaction();
-	
+
 	try
 	{
 	    A.begin();
@@ -121,7 +121,7 @@ public class ExplicitStackImple extends LockManager implements com.hp.mwtests.ts
 	    {
 		System.err.println(e2);
 	    }
-	    
+
 	    System.exit(1);
 	}
     }
@@ -149,7 +149,7 @@ public class ExplicitStackImple extends LockManager implements com.hp.mwtests.ts
 	}
 
 	String name = OTSImpleManager.current().get_transaction_name();
-	
+
 	System.out.println("Created push interposed transaction: "+name);
 
 	name = null;
@@ -188,12 +188,12 @@ public class ExplicitStackImple extends LockManager implements com.hp.mwtests.ts
 	    {
 		System.err.println(e2);
 	    }
-	    
+
 	    res = -1;
 	}
 
 	inter.unregisterTransaction();
-	
+
 	return res;
     }
 
@@ -214,7 +214,7 @@ public class ExplicitStackImple extends LockManager implements com.hp.mwtests.ts
 	}
 
 	String name = OTSImpleManager.current().get_transaction_name();
-	
+
 	System.out.println("Created pop interposed transaction: "+name);
 
 	name = null;
@@ -255,7 +255,7 @@ public class ExplicitStackImple extends LockManager implements com.hp.mwtests.ts
 	    {
 		System.err.println(e2);
 	    }
-	    
+
 	    res = -1;
 	}
 
@@ -271,25 +271,25 @@ public class ExplicitStackImple extends LockManager implements com.hp.mwtests.ts
 	try
 	{
 	    A.begin();
-    
+
 	    if (setlock(new Lock(LockMode.WRITE), 0) == LockResult.GRANTED)
 	    {
 		if (top > 0)
 		{
 		    System.out.println("\nContents of stack:");
-	
+
 		    for (int i = 0; i < top; i++)
 			System.out.println("\t"+array[i]);
 		}
 		else
 		    System.out.println("\nStack is empty.");
-		
+
 		A.commit(false);
 	    }
 	    else
 	    {
 		System.out.println("printStack: could not set WRITE lock.");
-		
+
 		A.rollback();
 	    }
 	}
@@ -310,7 +310,7 @@ public class ExplicitStackImple extends LockManager implements com.hp.mwtests.ts
     {
 	if (!super.save_state(objectState, ot))
 	    return false;
-	
+
 	try
 	{
 	    objectState.packInt(top);
@@ -332,14 +332,14 @@ public class ExplicitStackImple extends LockManager implements com.hp.mwtests.ts
     {
 	if (!super.restore_state(objectState, ot))
 	    return false;
-	
+
 	try
 	{
 	    top = objectState.unpackInt();
 
 	    for (int j = 0; j < ARRAY_SIZE; j++)
 		array[j] = 0;
-    
+
 	    for (int i = 0; i < top; i++)
 	    {
 		array[i] = objectState.unpackInt();
@@ -362,6 +362,6 @@ public class ExplicitStackImple extends LockManager implements com.hp.mwtests.ts
 
     private int[] array = new int[ARRAY_SIZE];
     private int top;
-    
+
 }
 

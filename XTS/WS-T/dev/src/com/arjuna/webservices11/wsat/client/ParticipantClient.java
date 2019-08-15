@@ -161,7 +161,7 @@ public class ParticipantClient
         } else {
             address = map.getTo();
         }
-        
+
         if (address.startsWith("https")) {
             return secureCoordinator;
         } else {

@@ -42,7 +42,7 @@ public enum ASFailureType implements Serializable
     ,SYNCH_BEFORE   // do something before completion
     ,SYNCH_AFTER
     ;
-    
+
     public static ASFailureType toEnum(String type)
     {
         return ASFailureType.valueOf(type.toUpperCase());

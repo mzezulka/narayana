@@ -55,14 +55,14 @@ public class CrashRecovery
         // the thread sequence we need
 
         // set the smallest possible backoff period so we don't have to wait too long for the test to run
-        
+
         recoveryPropertyManager.getRecoveryEnvironmentBean().setRecoveryBackoffPeriod(1);
 
         // start the recovery manager
 
         RecoveryManager.manager().initialize();
 
-        // ok, now drive a TX to completion. the script should ensure that the recovery 
+        // ok, now drive a TX to completion. the script should ensure that the recovery
 
         XAResource firstResource = new CrashXAResource();
         XAResource secondResource = new CrashXAResource();

@@ -377,7 +377,7 @@ public class ParticipantCompletionCoordinatorProcessorImpl extends ParticipantCo
             {
                 WSTLogger.logger.tracev("GetStatus called on unknown coordinator: {0}", new Object[] {instanceIdentifier}) ;
             }
-            
+
             // send an invalid state fault
 
             final String messageId = MessageId.getMessageId();

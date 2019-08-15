@@ -106,7 +106,7 @@ public class ConnectionImpl implements Connection {
 
 	/**
 	 * The connection
-	 * 
+	 *
 	 * @param connectionFactory
 	 *            The connection factory that created this connection.
 	 * @param properties
@@ -124,7 +124,7 @@ public class ConnectionImpl implements Connection {
 
 	/**
 	 * Allocate a new buffer
-	 * 
+	 *
 	 * @param type
 	 *            The type of the buffer
 	 * @param subtype
@@ -161,7 +161,7 @@ public class ConnectionImpl implements Connection {
 
 	/**
 	 * Synchronous call.
-	 * 
+	 *
 	 * @param svc
 	 *            The name of the service to call
 	 * @param buffer
@@ -188,7 +188,7 @@ public class ConnectionImpl implements Connection {
 
 	/**
 	 * Asynchronous call
-	 * 
+	 *
 	 * @param svc
 	 *            The name of the service to call
 	 * @param toSend
@@ -268,7 +268,7 @@ public class ConnectionImpl implements Connection {
 
 	/**
 	 * Cancel the outstanding asynchronous call.
-	 * 
+	 *
 	 * @param cd
 	 *            The connection descriptor
 	 * @throws ConnectionException
@@ -294,7 +294,7 @@ public class ConnectionImpl implements Connection {
 
 	/**
 	 * Get the reply for an asynchronous call.
-	 * 
+	 *
 	 * @param cd
 	 *            The connection descriptor to use
 	 * @param flags
@@ -355,7 +355,7 @@ public class ConnectionImpl implements Connection {
 
 	/**
 	 * Handle the initiation of a conversation with the server.
-	 * 
+	 *
 	 * @param svc
 	 *            The name of the service
 	 * @param toSend
@@ -452,7 +452,7 @@ public class ConnectionImpl implements Connection {
 
 	/**
 	 * Close any resources associated with this connection
-	 * 
+	 *
 	 * @throws ConnectionException
 	 *             If an open session cannot be cancelled or disconnected.
 	 */
@@ -512,7 +512,7 @@ public class ConnectionImpl implements Connection {
 
 	/**
 	 * Retrieve a response.
-	 * 
+	 *
 	 * @param cd
 	 *            The connection descriptor
 	 * @param flags
@@ -564,7 +564,7 @@ public class ConnectionImpl implements Connection {
 	/**
 	 * Used by the service side to create a session for handling the client
 	 * request.
-	 * 
+	 *
 	 * @param name
 	 *            The name of the service.
 	 * @param cd
@@ -592,7 +592,7 @@ public class ConnectionImpl implements Connection {
 	/**
 	 * Does this connection have any open sessions? Used to determine if a
 	 * service has unanswered requests prior to a tpreturn.
-	 * 
+	 *
 	 * @return True, if there are open conversations or asynchronous XATMI calls
 	 *         open.
 	 */
@@ -602,7 +602,7 @@ public class ConnectionImpl implements Connection {
 
 	/**
 	 * Detach the open session, called during {@link SessionImpl#close()}
-	 * 
+	 *
 	 * @param session
 	 *            The session that is closing.
 	 */

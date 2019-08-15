@@ -33,7 +33,7 @@ import junit.framework.TestCase;
 
 /**
  * Unit tests for the Class class.
- * 
+ *
  * @author Mark Little
  */
 
@@ -93,7 +93,7 @@ public class ProxyUnitTest extends TestCase
         Sample proxy = theContainer.enlist(tester);
 
         assertNotNull(proxy);
-        
+
         proxy.myWork();
         proxy.doSomeWork();
         proxy.doSomeOtherWork();

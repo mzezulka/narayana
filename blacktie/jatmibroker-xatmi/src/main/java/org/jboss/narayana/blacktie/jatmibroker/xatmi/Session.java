@@ -24,7 +24,7 @@ import org.jboss.narayana.blacktie.jatmibroker.core.conf.ConfigurationException;
  * <code>Connection</code> invocation for a client or retrieved from the
  * TPSVCINFO structure for a service (assuming the service was invoked within
  * the scope of a tpconnect).
- * 
+ *
  * It is used to send and retrieve data:
  * Connection#tpconnect(String, Buffer, int, int) TPSVCINFO#getSession()
  */
@@ -32,7 +32,7 @@ public interface Session {
 
 	/**
 	 * Send a buffer to a remote server in a conversation
-	 * 
+	 *
 	 * @param toSend
 	 *            The outbound data
 	 * @param flags
@@ -44,7 +44,7 @@ public interface Session {
 
 	/**
 	 * Received the next response in a conversation
-	 * 
+	 *
 	 * @param flags
 	 *            The flags to use
 	 * @return The next response

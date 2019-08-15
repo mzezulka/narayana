@@ -98,7 +98,7 @@ public class TestBARecoveryModule implements XTSBARecoveryModule
             // using serialization
             throw new Exception("xts service test : invalid request to recreate() WS-BA coordinator completion participant " + id);
         }
-        
+
         return null;
     }
 

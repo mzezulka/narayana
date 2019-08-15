@@ -69,7 +69,7 @@ public class ParticipantStoreBean extends TxLogBean implements ParticipantStoreB
 	public boolean commit_state (Uid u, String tn) throws ObjectStoreException {
 		return ps.commit_state (u, tn);
 	}
-    
+
 	public ObjectStateWrapper read_committed (Uid u, String tn) throws ObjectStoreException {
 		InputObjectState ios = ps.read_committed (u, tn);
         return new ObjectStateWrapper(ios);

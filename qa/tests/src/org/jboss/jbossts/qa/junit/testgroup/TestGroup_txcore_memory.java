@@ -155,7 +155,7 @@ public class TestGroup_txcore_memory extends TestGroupBase
 	}
 
     /////////////////////////////////////////////////////
-    
+
 	@Test public void StateManager_Memory_Test001()
 	{
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.StateManager.client.MemoryClient001.class, "$(CALLS)", "1", "999");

@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -53,7 +53,7 @@ import com.arjuna.orbportability.orb.PreShutdown;
  * An attempt at some ORB portable ways of interacting with the ORB. NOTE:
  * initORB *must* be called if you want to use the pre- and post- initialisation
  * mechanisms.
- * 
+ *
  * @author Mark Little (mark@arjuna.com), Richard Begg (richard.begg@arjuna.com)
  * @version $Id: ORB.java 2342 2006-03-30 13:06:17Z $
  * @since JTS 1.0.
@@ -246,12 +246,12 @@ public class ORB
     /**
      * Shutdown the ORB asynchronously.
      */
-    
+
     public synchronized void shutdown ()
     {
         shutdown(false);
     }
-    
+
     /**
      * Shutdown the ORB. Define whether this should be sync or async.
      */
@@ -474,7 +474,7 @@ public class ORB
     /**
      * Retrieve an ORB instance given a unique name, if an ORB instance with
      * this name doesn't exist then create it.
-     * 
+     *
      * @param uniqueId
      *            The name of the ORB instance to retrieve.
      * @return The ORB instance refered to by the name given.

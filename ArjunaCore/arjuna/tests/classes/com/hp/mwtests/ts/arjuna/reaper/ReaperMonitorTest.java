@@ -44,14 +44,14 @@ public class ReaperMonitorTest
             notify();
             notified = true;
         }
-        
+
         public synchronized void markedRollbackOnly (Uid txId)
         {
             success = false;
             notify();
             notified = true;
         }
-        
+
         public boolean success = false;
         public boolean notified = false;
 
@@ -68,15 +68,15 @@ public class ReaperMonitorTest
             return success;
         }
     }
-    
+
     @Test
     public void test()
     {
         TransactionReaper reaper = TransactionReaper.transactionReaper();
         DummyMonitor listener = new DummyMonitor();
-       
+
         reaper.addListener(listener);
-        
+
         AtomicAction A = new AtomicAction();
 
         A.begin();

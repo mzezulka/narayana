@@ -137,7 +137,7 @@ public class TransportImpl implements Transport {
         log.debug("Created sender");
         return sender;
     }
-    
+
     public Sender createSender(Receiver receiver) throws ConnectionException {
         return new SocketSenderImpl((Socket)receiver.getEndpoint(), (String)receiver.getReplyTo());
     }
@@ -186,12 +186,12 @@ public class TransportImpl implements Transport {
         }
 	return null;
     }
-    
+
     public Receiver createReceiver(Sender sender) throws ConnectionException {
         if(sender == null) {
             log.debug("no need to create on empty sender");
             return null;
-        } 
+        }
         return new SocketReceiverImpl((Socket)sender.getEndpoint(), (String)sender.getSendTo(), properties);
     }
 }

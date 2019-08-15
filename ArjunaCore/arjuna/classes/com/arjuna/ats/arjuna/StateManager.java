@@ -74,7 +74,7 @@ import io.opentracing.util.GlobalTracer;
 /**
  * The root of the Arjuna class hierarchy. This class provides state management
  * facilities than can be automatically used by other classes by inheritance.
- * 
+ *
  * @author Mark Little (mark@arjuna.com)
  * @version $Id: StateManager.java 2342 2006-03-30 13:06:17Z $
  * @since JTS 1.0.
@@ -87,7 +87,7 @@ public class StateManager {
 	 * packing and unpacking an object's state to/from a state buffer. StateManager
 	 * calls them at appropriate times during the lifetime of the object, and may
 	 * then pass the buffer to a persistent object store for saving.
-	 * 
+	 *
 	 * If a derived class calls super.save_state then it must be called before
 	 * packing any other data item.
 	 *
@@ -119,7 +119,7 @@ public class StateManager {
 	 * packing and unpacking an object's state to/from a state buffer. StateManager
 	 * calls them at appropriate times during the lifetime of the object, and may
 	 * then pass the buffer to a persistent object store for saving.
-	 * 
+	 *
 	 * Data items must be unpacked in the same order that they were packed.
 	 *
 	 * @return <code>true</code> on success, <code>false</code> otherwise.
@@ -148,7 +148,7 @@ public class StateManager {
 	 * store (so-called new persistent objects) are unaffected by this function.
 	 * Returns false if PASSIVE object cannot be loaded from object store, true
 	 * otherwise. The root of the object store is taken as <code>null</code>.
-	 * 
+	 *
 	 * @return <code>true</code> on success, <code>false</code> otherwise.
 	 * @see com.arjuna.ats.arjuna.objectstore.ObjectStore
 	 */
@@ -168,7 +168,7 @@ public class StateManager {
 	 * store (so-called new persistent objects) are unaffected by this function.
 	 * Returns false if PASSIVE object cannot be loaded from object store, true
 	 * otherwise.
-	 * 
+	 *
 	 * @return <code>true</code> on success, <code>false</code> otherwise.
 	 * @see com.arjuna.ats.arjuna.objectstore.ObjectStore
 	 */
@@ -323,7 +323,7 @@ public class StateManager {
 	 * whether the object's state should be committed or written as a shadow. The
 	 * root of the object store is <code>null</code>. It is assumed that this is
 	 * being called during a transaction commit.
-	 * 
+	 *
 	 * @return <code>true</code> on success, <code>false</code> otherwise.
 	 */
 
@@ -336,7 +336,7 @@ public class StateManager {
 	 * manner to the activate operation, but has an extra argument which defines
 	 * whether the object's state should be commited now or not. It is assumed that
 	 * this is being called during a transaction commit.
-	 * 
+	 *
 	 * @return <code>true</code> on success, <code>false</code> otherwise.
 	 */
 
@@ -348,7 +348,7 @@ public class StateManager {
 	 * This operation deactivates a persistent object. It behaves in a similar
 	 * manner to the activate operation, but has an extra argument which defines
 	 * whether the object's state should be commited now or not.
-	 * 
+	 *
 	 * @return <code>true</code> on success, <code>false</code> otherwise.
 	 */
 
@@ -431,7 +431,7 @@ public class StateManager {
 	 * Destroy the object (e.g., remove its state from the persistent store.) Calls
 	 * to destroy for volatile objects (ones not maintained within the volatile
 	 * object store) are ignored, and FALSE is returned.
-	 * 
+	 *
 	 * @return <code>true</code> on success, <code>false</code> otherwise.
 	 */
 
@@ -543,7 +543,7 @@ public class StateManager {
 
 	/**
 	 * Pack the necessary information for crash recovery.
-	 * 
+	 *
 	 * @since JTS 2.1.
 	 */
 
@@ -591,7 +591,7 @@ public class StateManager {
 
 	/**
 	 * Unpack the crash recovery state header information and return it.
-	 * 
+	 *
 	 * @since JTS 2.1.
 	 * @param os the identity of the transaction that last caused the state to be
 	 *           written to the object store.
@@ -711,7 +711,7 @@ public class StateManager {
 	/**
 	 * The object's state is about to be modified, and StateManager should take a
 	 * snapshot of the state if the object is being used within a transaction.
-	 * 
+	 *
 	 * @return <code>true</code> on success, <code>false</code> otherwise.
 	 */
 
@@ -811,7 +811,7 @@ public class StateManager {
 	/**
 	 * Object cleanup. Attempt sane cleanup when object is deleted. Handle perverse
 	 * cases where multiple actions are still active as object dies.
-	 * 
+	 *
 	 * @param fromTerminate indicates whether this method is being called from the
 	 *                      <code>terminate</code> method, or from elsewhere.
 	 * @see StateManager#terminate
@@ -931,7 +931,7 @@ public class StateManager {
 
 	/**
 	 * Make sure the object store is set up, if required.
-	 * 
+	 *
 	 * @param rootName indicates the root of the object store.
 	 */
 
@@ -983,7 +983,7 @@ public class StateManager {
 		} else {
 			/*
 			 * TODO
-			 * 
+			 *
 			 * Figure out how (and if) this needs to go into StoreManager.
 			 */
 
@@ -999,7 +999,7 @@ public class StateManager {
 
 	/**
 	 * Do we need to load the object's state?
-	 * 
+	 *
 	 * @return <code>true</code> if the object state should be loaded,
 	 *         <code>false</code> otherwise.
 	 */

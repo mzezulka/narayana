@@ -61,7 +61,7 @@ public class LocalCleanupSynchronization implements com.arjuna.ats.arjuna.coordi
     /**
      * status is ActionStatus
      */
-    
+
     public boolean afterCompletion (int status)
     {
 	_tx.shutdown();

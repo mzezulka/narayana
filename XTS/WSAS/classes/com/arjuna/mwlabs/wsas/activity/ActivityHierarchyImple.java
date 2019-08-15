@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -52,7 +52,7 @@ public class ActivityHierarchyImple implements ActivityHierarchy
     public ActivityHierarchyImple (ActivityImple current)
     {
 	_hierarchy = new Stack();
-	
+
 	if (current != null)
 	{
 	    ActivityImple[] hierarchy = current.hierarchy();
@@ -65,7 +65,7 @@ public class ActivityHierarchyImple implements ActivityHierarchy
 	else
 	    _valid = false;
     }
-    
+
     /**
      * @return the number of activities associated with this stack.
      */
@@ -74,7 +74,7 @@ public class ActivityHierarchyImple implements ActivityHierarchy
     {
 	return _hierarchy.size();
     }
-    
+
     /**
      * @return whether or not this is a valid context. If a single entry in
      * the context is invalid then we assume the entire context is.
@@ -150,7 +150,7 @@ public class ActivityHierarchyImple implements ActivityHierarchy
 		if (obj instanceof ActivityHierarchyImple)
 		{
 		    ActivityHierarchyImple compare = (ActivityHierarchyImple) obj;
-		    
+
 		    if (_hierarchy.size() == compare._hierarchy.size())
 		    {
 			for (int i = 0; i < _hierarchy.size(); i++)
@@ -160,7 +160,7 @@ public class ActivityHierarchyImple implements ActivityHierarchy
 				return false;
 			    }
 			}
-			
+
 			return true;
 		    }
 		}
@@ -168,7 +168,7 @@ public class ActivityHierarchyImple implements ActivityHierarchy
 		    return true;
 	    }
 	}
-	
+
 	return false;
     }
 
@@ -187,7 +187,7 @@ public class ActivityHierarchyImple implements ActivityHierarchy
     public String toString ()
     {
 	String toReturn = "Activity context:";
-	
+
 	if ((_hierarchy == null) || (_hierarchy.size() == 0))
 	    toReturn += " null";
 	else
@@ -198,20 +198,20 @@ public class ActivityHierarchyImple implements ActivityHierarchy
 
 	return toReturn;
     }
-	
+
     protected ActivityHierarchyImple (ActivityHierarchyImple toCopy)
     {
 	_hierarchy = null;
 	_valid = false;
-	
+
 	if (toCopy != null)
 	{
 	    int copySize = toCopy._hierarchy.size();
-	    
+
 	    if (copySize > 0)
 	    {
 		_hierarchy = new Stack();
-	    
+
 		for (int i = 0; i < copySize; i++)
 		{
 		    /*
@@ -225,8 +225,8 @@ public class ActivityHierarchyImple implements ActivityHierarchy
 	    }
 	}
     }
-    
+
     private Stack   _hierarchy;
     private boolean _valid;
-    
+
 }

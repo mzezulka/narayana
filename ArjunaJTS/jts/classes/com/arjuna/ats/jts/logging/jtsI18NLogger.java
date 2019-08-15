@@ -1039,7 +1039,7 @@ public interface jtsI18NLogger {
     @Message(id = 22252, value = "Failed to remove old ObjectStore entry", format = MESSAGE_FORMAT)
     @LogMessage(level = WARN)
     public void warn_recoveredServerTransaction_removeOldStoreEntry(@Cause() Throwable arg0);
-    
+
 	@Message(id = 22253, value = "A client-side request interceptor already exists with that name.", format = MESSAGE_FORMAT)
 	public String get_orbspecific_jacorb_interceptors_context_cie();
 
@@ -1062,11 +1062,11 @@ public interface jtsI18NLogger {
     @Message(id = 22259, value = "ExtendedResourceRecord detected that the remote side had cleaned up, assuming 1PC resource", format = MESSAGE_FORMAT)
     @LogMessage(level = WARN)
     public void warn_1pc_commit_one();
-    
+
     @Message(id = 22260, value = "{0} caught exception", format = MESSAGE_FORMAT)
     @LogMessage(level = DEBUG)
     public void debug_orbspecific_interposition_resources_arjuna_generror(String arg0, @Cause() Throwable arg1);
- 
+
     @Message(id = 22261, value = "ServerTopLevelAction detected that the transaction was inactive", format = MESSAGE_FORMAT)
     @LogMessage(level = WARN)
     public void warn_server_top_level_action_inactive();

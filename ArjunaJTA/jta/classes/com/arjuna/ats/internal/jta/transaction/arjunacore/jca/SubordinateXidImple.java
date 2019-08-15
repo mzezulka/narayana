@@ -50,7 +50,7 @@ public class SubordinateXidImple extends XidImple {
 	/**
 	 * Generate the hash code for the xid, subordinates are diffed on the gtrid
 	 * only.
-	 * 
+	 *
 	 * @param xid
 	 *            The xid.
 	 * @return The hash code.

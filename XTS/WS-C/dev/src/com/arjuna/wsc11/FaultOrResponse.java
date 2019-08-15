@@ -33,7 +33,7 @@ public class FaultOrResponse {
 
     private RegisterResponseType response;
     private Fault fault;
-    
+
     public FaultOrResponse() {
         this.response = null;
         this.fault = null;

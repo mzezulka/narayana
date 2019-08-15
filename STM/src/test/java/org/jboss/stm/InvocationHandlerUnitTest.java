@@ -35,7 +35,7 @@ import junit.framework.TestCase;
 
 /**
  * Unit tests for the Class class.
- * 
+ *
  * @author Mark Little
  */
 
@@ -71,7 +71,7 @@ public class InvocationHandlerUnitTest extends TestCase
         public boolean writeValue ()
         {
             _isState++;
-            
+
             return true;
         }
 
@@ -97,10 +97,10 @@ public class InvocationHandlerUnitTest extends TestCase
         Sample proxy = theContainer.enlist(tester);
 
         assertNotNull(proxy);
-        
+
         proxy.writeValue();
     }
-    
+
     @SuppressWarnings(value={"unused"})
     public void testTxWriteLockCommit () throws Throwable
     {
@@ -108,20 +108,20 @@ public class InvocationHandlerUnitTest extends TestCase
         SampleLockable tester = new SampleLockable();
         boolean success = true;
         Sample proxy = theContainer.enlist(tester);
-        
+
         assertNotNull(proxy);
-        
+
         AtomicAction act = new AtomicAction();
-        
+
         act.begin();
-        
+
         proxy.writeValue();
-        
+
         act.commit();
-        
+
         assertEquals(proxy.readValue(), 1);
     }
-    
+
     @SuppressWarnings(value={"unused"})
     public void testTxWriteLockRollback () throws Throwable
     {
@@ -129,17 +129,17 @@ public class InvocationHandlerUnitTest extends TestCase
         SampleLockable tester = new SampleLockable();
         boolean success = true;
         Sample proxy = theContainer.enlist(tester);
-        
+
         assertNotNull(proxy);
-        
+
         AtomicAction act = new AtomicAction();
 
         act.begin();
-        
+
         proxy.writeValue();
 
         act.abort();
-        
+
         assertEquals(proxy.readValue(), 0);
     }
 }

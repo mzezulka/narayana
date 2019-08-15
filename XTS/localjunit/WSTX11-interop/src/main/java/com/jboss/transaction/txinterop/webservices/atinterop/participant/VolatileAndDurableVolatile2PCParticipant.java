@@ -38,7 +38,7 @@ public class VolatileAndDurableVolatile2PCParticipant extends ParticipantAdapter
      * The current coordination context.
      */
     private final CoordinationContextType coordinationContext ;
-    
+
     /**
      * Construct the participant.
      * @param coordinationContext The coordination context.
@@ -47,7 +47,7 @@ public class VolatileAndDurableVolatile2PCParticipant extends ParticipantAdapter
     {
         this.coordinationContext = coordinationContext ;
     }
-    
+
     /**
      * Vote to prepare.
      */
@@ -63,5 +63,5 @@ public class VolatileAndDurableVolatile2PCParticipant extends ParticipantAdapter
             throw new SystemException(th.getMessage()) ;
         }
         return new ReadOnly() ;
-    }    
+    }
 }

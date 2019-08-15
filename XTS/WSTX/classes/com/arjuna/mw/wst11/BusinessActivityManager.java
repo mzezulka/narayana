@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -57,7 +57,7 @@ public abstract class BusinessActivityManager
      * The manager.
      */
     private static BusinessActivityManager MANAGER ;
-    
+
     /**
      * Get the business activity manager.
      * @return The business activity manager.
@@ -66,7 +66,7 @@ public abstract class BusinessActivityManager
     {
         return MANAGER ;
     }
-    
+
     /**
      * Set the business activity manager.
      * @param manager The business activity manager.
@@ -95,7 +95,7 @@ public abstract class BusinessActivityManager
         throws WrongStateException, UnknownTransactionException, SystemException;
 
     /**
-     * The resume method can be used to (re-)associate a thread with a 
+     * The resume method can be used to (re-)associate a thread with a
      * transaction(s) via its TxContext. Prior to association, the thread is
      * disassociated with any transaction(s) with which it may be currently
      * associated. If the TxContext is null, then the thread is associated with
@@ -116,7 +116,7 @@ public abstract class BusinessActivityManager
      */
     public abstract TxContext suspend()
         throws SystemException;
-    
+
     /**
      * The currentTransaction method returns the TxContext for the current
      * transaction, or null if there is none. Unlike suspend, this method does
@@ -126,5 +126,5 @@ public abstract class BusinessActivityManager
      */
     public abstract TxContext currentTransaction()
         throws SystemException;
-    
+
 }

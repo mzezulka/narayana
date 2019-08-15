@@ -36,26 +36,26 @@ public class SynchronizationUnitTest
     {
         AtomicAction A = new AtomicAction();
         SyncRecord sr = new SyncRecord();
-        
+
         A.begin();
-        
+
         assertEquals(A.addSynchronization(sr), AddOutcome.AR_ADDED);
         assertEquals(A.getSynchronizations().size(), 1);
-        
+
         A.commit();
-        
+
         assertTrue(sr.called());
     }
-    
+
     @Test
     public void testInvalid () throws Exception
     {
         AtomicAction A = new AtomicAction();
-        
+
         A.begin();
-        
+
         assertEquals(A.addSynchronization(null), AddOutcome.AR_REJECTED);
-        
+
         A.abort();
     }
 }

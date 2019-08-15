@@ -43,7 +43,7 @@ public interface TransactionHelper {
     /**
      * Register synchronization with a current transaction. If error occurs wrap an original exception with
      * {@link JMSException}.
-     * 
+     *
      * @param synchronization synchronization to be registered.
      * @throws JMSException if error occurred registering synchronization
      *   that occurs when transaction service fails in an unexpected way
@@ -54,7 +54,7 @@ public interface TransactionHelper {
 
     /**
      * Enlist XA resource to a current transaction. If error occurs wrap an original exception with {@link JMSException}.
-     * 
+     *
      * @param xaResource resource to be enlisted.
      * @throws JMSException if error occurred enlisting resource
      *   that occurs when transaction service fails in an unexpected way
@@ -65,7 +65,7 @@ public interface TransactionHelper {
 
     /**
      * Delist XA resource from a current transaction. If error occurs wrap an original exception with {@link JMSException}.
-     * 
+     *
      * @param xaResource resource to be delisted.
      * @throws JMSException if error occurred delisting resource.
      *   that occurs when transaction service fails in an unexpected way

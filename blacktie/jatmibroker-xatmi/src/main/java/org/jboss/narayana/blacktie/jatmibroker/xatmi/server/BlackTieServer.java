@@ -65,7 +65,7 @@ public class BlackTieServer {
 
     /**
      * Initialize the server
-     * 
+     *
      * @param serverName The name of the server
      * @throws ConfigurationException If the server does not exist
      * @throws ConnectionException If the server cannot connect to the infrastructure configured
@@ -104,7 +104,7 @@ public class BlackTieServer {
 
     /**
      * Advertise a blacktie service with the specified name
-     * 
+     *
      * @param serviceName The name of the service
      * @throws ConnectionException If the service cannot be advertised
      */
@@ -133,7 +133,7 @@ public class BlackTieServer {
 
     /**
      * Unadvertise the service by name.
-     * 
+     *
      * @param serviceName The name of the service to unadverise.
      * @throws ConnectionException If the service cannot be unadvertised.
      */
@@ -148,7 +148,7 @@ public class BlackTieServer {
 
     /**
      * Shutdown the server
-     * 
+     *
      * @throws ConnectionException If one of the services cannot disconnect
      */
     public void shutdown() throws ConnectionException {

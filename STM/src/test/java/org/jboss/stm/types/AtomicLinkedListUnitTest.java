@@ -37,7 +37,7 @@ import junit.framework.TestCase;
 
 /**
  * Unit tests for the Class class.
- * 
+ *
  * @author Mark Little
  */
 
@@ -49,7 +49,7 @@ public class AtomicLinkedListUnitTest extends TestCase
         @ReadLock
         public String nodeName ();
     }
-    
+
     @Transactional
     public class LinkedListEntry implements ExtendedAtomicLinkedList
     {
@@ -57,12 +57,12 @@ public class AtomicLinkedListUnitTest extends TestCase
         {
             _nodeName = name;
         }
-        
+
         public final String nodeName ()
         {
             return _nodeName;
         }
-        
+
         @Override
         public AtomicLinkedList getNext ()
         {
@@ -86,46 +86,46 @@ public class AtomicLinkedListUnitTest extends TestCase
         {
             _prev = n;
         }
-        
+
         @State
         private AtomicLinkedList _prev;
-        
+
         @State
         private AtomicLinkedList _next;
-        
+
         @State
         private String _nodeName = "";
     }
-    
+
     public void testLinkedList () throws Exception
     {
         ExtendedAtomicLinkedList ni1 = new LinkedListEntry("one");
         ExtendedAtomicLinkedList ni2 = new LinkedListEntry("two");
         ExtendedAtomicLinkedList ni3 = new LinkedListEntry("three");
         AtomicAction A = new AtomicAction();
-        
+
         ExtendedAtomicLinkedList h1 = theContainer.enlist(ni1);
         ExtendedAtomicLinkedList h2 = theContainer.enlist(ni2);
         ExtendedAtomicLinkedList h3 = theContainer.enlist(ni3);
-        
+
         h1.setNext(h2);
         h2.setPrev(h1);
-        
+
         assertEquals(h1.getPrev(), null);
         assertEquals(((ExtendedAtomicLinkedList)h2.getPrev()).nodeName(), h1.nodeName());
-        
+
         A.begin();
-        
+
         h1.setNext(h3);
         h2.setPrev(null);
         h3.setPrev(h1);
-        
+
         A.abort();
-        
+
         assertEquals(((ExtendedAtomicLinkedList)h1.getNext()).nodeName(), h2.nodeName());
         assertEquals(h1.getPrev(), null);
         assertEquals(((ExtendedAtomicLinkedList)h2.getPrev()).nodeName(), h1.nodeName());
     }
-    
+
     public RecoverableContainer<ExtendedAtomicLinkedList> theContainer = new RecoverableContainer<ExtendedAtomicLinkedList>();
 }

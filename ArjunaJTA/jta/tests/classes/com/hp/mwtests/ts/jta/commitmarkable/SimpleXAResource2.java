@@ -29,7 +29,7 @@ import javax.transaction.xa.Xid;
 public class SimpleXAResource2 implements XAResource {
 
     private List<Xid> xids = new ArrayList<Xid>();
-    
+
 	private static boolean rollbackCalled;
 	private static boolean commitCalled;
 	private static boolean errorOnNextRollback;

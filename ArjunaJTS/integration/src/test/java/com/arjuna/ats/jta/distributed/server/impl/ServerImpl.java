@@ -267,7 +267,7 @@ public class ServerImpl implements LocalServer {
 	public ProxyXAResource generateProxyXAResource(String remoteServerName, Xid migratedXid) throws SystemException, IOException {
 		return new ProxyXAResource(nodeName, remoteServerName, migratedXid, false);
 	}
-	
+
 	@Override
     public ProxyXAResource generateProxyXAResource(String remoteServerName, Xid migratedXid, boolean handleError) throws SystemException, IOException {
         return new ProxyXAResource(nodeName, remoteServerName, migratedXid, handleError);

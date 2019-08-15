@@ -39,7 +39,7 @@ import java.util.List;
 /**
  * A general purpose web service used to test the WSAT and WSBA services. It implements
  * a single service method which accepts a command list and returns a reesult list. This
- * can be used to register participants and script their behaviour.  
+ * can be used to register participants and script their behaviour.
  */
 @WebService(targetNamespace = "http://jbossts.jboss.org/xts/servicetests/generated",
         wsdlLocation = "WEB-INF/wsdl/xtsservicetests.wsdl",

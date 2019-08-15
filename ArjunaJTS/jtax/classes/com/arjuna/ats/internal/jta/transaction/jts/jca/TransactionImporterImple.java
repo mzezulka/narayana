@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -47,19 +47,19 @@ import org.jboss.tm.TransactionImportResult;
 
 public class TransactionImporterImple implements TransactionImporter
 {
-	
+
 	/**
 	 * Create a subordinate transaction associated with the
 	 * global transaction inflow. No timeout is associated with the
 	 * transaction.
-	 * 
+	 *
 	 * @param xid the global transaction.
-	 * 
+	 *
 	 * @return the subordinate transaction.
-	 * 
+	 *
 	 * @throws XAException thrown if there are any errors.
 	 */
-	
+
 	public SubordinateTransaction importTransaction (Xid xid) throws XAException
 	{
 		return (SubordinateTransaction) importRemoteTransaction(xid, 0).getTransaction();
@@ -73,15 +73,15 @@ public class TransactionImporterImple implements TransactionImporter
     /**
 	 * Create a subordinate transaction associated with the
 	 * global transaction inflow and having a specified timeout.
-	 * 
+	 *
 	 * @param xid the global transaction.
 	 * @param timeout the timeout associated with the global transaction.
-	 * 
+	 *
 	 * @return the subordinate transaction.
-	 * 
+	 *
 	 * @throws XAException thrown if there are any errors.
 	 */
-	
+
 	public TransactionImportResult importRemoteTransaction(Xid xid, int timeout) throws XAException
 	{
 		if (xid == null)
@@ -94,27 +94,27 @@ public class TransactionImporterImple implements TransactionImporter
 	{
 		if (actId == null)
 			throw new IllegalArgumentException();
-		
+
 		TransactionImple recovered = new TransactionImple(actId);
-		
+
 		if (recovered.baseXid() == null)
 		    throw new IllegalArgumentException();
 
 		return (SubordinateTransaction) addImportedTransaction(recovered, recovered.baseXid(), null, 0).getTransaction();
 	}
-    
+
 	/**
 	 * Get the subordinate (imported) transaction associated with the
 	 * global transaction.
-	 * 
+	 *
 	 * @param xid the global transaction.
-	 * 
+	 *
 	 * @return the subordinate transaction or <code>null</code> if there
 	 * is none.
-	 * 
+	 *
 	 * @throws XAException thrown if there are any errors.
 	 */
-	
+
 	public SubordinateTransaction getImportedTransaction (Xid xid) throws XAException
 	{
 		if (xid == null)
@@ -158,12 +158,12 @@ public class TransactionImporterImple implements TransactionImporter
 
 	/**
 	 * Remove the subordinate (imported) transaction.
-	 * 
+	 *
 	 * @param xid the global transaction.
-	 * 
+	 *
 	 * @throws XAException thrown if there are any errors.
 	 */
-	
+
 	public void removeImportedTransaction (Xid xid) throws XAException
 	{
 		if (xid == null)

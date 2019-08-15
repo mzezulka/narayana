@@ -71,12 +71,12 @@ public class WriterSAXHandler implements ContentHandler
      * The active namespaces.
      */
     private Map activeNamespaces = new HashMap() ;
-    
+
     /**
      * The writer for output.
      */
     private final PrintWriter printWriter ;
-    
+
     /**
      * Construct the SAX handler with the output writer.
      * @param writer The writer for output.
@@ -85,7 +85,7 @@ public class WriterSAXHandler implements ContentHandler
     {
         this.printWriter = new PrintWriter(writer) ;
     }
-    
+
     /**
      * Set the document locator.
      * @param locator The document locator.
@@ -93,7 +93,7 @@ public class WriterSAXHandler implements ContentHandler
     public void setDocumentLocator(final Locator locator)
     {
     }
-    
+
     /**
      * Handle the procesing instruction.
      * @param target The pi target.
@@ -104,7 +104,7 @@ public class WriterSAXHandler implements ContentHandler
         throws SAXException
     {
     }
-    
+
     /**
      * Start the document.
      * @throws SAXException for any errors.
@@ -113,7 +113,7 @@ public class WriterSAXHandler implements ContentHandler
     	throws SAXException
     {
     }
-    
+
     /**
      * End the document.
      * @throws SAXException for any errors.
@@ -123,7 +123,7 @@ public class WriterSAXHandler implements ContentHandler
     {
         printWriter.flush() ;
     }
-    
+
     /**
      * Start a prefix mapping.
      * @param prefix The namespace prefix.
@@ -135,7 +135,7 @@ public class WriterSAXHandler implements ContentHandler
     {
         newNamespaces.add(new NamespaceInfo(prefix, uri)) ;
     }
-    
+
     /**
      * End the prefix mapping.
      * @param prefix The namespace prefix.
@@ -145,7 +145,7 @@ public class WriterSAXHandler implements ContentHandler
     	throws SAXException
     {
     }
-    
+
     /**
      * Start an element.
      * @param uri The uri.
@@ -159,7 +159,7 @@ public class WriterSAXHandler implements ContentHandler
     	throws SAXException
     {
         checkEndStartTag() ;
-        
+
         namespaceStack.push(activeNamespaces) ;
         final Iterator newNamespacesIter = newNamespaces.iterator() ;
         final String namespaces ;
@@ -173,7 +173,7 @@ public class WriterSAXHandler implements ContentHandler
                 final String namespacePrefix = namespaceInfo.getPrefix() ;
                 final String namespaceURI = namespaceInfo.getURI() ;
                 newActiveNamespaces.put(namespaceURI, namespacePrefix) ;
-               
+
                 namespacesValue.append(" xmlns") ;
                 if ((namespacePrefix != null) && (namespacePrefix.length() > 0))
                 {
@@ -193,14 +193,14 @@ public class WriterSAXHandler implements ContentHandler
         {
             namespaces = null ;
         }
-        
+
         printWriter.write('<') ;
         printWriter.write(getQName(uri, localName, qName)) ;
         if (namespaces != null)
         {
             printWriter.write(namespaces) ;
         }
-        
+
         final int numAttributes = attributes.getLength() ;
         if (numAttributes > 0)
         {
@@ -215,10 +215,10 @@ public class WriterSAXHandler implements ContentHandler
                 printWriter.write('"') ;
             }
         }
-        
+
         endStartTag = true ;
     }
-    
+
     /**
      * End an element.
      * @param uri The uri.
@@ -243,7 +243,7 @@ public class WriterSAXHandler implements ContentHandler
         activeNamespaces = (Map)namespaceStack.pop() ;
         endStartTag = false ;
     }
-    
+
     /**
      * Process character text.
      * @param chars The character array.
@@ -257,7 +257,7 @@ public class WriterSAXHandler implements ContentHandler
         checkEndStartTag() ;
         escapeTextContent(chars, start, length) ;
     }
-    
+
     /**
      * Process ignorable white space.
      * @param chars The character array.
@@ -271,7 +271,7 @@ public class WriterSAXHandler implements ContentHandler
         checkEndStartTag() ;
         printWriter.write(chars, start, length) ;
     }
-    
+
     /**
      * Skip an entity.
      * @throws SAXException for any errors.
@@ -280,7 +280,7 @@ public class WriterSAXHandler implements ContentHandler
     	throws SAXException
     {
     }
-    
+
     /**
      * Get the qualified name of the element/attribute.
      * @param uri The qualifed namespace uri or empty string.
@@ -307,7 +307,7 @@ public class WriterSAXHandler implements ContentHandler
             return qName ;
         }
     }
-    
+
     /**
      * Check to see if the end of the start tag has been processed.
      */
@@ -319,7 +319,7 @@ public class WriterSAXHandler implements ContentHandler
             endStartTag = false ;
         }
     }
-    
+
     /**
      * Escape the contents of a text element.
      * @param chars The character array.
@@ -352,7 +352,7 @@ public class WriterSAXHandler implements ContentHandler
             }
         }
     }
-    
+
     /**
      * Return the to address from the processing.
      * @return The to address.
@@ -361,7 +361,7 @@ public class WriterSAXHandler implements ContentHandler
     {
         return toAddress ;
     }
-    
+
     /**
      * Return the identifier from the processing.
      * @return The identifier.
@@ -370,7 +370,7 @@ public class WriterSAXHandler implements ContentHandler
     {
         return identifier ;
     }
-    
+
     private static final class NamespaceInfo
     {
         /**
@@ -381,7 +381,7 @@ public class WriterSAXHandler implements ContentHandler
          * The namespace uri.
          */
         private final String uri ;
-        
+
         /**
          * Construct the namespace information.
          * @param prefix The namespace prefix.
@@ -392,7 +392,7 @@ public class WriterSAXHandler implements ContentHandler
             this.prefix = prefix ;
             this.uri = uri ;
         }
-        
+
         /**
          * Get the namespace prefix.
          * @return The namespace prefix.
@@ -401,7 +401,7 @@ public class WriterSAXHandler implements ContentHandler
         {
             return prefix ;
         }
-        
+
         /**
          * Get the namespace URI.
          * @return The namespace URI.

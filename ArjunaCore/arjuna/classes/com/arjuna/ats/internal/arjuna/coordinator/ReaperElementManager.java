@@ -51,7 +51,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * only a fraction of the elements inserted should ever be copied - most will be removed without ever migrating.
  *
  * Note that additional external synchronization will be needed to ensure first element does not change
- * between getFirst and any operation depending on its timeout value. This is the TransactionReaper's problem. 
+ * between getFirst and any operation depending on its timeout value. This is the TransactionReaper's problem.
  *
  * The sorted set is maintained manually, rather than using Collections.sort or other comparator based structure.
  * This is because compareTo on reaper elements is relatively expensive and we wish to avoid liner scans to minimise

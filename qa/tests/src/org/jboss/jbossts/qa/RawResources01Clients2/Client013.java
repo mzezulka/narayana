@@ -97,7 +97,7 @@ public class Client013
 			boolean correct = true;
 
 			System.err.println("**running");
-			
+
 			OTS.current().begin();
 
 			service1.oper(resourceBehaviors1);

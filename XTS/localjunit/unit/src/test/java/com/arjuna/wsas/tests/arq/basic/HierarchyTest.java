@@ -20,7 +20,7 @@ import com.arjuna.wsas.tests.arq.WarDeployment;
 
 @RunWith(Arquillian.class)
 public class HierarchyTest {
-    
+
     @Deployment
     public static WebArchive createDeployment() {
         return WarDeployment.getDeployment(

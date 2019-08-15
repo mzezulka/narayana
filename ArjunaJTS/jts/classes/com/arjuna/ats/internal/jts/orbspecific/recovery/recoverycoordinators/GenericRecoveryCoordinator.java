@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -55,21 +55,21 @@ import com.arjuna.ats.jts.logging.jtsLogger;
  * to this.
  * <P>
  * @author Dave Ingham(dave.ingham@arjuna.com), Peter Furniss, Mark Little (mark.little@arjuna.com) Malik SAHEB (malik.saheb@arjuna.com
- * @version $Id: GenericRecoveryCoordinator.java 2342 2006-03-30 13:06:17Z  $ 
+ * @version $Id: GenericRecoveryCoordinator.java 2342 2006-03-30 13:06:17Z  $
  */
 public class GenericRecoveryCoordinator extends org.omg.CosTransactions.RecoveryCoordinatorPOA
 {
 
     /**
      * Normal constructor. Used both for creating a RecoveryCoordinator in
-     * the same process as the Coordinator (where this is necessary) and 
-     * when reactivating a RecoveryCoordinator as an implementation instance 
+     * the same process as the Coordinator (where this is necessary) and
+     * when reactivating a RecoveryCoordinator as an implementation instance
      * (i.e. <i>not</i> as POA default servant) from
      * stringified data in RecoveryManager from data received in a
-     * RecoveryCoordinator object key. 
+     * RecoveryCoordinator object key.
      * <p>Combines the parameters into a {@link RecoveryCoordinatorId}.
      */
-    public GenericRecoveryCoordinator (Uid RCUid, Uid actionUid, 
+    public GenericRecoveryCoordinator (Uid RCUid, Uid actionUid,
 				       Uid processUid, boolean isServerTransaction)
     {
 	_id = new RecoveryCoordinatorId(RCUid, actionUid, processUid, isServerTransaction);
@@ -78,8 +78,8 @@ public class GenericRecoveryCoordinator extends org.omg.CosTransactions.Recovery
         jtsLogger.logger.debug("GenericRecoveryCoordinator "+_id+" constructed");
     }
     }
-    
-    /** 
+
+    /**
      * protected constructor used by default servant derived class (with POA orbs).
      * When used a default servant, there is only one GenericRecoveryCoordinator
      * instance, whose _id field is null.
@@ -92,7 +92,7 @@ public class GenericRecoveryCoordinator extends org.omg.CosTransactions.Recovery
     }
 	_id = null;
     }
-    
+
     /**
      * Implementation of IDL method:
      *  <p>
@@ -108,12 +108,12 @@ public class GenericRecoveryCoordinator extends org.omg.CosTransactions.Recovery
      *  </pre>
      *  </p>
      * This method is used when the instance is used as a particular implementation
-     * object (i.e. <i>not</i> as default servant). Delegates to the static 
+     * object (i.e. <i>not</i> as default servant). Delegates to the static
      * {@link #replay_completion(RecoveryCoordinatorId, Resource) replay_completion}
      * using the {@link RecoveryCoordinatorId} made in the constructor.
     */
 
-    public Status replay_completion ( Resource res ) throws SystemException, NotPrepared 
+    public Status replay_completion ( Resource res ) throws SystemException, NotPrepared
     {
 	return GenericRecoveryCoordinator.replay_completion(_id, res);
     }
@@ -123,7 +123,7 @@ public class GenericRecoveryCoordinator extends org.omg.CosTransactions.Recovery
      * identified by parameter id.
      */
 
-    protected static Status replay_completion ( RecoveryCoordinatorId id, Resource res ) throws SystemException, NotPrepared 
+    protected static Status replay_completion ( RecoveryCoordinatorId id, Resource res ) throws SystemException, NotPrepared
     {
 
 	if (jtsLogger.logger.isDebugEnabled()) {
@@ -133,14 +133,14 @@ public class GenericRecoveryCoordinator extends org.omg.CosTransactions.Recovery
 
 	Status currentStatus = Status.StatusUnknown;
 
-	/* 
-	 * First check to see if the transaction is active by asking the 
+	/*
+	 * First check to see if the transaction is active by asking the
 	 * per-process contact.
 	 * If alive, return the status reported by the
 	 * transaction.  If not alive then try and recover the
-	 * transaction from the intentions list.  
+	 * transaction from the intentions list.
 	 */
-    
+
 	boolean transactionActive = true;
 
 	try
@@ -218,13 +218,13 @@ public class GenericRecoveryCoordinator extends org.omg.CosTransactions.Recovery
 
 	if (!transactionActive)
 	{
-	    // original process is dead, so reasonable for us to try to 
+	    // original process is dead, so reasonable for us to try to
 	    // recover
 
 	    /*
 	     * The RecoveredTransactionReplayer is a threaded object
 	     * so we can get the status and return it while the
-	     * replayer does the phase 2 commit in a new thread.  
+	     * replayer does the phase 2 commit in a new thread.
 	     */
 
 	    String tranType = ( (id._isServerTransaction) ? ServerTransaction.typeName() : ArjunaTransactionImple.typeName() );
@@ -250,7 +250,7 @@ public class GenericRecoveryCoordinator extends org.omg.CosTransactions.Recovery
 	     * by the given one. This is achieved by the
 	     * AbstractRecord list processing.
 	     */
-	 
+
 	    if ( (replayer.getRecoveryStatus() != com.arjuna.ats.internal.jts.recovery.transactions.RecoveryStatus.ACTIVATE_FAILED) &&
 		 (res != null) )
 	    {
@@ -263,7 +263,7 @@ public class GenericRecoveryCoordinator extends org.omg.CosTransactions.Recovery
 
 	    /*
 	     * If we've activated then now replay phase 2. The
-	     * replayer creates a new thread to do this.  
+	     * replayer creates a new thread to do this.
 	     */
 
 	    if (replayer.getRecoveryStatus() != com.arjuna.ats.internal.jts.recovery.transactions.RecoveryStatus.ACTIVATE_FAILED)
@@ -273,7 +273,7 @@ public class GenericRecoveryCoordinator extends org.omg.CosTransactions.Recovery
 	    else
 	    {
 		replayer.tidyup();
-		
+
 		/*
 		 * The transaction didn't activate so we have a
 		 * rollback situation but we can't rollback the
@@ -305,10 +305,10 @@ public class GenericRecoveryCoordinator extends org.omg.CosTransactions.Recovery
 		resourceCompletor.start();
 	    }
 	}
-	
-	/* 
+
+	/*
 	 * If the transaction is Active then throw the NotPrepared
-	 * exception.  
+	 * exception.
 	 */
 
 	if (currentStatus == Status.StatusActive)
@@ -319,16 +319,16 @@ public class GenericRecoveryCoordinator extends org.omg.CosTransactions.Recovery
 
     /**
      * Construct a string, to be used somehow in the objectkey (probably)
-     * of a RecoveryCoordinator reference. This will be deconstructed in 
+     * of a RecoveryCoordinator reference. This will be deconstructed in
      * the reconstruct() which is passed such a string, to remake the
      * necessary RecoveryCoordinator when a replay_completion is received for it.
      *
      * Put here to make it in the same class as the deconstruction
      */
-    public static String makeId( Uid rcUid, Uid tranUid, 
+    public static String makeId( Uid rcUid, Uid tranUid,
 				 Uid processUid, boolean isServerTransaction )
     {
-	RecoveryCoordinatorId id = new RecoveryCoordinatorId(rcUid, tranUid, processUid, 
+	RecoveryCoordinatorId id = new RecoveryCoordinatorId(rcUid, tranUid, processUid,
 							     isServerTransaction);
 
 	return id.makeId();
@@ -345,7 +345,7 @@ public class GenericRecoveryCoordinator extends org.omg.CosTransactions.Recovery
 	if (jtsLogger.logger.isDebugEnabled()) {
         jtsLogger.logger.debug("GenericRecoveryCoordinator.reconstruct(" + encodedRCData + ")");
     }
-	
+
 	RecoveryCoordinatorId id = RecoveryCoordinatorId.reconstruct(encodedRCData);
 
 	if (id != null) {
@@ -353,7 +353,7 @@ public class GenericRecoveryCoordinator extends org.omg.CosTransactions.Recovery
 	} else {
 	    // already traced
 	    return null;
-	}	
+	}
     }
 
 private static Status get_status (Uid actionUid, Uid processUid) throws Inactive
@@ -368,12 +368,12 @@ private static Status get_status (Uid actionUid, Uid processUid) throws Inactive
 	catch (Inactive e)
 	{
 	    // original process is dead.
-	    
+
 	    transactionActive = false;
 	}
 
 	boolean hasBeenRecovering = false;
-	
+
 	for (;;)
 	{
 	    /*
@@ -389,7 +389,7 @@ private static Status get_status (Uid actionUid, Uid processUid) throws Inactive
 		if (o != null)
 		{
 		    hasBeenRecovering = true;
-		    
+
 		    synchronized (o)
 		    {
 			try
@@ -415,7 +415,7 @@ private static Status get_status (Uid actionUid, Uid processUid) throws Inactive
 
 	return status;
     }
- 
+
     private GenericRecoveryCoordinator (RecoveryCoordinatorId id)
     {
 	_id = id;

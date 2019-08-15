@@ -75,7 +75,7 @@ public class TxojEnvironmentBean implements TxojEnvironmentBeanMBean
      *
      * @return the name of the lock store implementation.
      */
-    
+
     public String getLockStoreType()
     {
         return lockStoreType;
@@ -97,7 +97,7 @@ public class TxojEnvironmentBean implements TxojEnvironmentBeanMBean
      * Default: null
      * Equivalent deprecated property: com.arjuna.ats.txoj.lockstore.multipleLockStore
      *
-     * @return the name of the multiple lock store implementation. 
+     * @return the name of the multiple lock store implementation.
      */
     @Deprecated
     public String getMultipleLockStore()

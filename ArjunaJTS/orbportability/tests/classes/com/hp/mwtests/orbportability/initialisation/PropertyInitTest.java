@@ -86,7 +86,7 @@ public class PropertyInitTest
         assertTrue(AllPreInitialisation._called);
 
         assertTrue(AllPostInitialisation._called);
-        
+
         try
         {
             /**

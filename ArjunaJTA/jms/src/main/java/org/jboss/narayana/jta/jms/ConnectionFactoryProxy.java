@@ -67,7 +67,7 @@ public class ConnectionFactoryProxy implements ConnectionFactory {
 
     /**
      * Get XA connection from the provided factory with credentials and wrap it with {@link ConnectionProxy}.
-     * 
+     *
      * @param userName
      * @param password
      * @return XA connection wrapped with {@link ConnectionProxy}.

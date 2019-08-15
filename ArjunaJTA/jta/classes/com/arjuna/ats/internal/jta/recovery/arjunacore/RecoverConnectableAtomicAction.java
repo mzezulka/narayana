@@ -48,7 +48,7 @@ public class RecoverConnectableAtomicAction extends AtomicAction {
 			throws ObjectStoreException, IOException {
 		super(rcvUid);
 		this.recoveringAs = type;
-		
+
 		// Unpack BasicAction::save_state preamble
 		Header hdr = new Header();
 		unpackHeader(os, hdr);

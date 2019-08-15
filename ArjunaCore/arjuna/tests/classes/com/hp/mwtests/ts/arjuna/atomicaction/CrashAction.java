@@ -45,14 +45,14 @@ public class CrashAction
     public void test()
     {
         AtomicAction A = new AtomicAction();
-        
+
         A.begin();
-        
+
         A.add(new CrashRecord(CrashLocation.NoCrash, CrashType.Normal));
         A.add(new CrashRecord(CrashLocation.CrashInCommit, CrashType.HeuristicHazard));
-        
+
         int outcome = A.commit();
-        
+
         System.out.println("Transaction "+A+" committed with "+ActionStatus.stringForm(outcome));
     }
 }

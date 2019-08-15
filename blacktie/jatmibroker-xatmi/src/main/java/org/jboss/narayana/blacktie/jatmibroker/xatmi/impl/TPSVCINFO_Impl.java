@@ -57,7 +57,7 @@ public class TPSVCINFO_Impl implements Serializable, TPSVCINFO {
 
     /**
      * Create a new tpsvcinfo wrapper class
-     * 
+     *
      * @param name The name of the service
      * @param buffer The data sent by the client
      * @param flags The flags that the client issued
@@ -76,7 +76,7 @@ public class TPSVCINFO_Impl implements Serializable, TPSVCINFO {
 
     /**
      * Get the name of the service the client thought it invoked
-     * 
+     *
      * @return The name
      */
     public String getName() {
@@ -85,7 +85,7 @@ public class TPSVCINFO_Impl implements Serializable, TPSVCINFO {
 
     /**
      * Get the data
-     * 
+     *
      * @return The data
      */
     public Buffer getBuffer() {
@@ -94,7 +94,7 @@ public class TPSVCINFO_Impl implements Serializable, TPSVCINFO {
 
     /**
      * Get the length of the buffer that was sent
-     * 
+     *
      * @return The length of the buffer
      */
     public int getLen() {
@@ -103,7 +103,7 @@ public class TPSVCINFO_Impl implements Serializable, TPSVCINFO {
 
     /**
      * Get the flags that were issued
-     * 
+     *
      * @return The flags
      */
     public int getFlags() {
@@ -112,7 +112,7 @@ public class TPSVCINFO_Impl implements Serializable, TPSVCINFO {
 
     /**
      * Get the connection descriptor
-     * 
+     *
      * @return The connection descriptor
      * @throws ConnectionException
      */
@@ -125,7 +125,7 @@ public class TPSVCINFO_Impl implements Serializable, TPSVCINFO {
 
     /**
      * Get a reference to the connection that the service holds.
-     * 
+     *
      * @return The connection
      */
     public Connection getConnection() {

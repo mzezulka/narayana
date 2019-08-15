@@ -49,7 +49,7 @@ import com.arjuna.ats.jta.logging.jtaLogger;
 
 /**
  * Implementation of javax.transaction.xa.Xid.
- * 
+ *
  * @author Mark Little (mark@arjuna.com)
  * @version $Id: XidImple.java 2342 2006-03-30 13:06:17Z $
  * @since JTS 1.2.4.
@@ -67,7 +67,7 @@ public class XidImple implements javax.transaction.xa.Xid, Serializable {
 		_theXid = null;
 
 		copy(xid);
-		
+
 		hashCode = getHash(_theXid) ;
 	}
 
@@ -338,7 +338,7 @@ public class XidImple implements javax.transaction.xa.Xid, Serializable {
 
 	/**
 	 * Is the specified object equal to this one?
-	 * 
+	 *
 	 * @param obj
 	 *            The object to test.
 	 * @return true if they are equal, false otherwise.
@@ -352,7 +352,7 @@ public class XidImple implements javax.transaction.xa.Xid, Serializable {
 
 	/**
 	 * Return the hash code for this Xid.
-	 * 
+	 *
 	 * @return the hash code.
 	 */
 	public int hashCode() {
@@ -361,7 +361,7 @@ public class XidImple implements javax.transaction.xa.Xid, Serializable {
 
 	/**
 	 * Generate the hash code for the xid.
-	 * 
+	 *
 	 * @param xid
 	 *            The xid.
 	 * @return The hash code.
@@ -377,7 +377,7 @@ public class XidImple implements javax.transaction.xa.Xid, Serializable {
 
 	/**
 	 * Generate a hash code for the specified bytes.
-	 * 
+	 *
 	 * @param hash
 	 *            The initial hash.
 	 * @param bytes

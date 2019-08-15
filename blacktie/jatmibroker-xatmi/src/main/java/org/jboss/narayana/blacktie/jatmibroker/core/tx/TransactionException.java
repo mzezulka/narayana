@@ -28,7 +28,7 @@ public class TransactionException extends Exception {
 
     /**
      * Report a root cause.
-     * 
+     *
      * @param msg The message to include
      * @param cause The root cause of the exception
      */
@@ -38,7 +38,7 @@ public class TransactionException extends Exception {
 
     /**
      * The TransactionException that doesn't need the root cause.
-     * 
+     *
      * @param msg The message to include
      */
     public TransactionException(String msg) {

@@ -67,7 +67,7 @@ public class TestGroup_rawresources02_2 extends TestGroupBase
 		setTestName("Test001");
         runTwoServersOneClient(org.jboss.jbossts.qa.RawResources02Clients2.Client001.class);
 	}
-    
+
     @Test public void RawResources02_2_Test002()
 	{
 		setTestName("Test002");

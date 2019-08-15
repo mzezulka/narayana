@@ -133,7 +133,7 @@ public class JDBCServiceImpl02 implements AfterCrashServiceOperations
             String tableName = JDBCProfileStore.getTableName(_dbUser, "Service");
 
             ResultSet resultSet = statement.executeQuery("SELECT Value FROM " + tableName +" WHERE Name = '" + _rowName + "'");
-            
+
 			ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
 
 			String columnTypeName = resultSetMetaData.getColumnTypeName(1);

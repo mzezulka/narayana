@@ -37,7 +37,7 @@ import junit.framework.TestCase;
 
 /**
  * Unit tests for the Class class.
- * 
+ *
  * @author Mark Little
  */
 
@@ -50,19 +50,19 @@ public class LockManagerProxyUnitTest extends TestCase
             _isState = 4;
             _isNotState = 2;
         }
-        
+
         public String toString ()
         {
             return "SampleLockable < "+_isState+", "+_isNotState+" >";
         }
-        
+
         @State
         public int _isState;
 
         @NotState
         public int _isNotState;
     }
-    
+
     public class ExtendedLockable
     {
         public ExtendedLockable ()
@@ -71,23 +71,23 @@ public class LockManagerProxyUnitTest extends TestCase
             _isNotState = new Integer(5678);
             _field = "Hello World";
         }
-        
+
         public void set (String s)
         {
             _field = s;
         }
-        
+
         public String get ()
         {
             return _field;
         }
-        
+
         @State
         public Double _isState;
-        
+
         @NotState
         public Integer _isNotState;
-        
+
         @State
         private String _field;
     }
@@ -97,64 +97,64 @@ public class LockManagerProxyUnitTest extends TestCase
        BasicLockable sample = new BasicLockable();
        LockManagerProxy<BasicLockable> proxy = new LockManagerProxy<BasicLockable>(sample);
        OutputObjectState os = new OutputObjectState();
-       
+
        assertNotNull(proxy.type());
-       
+
        assertTrue(proxy.save_state(os, ObjectType.RECOVERABLE));
-       
+
        InputObjectState ios = new InputObjectState(os);
-       
+
        sample._isState = -1;
        sample._isNotState = -1;
-       
+
        assertTrue(proxy.restore_state(ios, ObjectType.RECOVERABLE));
-       
+
        assertTrue(sample._isState == 4);
        assertTrue(sample._isNotState == -1);
     }
-    
+
     public void testExtendedSaveRestore ()
     {
        ExtendedLockable sample = new ExtendedLockable();
        LockManagerProxy<ExtendedLockable> proxy = new LockManagerProxy<ExtendedLockable>(sample);
        OutputObjectState os = new OutputObjectState();
-       
+
        assertNotNull(proxy.type());
-       
+
        assertTrue(proxy.save_state(os, ObjectType.RECOVERABLE));
-       
+
        InputObjectState ios = new InputObjectState(os);
-       
+
        sample._isState = new Double(0.0);
        sample._isNotState = new Integer(0);
        sample.set("");
-       
+
        assertTrue(proxy.restore_state(ios, ObjectType.RECOVERABLE));
-       
+
        assertTrue(sample._isState.doubleValue() == 1.234);
        assertTrue(sample._isNotState.intValue() == 0);
        assertEquals(sample.get(), "Hello World");
     }
-    
+
     public void testTransactionalUpdate ()
     {
        ExtendedLockable sample = new ExtendedLockable();
        LockManagerProxy<ExtendedLockable> proxy = new LockManagerProxy<ExtendedLockable>(sample);
-       
+
        assertNotNull(proxy.type());
-       
+
        AtomicAction A = new AtomicAction();
-       
+
        A.begin();
-       
+
        sample._isState = new Double(1.0);
-       
+
        assertEquals(proxy.setlock(new Lock(LockMode.WRITE)), LockResult.GRANTED);
-       
+
        sample._isState = new Double(4.0);
-       
+
        A.abort();
-       
+
        assertEquals(sample._isState, new Double(1.0));
     }
 }

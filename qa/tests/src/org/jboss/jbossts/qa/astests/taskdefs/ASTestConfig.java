@@ -65,7 +65,7 @@ public class ASTestConfig extends Task
             throw new BuildException("Please specify the location of the product directory via the \""+ PRODUCT_DIR_PROP + "\" system property");
 
         productDir = Utils.toFile(productDir).getAbsolutePath();
-        
+
         if (!productDir.endsWith("/"))
             productDir += '/';
 
@@ -167,11 +167,11 @@ public class ASTestConfig extends Task
     {
         return manager.getJBossHome();
     }
-    
+
     /**
      * JBoss dist to start. The default is to use the AS installed with the product.
      * If no AS can be found then the environment variable JBOSS_HOME is used
-     * 
+     *
      * @param jbossHome Path to the the jboss installation
      */
     public void setJbossHome(String jbossHome)

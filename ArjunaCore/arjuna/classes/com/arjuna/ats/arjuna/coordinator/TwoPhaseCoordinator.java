@@ -106,11 +106,11 @@ public class TwoPhaseCoordinator extends BasicAction implements Reapable
 	/**
 	 * If this method is called and a transaction is not in a status of RUNNING,
 	 * ABORT_ONLY or COMMITTING then do not call afterCompletion.
-	 * 
+	 *
 	 * A scenario where this may occur is if during the completion of a previous
-	 * transaction, a runtime exception is thrown from one of the AbstractRecords 
+	 * transaction, a runtime exception is thrown from one of the AbstractRecords
 	 * methods.
-	 * 
+	 *
 	 * RuntimeExceptions are not part of the contract of the API and as such all we
 	 * can do is leave the transaction alone.
 	 */
@@ -138,7 +138,7 @@ public class TwoPhaseCoordinator extends BasicAction implements Reapable
 		int result = AddOutcome.AR_REJECTED;
 
 		// only allow registration for top-level transactions.
-		
+
 		if (parent() != null)
 			return AddOutcome.AR_REJECTED;
 
@@ -297,10 +297,10 @@ public class TwoPhaseCoordinator extends BasicAction implements Reapable
 
 	/**
 	 * Drive beforeCompletion participants.
-	 * 
+	 *
 	 * @return true if successful, false otherwise.
 	 */
-	
+
 	protected boolean beforeCompletion ()
 	{
 	    boolean problem = false;
@@ -461,26 +461,26 @@ public class TwoPhaseCoordinator extends BasicAction implements Reapable
 
 	/**
          * Drive afterCompletion participants.
-         * 
+         *
          * @param myStatus the outcome of the transaction (ActionStatus.COMMITTED or ActionStatus.ABORTED).
-         * 
+         *
          * @return true if successful, false otherwise.
          */
-	
+
 	protected boolean afterCompletion (int myStatus)
 	{
 	    return afterCompletion(myStatus, false);
 	}
-	
+
 	/**
 	 * Drive afterCompletion participants.
-	 * 
+	 *
 	 * @param myStatus the outcome of the transaction (ActionStatus.COMMITTED or ActionStatus.ABORTED).
 	 * @param report_heuristics does the caller want to be informed about heurisitics at the point of invocation?
-	 * 
+	 *
 	 * @return true if successful, false otherwise.
 	 */
-	
+
 	protected boolean afterCompletion (int myStatus, boolean report_heuristics)
 	{
 		if (myStatus == ActionStatus.RUNNING) {
@@ -531,7 +531,7 @@ public class TwoPhaseCoordinator extends BasicAction implements Reapable
 						 * participants do with the information (e.g., OTS allows for the CORBA Notification Service
 						 * to be used).
 						 */
-						
+
 						if (!report_heuristics)
 						{
 						    if (record instanceof HeuristicNotification)
@@ -539,7 +539,7 @@ public class TwoPhaseCoordinator extends BasicAction implements Reapable
 						        ((HeuristicNotification) record).heuristicOutcome(getHeuristicDecision());
 						    }
 						}
-						
+
 						try
 						{
 							if (!record.afterCompletion(myStatus)) {

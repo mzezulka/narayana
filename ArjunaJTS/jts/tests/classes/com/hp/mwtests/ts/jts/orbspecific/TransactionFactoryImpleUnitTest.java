@@ -90,7 +90,7 @@ public final class TransactionFactoryImpleUnitTest extends TestBase {
         checkStatus(new ArjunaTransactionImple(new Uid(), null), ArjunaTransactionImple.typeName(),
                 Status.StatusCommitted);
     }
-    
+
     @Test
     public void testGetOSStatusWithAssumedCompleteHeuristicTransaction() throws Exception {
         checkStatus(new AssumedCompleteHeuristicTransaction(new Uid()), AssumedCompleteHeuristicTransaction.typeName(),
@@ -120,22 +120,22 @@ public final class TransactionFactoryImpleUnitTest extends TestBase {
     private void clearObjectStore() {
         final String objectStorePath = arjPropertyManager.getObjectStoreEnvironmentBean().getObjectStoreDir();
         final File objectStoreDirectory = new File(objectStorePath);
-        
+
         clearDirectory(objectStoreDirectory);
     }
-    
+
     private void clearDirectory(final File directory) {
         final File[] files = directory.listFiles();
-        
+
         if (files != null) {
             for (final File file : directory.listFiles()) {
                 if (file.isDirectory()) {
                     clearDirectory(file);
                 }
-                
+
                 file.delete();
             }
         }
     }
-    
+
 }

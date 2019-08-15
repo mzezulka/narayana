@@ -1,20 +1,20 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors 
- * as indicated by the @author tags. 
+ * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * as indicated by the @author tags.
  * See the copyright.txt in the distribution for a
- * full listing of individual contributors. 
+ * full listing of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
  * of the GNU Lesser General Public License, v. 2.1.
- * This program is distributed in the hope that it will be useful, but WITHOUT A 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT A
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
  * You should have received a copy of the GNU Lesser General Public License,
  * v.2.1 along with this distribution; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Arjuna Solutions Limited,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.  
+ * UK.
  *
  * $Id: LockRecord.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -52,7 +52,7 @@ public class LockRecord extends AbstractRecord
     {
         this(lm, false, currAct);
     }
-    
+
     public LockRecord (LockManager lm, boolean rdOnly, BasicAction currAct)
     {
 	super(lm.get_uid(), lm.type(), ObjectType.ANDPERSISTENT);
@@ -62,7 +62,7 @@ public class LockRecord extends AbstractRecord
 	    txojLogger.logger.trace("LockRecord::LockRecord("+lm.get_uid()+", "
 				       +(rdOnly ? "PREPARE_READONLY" : "WRITEABLE")+")");
 	}
-	
+
 	actionHandle = currAct;
 
 	managerAddress = lm;
@@ -91,18 +91,18 @@ public class LockRecord extends AbstractRecord
 	{
 	    txojLogger.logger.trace("LockRecord::nestedAbort() for "+order());
 	}
-	
+
 	/* default constructor problem. */
-	
+
 	if (managerAddress == null)
 	    return TwoPhaseOutcome.FINISH_ERROR;
 
 	if (actionHandle != null)
 	{
 	    Uid toRelease = actionHandle.get_uid();
-	    
+
 	    actionHandle = actionHandle.parent();
-	    
+
 	    if (!managerAddress.releaseAll(toRelease))
 	    {
             txojLogger.i18NLogger.warn_LockRecord_2(toRelease);
@@ -122,7 +122,7 @@ public class LockRecord extends AbstractRecord
 	{
 	    txojLogger.logger.trace("LockRecord::nestedCommit() for "+order());
 	}
-	
+
 	/* default constructor problem. */
 
 	if (managerAddress == null)
@@ -131,9 +131,9 @@ public class LockRecord extends AbstractRecord
 	if (actionHandle != null)
 	{
 	    Uid toRelease = actionHandle.get_uid();
-	    
+
 	    actionHandle = actionHandle.parent();
-	    
+
 	    return (managerAddress.propagate(toRelease, actionHandle.get_uid()) ? TwoPhaseOutcome.FINISH_OK : TwoPhaseOutcome.FINISH_ERROR);
 	}
 	else
@@ -150,7 +150,7 @@ public class LockRecord extends AbstractRecord
 	{
 	    txojLogger.logger.trace("LockRecord::nestedPrepare() for "+order());
 	}
-	
+
 	return TwoPhaseOutcome.PREPARE_OK;
     }
 
@@ -160,7 +160,7 @@ public class LockRecord extends AbstractRecord
 	{
 	    txojLogger.logger.trace("LockRecord::topLevelAbort() for "+order());
 	}
-	
+
 	return nestedAbort();
     }
 
@@ -170,12 +170,12 @@ public class LockRecord extends AbstractRecord
 	{
 	    txojLogger.logger.trace("LockRecord::topLevelCommit() for "+order());
 	}
-	
+
 	/* default constructor problem. */
 
 	if (managerAddress == null)
 	    return TwoPhaseOutcome.FINISH_ERROR;
-        
+
 	if (actionHandle != null)
 	{
 	    if (!managerAddress.releaseAll(actionHandle.get_uid()))
@@ -209,7 +209,7 @@ public class LockRecord extends AbstractRecord
 	    else
 		return TwoPhaseOutcome.PREPARE_NOTOK;
 	}
-    
+
 	return TwoPhaseOutcome.PREPARE_OK;
     }
 
@@ -218,10 +218,10 @@ public class LockRecord extends AbstractRecord
 	StringWriter strm = new StringWriter();
 
 	print(new PrintWriter(strm));
-	
+
 	return strm.toString();
     }
-    
+
     public void print (PrintWriter strm)
     {
 	super.print(strm);
@@ -258,7 +258,7 @@ public class LockRecord extends AbstractRecord
     {
 	return managerType;
     }
-    
+
     public void merge (AbstractRecord a)
     {
     }
@@ -289,14 +289,14 @@ public class LockRecord extends AbstractRecord
 	    /*
 	     * The first test should ensure that ar is a LockRecord.
 	     */
-	    
+
 	    if (((LockRecord) ar).isReadOnly() && !readOnly)
 		return true;
 	}
-	
+
 	return false;
     }
-    
+
     public LockRecord ()
     {
 	super();
@@ -305,7 +305,7 @@ public class LockRecord extends AbstractRecord
 	{
 	    txojLogger.logger.trace("LockRecord::LockRecord()");
 	}
-	
+
 	actionHandle = null;
 
 	managerAddress = null;
@@ -314,7 +314,7 @@ public class LockRecord extends AbstractRecord
     }
 
     protected BasicAction actionHandle;  // must be changed if we propagate
-    
+
     private LockManager managerAddress;
     private boolean     readOnly;
     private String      managerType;

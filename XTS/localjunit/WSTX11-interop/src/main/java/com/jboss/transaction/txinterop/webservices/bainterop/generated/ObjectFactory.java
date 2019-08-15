@@ -28,18 +28,18 @@ import javax.xml.namespace.QName;
 
 
 /**
- * This object contains factory methods for each 
- * Java content interface and Java element interface 
- * generated in the com.jboss.transaction.txinterop.webservices.bainterop.generated package. 
- * <p>An ObjectFactory allows you to programatically 
- * construct new instances of the Java representation 
- * for XML content. The Java representation of XML 
- * content can consist of schema derived interfaces 
- * and classes representing the binding of schema 
- * type definitions, element declarations and model 
- * groups.  Factory methods for each of these are 
+ * This object contains factory methods for each
+ * Java content interface and Java element interface
+ * generated in the com.jboss.transaction.txinterop.webservices.bainterop.generated package.
+ * <p>An ObjectFactory allows you to programatically
+ * construct new instances of the Java representation
+ * for XML content. The Java representation of XML
+ * content can consist of schema derived interfaces
+ * and classes representing the binding of schema
+ * type definitions, element declarations and model
+ * groups.  Factory methods for each of these are
  * provided in this class.
- * 
+ *
  */
 @XmlRegistry
 public class ObjectFactory {
@@ -60,14 +60,14 @@ public class ObjectFactory {
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: com.jboss.transaction.txinterop.webservices.bainterop.generated
-     * 
+     *
      */
     public ObjectFactory() {
     }
 
     /**
      * Create an instance of {@link TestMessageType }
-     * 
+     *
      */
     public TestMessageType createTestMessageType() {
         return new TestMessageType();
@@ -75,7 +75,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TestMessageType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://fabrikam123.com/wsba", name = "ParticipantCompleteClose")
     public JAXBElement<TestMessageType> createParticipantCompleteClose(TestMessageType value) {
@@ -84,7 +84,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TestMessageType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://fabrikam123.com/wsba", name = "MixedOutcome")
     public JAXBElement<TestMessageType> createMixedOutcome(TestMessageType value) {
@@ -93,7 +93,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TestMessageType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://fabrikam123.com/wsba", name = "Response")
     public JAXBElement<TestMessageType> createResponse(TestMessageType value) {
@@ -102,7 +102,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TestMessageType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://fabrikam123.com/wsba", name = "Fail")
     public JAXBElement<TestMessageType> createFail(TestMessageType value) {
@@ -111,7 +111,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TestMessageType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://fabrikam123.com/wsba", name = "UnsolicitedComplete")
     public JAXBElement<TestMessageType> createUnsolicitedComplete(TestMessageType value) {
@@ -120,7 +120,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TestMessageType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://fabrikam123.com/wsba", name = "CannotComplete")
     public JAXBElement<TestMessageType> createCannotComplete(TestMessageType value) {
@@ -129,7 +129,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TestMessageType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://fabrikam123.com/wsba", name = "Compensate")
     public JAXBElement<TestMessageType> createCompensate(TestMessageType value) {
@@ -138,7 +138,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TestMessageType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://fabrikam123.com/wsba", name = "Exit")
     public JAXBElement<TestMessageType> createExit(TestMessageType value) {
@@ -147,7 +147,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TestMessageType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://fabrikam123.com/wsba", name = "CoordinatorCompleteClose")
     public JAXBElement<TestMessageType> createCoordinatorCompleteClose(TestMessageType value) {
@@ -156,7 +156,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TestMessageType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://fabrikam123.com/wsba", name = "MessageLossAndRecovery")
     public JAXBElement<TestMessageType> createMessageLossAndRecovery(TestMessageType value) {
@@ -165,7 +165,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TestMessageType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://fabrikam123.com/wsba", name = "ParticipantCancelCompletedRace")
     public JAXBElement<TestMessageType> createParticipantCancelCompletedRace(TestMessageType value) {
@@ -174,7 +174,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TestMessageType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://fabrikam123.com/wsba", name = "Cancel")
     public JAXBElement<TestMessageType> createCancel(TestMessageType value) {
@@ -183,7 +183,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TestMessageType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://fabrikam123.com/wsba", name = "CompensationFail")
     public JAXBElement<TestMessageType> createCompensationFail(TestMessageType value) {

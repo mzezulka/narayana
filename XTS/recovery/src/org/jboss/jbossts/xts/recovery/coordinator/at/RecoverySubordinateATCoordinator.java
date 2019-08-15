@@ -32,7 +32,7 @@ public class RecoverySubordinateATCoordinator extends SubordinateATCoordinator {
     public boolean activate()
     {
         boolean result = super.activate();
-        
+
         // if we cannot activate we want the participant which was registered on behalf of this
         // coordinator to produce a heuristic result for the transaction. it will do this if it
         // finds no entry for the coordinate in the subordinate coordinators list. in this case

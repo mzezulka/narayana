@@ -13,13 +13,13 @@ public class ServerExtension implements LoadableExtension {
 			builder.service(ServerKillProcessor.class, JBossAS7ServerKillProcessor.class);
 		}
 	}
-	
+
 	public static boolean isWindows() {
         String osName = System.getProperty("os.name");
 
         return osName != null  && ((osName.indexOf("Windows") > -1) || (osName.indexOf("windows") > -1));
     }
-	
+
     public static boolean isLinux() {
         String osName = System.getProperty("os.name");
 
@@ -37,13 +37,13 @@ public class ServerExtension implements LoadableExtension {
 
         return osName != null  && ((osName.toUpperCase().indexOf("HP-UX") > -1));
     }
-    
+
     public static boolean isIbmJdk() {
         return System.getProperty("java.vendor").contains("IBM Corporation");
     }
-    
+
     enum OSType {
-    	
+
     	WINDOWS {
     		@Override
     		public String getPSCommand() {
@@ -55,7 +55,7 @@ public class ServerExtension implements LoadableExtension {
     		public String getPSCommand() {
     			return "ps aux";
     		}
-    		
+
     		@Override
     		String getPSIDIndex() {
     			return "{print $2}";
@@ -66,7 +66,7 @@ public class ServerExtension implements LoadableExtension {
     		public String getPSCommand() {
     			return  ServerExtension.isIbmJdk() ? "/usr/ucb/ps aux" : "jps";
     		}
-    		
+
     		@Override
     		String getPSIDIndex() {
     			return ServerExtension.isIbmJdk() ? "{print $2}" : "{print $1}";
@@ -77,28 +77,28 @@ public class ServerExtension implements LoadableExtension {
     		public String getPSCommand() {
     			return  ServerExtension.isIbmJdk() ? "/usr/ucb/ps aux" : "jps";
     		}
-    		
+
     		@Override
     		String getPSIDIndex() {
     			return ServerExtension.isIbmJdk() ? "{print $2}" : "{print $1}";
     		}
     	};
-    	
+
     	// IBM JDK does not have "jps" so using "ps", Solaris have "ps" in "/usr/ucb/".
     	String getPSCommand() {
     		return null;
     	}
-    	
+
     	String getPSIDIndex() {
     		return null;
     	}
-    	
+
     	static OSType getOSType() {
     		if (ServerExtension.isHpux()) return HPUX;
     		if (ServerExtension.isWindows()) return WINDOWS;
     		if (ServerExtension.isSolaris()) return SOLARIS;
     		return LINUX;
     	}
-    	
+
     }
 }

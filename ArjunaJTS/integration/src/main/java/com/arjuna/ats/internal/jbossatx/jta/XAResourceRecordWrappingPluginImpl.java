@@ -43,7 +43,7 @@ import com.arjuna.ats.internal.jta.resources.arjunacore.XAResourceRecordWrapping
 /**
  * A plugin implementation for copying resource metadata from the JBoss AS
  * specific XAResourceWrapper class to an XAResourceRecord.
- * 
+ *
  * @author Jonathan Halliday (jonathan.halliday@redhat.com) 2011-07
  */
 public class XAResourceRecordWrappingPluginImpl implements XAResourceRecordWrappingPlugin {

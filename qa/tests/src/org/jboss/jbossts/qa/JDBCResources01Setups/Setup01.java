@@ -86,7 +86,7 @@ public class Setup01
 			}
 
 			Statement statement = connection.createStatement();
-            
+
             String tableName = JDBCProfileStore.getTableName(databaseUser, "Infotable");
 
 			try

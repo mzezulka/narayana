@@ -48,10 +48,10 @@ public class TMTest
     public static void main (String[] args) throws Exception
     {
         TMTest theTest = new TMTest();
-        
+
         theTest.test();
     }
-    
+
     @Test
     public void test() throws Exception
     {
@@ -64,7 +64,7 @@ public class TMTest
         Services serv = new Services(myORB);
 
         int resolver = Services.getResolver();
-        
+
         try
         {
             String[] params = new String[1];

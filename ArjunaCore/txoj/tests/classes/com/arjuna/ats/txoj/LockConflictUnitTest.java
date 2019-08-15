@@ -46,14 +46,14 @@ public class LockConflictUnitTest
     {
         ReentrantLock lock = new ReentrantLock();
         LockConflictManager manager = new LockConflictManager(lock);
-        
+
         lock.lock();
-        
+
         assertTrue(manager.wait(1, 100) != -1);
         assertTrue(manager.wait(LockManager.waitTotalTimeout, 100) != -1);
-        
+
         lock.unlock();
-        
+
         manager.signal();
     }
 }

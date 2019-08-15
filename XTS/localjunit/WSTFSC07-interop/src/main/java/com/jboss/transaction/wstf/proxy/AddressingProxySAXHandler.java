@@ -48,7 +48,7 @@ public class AddressingProxySAXHandler extends BaseHandler
      * The WS-Addressing Address element.
      */
     private static final String WSA_ELEMENT_ADDRESS = AddressingConstants.WSA_ELEMENT_ADDRESS ;
-    
+
     /**
      * Are we in a rewrite element?
      */
@@ -73,12 +73,12 @@ public class AddressingProxySAXHandler extends BaseHandler
      * The string buffer for text element content.
      */
     private StringBuffer characterContent = new StringBuffer() ;
-    
+
     /**
      * The current conversation identifier.
      */
     private final String conversationIdentifier ;
-    
+
     /**
      * Construct the SAX handler with the output writer.
      * @param nextHandler The next content handler.
@@ -89,7 +89,7 @@ public class AddressingProxySAXHandler extends BaseHandler
 	super(nextHandler) ;
         this.conversationIdentifier = conversationIdentifier ;
     }
-    
+
     /**
      * Start an element.
      * @param uri The uri.
@@ -119,10 +119,10 @@ public class AddressingProxySAXHandler extends BaseHandler
         {
             inIdentifierElement = true ;
         }
-        
+
         getNextHandler().startElement(uri, localName, qName, attributes) ;
     }
-    
+
     /**
      * End an element.
      * @param uri The uri.
@@ -156,7 +156,7 @@ public class AddressingProxySAXHandler extends BaseHandler
         }
         getNextHandler().endElement(uri, localName, qName) ;
     }
-    
+
     /**
      * Process character text.
      * @param chars The character array.
@@ -176,7 +176,7 @@ public class AddressingProxySAXHandler extends BaseHandler
             getNextHandler().characters(chars, start, length) ;
         }
     }
-    
+
     /**
      * Return the to address from the processing.
      * @return The to address.
@@ -185,7 +185,7 @@ public class AddressingProxySAXHandler extends BaseHandler
     {
         return toAddress ;
     }
-    
+
     /**
      * Return the identifier from the processing.
      * @return The identifier.

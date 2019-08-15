@@ -22,7 +22,7 @@ import org.jboss.narayana.blacktie.jatmibroker.core.conf.ConfigurationException;
 /**
  * This is the connection to remote BlackTie services. It must be created using
  * the ConnectionFactory.
- * 
+ *
  * @see ConnectionFactory#getConnection()
  */
 public interface Connection {
@@ -74,7 +74,7 @@ public interface Connection {
 
 	/**
 	 * Allocate a new buffer
-	 * 
+	 *
 	 * @param type
 	 *            The type of the buffer
 	 * @param subtype
@@ -89,7 +89,7 @@ public interface Connection {
 
 	/**
 	 * Synchronous call.
-	 * 
+	 *
 	 * @param svc
 	 *            The name of the service to call
 	 * @param buffer
@@ -106,7 +106,7 @@ public interface Connection {
 
 	/**
 	 * Asynchronous call
-	 * 
+	 *
 	 * @param svc
 	 *            The name of the service to call
 	 * @param toSend
@@ -122,7 +122,7 @@ public interface Connection {
 
 	/**
 	 * Cancel the outstanding asynchronous call.
-	 * 
+	 *
 	 * @param cd
 	 *            The connection descriptor
 	 * @throws ConnectionException
@@ -132,7 +132,7 @@ public interface Connection {
 
 	/**
 	 * Get the reply for an asynchronous call.
-	 * 
+	 *
 	 * @param cd
 	 *            The connection descriptor to use
 	 * @param flags
@@ -147,7 +147,7 @@ public interface Connection {
 
 	/**
 	 * Handle the initiation of a conversation with the server.
-	 * 
+	 *
 	 * @param svc
 	 *            The name of the service
 	 * @param toSend
@@ -163,7 +163,7 @@ public interface Connection {
 
 	/**
 	 * Close any resources associated with this connection
-	 * 
+	 *
 	 * @throws ConnectionException
 	 *             If an open session cannot be cancelled or disconnected.
 	 */

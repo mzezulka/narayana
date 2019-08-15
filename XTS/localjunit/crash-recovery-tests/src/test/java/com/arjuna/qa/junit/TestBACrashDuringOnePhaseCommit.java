@@ -9,14 +9,14 @@ public class TestBACrashDuringOnePhaseCommit extends BaseCrashTest {
 	public TestBACrashDuringOnePhaseCommit() {
 		scriptName = "BACrashDuringOnePhaseCommit";
 	}
-	
+
 	@Test
 	public void SingleCoordinatorCompletionParticipantCloseTest() throws Exception {
 		testName = "SingleCoordinatorCompletionParticipantCloseTest";
 		String testClass = "org.jboss.jbossts.xts.servicetests.test.ba.SingleCoordinatorCompletionParticipantCloseTest";
 		runTest(testClass);
 	}
-	
+
 	@Test
 	public void SingleParticipantCompletionParticipantCloseTest() throws Exception {
 		testName = "SingleParticipantCompletionParticipantCloseTest";

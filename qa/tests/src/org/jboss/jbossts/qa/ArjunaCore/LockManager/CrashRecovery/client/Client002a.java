@@ -45,7 +45,7 @@ public class Client002a extends BaseTestClient
 			setNumberOfResources(2);
 			setUniquePrefix(1);
 
-            CrashRecoveryDelays.awaitRecoveryArjunaCore();			
+            CrashRecoveryDelays.awaitRecoveryArjunaCore();
 
 			//restore objects from uid's
 			BasicLockRecord[] mLockRecordList = new BasicLockRecord[mNumberOfResources];

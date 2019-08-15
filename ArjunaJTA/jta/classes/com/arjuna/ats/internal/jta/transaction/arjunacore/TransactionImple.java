@@ -232,7 +232,7 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
 	/**
 	 * Add throwables that have been thrown by XAResources but have been suppressed
 	 * by wrapping records to the given exception.
-	 * 
+	 *
 	 * @param e an exception that will be thrown out of here
 	 * @return the given exception with suppressed exceptions added
 	 */
@@ -1060,9 +1060,9 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
 	 * tx has been resolved yet or not. We could use getStatus() and a case stmt,
 	 * but since an instance is removed from _transactions on completion this is
 	 * just as effective.
-	 * 
+	 *
 	 * @param tx
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isAlive() {

@@ -110,7 +110,7 @@ public class Client18
 
 // now sleep to let reply completion do its job 1 second should be more than enough
             CrashRecoveryDelays.awaitReplayCompletionCR01();
-			
+
 
 			correct = correct && service1.is_correct();
 			correct = correct && service2.is_correct();

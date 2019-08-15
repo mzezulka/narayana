@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -56,11 +56,11 @@ import com.arjuna.mw.wscf.exceptions.*;
  * This class represents a specific coordination instance. It is essentially an
  * ArjunaCore TwoPhaseCoordinator, which gives us access to two-phase with
  * synchronization support but without thread management.
- * 
+ *
  * @author Mark Little (mark.little@arjuna.com)
  * @version $Id: ACCoordinator.java,v 1.7 2005/06/09 09:41:27 nmcl Exp $
  * @since 1.0.
- * 
+ *
  */
 
 public class ATCoordinator extends TwoPhaseCoordinator
@@ -72,14 +72,14 @@ public class ATCoordinator extends TwoPhaseCoordinator
 	public ATCoordinator()
 	{
 		super();
-	
+
 		_theId = new CoordinatorIdImple(get_uid());
 	}
 
 	public ATCoordinator(Uid recovery)
 	{
 		super(recovery);
-				
+
 		_theId = new CoordinatorIdImple(get_uid());
 	}
 
@@ -88,10 +88,10 @@ public class ATCoordinator extends TwoPhaseCoordinator
 	 * then this method can be used to execute a coordination protocol on the
 	 * currently enlisted participants at any time prior to the termination of
 	 * the coordination scope.
-	 * 
+	 *
 	 * This implementation only supports coordination at the end of the
 	 * activity.
-	 * 
+	 *
 	 * @exception WrongStateException
 	 *                Thrown if the coordinator is in a state the does not allow
 	 *                coordination to occur.
@@ -100,7 +100,7 @@ public class ATCoordinator extends TwoPhaseCoordinator
 	 *                execution.
 	 * @exception SystemException
 	 *                Thrown if any other error occurs.
-	 * 
+	 *
 	 * @return The result of executing the protocol, or null.
 	 */
 
@@ -113,7 +113,7 @@ public class ATCoordinator extends TwoPhaseCoordinator
 	/**
 	 * Enrol the specified participant with the coordinator associated with the
 	 * current thread.
-	 * 
+	 *
 	 * @param act The participant.
 	 *
 	 * @exception WrongStateException
@@ -132,7 +132,7 @@ public class ATCoordinator extends TwoPhaseCoordinator
 	public void enlistParticipant (Participant act) throws WrongStateException,
 			DuplicateParticipantException, InvalidParticipantException,
 			SystemException
-	{		
+	{
 		if (act == null)
 			throw new InvalidParticipantException();
 
@@ -144,7 +144,7 @@ public class ATCoordinator extends TwoPhaseCoordinator
 
 	/**
 	 * Remove the specified participant from the coordinator's list.
-	 * 
+	 *
 	 * @exception InvalidParticipantException
 	 *                Thrown if the participant is not known of by the
 	 *                coordinator.
@@ -170,9 +170,9 @@ public class ATCoordinator extends TwoPhaseCoordinator
 	/**
 	 * Enrol the specified synchronization with the coordinator associated with
 	 * the current thread.
-	 * 
+	 *
 	 * @param act The synchronization to add.
-	 * 
+	 *
 	 * @exception WrongStateException
 	 *                Thrown if the coordinator is not in a state that allows
 	 *                participants to be enrolled.
@@ -201,7 +201,7 @@ public class ATCoordinator extends TwoPhaseCoordinator
 
 	/**
 	 * Remove the specified synchronization from the coordinator's list.
-	 * 
+	 *
 	 * @exception InvalidSynchronizationException
 	 *                Thrown if the participant is not known of by the
 	 *                coordinator.
@@ -227,7 +227,7 @@ public class ATCoordinator extends TwoPhaseCoordinator
 	/**
 	 * @exception SystemException
 	 *                Thrown if any error occurs.
-	 * 
+	 *
 	 * @return the complete list of qualifiers that have been registered with
 	 *         the current coordinator.
 	 */
@@ -240,7 +240,7 @@ public class ATCoordinator extends TwoPhaseCoordinator
 	/**
 	 * @exception SystemException
 	 *                Thrown if any error occurs.
-	 * 
+	 *
 	 * @return The unique identity of the current coordinator.
 	 */
 
@@ -284,7 +284,7 @@ public class ATCoordinator extends TwoPhaseCoordinator
 	{
 		return "/StateManager/BasicAction/AtomicAction/TwoPhaseCoordinator/TwoPhase/ATCoordinator";
 	}
-	
+
 	private final void changeParticipantStatus (String participantId, int status)
 			throws InvalidParticipantException, SystemException
 	{

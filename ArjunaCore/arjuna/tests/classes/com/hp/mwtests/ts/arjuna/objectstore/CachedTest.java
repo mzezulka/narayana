@@ -69,7 +69,7 @@ class ThreadWriter extends Thread
                 InputObjectState s = participantStore.read_committed(u, TYPE);
 
                 Thread.yield();
-                
+
                 if (s != null) {
                     if (participantStore.remove_committed(u, TYPE))
                         passed = true;
@@ -105,7 +105,7 @@ public class CachedTest
         objectStoreEnvironmentBean.setCacheStoreSize(cacheSize);
 
         ParticipantStore store = new CacheStore(objectStoreEnvironmentBean);
-        
+
         long stime = Calendar.getInstance().getTime().getTime();
 
         for (int i = 0; i < threads; i++) {

@@ -37,8 +37,8 @@ import org.jboss.narayana.blacktie.jatmibroker.xatmi.Session;
  * <code>Connection</code> invocation for a client or retrieved from the
  * TPSVCINFO structure for a service (assuming the service was invoked within
  * the scope of a tpconnect).
- * 
- * It is used to send and retrieve data: 
+ *
+ * It is used to send and retrieve data:
  * ConnectionImpl#tpconnect(String, BufferImpl, int, int)
  * TPSVCINFO_Impl#getSession()
  */
@@ -103,14 +103,14 @@ public class SessionImpl implements Session {
 
     /**
      * Create a new session during tpconnect.
-     * 
+     *
      * @param connection
      *            The connection that created the session
      * @param transport
      *            The transport to create actors on.
      * @param cd
      *            The cd of the session
-     * 
+     *
      * @throws ConnectionException
      *             In case the receiver cannot be created.
      * @see ConnectionImpl#tpconnect(String, BufferImpl, int, int)
@@ -131,7 +131,7 @@ public class SessionImpl implements Session {
 
     /**
      * Create a service side session for a pre-established client connection.
-     * 
+     *
      * @param connection
      *            The connection to use.
      * @param transport
@@ -165,7 +165,7 @@ public class SessionImpl implements Session {
 
     /**
      * Client side initialization during tpconnect.
-     * 
+     *
      * @param flags
      *            The flags
      */
@@ -184,7 +184,7 @@ public class SessionImpl implements Session {
      * Set the state of the session using the flags. This is so we can respond
      * from the service easily with the <code>ACK</code> that the client expects
      * in initialization of the connection.
-     * 
+     *
      * @param flags
      */
     public void setCreatedState(long flags) {
@@ -200,7 +200,7 @@ public class SessionImpl implements Session {
 
     /**
      * Close the session
-     * 
+     *
      * @throws ConnectionException
      */
     public void close() throws ConnectionException {
@@ -226,7 +226,7 @@ public class SessionImpl implements Session {
 
     /**
      * Send a buffer to a remote server in a conversation
-     * 
+     *
      * @param toSend
      *            The outbound data
      * @param flags
@@ -292,7 +292,7 @@ public class SessionImpl implements Session {
 
     /**
      * Received the next response in a conversation
-     * 
+     *
      * @param flags
      *            The flags to use
      * @return The next response
@@ -420,7 +420,7 @@ public class SessionImpl implements Session {
 
     /**
      * Return the connection descriptor
-     * 
+     *
      * @return The connection descriptor id.
      */
     int getCd() {
@@ -429,7 +429,7 @@ public class SessionImpl implements Session {
 
     /**
      * Get the receiver on this session.
-     * 
+     *
      * @return The receiver
      */
     Receiver getReceiver() {
@@ -438,7 +438,7 @@ public class SessionImpl implements Session {
 
     /**
      * Get the sessions sender.
-     * 
+     *
      * @return The sender
      */
     public Sender getSender() {
@@ -447,7 +447,7 @@ public class SessionImpl implements Session {
 
     /**
      * Set the last event seen on this session.
-     * 
+     *
      * @param lastEvent
      *            The last event
      * @param rcode
@@ -472,7 +472,7 @@ public class SessionImpl implements Session {
 
         /**
          * Create a new listener with a session to set events on.
-         * 
+         *
          * @param session
          *            The session.
          */

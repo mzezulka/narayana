@@ -37,7 +37,7 @@ public class StereotypeWithTransactionalBean {
 
     /**
      * Having declared the {@link Transactional} annotation in {@link Stereotype}
-     * last in the transitive row and in the middle one too. 
+     * last in the transitive row and in the middle one too.
      */
     public void process() throws SystemException, TestException {
         // expected: @TransitiveToRequiredTransactionalNever with NEVER

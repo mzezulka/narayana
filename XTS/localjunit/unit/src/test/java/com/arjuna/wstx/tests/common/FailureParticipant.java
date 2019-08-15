@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -46,11 +46,11 @@ public class FailureParticipant implements Durable2PCParticipant
     public static final int FAIL_IN_ROLLBACK = 1;
     public static final int FAIL_IN_COMMIT = 2;
     public static final int FAIL_IN_ONE_PHASE = 3;
-    
+
     public static final int WRONG_STATE = 20;
     public static final int SYSTEM = 21;
     public static final int NONE = 22;
-    
+
     public FailureParticipant (int failurePoint, int failureType)
     {
 	_failurePoint = failurePoint;
@@ -63,7 +63,7 @@ public class FailureParticipant implements Durable2PCParticipant
     {
 	return _passed;
     }
-    
+
     public final boolean prepared ()
     {
 	return _prepared;
@@ -77,12 +77,12 @@ public class FailureParticipant implements Durable2PCParticipant
     public Vote prepare () throws WrongStateException, SystemException
     {
 	System.out.println("FailureParticipant.prepare");
-	
+
     _prepared = true;
 	if (_failurePoint == FAIL_IN_PREPARE)
 	{
 	    generateException();
-	    
+
 	    return new Aborted();
 	}
 	else
@@ -105,10 +105,10 @@ public class FailureParticipant implements Durable2PCParticipant
     {
     _resolved = true;
 	System.out.println("FailureParticipant.rollback");
-	
+
 	if (_failurePoint == FAIL_IN_ROLLBACK)
 	    generateException();
-	
+
 	if (_failurePoint == FAIL_IN_PREPARE)
 	    _passed = true;
     }
@@ -120,7 +120,7 @@ public class FailureParticipant implements Durable2PCParticipant
 
 	if (_failurePoint == FAIL_IN_ONE_PHASE)
 	    generateException();
-	
+
 	_passed = true;
     }
 
@@ -144,7 +144,7 @@ public class FailureParticipant implements Durable2PCParticipant
 	    break;
 	}
     }
-    
+
     private int     _failurePoint;
     private int     _failureType;
     private boolean _passed;

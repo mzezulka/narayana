@@ -67,7 +67,7 @@ public class InteropUtil
         final W3CEndpointReference completionCoordinator = register(context, getCompletionParticipant(id), AtomicTransactionConstants.WSAT_SUB_PROTOCOL_COMPLETION) ;
         return new CompletionStub(id, completionCoordinator);
     }
-    
+
     /**
      * Register a durable participant in the specified coordination context.
      * @param context The coordination context.
@@ -81,7 +81,7 @@ public class InteropUtil
     {
         return registerParticipant(context, participant, id, AtomicTransactionConstants.WSAT_SUB_PROTOCOL_DURABLE_2PC) ;
     }
-    
+
     /**
      * Register a volatile participant in the specified coordination context.
      * @param context The coordination context.
@@ -95,7 +95,7 @@ public class InteropUtil
     {
         return registerParticipant(context, participant, id, AtomicTransactionConstants.WSAT_SUB_PROTOCOL_VOLATILE_2PC) ;
     }
-    
+
     /**
      * Register the participant in the specified coordination context.
      * @param context The coordination context.
@@ -114,7 +114,7 @@ public class InteropUtil
         ParticipantProcessor.getProcessor().activateParticipant(engine, id) ;
         return engine ;
     }
-    
+
     /**
      * Register for a sub protocol.
      * @param context The coordination context.

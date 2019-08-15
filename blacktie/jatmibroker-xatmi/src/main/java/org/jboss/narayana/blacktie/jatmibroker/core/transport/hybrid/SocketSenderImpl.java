@@ -126,7 +126,7 @@ public class SocketSenderImpl implements Sender {
             //log.info("toSend[0] is " + toSend[0]);
 
             try {
-                outs.writeInt(sendlen);         
+                outs.writeInt(sendlen);
                 outs.write(buffer.toString().getBytes(), 0, buffer.length());
                 outs.write(toSend, 0, toSend.length);
             } catch (SocketException e)  {

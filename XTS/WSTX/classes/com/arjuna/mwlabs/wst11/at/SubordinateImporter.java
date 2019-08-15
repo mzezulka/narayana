@@ -43,7 +43,7 @@ public class SubordinateImporter
 
             // register a cleanup callback with the subordinate transactionso that the entry gets removed
             // when the transcation commits or rolls back
-            
+
             String subordinateId = context.getIdentifier().getValue().substring(4); // remove "urn:" prefix
             SubordinateATCoordinator.SubordinateCallback callback = new SubordinateATCoordinator.SubordinateCallback() {
                 public String parentId = identifier;

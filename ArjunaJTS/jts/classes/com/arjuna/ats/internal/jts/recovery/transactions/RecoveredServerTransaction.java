@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -64,7 +64,7 @@ import com.arjuna.ats.jts.utils.Utility;
  * re-activate the state of a server transaction that did not terminate
  * correctly due to failure.
  * <P>
- * 
+ *
  * @author Dave Ingham (dave@arjuna.com)
  * @version $Id: RecoveredServerTransaction.java 2342 2006-03-30 13:06:17Z $
  */
@@ -306,7 +306,7 @@ public class RecoveredServerTransaction extends ServerTransaction implements
                     /*
                      * A failure that might not occur again if the request is retried. Not definite.
                      */
-                    
+
                     jtsLogger.i18NLogger.warn_recovery_transactions_RecoveredServerTransaction_10(get_uid());
                     theStatus = Status.StatusUnknown;
                 }
@@ -393,7 +393,7 @@ public class RecoveredServerTransaction extends ServerTransaction implements
     public boolean assumeComplete ()
     {
         final int heuristicDecision = getHeuristicDecision();
-        
+
         if (heuristicDecision == TwoPhaseOutcome.HEURISTIC_COMMIT
                 || heuristicDecision == TwoPhaseOutcome.HEURISTIC_HAZARD
                 || heuristicDecision == TwoPhaseOutcome.HEURISTIC_MIXED
@@ -401,16 +401,16 @@ public class RecoveredServerTransaction extends ServerTransaction implements
 
             _typeName = AssumedCompleteHeuristicServerTransaction.typeName();
         } else {
-            _typeName = AssumedCompleteServerTransaction.typeName();          
+            _typeName = AssumedCompleteServerTransaction.typeName();
         }
-    
+
         return true;
     }
 
     /**
      * Override StateManager packHeader so it gets the original processUid, not
      * this process's
-     * 
+     *
      * @since JTS 2.1.
      */
 
@@ -428,15 +428,15 @@ public class RecoveredServerTransaction extends ServerTransaction implements
     /**
      * Override StateManager's unpackHeader to save the processUid of the
      * original process
-     * 
+     *
      * @since JTS 2.1.
      */
 
     protected void unpackHeader (InputObjectState os, Header hdr)
             throws IOException
-    {   
+    {
         super.unpackHeader(os, hdr);
-        
+
         //super.objectUid = hdr.getTxId();
         _originalProcessUid = hdr.getProcessId();
 

@@ -38,7 +38,7 @@ import junit.framework.TestCase;
 
 /**
  * Unit tests for the Class class.
- * 
+ *
  * @author Mark Little
  */
 
@@ -51,41 +51,41 @@ public class BasicContainerUnitTest extends TestCase
         {
             super(ObjectType.ANDPERSISTENT);
         }
-        
+
         public boolean save_state (OutputObjectState os)
         {
             return true;
         }
-        
+
         public boolean restore_state (InputObjectState os)
         {
             return true;
         }
-        
+
         public String type ()
         {
             return "/StateManager/LockManager/TestObject";
         }
     }
-    
+
     @Transactional
     public interface Sample
     {
        public void myWork ();
-       
+
        public void doSomeWork ();
 
        public boolean doSomeOtherWork ();
-       
+
        public void notTransactionalWork ();
     }
-    
+
     public class SampleLockable implements Sample
     {
         public void myWork ()
         {
         }
-        
+
         @ReadLock
         public void doSomeWork ()
         {
@@ -97,7 +97,7 @@ public class BasicContainerUnitTest extends TestCase
         {
             return true;
         }
-        
+
         @TransactionFree
         public void notTransactionalWork ()
         {
@@ -105,7 +105,7 @@ public class BasicContainerUnitTest extends TestCase
 
         @State
         private int _isState;
-        
+
         @NotState
         private int _isNotState;
     }
@@ -115,7 +115,7 @@ public class BasicContainerUnitTest extends TestCase
         TestContainer<TestObject> theContainer = new TestContainer<TestObject>();
         TestObject tester = new TestObject();
         boolean success = false;
-        
+
         try
         {
             theContainer.enlist(tester);
@@ -127,15 +127,15 @@ public class BasicContainerUnitTest extends TestCase
 
         assertTrue(success);
     }
-    
+
     public void testInvalidModel ()
     {
         boolean success = true;
-        
+
         try
         {
             Container<TestObject> theContainer = new Container<TestObject>("Foobar", Container.TYPE.RECOVERABLE, Container.MODEL.SHARED);
-        
+
             success = false;
         }
         catch (final RuntimeException ex)
@@ -146,17 +146,17 @@ public class BasicContainerUnitTest extends TestCase
         {
             success = false;
         }
-        
+
         assertTrue(success);
     }
-    
+
     @SuppressWarnings(value={"unused"})
     public void testValidEnlist ()
     {
         TestContainer<Sample> theContainer = new TestContainer<Sample>();
         SampleLockable tester = new SampleLockable();
         boolean success = true;
-        
+
         try
         {
             Sample proxy = theContainer.enlist(tester);
@@ -164,11 +164,11 @@ public class BasicContainerUnitTest extends TestCase
         catch (final Throwable ex)
         {
             ex.printStackTrace();
-            
+
             success = false;
         }
-        
+
         assertTrue(success);
     }
-    
+
 }

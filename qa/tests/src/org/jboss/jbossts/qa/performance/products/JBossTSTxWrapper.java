@@ -50,7 +50,7 @@ public class JBossTSTxWrapper implements TxWrapper
     public int begin()
     {
         this.tx = new AtomicAction();
-        
+
         return tx.begin();
     }
 

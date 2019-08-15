@@ -119,7 +119,7 @@ public class SingleParticipantCompletionParticipantCloseTest extends XTSServiceT
         commands.add("{P1}");
         commands.add("endblock");
         */
-        
+
         try {
             processCommands(commands, results);
         } catch (Exception e) {

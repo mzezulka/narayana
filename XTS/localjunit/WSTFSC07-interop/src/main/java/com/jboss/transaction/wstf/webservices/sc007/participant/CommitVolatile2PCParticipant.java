@@ -38,5 +38,5 @@ public class CommitVolatile2PCParticipant extends ParticipantAdapter implements 
         throws WrongStateException, SystemException
     {
         return new Prepared() ;
-    }    
+    }
 }

@@ -46,7 +46,7 @@ import com.arjuna.ats.txoj.logging.txojLogger;
  * An implementation of the lock store which saves locks into files on the local
  * machine. Thus, multiple JVMs may share locks by reading and writing to the
  * same files.
- * 
+ *
  * @author Mark Little (mark@arjuna.com)
  * @version $Id: BasicPersistentLockStore.java 2342 2006-03-30 13:06:17Z $
  * @since JTS 1.0.
@@ -125,10 +125,10 @@ public class BasicPersistentLockStore extends LockStore
     }
 
     private ParticipantStore _lockStore;
-    
+
     /*
      * At this time we just place locks in a different sub-tree within the main object store.
      */
-    
+
     private static final String LOCK_ROOT = "LockStore";
 }

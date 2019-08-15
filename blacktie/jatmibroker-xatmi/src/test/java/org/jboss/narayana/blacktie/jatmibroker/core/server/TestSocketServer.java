@@ -44,7 +44,7 @@ public class TestSocketServer {
     private static final Logger log = LogManager.getLogger(TestSocketServer.class);
     private SocketServer server;
     private int port = 12341;
-    
+
     @Before
     public void setUp() throws Exception {
         Properties prop = new Properties();
@@ -52,7 +52,7 @@ public class TestSocketServer {
         server = SocketServer.getInstance(prop);
         log.info("socket server start");
     }
-    
+
     @After
     public void tearDown() throws Exception {
         log.info("socket server stop");
@@ -70,13 +70,13 @@ public class TestSocketServer {
         int flags = 0;
         int rval = 0;
         int len = 4;
-        
+
         byte[] toSend = new byte[len];
         toSend[0] = 'a';
         String toReplyTo = "(null)";
         String type = "X_OCTET";
         String subtype = "(null)";
-        
+
         send(outs, sid, correlationId, rcode, toSend, flags, rval, toReplyTo, type, subtype);
         send(outs, sid, correlationId, 1, toSend, 1, 1, "test", type, subtype);
         Message msg = server.receiveMessage(sid, 2000);
@@ -90,11 +90,11 @@ public class TestSocketServer {
         assertTrue(msg.data[0] == toSend[0]);
         assertTrue(msg.rval == 0);
         assertTrue(msg.replyTo == null);
-        
+
         msg = server.receiveMessage(sid, 2000);
         assertTrue(msg != null);
         assertTrue(msg.rcode == 1);
-        
+
         outs.close();
         socket.close();
         server.unregister(1);
@@ -106,10 +106,10 @@ public class TestSocketServer {
         append(toSend.length).append("\n").append(flags).append("\n").
         append(rval).append("\n").append(toReplyTo).append("\n").
         append(type).append("\n").append(subtype).append("\n");
-        
+
         int sendlen = buffer.length() + toSend.length;
         outs.writeInt(sendlen);
-        
+
         outs.write(buffer.toString().getBytes(), 0, buffer.length());
         outs.write(toSend, 0, toSend.length);
     }

@@ -46,7 +46,7 @@ import junit.framework.TestCase;
 
 /**
  * Unit tests for the Class class.
- * 
+ *
  * @author Mark Little
  */
 
@@ -58,7 +58,7 @@ public class ComparisonUnitTest extends TestCase
         public AtomicObject()
         {
             super();
-            
+
             state = 0;
 
             AtomicAction A = new AtomicAction();
@@ -79,7 +79,7 @@ public class ComparisonUnitTest extends TestCase
                 System.out.println("setlock error.");
             }
         }
-  
+
         public void incr (int value) throws Exception
         {
             AtomicAction A = new AtomicAction();
@@ -189,19 +189,19 @@ public class ComparisonUnitTest extends TestCase
 
         private int state;
     }
-    
+
     @Transactional
     public interface Atomic
     {
         public void incr (int value) throws Exception;
-        
+
         public void set (int value) throws Exception;
-        
+
         public int get () throws Exception;
     }
-    
+
     public class ExampleSTM implements Atomic
-    {   
+    {
         @ReadLock
         public int get () throws Exception
         {
@@ -213,7 +213,7 @@ public class ComparisonUnitTest extends TestCase
         {
             state = value;
         }
-        
+
         @WriteLock
         public void incr (int value) throws Exception
         {
@@ -228,33 +228,33 @@ public class ComparisonUnitTest extends TestCase
     {
         AtomicObject obj = new AtomicObject();
         AtomicAction a = new AtomicAction();
-        
+
         a.begin();
-        
+
         obj.set(1234);
-        
+
         a.commit();
-        
+
         assertEquals(obj.get(), 1234);
-        
+
         a = new AtomicAction();
-        
+
         a.begin();
-        
+
         obj.incr(1);
-        
+
         a.abort();
-        
+
         assertEquals(obj.get(), 1234);
     }
-    
+
     public void testExampleSTM () throws Exception
     {
         RecoverableContainer<Atomic> theContainer = new RecoverableContainer<Atomic>();
         ExampleSTM basic = new ExampleSTM();
         boolean success = true;
         Atomic obj = null;
-        
+
         try
         {
             obj = theContainer.enlist(basic);
@@ -262,28 +262,28 @@ public class ComparisonUnitTest extends TestCase
         catch (final Throwable ex)
         {
             ex.printStackTrace();
-            
+
             success = false;
         }
-        
+
         assertTrue(success);
-        
+
         AtomicAction a = new AtomicAction();
-        
+
         a.begin();
-        
+
         obj.set(1234);
-        
+
         a.commit();
 
         assertEquals(obj.get(), 1234);
-        
+
         a = new AtomicAction();
 
         a.begin();
 
         obj.incr(1);
-        
+
         a.abort();
 
         assertEquals(obj.get(), 1234);

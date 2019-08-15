@@ -430,8 +430,8 @@ public class ReaperTestCase2  extends ReaperTestCaseControl
 
         triggerRendezvous("reaper1");
 
-        // the reaper should have marked the thread as a zombie 
-        
+        // the reaper should have marked the thread as a zombie
+
         assertTrue(checkAndClearFlag("zombied"));
 
         // the transactions queue should be

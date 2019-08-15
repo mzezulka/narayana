@@ -42,7 +42,7 @@ public class AsyncParticipantStub implements ParticipantStub
      * The participant stub singletong.
      */
     private static final ParticipantStub PARTICIPANT_STUB = new AsyncParticipantStub() ;
-    
+
     /**
      * Get the participant stub singleton.
      * @return The participant stub singleton.
@@ -51,7 +51,7 @@ public class AsyncParticipantStub implements ParticipantStub
     {
         return PARTICIPANT_STUB ;
     }
-    
+
     /**
      * Send a completion commit request.
      * @param serviceURI The target service URI.
@@ -64,7 +64,7 @@ public class AsyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         final RequestCallback callback = new RequestCallback() ;
         final ATInitiatorProcessor initiator = ATInitiatorProcessor.getInitiator() ;
         initiator.registerCallback(messageId, callback) ;
@@ -77,7 +77,7 @@ public class AsyncParticipantStub implements ParticipantStub
         {
             initiator.removeCallback(messageId) ;
         }
-        
+
         handleCallback(callback) ;
     }
 
@@ -106,7 +106,7 @@ public class AsyncParticipantStub implements ParticipantStub
         {
             initiator.removeCallback(messageId) ;
         }
-        
+
         handleCallback(callback) ;
     }
 
@@ -135,7 +135,7 @@ public class AsyncParticipantStub implements ParticipantStub
         {
             initiator.removeCallback(messageId) ;
         }
-        
+
         handleCallback(callback) ;
     }
 
@@ -164,7 +164,7 @@ public class AsyncParticipantStub implements ParticipantStub
         {
             initiator.removeCallback(messageId) ;
         }
-        
+
         handleCallback(callback) ;
     }
 
@@ -193,7 +193,7 @@ public class AsyncParticipantStub implements ParticipantStub
         {
             initiator.removeCallback(messageId) ;
         }
-        
+
         handleCallback(callback) ;
     }
 
@@ -222,7 +222,7 @@ public class AsyncParticipantStub implements ParticipantStub
         {
             initiator.removeCallback(messageId) ;
         }
-        
+
         handleCallback(callback) ;
     }
 
@@ -251,7 +251,7 @@ public class AsyncParticipantStub implements ParticipantStub
         {
             initiator.removeCallback(messageId) ;
         }
-        
+
         handleCallback(callback) ;
     }
 
@@ -280,7 +280,7 @@ public class AsyncParticipantStub implements ParticipantStub
         {
             initiator.removeCallback(messageId) ;
         }
-        
+
         handleCallback(callback) ;
     }
 
@@ -309,7 +309,7 @@ public class AsyncParticipantStub implements ParticipantStub
         {
             initiator.removeCallback(messageId) ;
         }
-        
+
         handleCallback(callback) ;
     }
 
@@ -338,7 +338,7 @@ public class AsyncParticipantStub implements ParticipantStub
         {
             initiator.removeCallback(messageId) ;
         }
-        
+
         handleCallback(callback) ;
     }
 
@@ -367,7 +367,7 @@ public class AsyncParticipantStub implements ParticipantStub
         {
             initiator.removeCallback(messageId) ;
         }
-        
+
         handleCallback(callback) ;
     }
 
@@ -396,7 +396,7 @@ public class AsyncParticipantStub implements ParticipantStub
         {
             initiator.removeCallback(messageId) ;
         }
-        
+
         handleCallback(callback) ;
     }
 
@@ -425,7 +425,7 @@ public class AsyncParticipantStub implements ParticipantStub
         {
             initiator.removeCallback(messageId) ;
         }
-        
+
         handleCallback(callback) ;
     }
 
@@ -454,7 +454,7 @@ public class AsyncParticipantStub implements ParticipantStub
         {
             initiator.removeCallback(messageId) ;
         }
-        
+
         handleCallback(callback) ;
     }
 
@@ -483,10 +483,10 @@ public class AsyncParticipantStub implements ParticipantStub
         {
             initiator.removeCallback(messageId) ;
         }
-        
+
         handleCallback(callback) ;
     }
-    
+
     /**
      * Handle the callback.
      * @param callback The callback.
@@ -508,7 +508,7 @@ public class AsyncParticipantStub implements ParticipantStub
             throw callback.getSoapFault() ;
         }
     }
-    
+
     /**
      * The request callback class.
      */
@@ -522,7 +522,7 @@ public class AsyncParticipantStub implements ParticipantStub
          * The SOAP fault response.
          */
         private SoapFault soapFault ;
-        
+
         /**
          * A response.
          * @param map The current addressing context.
@@ -541,7 +541,7 @@ public class AsyncParticipantStub implements ParticipantStub
         {
             this.soapFault = soapFault ;
         }
-        
+
         /**
          * Was a response received?
          * @return true if a response was received, false otherwise.
@@ -550,7 +550,7 @@ public class AsyncParticipantStub implements ParticipantStub
         {
             return response ;
         }
-        
+
         /**
          * Get the SOAP fault.
          * @return The SOAP fault or null.

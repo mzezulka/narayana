@@ -43,7 +43,7 @@ import com.arjuna.ats.jts.logging.jtsLogger;
 
 /**
  * The base class from which interposed resources derive.
- * 
+ *
  * @author Mark Little (mark@arjuna.com)
  * @version $Id: ServerResource.java 2342 2006-03-30 13:06:17Z $
  * @since JTS 1.0.

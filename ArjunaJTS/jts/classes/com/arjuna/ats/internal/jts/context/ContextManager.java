@@ -775,7 +775,7 @@ public class ContextManager
 	    }
 	}
     }
-    
+
 	public Uid getReceivedCoordinatorUid() throws InvalidSlot {
 		Any ctx = _piCurrent.get_slot(OTSManager.getReceivedSlotId());
 		if (ctx != null && ctx.type().kind().value() != TCKind._tk_null)
@@ -785,9 +785,9 @@ public class ContextManager
 				return null;
 			else
 				return Helper.getUid(Helper.getUidCoordinator(theContext.current.coord));
-		} 
+		}
 		else
-			return null;		
+			return null;
 	}
 
     private Hashtable otsCurrent = new Hashtable();

@@ -49,7 +49,7 @@ public class TxPerfPlugin extends JConsolePlugin implements PropertyChangeListen
     public synchronized Map<String, JPanel> getTabs() {
         if (tabs == null) {
             graph = new TxPerfGraph(new JFrame("TxPerf"));
-            
+
             graph.setMBeanServerConnection(
                 getContext().getMBeanServerConnection());
             // use LinkedHashMap if you want a predictable order

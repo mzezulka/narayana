@@ -33,7 +33,7 @@ class UserDefFirst0Map implements RecordTypeMap
     {
         return BasicAbstractRecord.class;
     }
-    
+
     public int getType ()
     {
         return RecordType.USER_DEF_FIRST0;

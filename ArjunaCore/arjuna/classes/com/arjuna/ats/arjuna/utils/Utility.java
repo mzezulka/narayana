@@ -156,7 +156,7 @@ public class Utility
         }
 
         return val;
-    }  
+    }
 
     /**
      * @return Long(s) representing the ip v6 address of the local machine.
@@ -182,53 +182,53 @@ public class Utility
         if (myAddr == null)
         {
             myAddr = new long[2];
-            
+
             myAddr[0] = 0;
             myAddr[1] = 0;
-            
+
             byte[] b = null;
             InetAddress addr;
 
             try
-            { 
-                addr = InetAddress.getLocalHost(); 
+            {
+                addr = InetAddress.getLocalHost();
             }
             catch (final UnknownHostException uhe) {
                 tsLogger.i18NLogger.warn_utils_Utility_2();
 
                 addr = InetAddress.getByName(null);
-            } 
-             
+            }
+
             if (addr instanceof Inet6Address)
             {
                 // 16 bytes to work with.
-                
+
                 b = addr.getAddress();
             }
             else
             {
                 /*
                  * Convert ipv4 to ipv6
-                 * 
+                 *
                  * We only have 4 bytes here.
-                 * 
+                 *
                  * ::FFFF:129.144.52.38
                  */
 
                 byte[] v4Address = addr.getAddress();
-                
+
                 if (v4Address.length > 4)
-                    throw new UnknownHostException();        
-                
+                    throw new UnknownHostException();
+
                 b = new byte[16];
-                
+
                 // high order byte in [0]
-                
+
                 for (int i = 0; i < 10; i++)
                     b[i] = 0;
-                
+
                 b[10] = b[11] = (byte) 255;
-                
+
                 System.arraycopy(v4Address, 0, b, 12, v4Address.length);
             }
 
@@ -244,7 +244,7 @@ public class Utility
 
                 myAddr[0] = (myAddr[0] << 8) | l;
             }
-            
+
             for (int i = 8; i < 16; i++)
             {
                 /*
@@ -256,7 +256,7 @@ public class Utility
                 l += (0x80 & b[i]);
 
                 myAddr[1] = (myAddr[1] << 8) | l;
-            }               
+            }
         }
     }
 
@@ -348,31 +348,31 @@ public class Utility
             throw new IllegalArgumentException("port value out of range "+port);
         }
     }
-    
+
     public static synchronized String getDefaultProcessId ()
     {
         initialise();
-        
+
         return defaultProcessId;
     }
-    
+
     public static synchronized boolean isAndroid ()
     {
         initialise();
-        
+
         return _isAndroid;
     }
-    
+
     private static void initialise ()
     {
         if (defaultProcessId == null)
         {
             String t = System.getProperty("java.vm.vendor");
-            
+
             if (t.toLowerCase().indexOf("android") != -1)
             {
                 defaultProcessId = "com.arjuna.ats.internal.arjuna.utils.AndroidProcessId";
-                
+
                 _isAndroid = true;
             }
             else
@@ -391,7 +391,7 @@ public class Utility
     private static volatile String defaultProcessId = null;
 
     private static boolean _isAndroid = false;
-    
+
     /**
      * The maximum queue length for incoming connection indications (a request
      * to connect)

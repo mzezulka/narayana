@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -35,7 +35,7 @@ public abstract class BaseProcessor
      * The callback map.
      */
     private final Map callbackMap = new HashMap() ;
-    
+
     /**
      * Register the callback for the message ID.
      * @param messageID The message ID.
@@ -48,7 +48,7 @@ public abstract class BaseProcessor
             callbackMap.put(messageID, callback) ;
         }
     }
-    
+
     /**
      * Remove the callback for the specified message ID.
      * @param messageID The message ID.
@@ -65,7 +65,7 @@ public abstract class BaseProcessor
      * Handle the callbacks for the specified addressing context.
      * @param executor The callback executor.
      * @param ids The message ids.
-     * 
+     *
      */
     protected void handleCallbacks(final CallbackExecutor executor, final String[] ids)
     {
@@ -101,7 +101,7 @@ public abstract class BaseProcessor
             }
         }
     }
-    
+
     /**
      * Get the callbacks associated with the message ids.
      * @param ids The message ids.
@@ -113,7 +113,7 @@ public abstract class BaseProcessor
         {
             return null ;
         }
-        
+
         final int numIDs = ids.length ;
         final Callback[] callbacks = new Callback[numIDs] ;
         synchronized(callbackMap)
@@ -125,7 +125,7 @@ public abstract class BaseProcessor
         }
         return callbacks ;
     }
-    
+
     /**
      * Interface for executing a specific callback.
      * @author kevin
@@ -143,7 +143,7 @@ public abstract class BaseProcessor
          */
         public void executeUnknownIds(final String[] ids) ;
     }
-    
+
     /**
      * Adapter for the callback executor.
      * @author kevin
@@ -158,7 +158,7 @@ public abstract class BaseProcessor
         {
             WSCLogger.logger.tracev("Received a response for non existent message IDs {0}", new Object[] {toString(ids)}) ;
         }
-        
+
         /**
          * Convert an array of IDs to a comma separated string representation.
          * @param ids The ids.

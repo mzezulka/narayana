@@ -35,7 +35,7 @@ public class TestLogController
      * The base directory for logs, hardcoded for now.
      */
     private static File baseDir ;
-    
+
     static
     {
         final String userHome = System.getProperty("user.home") ;

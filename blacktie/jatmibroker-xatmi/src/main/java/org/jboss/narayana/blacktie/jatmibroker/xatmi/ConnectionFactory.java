@@ -10,7 +10,7 @@ import org.jboss.narayana.blacktie.jatmibroker.xatmi.impl.ConnectionImpl;
 
 /**
  * This is a factory that will create connections to remote Blacktie services.
- * 
+ *
  * @see Connection
  * @see ConnectionException
  */
@@ -30,7 +30,7 @@ public class ConnectionFactory {
 
 	/**
 	 * Get the default connection factory
-	 * 
+	 *
 	 * @return The connection factory
 	 * @throws ConfigurationException
 	 *             If the configuration cannot be parsed.
@@ -42,7 +42,7 @@ public class ConnectionFactory {
 
 	/**
 	 * Create the connection factory
-	 * 
+	 *
 	 * @throws ConfigurationException
 	 *             In case the configuration could not be loaded
 	 */
@@ -55,7 +55,7 @@ public class ConnectionFactory {
 
 	/**
 	 * Get the connection for this thread.
-	 * 
+	 *
 	 * @return The connection for this thread.
 	 * @throws ConfigurationException
 	 */
@@ -71,7 +71,7 @@ public class ConnectionFactory {
 
 	/**
 	 * Remove the connection from the factory after closure.
-	 * 
+	 *
 	 * @param connection
 	 *            The connection to remove.
 	 */

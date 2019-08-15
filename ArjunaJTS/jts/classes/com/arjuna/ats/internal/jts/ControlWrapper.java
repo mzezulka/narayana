@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Hewlett-Packard Arjuna Labs,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.  
+ * UK.
  *
  * $Id: ControlWrapper.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -72,12 +72,12 @@ import com.arjuna.ats.jts.logging.jtsLogger;
  * ORB until the last minute. This improves performance *significantly*. At
  * present we only do this for top-level transactions, but extending for nested
  * transactions is straightforward.
- * 
+ *
  * It also acts as a convenience class for ease of use. Therefore, some
  * Coordinator and Terminator methods may be found directly on this class.
  * Because of the way in which the implementation works, however, some of their
  * signatures may be slightly different.
- * 
+ *
  * @author Mark Little (mark_little@hp.com)
  * @version $Id: ControlWrapper.java 2342 2006-03-30 13:06:17Z  $
  * @since JTS 2.0.
@@ -268,7 +268,7 @@ public class ControlWrapper implements Reapable
 		catch (NullPointerException ex)  // if local handle is null then it was terminated (probably by reaper)
 		{
 		    // check termination status
-		    
+
 		    if (_controlImpl.getFinalStatus() != org.omg.CosTransactions.Status.StatusCommitted)
                         throw new TRANSACTION_ROLLEDBACK();
 		}
@@ -297,7 +297,7 @@ public class ControlWrapper implements Reapable
                                 {
                                     throw new Unavailable();
                                 }
-				
+
 				if (t != null)
 					t.rollback();
 				else
@@ -333,7 +333,7 @@ public class ControlWrapper implements Reapable
                                 {
                                     throw new Unavailable();
                                 }
-				
+
 				if (c != null)
 					c.rollback_only();
 				else
@@ -458,7 +458,7 @@ public class ControlWrapper implements Reapable
         if ( _controlImpl.getImplHandle() == null)
             return Collections.EMPTY_MAP;
         else
-            return _controlImpl.getImplHandle().getSynchronizations();    
+            return _controlImpl.getImplHandle().getSynchronizations();
     }
 
     public final org.omg.CosTransactions.Status get_status () throws SystemException
@@ -466,7 +466,7 @@ public class ControlWrapper implements Reapable
         if (_controlImpl != null)
         {
             ArjunaTransactionImple tx = _controlImpl.getImplHandle();
-            
+
             if (tx == null)
                 return _controlImpl.getFinalStatus();
             else
@@ -486,7 +486,7 @@ public class ControlWrapper implements Reapable
             catch (final OBJECT_NOT_EXIST ex)
             {
                 // definitely/maybe not there so rolled back.
-                
+
                 /*
                  * If checked transactions are enabled then only the starting thread
                  * should be able to terminate the transaction. In which case, anyone
@@ -495,13 +495,13 @@ public class ControlWrapper implements Reapable
                  * transaction rolled back (otherwise why would the participant be asking
                  * when there's no log?) or it could have committed (and in which case the
                  * tool needs to take care of any possible ambiguity).
-                 * 
+                 *
                  * However, if checked transactions aren't enabled then multiple threads can
                  * terminate the transaction, meaning the ambiguity could impact at the application
                  * level and become a source of possible inconsistency. So we err on the safe side
                  * here and say "we don't really know".
                  */
-                
+
                 if (jtsPropertyManager.getJTSEnvironmentBean().isCheckedTransactions())
                     return org.omg.CosTransactions.Status.StatusRolledBack;
                 else
@@ -633,7 +633,7 @@ public class ControlWrapper implements Reapable
 
 	/**
 	 * Overrides Object.equals
-	 * 
+	 *
 	 * Does not compare Uids because a foreign transaction may have been
 	 * imported more than once and given different local ids.
 	 */
@@ -697,7 +697,7 @@ public class ControlWrapper implements Reapable
 
 	/**
 	 * Override Object.toString.
-	 * 
+	 *
 	 * @since JTS 2.1.1.
 	 */
 

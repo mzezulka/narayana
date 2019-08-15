@@ -25,7 +25,7 @@ import com.arjuna.wsas.tests.arq.WarDeployment;
 
 @RunWith(Arquillian.class)
 public class Context1Test {
-    
+
     @Deployment
     public static WebArchive createDeployment() {
         return WarDeployment.getDeployment(

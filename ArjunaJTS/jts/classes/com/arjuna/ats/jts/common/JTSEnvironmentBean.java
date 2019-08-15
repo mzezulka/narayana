@@ -203,7 +203,7 @@ public class JTSEnvironmentBean implements JTSEnvironmentBeanMBean
      * Default: true
      * Equivalent deprecated property: com.arjuna.ats.jts.supportRollbackSync
      *
-     * @return true if Synchronizations will run on transaction rollback, false if they will be skipped. 
+     * @return true if Synchronizations will run on transaction rollback, false if they will be skipped.
      */
     public boolean isSupportRollbackSync()
     {
@@ -354,7 +354,7 @@ public class JTSEnvironmentBean implements JTSEnvironmentBeanMBean
      * Default: true
      * Equivalent deprecated property: com.arjuna.ats.jts.ots_1_0.timeoutPropagation
      *
-     * @return true for remaining time propagation, false for total time propagation. 
+     * @return true for remaining time propagation, false for total time propagation.
      */
     public boolean isTimeoutPropagation()
     {

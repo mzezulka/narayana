@@ -1,20 +1,20 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors 
- * as indicated by the @author tags. 
+ * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * as indicated by the @author tags.
  * See the copyright.txt in the distribution for a
- * full listing of individual contributors. 
+ * full listing of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
  * of the GNU Lesser General Public License, v. 2.1.
- * This program is distributed in the hope that it will be useful, but WITHOUT A 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT A
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
  * You should have received a copy of the GNU Lesser General Public License,
  * v.2.1 along with this distribution; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Arjuna Technologies Ltd,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.  
+ * UK.
  *
  * $Id: xidcheck.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -66,11 +66,11 @@ public class TransactionFactoryUnitTest extends TestBase
         TransactionFactoryImple factory = new TransactionFactoryImple("test");
 
         arjPropertyManager.getCoordinatorEnvironmentBean().setEnableStatistics(true);
-        
+
         try
         {
             factory.numberOfTransactions(TransactionType.TransactionTypeActive);
-            
+
 //            fail();
         }
         catch (final Inactive ex)
@@ -79,13 +79,13 @@ public class TransactionFactoryUnitTest extends TestBase
         catch (final NoTransaction ex)
         {
         }
-        
+
         ControlImple tx = factory.createLocal(1000);
-        
+
         assertTrue(tx != null);
-        
+
         org.omg.CosTransactions.otid_t[] txId = null;
-        
+
         try
         {
             txId = factory.numberOfTransactions(TransactionType.TransactionTypeActive);
@@ -94,7 +94,7 @@ public class TransactionFactoryUnitTest extends TestBase
         {
             fail();
         }
-        
+
         try
         {
             if (factory.getChildTransactions(txId[0]) != null)
@@ -104,31 +104,31 @@ public class TransactionFactoryUnitTest extends TestBase
         {
             fail();
         }
-        
+
         org.omg.CosTransactions.Status status = factory.getCurrentStatus(txId[0]);
-        
+
         assertTrue(status == org.omg.CosTransactions.Status.StatusActive);
 
         assertTrue(factory.getStatus(txId[0]) == org.omg.CosTransactions.Status.StatusActive);
-        
+
         Control proxy = factory.createProxy(tx.get_coordinator(), tx.get_terminator());
-        
+
         assertTrue(proxy != null);
-        
+
         Control propagated = factory.createPropagatedControl(tx.get_coordinator());
-        
+
         assertTrue(propagated != null);
-        
+
         assertTrue(Utility.getUid(proxy).equals(Utility.getUid(propagated)));
-        
+
         GlobalTransactionInfo info = factory.getGlobalInfo();
-        
+
         assertTrue(info != null);
         assertEquals(info.totalNumberOfTransactions, 1);
         assertEquals(info.numberOfHeuristics, 0);
-        
+
         factory.numberOfTransactions(TransactionType.TransactionTypeUnresolved);
-        
+
         try
         {
             tx.getImplHandle().rollback();
@@ -137,7 +137,7 @@ public class TransactionFactoryUnitTest extends TestBase
         {
         }
     }
-    
+
     @Test
     public void testContext () throws Exception
     {
@@ -146,22 +146,22 @@ public class TransactionFactoryUnitTest extends TestBase
 
         org.omg.CosTransactions.otid_t txId = Utility.uidToOtid(tx.get_uid());
         Uid theUid = Utility.otidToUid(txId);
-        
+
         assertEquals(theUid, tx.get_uid());
 
         assertEquals(factory.getOSStatus(tx.get_uid()), org.omg.CosTransactions.Status.StatusNoTransaction); // no state in OS yet!
-        
-        PropagationContext ctx = tx.get_coordinator().get_txcontext();       
-        Control cont = factory.recreate(ctx);       
+
+        PropagationContext ctx = tx.get_coordinator().get_txcontext();
+        Control cont = factory.recreate(ctx);
         String toString = Utility.getHierarchy(ctx);
-        
+
         System.out.println(toString);
-        
+
         assertTrue(toString != null);
         assertTrue(toString.length() > 1);
-        
+
         assertTrue(Utility.getUid(cont).equals(tx.get_uid()));
-        
+
         try
         {
             tx.getImplHandle().rollback();
@@ -170,17 +170,17 @@ public class TransactionFactoryUnitTest extends TestBase
         {
         }
     }
-    
+
     @Test
     public void testCompare () throws Exception
     {
         TransactionFactoryImple factory = new TransactionFactoryImple("test");
         ControlImple tx = factory.createLocal(1000);
-        
+
         Control proxy = factory.getTransaction(Utility.uidToOtid(tx.get_uid()));
-        
+
         assertTrue(Utility.getUid(proxy).equals(tx.get_uid()));
-        
+
         try
         {
             tx.getImplHandle().rollback();
@@ -189,18 +189,18 @@ public class TransactionFactoryUnitTest extends TestBase
         {
         }
     }
-    
+
     @Test
     public void testInfo () throws Exception
     {
         TransactionFactoryImple factory = new TransactionFactoryImple("test");
-        ControlImple tx = factory.createLocal(1000);        
+        ControlImple tx = factory.createLocal(1000);
         TransactionInfo info = factory.getTransactionInfo(Utility.uidToOtid(tx.get_uid()));
-        
+
         assertEquals(info.currentDepth, 1);
         assertEquals(info.timeout, 0);
         assertEquals(info.numberOfThreads, 0);
-        
+
         try
         {
             tx.getImplHandle().rollback();

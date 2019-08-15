@@ -108,7 +108,7 @@ public class SynchronizationImple implements SynchronizationRecord, Comparable {
 	 * code.
 	 *
 	 * @param object
-	 * 
+	 *
 	 * @return
 	 */
 	public int compareTo(Object object) {

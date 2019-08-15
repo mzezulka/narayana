@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Arjuna Solutions Limited,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.  
+ * UK.
  *
  * $Id: ServerFactory.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -56,7 +56,7 @@ import com.arjuna.ats.jts.logging.jtsLogger;
 
 /**
  * This is a server-side factory used for creating server transactions.
- * 
+ *
  * @author Mark Little (mark@arjuna.com)
  * @version $Id: ServerFactory.java 2342 2006-03-30 13:06:17Z  $
  * @since JTS 1.2.4.
@@ -90,10 +90,10 @@ public class ServerFactory
 				 * If it's not present then check each element's savingUid just
 				 * in case that is being used instead of the transaction id.
 				 * This is because a server transaction actually has two names:
-				 * 
+				 *
 				 * (i) the tid it pretends to be (ii) the tid it actually is and
 				 * saves its intentions list in.
-				 * 
+				 *
 				 * Don't bother synchronizing since the hash table is
 				 * synchronized anyway, and we're not bothered if new items go
 				 * in while we're looking. If the element we're looking for
@@ -134,7 +134,7 @@ public class ServerFactory
 
 	/*
 	 * @return the status of the transaction, even if it is not active.
-	 * 
+	 *
 	 * @since JTS 2.1.1.
 	 */
 
@@ -278,7 +278,7 @@ public class ServerFactory
 
 		return toReturn;
 	}
-	
+
     private static org.omg.CosTransactions.Status getHeuristicStatus(final Uid uid, final RecoveryStore recoveryStore)
             throws ObjectStoreException
     {

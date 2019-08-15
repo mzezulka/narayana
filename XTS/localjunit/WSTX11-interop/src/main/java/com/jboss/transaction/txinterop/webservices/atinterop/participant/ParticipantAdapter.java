@@ -44,7 +44,7 @@ public abstract class ParticipantAdapter implements Participant
         throws WrongStateException, SystemException
     {
     }
-    
+
     /**
      * Handle an error on the participant.
      */

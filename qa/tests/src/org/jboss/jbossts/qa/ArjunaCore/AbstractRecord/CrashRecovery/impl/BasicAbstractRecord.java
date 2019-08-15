@@ -181,9 +181,9 @@ public class BasicAbstractRecord extends AbstractRecord
 		try
 		{
 			mValue = objectState.unpackInt();
-			
+
 		        qautil.qadebug("value is "+mValue);
-		        
+
 			return true;
 		}
 		catch (Exception exception)

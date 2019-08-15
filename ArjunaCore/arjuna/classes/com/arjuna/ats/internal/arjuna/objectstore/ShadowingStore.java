@@ -374,7 +374,7 @@ public class ShadowingStore extends FileSystemStore
         }
 
         InputObjectState new_image = null;
-        
+
         if (tName != null)
         {
             int state = currentState(objUid, tName);
@@ -393,9 +393,9 @@ public class ShadowingStore extends FileSystemStore
                      * Print out a warning/info if the state has changed to help explain the null
                      * value that is returned.
                      */
-                    
+
                     tsLogger.logger.info("Object state "+objUid+" for type "+tName+" has changed on disk from what was expected.");
-                    
+
                     return null;
                 }
 
@@ -417,7 +417,7 @@ public class ShadowingStore extends FileSystemStore
                         closeAndUnlock(fd, ifile, null);
 
                         tsLogger.logger.info("ObjectStore record was deleted during restoration, users should not deleted records manually: " + fd.getAbsolutePath(), e);
-                        
+
                         return null;
                     }
 
@@ -459,13 +459,13 @@ public class ShadowingStore extends FileSystemStore
                  * This may be an error but we can't tell at the level of the ObjectStore and so
                  * SHOULD NOT issue a warning message by default. The application can figure this out because
                  * we're going to return a null InputObjectState anyway!
-                 * 
+                 *
                  * Changing this from a warning to trace so that anyone who needs to check this can do so. But
                  * it shouldn't be the default action!
-                 * 
+                 *
                  * https://issues.jboss.org/browse/JBTM-2593
                  */
-                
+
                 if (tsLogger.logger.isTraceEnabled())
                     tsLogger.logger.trace("ShadowingStore.read_state could not find committed or uncommitted state for "+objUid+
                                     " instead found state "+StateStatus.stateStatusString(state));

@@ -48,7 +48,7 @@ public class ATTestCase extends InteropTestCase
      * The service URI of the participant.
      */
     private static final String SOURCE_PARTICIPANT_URI ;
-    
+
     /**
      * Construct the named test case.
      */
@@ -126,10 +126,10 @@ public class ATTestCase extends InteropTestCase
             final String serviceURI = ProxyURIRewriting.rewriteURI(conversationId, getParticipantURI()) ;
             final CoordinationContextType context = ATInteropUtil.createCoordinationContext(getSourceCoordinatorURI()) ;
             getParticipantStub().commit(serviceURI, context) ;
-            
+
             final CompletionCoordinatorParticipant participant = ATInteropUtil.registerCompletion(context, context.getIdentifier().getValue()) ;
             participant.commit() ;
-            
+
             state.waitForCompletion(0) ;
         }
         finally
@@ -155,10 +155,10 @@ public class ATTestCase extends InteropTestCase
             final String serviceURI = ProxyURIRewriting.rewriteURI(conversationId, getParticipantURI()) ;
             final CoordinationContextType context = ATInteropUtil.createCoordinationContext(getSourceCoordinatorURI()) ;
             getParticipantStub().rollback(serviceURI, context) ;
-            
+
             final CompletionCoordinatorParticipant participant = ATInteropUtil.registerCompletion(context, context.getIdentifier().getValue()) ;
             participant.rollback() ;
-            
+
             state.waitForCompletion(0) ;
         }
         finally
@@ -170,7 +170,7 @@ public class ATTestCase extends InteropTestCase
 
     /**
      * testAT3_1 - 3.1 Phase2Rollback
-     * Coordinator aborts the transaction due to an Aborted vote during the prepare phase. 
+     * Coordinator aborts the transaction due to an Aborted vote during the prepare phase.
      * @throws Exception on failure.
      */
     public void testAT3_1()
@@ -184,7 +184,7 @@ public class ATTestCase extends InteropTestCase
             final String serviceURI = ProxyURIRewriting.rewriteURI(conversationId, getParticipantURI()) ;
             final CoordinationContextType context = ATInteropUtil.createCoordinationContext(getSourceCoordinatorURI()) ;
             getParticipantStub().phase2Rollback(serviceURI, context) ;
-            
+
             final CompletionCoordinatorParticipant participant = ATInteropUtil.registerCompletion(context, context.getIdentifier().getValue()) ;
             participant.commit() ;
             fail("Transaction rollback expected") ;
@@ -202,7 +202,7 @@ public class ATTestCase extends InteropTestCase
 
     /**
      * testAT3_2 - 3.2 Readonly
-     * Tests coordinator committing a transaction with a read only participant. 
+     * Tests coordinator committing a transaction with a read only participant.
      * @throws Exception on failure.
      */
     public void testAT3_2()
@@ -216,10 +216,10 @@ public class ATTestCase extends InteropTestCase
             final String serviceURI = ProxyURIRewriting.rewriteURI(conversationId, getParticipantURI()) ;
             final CoordinationContextType context = ATInteropUtil.createCoordinationContext(getSourceCoordinatorURI()) ;
             getParticipantStub().readonly(serviceURI, context) ;
-            
+
             final CompletionCoordinatorParticipant participant = ATInteropUtil.registerCompletion(context, context.getIdentifier().getValue()) ;
             participant.commit() ;
-            
+
             state.waitForCompletion(0) ;
         }
         finally
@@ -231,7 +231,7 @@ public class ATTestCase extends InteropTestCase
 
     /**
      * testAT3_3 - 3.3 VolatileAndDurable
-     * Tests registration during the volatile prepare phase. 
+     * Tests registration during the volatile prepare phase.
      * @throws Exception on failure.
      */
     public void testAT3_3()
@@ -245,10 +245,10 @@ public class ATTestCase extends InteropTestCase
             final String serviceURI = ProxyURIRewriting.rewriteURI(conversationId, getParticipantURI()) ;
             final CoordinationContextType context = ATInteropUtil.createCoordinationContext(getSourceCoordinatorURI()) ;
             getParticipantStub().volatileAndDurable(serviceURI, context) ;
-            
+
             final CompletionCoordinatorParticipant participant = ATInteropUtil.registerCompletion(context, context.getIdentifier().getValue()) ;
             participant.commit() ;
-            
+
             state.waitForCompletion(0) ;
         }
         finally
@@ -260,7 +260,7 @@ public class ATTestCase extends InteropTestCase
 
     /**
      * testAT4_1 - 4.1 EarlyReadonly
-     * Tests the case of a participant initiated ReadOnly message occurring prior to the prepare phase. 
+     * Tests the case of a participant initiated ReadOnly message occurring prior to the prepare phase.
      * @throws Exception on failure.
      */
     public void testAT4_1()
@@ -274,10 +274,10 @@ public class ATTestCase extends InteropTestCase
             final String serviceURI = ProxyURIRewriting.rewriteURI(conversationId, getParticipantURI()) ;
             final CoordinationContextType context = ATInteropUtil.createCoordinationContext(getSourceCoordinatorURI()) ;
             getParticipantStub().earlyReadonly(serviceURI, context) ;
-            
+
             final CompletionCoordinatorParticipant participant = ATInteropUtil.registerCompletion(context, context.getIdentifier().getValue()) ;
             participant.commit() ;
-            
+
             state.waitForCompletion(0) ;
         }
         finally
@@ -289,7 +289,7 @@ public class ATTestCase extends InteropTestCase
 
     /**
      * testAT4_2 - 4.2 EarlyAborted
-     * Tests the case of a participant initiated Aborted message occurring prior to the prepare phase. 
+     * Tests the case of a participant initiated Aborted message occurring prior to the prepare phase.
      * @throws Exception on failure.
      */
     public void testAT4_2()
@@ -303,7 +303,7 @@ public class ATTestCase extends InteropTestCase
             final String serviceURI = ProxyURIRewriting.rewriteURI(conversationId, getParticipantURI()) ;
             final CoordinationContextType context = ATInteropUtil.createCoordinationContext(getSourceCoordinatorURI()) ;
             getParticipantStub().earlyAborted(serviceURI, context) ;
-            
+
             final CompletionCoordinatorParticipant participant = ATInteropUtil.registerCompletion(context, context.getIdentifier().getValue()) ;
             participant.commit() ;
             fail("Transaction rollback expected") ;
@@ -335,10 +335,10 @@ public class ATTestCase extends InteropTestCase
             final String serviceURI = ProxyURIRewriting.rewriteURI(conversationId, getParticipantURI()) ;
             final CoordinationContextType context = ATInteropUtil.createCoordinationContext(getSourceCoordinatorURI()) ;
             getParticipantStub().replayCommit(serviceURI, context) ;
-            
+
             final CompletionCoordinatorParticipant participant = ATInteropUtil.registerCompletion(context, context.getIdentifier().getValue()) ;
             participant.commit() ;
-            
+
             state.waitForCompletion(0) ;
         }
         finally
@@ -364,10 +364,10 @@ public class ATTestCase extends InteropTestCase
             final String serviceURI = ProxyURIRewriting.rewriteURI(conversationId, getParticipantURI()) ;
             final CoordinationContextType context = ATInteropUtil.createCoordinationContext(getSourceCoordinatorURI()) ;
             getParticipantStub().retryPreparedCommit(serviceURI, context) ;
-            
+
             final CompletionCoordinatorParticipant participant = ATInteropUtil.registerCompletion(context, context.getIdentifier().getValue()) ;
             participant.commit() ;
-            
+
             state.waitForCompletion(0) ;
         }
         finally
@@ -393,7 +393,7 @@ public class ATTestCase extends InteropTestCase
             final String serviceURI = ProxyURIRewriting.rewriteURI(conversationId, getParticipantURI()) ;
             final CoordinationContextType context = ATInteropUtil.createCoordinationContext(getSourceCoordinatorURI()) ;
             getParticipantStub().retryPreparedAbort(serviceURI, context) ;
-            
+
             final CompletionCoordinatorParticipant participant = ATInteropUtil.registerCompletion(context, context.getIdentifier().getValue()) ;
             participant.commit() ;
             fail("Transaction rollback expected") ;
@@ -425,10 +425,10 @@ public class ATTestCase extends InteropTestCase
             final String serviceURI = ProxyURIRewriting.rewriteURI(conversationId, getParticipantURI()) ;
             final CoordinationContextType context = ATInteropUtil.createCoordinationContext(getSourceCoordinatorURI()) ;
             getParticipantStub().retryCommit(serviceURI, context) ;
-            
+
             final CompletionCoordinatorParticipant participant = ATInteropUtil.registerCompletion(context, context.getIdentifier().getValue()) ;
             participant.commit() ;
-            
+
             state.waitForCompletion(0) ;
         }
         finally
@@ -454,7 +454,7 @@ public class ATTestCase extends InteropTestCase
             final String serviceURI = ProxyURIRewriting.rewriteURI(conversationId, getParticipantURI()) ;
             final CoordinationContextType context = ATInteropUtil.createCoordinationContext(getSourceCoordinatorURI()) ;
             getParticipantStub().preparedAfterTimeout(serviceURI, context) ;
-            
+
             final CompletionCoordinatorParticipant participant = ATInteropUtil.registerCompletion(context, context.getIdentifier().getValue()) ;
             participant.commit() ;
             fail("Transaction rollback expected") ;
@@ -486,10 +486,10 @@ public class ATTestCase extends InteropTestCase
             final String serviceURI = ProxyURIRewriting.rewriteURI(conversationId, getParticipantURI()) ;
             final CoordinationContextType context = ATInteropUtil.createCoordinationContext(getSourceCoordinatorURI()) ;
             getParticipantStub().lostCommitted(serviceURI, context) ;
-            
+
             final CompletionCoordinatorParticipant participant = ATInteropUtil.registerCompletion(context, context.getIdentifier().getValue()) ;
             participant.commit() ;
-            
+
             state.waitForCompletion(0) ;
         }
         finally
@@ -498,7 +498,7 @@ public class ATTestCase extends InteropTestCase
         }
         assertTrue("Conversation did not complete successfully", state.isSuccessful()) ;
     }
-    
+
     /**
      * Get the source coordinator URI.
      * @return The source coordinator uri.
@@ -507,7 +507,7 @@ public class ATTestCase extends InteropTestCase
     {
         return SOURCE_COORDINATOR_URI ;
     }
-    
+
     /**
      * Get the source participant URI.
      * @return The source participant uri.
@@ -516,7 +516,7 @@ public class ATTestCase extends InteropTestCase
     {
         return SOURCE_PARTICIPANT_URI ;
     }
-    
+
     /**
      * Get the participant stub for the test.
      * @return The participant stub.
@@ -525,7 +525,7 @@ public class ATTestCase extends InteropTestCase
     {
         return (getAsyncTest() ? AsyncParticipantStub.getParticipantStub() : SyncParticipantStub.getParticipantStub()) ;
     }
-    
+
     static
     {
         final ServiceRegistry serviceRegistry = ServiceRegistry.getRegistry() ;

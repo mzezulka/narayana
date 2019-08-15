@@ -43,7 +43,7 @@ public class AsyncParticipantClient
      * The client singleton.
      */
     private static final AsyncParticipantClient CLIENT = new AsyncParticipantClient() ;
-    
+
     /**
      * The cancel action.
      */
@@ -92,32 +92,32 @@ public class AsyncParticipantClient
      * The mixed outcome action.
      */
     private static final String mixedOutcomeAction = BAInteropConstants.INTEROP_ACTION_MIXED_OUTCOME ;
-    
+
     /**
      * The initiator URI for replies.
      */
     private MAPEndpoint initiator = null;
-    
+
     /**
      * Construct the interop synch client.
      */
     private AsyncParticipantClient()
     {
         // final HandlerRegistry handlerRegistry = new HandlerRegistry() ;
-        
+
         // Add WS-Addressing
         // AddressingPolicy.register(handlerRegistry) ;
         // Add coordination context
         // CoordinationContextPolicy.register(handlerRegistry) ;
         // Add client policies
         // ClientPolicy.register(handlerRegistry) ;
-        
+
         // soapService = new SoapService(handlerRegistry) ;
         final String initiatorURIString = ServiceRegistry.getRegistry().getServiceURI(BAInteropConstants.SERVICE_INITIATOR) ;
         MAPBuilder builder = MAPBuilderFactory.getInstance().getBuilderInstance();
         initiator = builder.newEndpoint(initiatorURIString);
     }
-    
+
     /**
      * Send a cancel request.
      * @param coordinationContext The coordination context.
@@ -137,7 +137,7 @@ public class AsyncParticipantClient
             CoordinationContextManager.setThreadContext(null) ;
         }
     }
-    
+
     /**
      * Send a exit request.
      * @param coordinationContext The coordination context.
@@ -157,7 +157,7 @@ public class AsyncParticipantClient
             CoordinationContextManager.setThreadContext(null) ;
         }
     }
-    
+
     /**
      * Send a fail request.
      * @param coordinationContext The coordination context.
@@ -177,7 +177,7 @@ public class AsyncParticipantClient
             CoordinationContextManager.setThreadContext(null) ;
         }
     }
-    
+
     /**
      * Send a cannot complete request.
      * @param coordinationContext The coordination context.
@@ -197,7 +197,7 @@ public class AsyncParticipantClient
             CoordinationContextManager.setThreadContext(null) ;
         }
     }
-    
+
     /**
      * Send a participant complete close request.
      * @param coordinationContext The coordination context.
@@ -217,7 +217,7 @@ public class AsyncParticipantClient
             CoordinationContextManager.setThreadContext(null) ;
         }
     }
-    
+
     /**
      * Send a coordinator complete close request.
      * @param coordinationContext The coordination context.
@@ -237,7 +237,7 @@ public class AsyncParticipantClient
             CoordinationContextManager.setThreadContext(null) ;
         }
     }
-    
+
     /**
      * Send a unsolicited complete request.
      * @param coordinationContext The coordination context.
@@ -257,7 +257,7 @@ public class AsyncParticipantClient
             CoordinationContextManager.setThreadContext(null) ;
         }
     }
-    
+
     /**
      * Send a compensate request.
      * @param coordinationContext The coordination context.
@@ -277,7 +277,7 @@ public class AsyncParticipantClient
             CoordinationContextManager.setThreadContext(null) ;
         }
     }
-    
+
     /**
      * Send a compensation fail request.
      * @param coordinationContext The coordination context.
@@ -297,7 +297,7 @@ public class AsyncParticipantClient
             CoordinationContextManager.setThreadContext(null) ;
         }
     }
-    
+
     /**
      * Send a participant cancel completed race request.
      * @param coordinationContext The coordination context.
@@ -317,7 +317,7 @@ public class AsyncParticipantClient
             CoordinationContextManager.setThreadContext(null) ;
         }
     }
-    
+
     /**
      * Send a message loss and recovery request.
      * @param coordinationContext The coordination context.
@@ -337,7 +337,7 @@ public class AsyncParticipantClient
             CoordinationContextManager.setThreadContext(null) ;
         }
     }
-    
+
     /**
      * Send a mixed outcome request.
      * @param coordinationContext The coordination context.
@@ -357,7 +357,7 @@ public class AsyncParticipantClient
             CoordinationContextManager.setThreadContext(null) ;
         }
     }
-    
+
     /**
      * Get the Interop client singleton.
      * @return The Interop client singleton.

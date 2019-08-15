@@ -51,7 +51,7 @@ public class TestGroup_rawresources02_2b extends TestGroupBase
 	}
 
     private void runOneServerOneClient(Class clientClass) {
-        
+
         Task server1 = createTask("server1", org.jboss.jbossts.qa.RawResources02Servers.Server02.class, Task.TaskType.EXPECT_READY, 480);
 		server1.start("$(1)", "$(2)");
 		Task client0 = createTask("client0", clientClass, Task.TaskType.EXPECT_PASS_FAIL, 480);

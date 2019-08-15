@@ -1,20 +1,20 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors 
- * as indicated by the @author tags. 
+ * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * as indicated by the @author tags.
  * See the copyright.txt in the distribution for a
- * full listing of individual contributors. 
+ * full listing of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
  * of the GNU Lesser General Public License, v. 2.1.
- * This program is distributed in the hope that it will be useful, but WITHOUT A 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT A
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
  * You should have received a copy of the GNU Lesser General Public License,
  * v.2.1 along with this distribution; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Arjuna Technologies Ltd,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.  
+ * UK.
  *
  * $Id: xidcheck.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -89,14 +89,14 @@ public class XARecoveryModuleUnitTest
     public void testNull ()
     {
         XARecoveryModule xarm = new XARecoveryModule();
-        
+
         xarm.periodicWorkFirstPass();
         xarm.periodicWorkSecondPass();
-        
+
         assertNotNull(xarm.id());
     }
 
-    
+
     @Test
     public void testRecoverFromMultipleXAResourceRecovery() throws Exception {
         // Make sure the file doesn't exist
@@ -120,16 +120,16 @@ public class XARecoveryModuleUnitTest
                 {
                     return XAResourceRecord.class;
                 }
-                
+
                 public int getType ()
                 {
                     return RecordType.JTA_RECORD;
                 }
         });
-        
+
         List<String> xarn = new ArrayList<String>();
         xarn.add(NodeNameXAResourceOrphanFilter.RECOVER_ALL_NODES);
-        
+
         jtaPropertyManager.getJTAEnvironmentBean().setXaRecoveryNodes(xarn);
         XARecoveryModule xaRecoveryModule = new XARecoveryModule();
         Field safetyIntervalMillis = RecoveryXids.class.getDeclaredField("safetyIntervalMillis");
@@ -140,100 +140,100 @@ public class XARecoveryModuleUnitTest
         xaRecoveryModule.addXAResourceOrphanFilter(new com.arjuna.ats.internal.jta.recovery.arjunacore.JTATransactionLogXAResourceOrphanFilter());
         xaRecoveryModule.addXAResourceOrphanFilter(new com.arjuna.ats.internal.jta.recovery.arjunacore.JTANodeNameXAResourceOrphanFilter());
         RecoveryManager.manager().addModule(xaRecoveryModule);
-        
-        
+
+
         // This is done rather than using the AtomicActionRecoveryModule as the transaction is inflight
         RecoverAtomicAction rcvAtomicAction = new RecoverAtomicAction(aa.get_uid(), ActionStatus.COMMITTED);
         rcvAtomicAction.replayPhase2();
-        
+
         // The XARM would execute next
         xaRecoveryModule.periodicWorkFirstPass();
         xaRecoveryModule.periodicWorkSecondPass();
 
         // Make sure the file doesn't exist
         assertFalse(new File("XARR.txt").exists());
-        
+
         aa.abort();
     }
-    
+
     @Test
     public void testRecover () throws Exception
     {
         ArrayList<String> r = new ArrayList<String>();
         TransactionImple tx = new TransactionImple(0);
-        
+
         assertTrue(tx.enlistResource(new RecoveryXAResource()));
-        
+
         assertEquals(tx.doPrepare(), TwoPhaseOutcome.PREPARE_OK);
-        
+
         r.add("com.hp.mwtests.ts.jta.recovery.DummyXARecoveryResource");
 
         jtaPropertyManager.getJTAEnvironmentBean().setXaResourceRecoveryClassNames(r);
-        
+
         XARecoveryModule xarm = new XARecoveryModule();
 
         assertNull(xarm.getNewXAResource( new XAResourceRecord(null, null, new XidImple(), null) ));
-        
+
         for (int i = 0; i < 11; i++)
         {
             xarm.periodicWorkFirstPass();
             xarm.periodicWorkSecondPass();
         }
-        
+
         assertTrue(xarm.getNewXAResource(  new XAResourceRecord(null, null, new XidImple(new Uid()), null) ) == null);
-        
+
         assertNull(xarm.getNewXAResource( new XAResourceRecord(null, null, new XidImple(), null) ));
     }
-    
+
     @Test
     public void testFailures () throws Exception
     {
-        XARecoveryModule xarm = new XARecoveryModule();       
+        XARecoveryModule xarm = new XARecoveryModule();
         Class<?>[] parameterTypes = new Class[2];
         Uid u = new Uid();
         Xid x = new XidImple();
-        
+
         parameterTypes[0] = Xid.class;
         parameterTypes[1] = Uid.class;
-      
+
         Method m = xarm.getClass().getDeclaredMethod("addFailure", parameterTypes);
         m.setAccessible(true);
-      
+
         Object[] parameters = new Object[2];
         parameters[0] = x;
         parameters[1] = u;
-      
+
         m.invoke(xarm, parameters);
-        
+
         parameterTypes = new Class[1];
         parameterTypes[0] = Xid.class;
-        
+
         parameters = new Object[1];
         parameters[0] = x;
-        
+
         m = xarm.getClass().getDeclaredMethod("previousFailure", parameterTypes);
         m.setAccessible(true);
-        
+
         Uid ret = (Uid) m.invoke(xarm, parameters);
-        
+
         assertEquals(ret, u);
-        
+
         parameterTypes = new Class[2];
         parameterTypes[0] = Xid.class;
         parameterTypes[1] = Uid.class;
-        
+
         parameters = new Object[2];
         parameters[0] = x;
         parameters[1] = u;
-        
+
         m = xarm.getClass().getDeclaredMethod("removeFailure", parameterTypes);
         m.setAccessible(true);
-        
+
         m.invoke(xarm, parameters);
-               
+
         m = xarm.getClass().getDeclaredMethod("clearAllFailures", (Class[]) null);
         m.setAccessible(true);
-        
+
         m.invoke(xarm, (Object[]) null);
     }
 
@@ -258,7 +258,7 @@ public class XARecoveryModuleUnitTest
         assertEquals("Recovery helper should be removed and the test xa resource should not be provided",
                 2, testXAResource.recoveryCount());
     }
-    
+
     @Test
     public void testXAResourceRecoveryHelperDeregisterLocking() throws InterruptedException, ExecutionException {
 
@@ -272,7 +272,7 @@ public class XARecoveryModuleUnitTest
         // registration of the recovery helper to setup the testXAResource during first pass
         xaRecoveryModule.addXAResourceRecoveryHelper(xaResourceRecoveryHelper);
 
-        // start with recovery and going to state ScanState.BETWEEN_PASSES 
+        // start with recovery and going to state ScanState.BETWEEN_PASSES
         xaRecoveryModule.periodicWorkFirstPass();
 
         // as we get the XAResource to further use the XARecoveryModule.isHelperInUse
@@ -330,28 +330,28 @@ public class XARecoveryModuleUnitTest
         xaRecoveryModule.addXAResourceOrphanFilter(xaResourceOrphanFilter);
         xaRecoveryModule.removeXAResourceOrphanFilter(xaResourceOrphanFilter);
     }
-    
+
     @Test
     public void testXAResourceOrphanFilter () throws Exception
     {
         XAResourceOrphanFilter xaResourceOrphanFilter = new DummyXAResourceOrphanFilter(XAResourceOrphanFilter.Vote.ROLLBACK);
-    
+
         XARecoveryModule xarm = new XARecoveryModule();
-        
+
         xarm.addXAResourceOrphanFilter(xaResourceOrphanFilter);
-        
+
         Class<?>[] parameterTypes = new Class[2];
-        
+
         parameterTypes[0] = XAResource.class;
         parameterTypes[1] = Xid.class;
-        
+
         Method m = xarm.getClass().getDeclaredMethod("handleOrphan", parameterTypes);
         m.setAccessible(true);
-        
+
         Object[] parameters = new Object[2];
         parameters[0] = new RecoveryXAResource();
         parameters[1] = new XidImple();
-        
+
         m.invoke(xarm, parameters);
     }
 
@@ -578,18 +578,18 @@ public class XARecoveryModuleUnitTest
         {
             _vote = null;
         }
-        
+
         public DummyXAResourceOrphanFilter (Vote v)
         {
             _vote = v;
         }
-        
+
         @Override
         public Vote checkXid(Xid xid)
         {
             return _vote;
         }
-        
+
         private Vote _vote;
     }
 

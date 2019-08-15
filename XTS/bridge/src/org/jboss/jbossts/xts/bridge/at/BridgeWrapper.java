@@ -29,7 +29,7 @@ public class BridgeWrapper
             (ContextFactoryImple)ContextFactoryMapper.getMapper().getContextFactory(AtomicTransactionConstants.WSAT_PROTOCOL);
 
     /**
-     * this class handles all creation of bridged transactions 
+     * this class handles all creation of bridged transactions
      */
 
     private BridgeWrapper()
@@ -209,7 +209,7 @@ public class BridgeWrapper
 	{
         return coordinator.prepare();
 	}
-    
+
 
     /**
      * initiate synchronization afterCompletion processing for the bridged-to transaction following a

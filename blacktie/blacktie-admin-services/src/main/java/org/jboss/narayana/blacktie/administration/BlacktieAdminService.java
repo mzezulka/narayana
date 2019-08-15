@@ -51,7 +51,7 @@ public class BlacktieAdminService implements BlacktieAdminServiceMBean {
         administrationProxy.close();
         log.info("Admin Server Stopped");
     }
-    
+
     /**
      * Retrieve the domain name
      */
@@ -96,7 +96,7 @@ public class BlacktieAdminService implements BlacktieAdminServiceMBean {
 
     /**
      * List the running ids of a specific server
-     * 
+     *
      * @param serverName The name of the server
      */
     public List<Integer> listRunningInstanceIds(String serverName) {
@@ -112,7 +112,7 @@ public class BlacktieAdminService implements BlacktieAdminServiceMBean {
 
     /**
      * List the service status for a service
-     * 
+     *
      * @param serverName The name of the server
      * @param serviceName The name of the service
      */
@@ -122,7 +122,7 @@ public class BlacktieAdminService implements BlacktieAdminServiceMBean {
 
     /**
      * Advertise a new service
-     * 
+     *
      * @param serverName The name of the server
      * @param serviceName The name of the service
      */
@@ -132,7 +132,7 @@ public class BlacktieAdminService implements BlacktieAdminServiceMBean {
 
     /**
      * Unadvertise a new service
-     * 
+     *
      * @param serverName The name of the server
      * @param serviceName The name of the service
      */
@@ -142,7 +142,7 @@ public class BlacktieAdminService implements BlacktieAdminServiceMBean {
 
     /**
      * Shutdown a server
-     * 
+     *
      * @param serverName The name of the server
      * @param id The id of the server
      */
@@ -152,7 +152,7 @@ public class BlacktieAdminService implements BlacktieAdminServiceMBean {
 
     /**
      * Get the service counter and restrict it to a certain server, 0 for all.
-     * 
+     *
      * @param serverName The name of the server
      * @param id The id of the server
      * @param serviceName The name of the service
@@ -163,7 +163,7 @@ public class BlacktieAdminService implements BlacktieAdminServiceMBean {
 
     /**
      * Get the service counter for the domain.
-     * 
+     *
      * @param serverName The name of the server
      * @param serviceName The name of the service
      */
@@ -181,7 +181,7 @@ public class BlacktieAdminService implements BlacktieAdminServiceMBean {
 
     /**
      * Reload the server (causes the server to update its configuration and restart.
-     * 
+     *
      * @param serverName The name of the server
      */
     public Boolean reloadServer(String serverName) {
@@ -190,7 +190,7 @@ public class BlacktieAdminService implements BlacktieAdminServiceMBean {
 
     /**
      * List the status of a service giving an optional id, 0 is all servers.
-     * 
+     *
      * @param serverName The name of the server
      * @param id The id of the server
      * @param serviceName The name of the service

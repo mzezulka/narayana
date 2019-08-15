@@ -79,7 +79,7 @@ public class QATestNameRule implements MethodRule
             @Override
             public void evaluate() throws Throwable {
                 methodName = method.getName();
-                
+
                 groupName = target.getClass().getSimpleName();
                 if(groupName.startsWith("TestGroup_")) {
                     groupName = groupName.substring(10);

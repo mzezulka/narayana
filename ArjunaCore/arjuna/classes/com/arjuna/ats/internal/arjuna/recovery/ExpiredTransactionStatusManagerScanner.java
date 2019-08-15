@@ -1,20 +1,20 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors 
- * as indicated by the @author tags. 
+ * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * as indicated by the @author tags.
  * See the copyright.txt in the distribution for a
- * full listing of individual contributors. 
+ * full listing of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
  * of the GNU Lesser General Public License, v. 2.1.
- * This program is distributed in the hope that it will be useful, but WITHOUT A 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT A
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
  * You should have received a copy of the GNU Lesser General Public License,
  * v.2.1 along with this distribution; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -45,7 +45,7 @@ import com.arjuna.ats.internal.arjuna.common.UidHelper;
 
 /**
  * This class is a plug-in module for the recovery manager.  This
- * class is responsible for the removing transaction status manager items 
+ * class is responsible for the removing transaction status manager items
  * that are too old.
  */
 
@@ -87,7 +87,7 @@ public class ExpiredTransactionStatusManagerScanner implements ExpiryScanner
             while (!endOfUids)
             {
                // extract a uid
-                
+
                 theUid = UidHelper.unpackFrom(uids);
 
                if (theUid.equals(Uid.nullUid()))
@@ -96,17 +96,17 @@ public class ExpiredTransactionStatusManagerScanner implements ExpiryScanner
                {
                   Uid newUid = new Uid(theUid) ;
 
-                  TransactionStatusManagerItem 
+                  TransactionStatusManagerItem
                      tsmItem = TransactionStatusManagerItem.recreate( newUid ) ;
-           
+
                   if ( tsmItem != null )
                   {
                      Date timeOfDeath = tsmItem.getDeadTime() ;
-              
+
                      if ( timeOfDeath != null && timeOfDeath.before(oldestSurviving) )
                      {
 			 tsLogger.logger.debugf("Removing old transaction status manager item %s", newUid);
-			 
+
 			 _recoveryStore.remove_committed( newUid, _itemTypeName ) ;
                      }
                      else
@@ -115,18 +115,18 @@ public class ExpiredTransactionStatusManagerScanner implements ExpiryScanner
                         // to the Transaction Status Managers' process
                         // then it is removed from the object store.
                         Uid currentUid = newUid ;
-                  
+
                         String process_id = currentUid.getHexPid();
-                      
-                        TransactionStatusConnector tsc = 
+
+                        TransactionStatusConnector tsc =
                            new TransactionStatusConnector ( process_id, currentUid ) ;
-                         
+
                         tsc.test( tsmItem ) ;
-                  
+
                         if ( tsc.isDead() )
                         {
                             tsLogger.logger.debugf("Removing old transaction status manager item %s", newUid);
-			    
+
                            tsc.delete() ;
                            tsc = null ;
                         }
@@ -141,18 +141,18 @@ public class ExpiredTransactionStatusManagerScanner implements ExpiryScanner
 	      // end of uids!
 	  }
    }
-    
+
     public boolean toBeUsed()
     {
 	return _expiryTime != 0 ;
     }
-    
+
     private String      _itemTypeName ;
     private RecoveryStore _recoveryStore;
-    
+
     private static final int _expiryTime = recoveryPropertyManager.getRecoveryEnvironmentBean()
             .getTransactionStatusManagerExpiryTime() * 60 * 60;
-    
+
     private static final SimpleDateFormat _timeFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss");
 
     /**
@@ -165,5 +165,5 @@ public class ExpiredTransactionStatusManagerScanner implements ExpiryScanner
         }
     }
 
- 
+
 }

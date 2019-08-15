@@ -48,43 +48,43 @@ public class RecoveryTest
     public void testCommit () throws Exception
     {
         AtomicAction A = new AtomicAction();
-        
+
         A.begin();
-        
+
         AtomicObject obj = new AtomicObject();
         OutputObjectState os = new OutputObjectState();
         Uid u = new Uid();
-        
+
         assertTrue(obj.save_state(os, ObjectType.ANDPERSISTENT));
-        
+
         assertTrue(StoreManager.getParticipantStore().write_uncommitted(u, obj.type(), os));
-        
+
         MyRecoveredTO rto = new MyRecoveredTO(u, obj.type(), StoreManager.getParticipantStore());
-        
+
         rto.replay();
-        
+
         A.abort();
     }
-    
+
     @Test
     public void testAbort () throws Exception
     {
         AtomicAction A = new AtomicAction();
-        
+
         A.begin();
-        
+
         AtomicObject obj = new AtomicObject();
         OutputObjectState os = new OutputObjectState();
         Uid u = new Uid();
-        
+
         assertTrue(obj.save_state(os, ObjectType.ANDPERSISTENT));
-        
+
         assertTrue(StoreManager.getParticipantStore().write_uncommitted(u, obj.type(), os));
-        
+
         MyRecoveredTO rto = new MyRecoveredTO(u, obj.type(), StoreManager.getParticipantStore());
-        
+
         A.abort();
-        
+
         rto.replay();
     }
 }

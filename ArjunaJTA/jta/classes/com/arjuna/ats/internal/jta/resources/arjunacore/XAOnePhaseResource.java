@@ -123,7 +123,7 @@ public class XAOnePhaseResource implements OnePhaseResource, ExceptionDeferrer
         catch (final XAException xae)
         {
             addDeferredThrowable(xae);
-            
+
             if (jtaLogger.logger.isTraceEnabled()) {
                 jtaLogger.logger.trace("XAOnePhaseResource.commit(" + xid + ") " + xae.getMessage());
             }
@@ -331,8 +331,8 @@ public class XAOnePhaseResource implements OnePhaseResource, ExceptionDeferrer
         final String message = jtaLogger.i18NLogger.get_resources_arjunacore_XAOnePhaseResource_unpack();
         return new IOException(message, ex) ;
     }
-    
-    void addDeferredThrowable(Exception e) 
+
+    void addDeferredThrowable(Exception e)
     {
         if (this.deferredExceptions == null)
             this.deferredExceptions = new ArrayList<>();
@@ -345,5 +345,5 @@ public class XAOnePhaseResource implements OnePhaseResource, ExceptionDeferrer
       if (deferredExceptions != null)
           list.addAll(deferredExceptions);
    }
-    
+
 }

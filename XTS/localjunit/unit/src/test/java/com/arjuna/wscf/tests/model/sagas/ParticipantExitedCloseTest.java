@@ -14,7 +14,7 @@ import com.arjuna.wscf.tests.WarDeployment;
 
 @RunWith(Arquillian.class)
 public class ParticipantExitedCloseTest {
-	
+
 	@Deployment
 	public static WebArchive createDeployment() {
 		return WarDeployment.getDeployment();

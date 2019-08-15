@@ -35,7 +35,7 @@ public class CommitFailureDurable2PCParticipant extends ParticipantAdapter imple
      * The drop commit flag.
      */
     private boolean dropCommit ;
-    
+
     /**
      * Vote to prepare.
      */
@@ -44,7 +44,7 @@ public class CommitFailureDurable2PCParticipant extends ParticipantAdapter imple
     {
         return new Prepared() ;
     }
-    
+
     public void commit()
         throws WrongStateException, SystemException
     {

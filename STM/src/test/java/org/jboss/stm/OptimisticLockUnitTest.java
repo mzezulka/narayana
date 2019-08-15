@@ -34,7 +34,7 @@ import com.arjuna.ats.arjuna.coordinator.ActionStatus;
 
 /*
  * Provided by Tom Jenkinson.
- * 
+ *
  * Modified by nmcl.
  */
 
@@ -71,22 +71,22 @@ public class OptimisticLockUnitTest extends TestCase
         Container<Atomic> theContainer2 = new Container<Atomic>();
 
         final Atomic obj1 = theContainer1.create(new ExampleSTM());
-        
+
         AtomicAction act = new AtomicAction();
-        
+
         /*
          * Make sure there's state on "disk" before we try to do anything
          * with a shared instance.
-         * 
+         *
          * https://issues.jboss.org/browse/JBTM-1732
          */
-        
+
         act.begin();
-        
+
         obj1.set(10);
-        
+
         act.commit();
-        
+
         final Atomic obj2 = theContainer2.clone(new ExampleSTM(), obj1);
 
         AtomicAction a = new AtomicAction();

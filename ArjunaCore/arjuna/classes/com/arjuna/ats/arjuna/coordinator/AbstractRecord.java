@@ -456,14 +456,14 @@ public abstract class AbstractRecord extends StateManager
 		}
 	}
 
-	
+
 	@SuppressWarnings("unchecked")
         public static AbstractRecord create (int type)
 	{
 	    try
 	    {
         	    Class recordClass = RecordType.typeToClass(type);
-        
+
         	    return (AbstractRecord) recordClass.newInstance();
 	    }
 	    catch (final NullPointerException ex) {
@@ -474,7 +474,7 @@ public abstract class AbstractRecord extends StateManager
 	    catch (final Throwable ex)
 	    {
 	        ex.printStackTrace();
-	        
+
 	        return null;
 	    }
 	}

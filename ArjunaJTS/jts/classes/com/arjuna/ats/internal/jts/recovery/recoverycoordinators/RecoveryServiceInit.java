@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,18 +14,18 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
 /**
  * @author Malik SAHEB (malik.saheb@arjuna.com)
- * @version $Id 
+ * @version $Id
  */
 package com.arjuna.ats.internal.jts.recovery.recoverycoordinators;
 
 
-public interface RecoveryServiceInit 
+public interface RecoveryServiceInit
 {
 
     boolean startRCservice();

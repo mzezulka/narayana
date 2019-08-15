@@ -54,7 +54,7 @@ public class ProxyXAResource implements XAResource, XAResourceWrapper, Serializa
 
 	/**
 	 * Create a new proxy to the remote server.
-	 * 
+	 *
 	 * @param LookupProvider
 	 *            .getLookupProvider()
 	 * @param localServerName
@@ -70,7 +70,7 @@ public class ProxyXAResource implements XAResource, XAResourceWrapper, Serializa
 
 	/**
 	 * Constructor for fallback bottom up recovery.
-	 * 
+	 *
 	 * @param localServerName
 	 * @param remoteServerName
 	 */
@@ -116,7 +116,7 @@ public class ProxyXAResource implements XAResource, XAResourceWrapper, Serializa
 
 		Xid toPropagate = migratedXid != null ? migratedXid : xid;
 
-        
+
         try {
             LookupProvider.getInstance().lookup(remoteServerName).commit(toPropagate, onePhase, !nonerecovered);
         } catch (Error e) {
@@ -155,7 +155,7 @@ public class ProxyXAResource implements XAResource, XAResourceWrapper, Serializa
 	/**
 	 * This will ensure that the remote server has loaded the subordinate
 	 * transaction.
-	 * 
+	 *
 	 * @return It returns the proxies view of the XID state, returning the
 	 *         remote servers view of the XID would present an XID to the local
 	 *         server that it knows nothing about and indeed potentially the

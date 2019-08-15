@@ -1,20 +1,20 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors 
- * as indicated by the @author tags. 
+ * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * as indicated by the @author tags.
  * See the copyright.txt in the distribution for a
- * full listing of individual contributors. 
+ * full listing of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
  * of the GNU Lesser General Public License, v. 2.1.
- * This program is distributed in the hope that it will be useful, but WITHOUT A 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT A
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
  * You should have received a copy of the GNU Lesser General Public License,
  * v.2.1 along with this distribution; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -43,7 +43,7 @@ public class TransactionImple
 
 	/**
 	 * Create a new transaction with the specified timeout.
-	 * 
+	 *
 	 * @deprecated Only used by tests
 	 */
 
@@ -61,7 +61,7 @@ public class TransactionImple
 
 	/**
 	 * Used for failure recovery.
-	 * 
+	 *
 	 * @param actId
 	 *            the transaction state to recover.
 	 */
@@ -72,7 +72,7 @@ public class TransactionImple
 
 		// don't put it into list here: it may already be there!
 	}
-	
+
 	public String getParentNodeName() {
 		return ((SubordinateAtomicAction)_theTransaction).getParentNodeName();
 	}
@@ -96,7 +96,7 @@ public class TransactionImple
 	/**
 	 * If this is an imported transaction (via JCA) then this will be the Xid we
 	 * are pretending to be. Otherwise, it will be null.
-	 * 
+	 *
 	 * @return null if we are a local transaction, a valid Xid if we have been
 	 *         imported.
 	 */

@@ -95,10 +95,10 @@ public class Client02b
 			catch (final HeuristicHazard ex)
 			{
 			    // report_heuristics is false, so why are we here?!
-			    
+
 			    correct = false;
 			}
-			
+
 			if (correct)
 			{
 				System.out.println("Passed");

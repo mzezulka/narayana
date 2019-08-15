@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Arjuna Solutions Limited,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.  
+ * UK.
  *
  * $Id: ResourceRecord.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -32,7 +32,7 @@
 package com.arjuna.ats.internal.jts.resources;
 
 /*
- * 
+ *
  * OTS Resource Record Class Implementation
  *
  */
@@ -112,7 +112,7 @@ import com.arjuna.ats.jts.logging.jtsLogger;
 
 public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRecord
 {
-    
+
     /**
      * Constructor
      *
@@ -149,14 +149,14 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
 	 * cache the stringied reference and retry the narrow when we
 	 * need to use the _resourceHandle as at this point the
 	 * Resource may have recovered.
-	 */ 
-	
+	 */
+
 	if ( (_resourceHandle == null) && (_stringifiedResourceHandle != null) )
 	{
 	    try
 	    {
 		org.omg.CORBA.ORB theOrb = ORBManager.getORB().orb();
-		
+
 		if (theOrb == null)
 		    throw new UNKNOWN();
 
@@ -171,16 +171,16 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
 		{
 		    jtsLogger.logger.trace("ResourceRecord: Successfully stringed to object, next try to narrow");
 		}
-		
+
 		theOrb = null;
-		
+
 		_resourceHandle = org.omg.CosTransactions.ResourceHelper.narrow(optr);
 
 		if (jtsLogger.logger.isTraceEnabled())
 		{
 		    jtsLogger.logger.trace("ResourceRecord: Successfully narrowed");
 		}
-		
+
 		if (_resourceHandle == null)
 		    throw new BAD_PARAM();
 		else
@@ -201,7 +201,7 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
 
 	return _resourceHandle;
     }
-    
+
     public boolean propagateOnCommit ()
     {
 	return _propagateRecord;
@@ -211,7 +211,7 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
     {
 	return RecordType.OTS_RECORD;
     }
-    
+
     public Object value ()
     {
 	return _resourceHandle;
@@ -225,7 +225,7 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
     /**
      * General nesting rules:
      *
-     * Only SubtransactionAware resources get registered with nested actions. 
+     * Only SubtransactionAware resources get registered with nested actions.
      * The ResourceRecord creator is assumed to ensure that plain Resources
      * are only registered with the appropriate top level action.
      *
@@ -254,7 +254,7 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
 	    /*
 	     * Must be an staResource to get here.
 	     */
-	    
+
 	    staResource = org.omg.CosTransactions.SubtransactionAwareResourceHelper.narrow(resourceHandle());
 
 	    if (staResource == null)
@@ -278,7 +278,7 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
 	    {
 		o = TwoPhaseOutcome.FINISH_ERROR;
 	    }
-	
+
 	    staResource = null;
 	}
 
@@ -328,14 +328,14 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
 
 	int o = TwoPhaseOutcome.ONE_PHASE_ERROR;
 	SubtransactionAwareResource staResource = null;
-	
+
 	try
 	{
 	    if (_committed)
 		return TwoPhaseOutcome.PREPARE_OK;
 	    else
 		_committed = true;
-	    
+
 	    staResource = org.omg.CosTransactions.SubtransactionAwareResourceHelper.narrow(resourceHandle());
 
 	    if (staResource == null)
@@ -347,7 +347,7 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
 	     * Not subtran aware resource, so return PREPARE_OK.
 	     * Resource will get invocations at top-level only.
 	     */
-	    
+
 	    o = TwoPhaseOutcome.PREPARE_OK;
 	}
 
@@ -358,7 +358,7 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
 		staResource.commit_subtransaction(_parentCoordHandle);
 
 		o = TwoPhaseOutcome.PREPARE_OK;
-		
+
 		staResource = null;
 	    }
 	    catch (Exception e)
@@ -366,14 +366,14 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
 		o = TwoPhaseOutcome.ONE_PHASE_ERROR;
 	    }
 	}
-	    
+
 	/*
 	 * Now release the parent as it is about to be destroyed
 	 * anyway.
 	 */
 
 	_parentCoordHandle = null;
-	
+
 	return o;
     }
 
@@ -427,7 +427,7 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
 
         return TwoPhaseOutcome.FINISH_ERROR;
     }
-    
+
 	return TwoPhaseOutcome.FINISH_OK;
     }
 
@@ -489,7 +489,7 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
 		    return TwoPhaseOutcome.PREPARE_OK;
 		case Vote._VoteRollback:
 		    _rolledback = true;
-		    
+
 		    return TwoPhaseOutcome.PREPARE_NOTOK;
 		case Vote._VoteReadOnly:
 		    return TwoPhaseOutcome.PREPARE_READONLY;
@@ -513,7 +513,7 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
 
 	return TwoPhaseOutcome.PREPARE_NOTOK;
     }
-    
+
     public int nestedOnePhaseCommit ()
     {
 	int res = nestedPrepare();
@@ -553,7 +553,7 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
 	    /*
 	     * Unknown error - better assume heuristic!
 	     */
-	    
+
 	    return TwoPhaseOutcome.HEURISTIC_HAZARD;
 	}
 
@@ -590,7 +590,7 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
     {
 	//toDelete = null;
     }
-    
+
     public void print (PrintWriter strm)
     {
 	super.print(strm);
@@ -615,7 +615,7 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
 
 	if (!result)
 	    return false;
-	
+
 	try
 	{
 	    isString = os.unpackInt();
@@ -625,7 +625,7 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
 	     */
 
 	    _parentCoordHandle = null;
-	    
+
 	    if (isString == 1)
 	    {
 		_stringifiedResourceHandle = os.unpackString();
@@ -633,7 +633,7 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
 		/*
 		 * Could call resourceHandle() here to restore the
 		 * _resourceHandle reference but no loss in doing it
-		 * lazily.  
+		 * lazily.
 		 */
 
 		// Unpack recovery coordinator Uid
@@ -660,9 +660,9 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
 
 	if (!result)
 	    return false;
-	
+
 	try
-	{	
+	{
 	    /*
 	     * Do we need to save the parent coordinator handle?
 	     */
@@ -672,7 +672,7 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
 	     * pack the string.  Failing that if we have a cached
 	     * stringified version (in _stringifiedResourceHandle)
 	     * then we pack that. If we have neither then we're
-	     * doomed.  
+	     * doomed.
 	     */
 
 	    if ( (resourceHandle() == null) && (_stringifiedResourceHandle == null) )
@@ -690,7 +690,7 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
 
 		    if (theOrb == null)
 			throw new UNKNOWN();
-		
+
 		    stringRef = theOrb.object_to_string(_resourceHandle);
 
 		    theOrb = null;
@@ -713,9 +713,9 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
 		{
 		    result = false;
 		}
-		
+
 		stringRef = null;
-		
+
 		if (result)
 		{
 		    // Pack recovery coordinator Uid
@@ -736,7 +736,7 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
 	{
 	    result = false;
 	}
-	
+
 	return result;
     }
 
@@ -781,7 +781,7 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
     public boolean shouldReplace (AbstractRecord rec)
     {
 	boolean replace = false;
-	
+
 	if (rec != null)
 	{
 	    if (rec.typeIs() == typeIs())
@@ -826,7 +826,7 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
 	_committed = false;
 	_rolledback = false;
     }
-	
+
     public ResourceRecord ()
     {
 	super();
@@ -839,7 +839,7 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
 	_committed = false;
 	_rolledback = false;
     }
-    
+
     private Coordinator _parentCoordHandle;
     private Resource    _resourceHandle;
     private String      _stringifiedResourceHandle;
@@ -847,5 +847,5 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
     private boolean     _propagateRecord;
     private boolean     _committed;
     private boolean     _rolledback;
-    
+
 }

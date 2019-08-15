@@ -77,7 +77,7 @@ public class ActionTestServer
                     + _tests_passed + "  tests failed: " + _tests_failed);
         }
     }
-    
+
     private static void test1()
     {
         try {
@@ -132,7 +132,7 @@ public class ActionTestServer
     {
         try {
             System.err.println("test2");
-            
+
             String test_uid = _test_uid_2.toString();
             String test_type = _test_tran_type_2;
             String reply;
@@ -183,7 +183,7 @@ public class ActionTestServer
     {
         try {
             System.err.println("test3");
-            
+
             String test_uid = _test_uid_3.toString();
             String test_type = _test_tran_type_3;
             String reply;
@@ -229,11 +229,11 @@ public class ActionTestServer
             _tests_failed++;
         }
     }
-    
+
     /**
      * Pre-test setup.
      */
-    
+
     private static boolean test_setup()
     {
         boolean setupOk = false;
@@ -250,7 +250,7 @@ public class ActionTestServer
 
             _to_client.write(Utility.getProcessUid().stringForm()+"\n");
             _to_client.write(Utility.intToHexString(Utility.getpid())+"\n");
-            
+
             _to_client.flush();
 
             _transaction_1 = new AtomicAction();
@@ -273,11 +273,11 @@ public class ActionTestServer
 
         return setupOk;
     }
-    
+
     private static final String _unit_test = "com.hp.mwtests.ts.arjuna.recovery.ActionTestServer: ";
-    
+
     private static int _port = 4321;
-    
+
     private static Socket _test_socket;
     private static ServerSocket _test_service_socket;
 

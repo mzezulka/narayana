@@ -37,7 +37,7 @@ import static org.junit.Assert.assertTrue;
  */
 
 public class BasicUnitTest
-{   
+{
     /**
      * This is out Transactional interface. We'll use this as the type for a
      * Container.
@@ -49,15 +49,15 @@ public class BasicUnitTest
     public interface Atomic
     {
         public void change (int value) throws Exception;
-        
+
         public void set (int value) throws Exception;
-        
+
         public int get () throws Exception;
     }
-    
+
     @Transactional
     public class ExampleSTM implements Atomic
-    {   
+    {
 	/*
 	 * Define read/write operations here. Can do them in the interface
 	 * if you want.
@@ -74,7 +74,7 @@ public class BasicUnitTest
         {
             state = value;
         }
-        
+
         @WriteLock
         public void change (int value) throws Exception
         {
@@ -109,7 +109,7 @@ public class BasicUnitTest
 	 */
 
         Atomic obj = null;
-        
+
         try
         {
 	    /*
@@ -123,30 +123,30 @@ public class BasicUnitTest
         catch (final Throwable ex)
         {
             ex.printStackTrace();
-            
+
             success = false;
         }
-        
+
         assertTrue(success);
-        
+
 	// a transaction!
 
         AtomicAction a = new AtomicAction();
-        
+
         a.begin();
-        
+
         obj.set(1234);
-        
+
         a.commit();
 
         assertEquals(obj.get(), 1234);
-        
+
         a = new AtomicAction();
 
         a.begin();
 
         obj.change(1);  // the value at this stage will be 1235
-        
+
         a.abort();
 
         assertEquals(obj.get(), 1234);  // we aborted, so the value should be back to 1234

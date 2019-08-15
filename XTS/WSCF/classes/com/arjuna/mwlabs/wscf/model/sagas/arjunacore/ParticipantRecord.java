@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -52,7 +52,7 @@ import java.io.PrintWriter;
 
 /**
  * Arjuna abstract record to handle two-phase participants.
- * 
+ *
  * @author Mark Little (mark.little@arjuna.com)
  * @version $Id: ParticipantRecord.java,v 1.6 2005/05/19 12:13:37 nmcl Exp $
  */
@@ -63,10 +63,10 @@ public class ParticipantRecord extends
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param theResource
 	 *            is the proxy that allows us to call out to the object.
-	 * 
+	 *
 	 */
 
 	public ParticipantRecord (Participant theResource, Uid id)
@@ -97,7 +97,7 @@ public class ParticipantRecord extends
 	public int typeIs ()
 	{
 		// TODO add to record list
-		
+
 		return RecordType.XTS_WSBA_RECORD;
 	}
 
@@ -112,7 +112,7 @@ public class ParticipantRecord extends
 
 	/**
 	 * Set the internal value. Not allowed for this class.
-	 * 
+	 *
 	 */
 
 	public void setValue (Object o)
@@ -122,7 +122,7 @@ public class ParticipantRecord extends
 
 	/**
 	 * The record is being driven through nested rollback.
-	 * 
+	 *
 	 */
 
 	// TODO
@@ -148,7 +148,7 @@ public class ParticipantRecord extends
 
 	/**
 	 * The record is being driven through nested commit.
-	 * 
+	 *
 	 */
 
 	public int nestedCommit ()
@@ -173,7 +173,7 @@ public class ParticipantRecord extends
 
 	/**
 	 * The record is being driven through nested prepare.
-	 * 
+	 *
 	 */
 
 	public int nestedPrepare ()
@@ -198,7 +198,7 @@ public class ParticipantRecord extends
 
 	/**
 	 * The record is being driven through top-level rollback.
-	 * 
+	 *
 	 */
 
 	public int topLevelAbort ()
@@ -269,7 +269,7 @@ public class ParticipantRecord extends
 
 	/**
 	 * The record is being driven through top-level commit.
-	 * 
+	 *
 	 */
 
 	public int topLevelCommit ()
@@ -321,7 +321,7 @@ public class ParticipantRecord extends
 
 	/**
 	 * The record is being driven through top-level prepare.
-	 * 
+	 *
 	 */
 
 	public int topLevelPrepare ()
@@ -357,7 +357,7 @@ public class ParticipantRecord extends
 	/**
 	 * The record is being driven through nested commit and is the only
 	 * resource.
-	 * 
+	 *
 	 */
 
 	public int nestedOnePhaseCommit ()
@@ -383,7 +383,7 @@ public class ParticipantRecord extends
 	/**
 	 * The record is being driven through top-level commit and is the only
 	 * resource.
-	 * 
+	 *
 	 */
 
 	public int topLevelOnePhaseCommit ()
@@ -440,7 +440,7 @@ public class ParticipantRecord extends
 
 	/**
 	 * The record generated a heuristic and can now forget about it.
-	 * 
+	 *
 	 */
 
 	public boolean forgetHeuristic ()

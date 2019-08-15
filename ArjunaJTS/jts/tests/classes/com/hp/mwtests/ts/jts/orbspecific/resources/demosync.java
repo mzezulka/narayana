@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Arjuna Solutions Limited,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.  
+ * UK.
  *
  * $Id: demosync.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -41,7 +41,7 @@ import com.arjuna.ats.jts.utils.Utility;
 
 public class demosync extends org.omg.CosTransactions.SynchronizationPOA
 {
-    
+
     public demosync ()
     {
 	this(true);
@@ -50,7 +50,7 @@ public class demosync extends org.omg.CosTransactions.SynchronizationPOA
     public demosync (boolean errors)
     {
 	ORBManager.getPOA().objectIsReady(this);
-	
+
 	ref = SynchronizationHelper.narrow(ORBManager.getPOA().corbaReference(this));
 
 	_errors = errors;
@@ -60,14 +60,14 @@ public class demosync extends org.omg.CosTransactions.SynchronizationPOA
     {
 	return ref;
     }
- 
+
     public void before_completion () throws SystemException
     {
 	if (_errors)
 	{
 	    System.out.println("DEMOSYNC : BEFORE_COMPLETION");
 	    System.out.println("Synchronization throwing exception.");
-	
+
 	    throw new UNKNOWN();
 	}
     }
@@ -79,13 +79,13 @@ public class demosync extends org.omg.CosTransactions.SynchronizationPOA
 	    System.out.println("DEMOSYNC : AFTER_COMPLETION ( "+Utility.stringStatus(status)+" )");
 
 	    System.out.println("Synchronization throwing exception.");
-	
+
 	    throw new UNKNOWN(); // should not cause any affect!
 	}
     }
 
     private Synchronization ref;
     private boolean _errors;
-    
+
 }
 

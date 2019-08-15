@@ -33,7 +33,7 @@ class UserDefFirst1Map implements RecordTypeMap
     {
         return CrashAbstractRecord02.class;
     }
-    
+
     public int getType ()
     {
         return RecordType.USER_DEF_FIRST1;

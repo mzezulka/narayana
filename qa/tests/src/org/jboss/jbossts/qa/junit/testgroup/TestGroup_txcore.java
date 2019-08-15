@@ -108,7 +108,7 @@ public class TestGroup_txcore extends TestGroupBase
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.Stats.Client004.class, "$(CALLS)", "4");
 	}
 
-    
+
 	@Test public void Uid_Test001()
 	{
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.Common.UidTest.class, "1", "100");

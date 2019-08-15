@@ -65,7 +65,7 @@ public class SimpleIsolatedServers {
 	private LookupProvider lookupProvider = LookupProvider.getInstance();
 	private LocalServer[] localServers = new LocalServer[serverNodeNames.length];
 	private CompletionCounter completionCounter = CompletionCounter.getInstance();
-	
+
 	@Before
 	public void setup() throws SecurityException, NoSuchMethodException, InstantiationException, IllegalAccessException, ClassNotFoundException,
 			CoreEnvironmentBeanException, IOException, IllegalArgumentException, NoSuchFieldException {
@@ -79,7 +79,7 @@ public class SimpleIsolatedServers {
 			}
 			clusterBuddies[i] = otherNodes.toArray(new String[0]);
 		}
-		
+
 		for (int i = 0; i < serverNodeNames.length; i++) {
 			boot(i);
 		}
@@ -153,11 +153,11 @@ public class SimpleIsolatedServers {
 
 	/**
 	 * Ensure that two servers can start up and call recover on the same server
-	 * 
+	 *
 	 * The JCA XATerminator call wont allow intermediary calls to
 	 * XATerminator::recover between TMSTARTSCAN and TMENDSCAN. This is fine for
 	 * distributed JTA.
-	 * 
+	 *
 	 * @throws XAException
 	 * @throws IOException
 	 * @throws DummyRemoteException
@@ -171,7 +171,7 @@ public class SimpleIsolatedServers {
 		assertTrue("" + completionCounter.getCommitCount("1000"), completionCounter.getCommitCount("1000") == 0);
 		assertTrue("" + completionCounter.getRollbackCount("1000"), completionCounter.getRollbackCount("1000") == 0);
         final CompletionCountLock phase2CommitAborted = new CompletionCountLock();
-		synchronized (phase2CommitAborted) {	        
+		synchronized (phase2CommitAborted) {
 		{
 			Thread thread = new Thread(new Runnable() {
 				public void run() {
@@ -275,7 +275,7 @@ public class SimpleIsolatedServers {
 				waitedCount++;
 	            if (waitedCount == 2 && phase2CommitAborted.getCount() < 2) {
 	                fail("Servers were not aborted");
-	            }           
+	            }
 			}
 		}
 
@@ -314,13 +314,13 @@ public class SimpleIsolatedServers {
 				lock.wait(300000);
 				numberOfNotificationToGet--;
 			}
-			
+
 			if (lock.getCount() < 2) {
 				fail("Did not get notification for both recovery runs, deadlock in recovery manager scan detected");
-				ProcessBuilder processBuilder = new ProcessBuilder("/bin/sh", "-c", "kill -3 $PPID");  
+				ProcessBuilder processBuilder = new ProcessBuilder("/bin/sh", "-c", "kill -3 $PPID");
 				processBuilder.redirectErrorStream(true);
-				Process process = processBuilder.start();       
-				InputStream inputStream = process.getInputStream();       
+				Process process = processBuilder.start();
+				InputStream inputStream = process.getInputStream();
 				final byte[] bytes = new byte[4096];
 				int bytesRead = inputStream.read(bytes);
 				while (bytesRead > -1) {
@@ -579,12 +579,12 @@ public class SimpleIsolatedServers {
 	/**
 	 * Check that if transaction was in flight when a root crashed, when
 	 * recovered it can terminate it.
-	 * 
+	 *
 	 * recoverFor first greps the logs for any subordinates that are owned by
 	 * "parentNodeName" then it greps the list of currently running transactions
 	 * to see if any of them are owned by "parentNodeName" this is covered by
 	 * testRecoverInflightTransaction basically what can happen is:
-	 * 
+	 *
 	 * 1. TM1 starts tx 2. propagate to TM2 3. TM1 crashes 4. we need to
 	 * rollback TM2 as it is now orphaned the detail being that as TM2 hasn't
 	 * prepared we cant just grep the logs at TM2 as there wont be one
@@ -764,7 +764,7 @@ public class SimpleIsolatedServers {
 			assertTrue("" + completionCounter.getCommitCount(nodeName), completionCounter.getCommitCount(nodeName) == 0);
 			assertTrue("" + completionCounter.getRollbackCount(nodeName), completionCounter.getRollbackCount(nodeName) == 0);
 		}
-		
+
 		final CompletionCountLock phase2CommitAborted = new CompletionCountLock();
 		Thread thread = new Thread(new Runnable() {
 			public void run() {
@@ -824,7 +824,7 @@ public class SimpleIsolatedServers {
 			assertTrue("" + completionCounter.getCommitCount(nodeName), completionCounter.getCommitCount(nodeName) == 0);
 			assertTrue("" + completionCounter.getRollbackCount(nodeName), completionCounter.getRollbackCount(nodeName) == 0);
 		}
-		
+
 		final CompletionCountLock errors = new CompletionCountLock();
         synchronized (errors) {
 		Thread thread = new Thread(new Runnable() {
@@ -845,7 +845,7 @@ public class SimpleIsolatedServers {
 			}
 		});
 		thread.start();
-		
+
 		    errors.wait();
 		    if (errors.getCount() > 0) {
 		        fail("Unexpected errors");
@@ -853,7 +853,7 @@ public class SimpleIsolatedServers {
 		}
 
         reboot("2000");
-        
+
         getLocalServer("3000").doRecoveryManagerScan(true);
 		getLocalServer("2000").doRecoveryManagerScan(true);
 		getLocalServer("1000").doRecoveryManagerScan(false);
@@ -1258,7 +1258,7 @@ public class SimpleIsolatedServers {
 		}
 		Thread.currentThread().setContextClassLoader(classLoader);
 	}
-	
+
 	private DataReturnedFromRemoteServer performTransactionalWork(List<String> nodesToFlowTo, int remainingTimeout, Xid toMigrate,
 			int numberOfResourcesToRegister, boolean addSynchronization, boolean rollbackOnlyOnLastNode) throws RollbackException, IllegalStateException,
 			XAException, SystemException, NotSupportedException, IOException {
@@ -1364,7 +1364,7 @@ public class SimpleIsolatedServers {
 		Xid requiresProxyAtPreviousServer = currentServer.locateOrImportTransactionThenResumeIt(remainingTimeout, toMigrate);
 
 		// Perform work on the migrated transaction
-		
+
 		if (!currentServerName.equals("1000"))
 		{
 			TransactionManager transactionManager = currentServer.getTransactionManager();
@@ -1417,7 +1417,7 @@ public class SimpleIsolatedServers {
 					transaction.enlistResource(proxyXAResource);
 					transaction.registerSynchronization(currentServer.generateProxySynchronization(nextServerNodeName, toMigrate));
 				}
-				
+
 				if (currentServerName.equals("1000"))
 		        {
 		            if (addSynchronization) {

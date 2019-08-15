@@ -105,7 +105,7 @@ public class Client12
 
 // now sleep to let reply completion do its job 1 second should be more than enough
             CrashRecoveryDelays.awaitReplayCompletionCR01();
-			
+
 
 			correct = correct && service.is_correct();
 //  after reply_completion is called the resource will have rollback called on

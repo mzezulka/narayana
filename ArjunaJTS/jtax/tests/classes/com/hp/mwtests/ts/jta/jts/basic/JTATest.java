@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -54,7 +54,7 @@ public class JTATest
 
 	    myORB = ORB.getInstance("test");
 	    myOA = OA.getRootOA(myORB);
-	    
+
 	    myORB.initORB(new String[] {}, null);
 	    myOA.initOA();
 
@@ -72,7 +72,7 @@ public class JTATest
 	 * We should have a reference to a factory object (see JTA
 	 * specification). However, for simplicity we will ignore this.
 	 */
-	
+
 	try
 	{
 	    XACreator creator = (XACreator) Thread.currentThread().getContextClassLoader().loadClass(xaResource).newInstance();
@@ -88,15 +88,15 @@ public class JTATest
 	    if (tm != null)
 	    {
 		System.out.println("Starting top-level transaction.");
-		
+
 		tm.begin();
-	    
+
 		javax.transaction.Transaction theTransaction = tm.getTransaction();
 
 		if (theTransaction != null)
 		{
 		    System.out.println("\nTrying to register resource with transaction.");
-		    
+
 		    if (!theTransaction.enlistResource(theResource))
 		    {
 			tm.rollback();
@@ -111,7 +111,7 @@ public class JTATest
 		     * will cause currently running transactions to also
 		     * rollback, if required.
 		     */
-		    
+
 		    System.out.println("\nTrying to start another transaction - should fail!");
 
 		    try
@@ -124,7 +124,7 @@ public class JTATest
 		    {
 			System.out.println("Transaction did not begin: "+e);
 		    }
-		    
+
 		    /*
 		     * Do some work and decide whether to commit or rollback.
 		     * (Assume commit for example.)
@@ -133,14 +133,14 @@ public class JTATest
 		    com.hp.mwtests.ts.jta.jts.common.Synchronization s = new com.hp.mwtests.ts.jta.jts.common.Synchronization();
 
 		    tm.getTransaction().registerSynchronization(s);
-		    
+
 		    System.out.println("\nCommitting transaction.");
 
 		    if (tmCommit)
 			System.out.println("Using transaction manager.\n");
 		    else
 			System.out.println("Using transaction.\n");
-		    
+
 		    if (tmCommit)
 			tm.commit();
 		    else

@@ -30,7 +30,7 @@ import com.arjuna.ats.arjuna.tools.osb.annotation.MXBeanPropertyDescription;
  * @author Mike Musgrove
  */
 /**
- * @deprecated as of 5.0.5.Final In a subsequent release we will change packages names in order to 
+ * @deprecated as of 5.0.5.Final In a subsequent release we will change packages names in order to
  * provide a better separation between public and internal classes.
  */
 @Deprecated // in order to provide a better separation between public and internal classes.
@@ -44,7 +44,7 @@ public interface LogRecordWrapperMBean extends OSEntryBeanMBean {
 
     @MXBeanPropertyDescription("Clear any heuristics so that the recovery system will replay the commit")
     String clearHeuristic();
-    
+
 	@MXBeanPropertyDescription("The internal type of this transaction participant")
 	String getType();
 

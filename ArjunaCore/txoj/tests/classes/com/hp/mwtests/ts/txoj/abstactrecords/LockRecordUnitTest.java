@@ -43,27 +43,27 @@ public class LockRecordUnitTest
     public void test ()
     {
 	LockRecord lr = new LockRecord();
-	
+
 	assertEquals(lr.lockType(), null);
 	assertTrue(lr.save_state(new OutputObjectState(), ObjectType.ANDPERSISTENT));
 	assertFalse(lr.restore_state(new InputObjectState(), ObjectType.ANDPERSISTENT));
 	assertEquals(lr.value(), null);
-	
+
 	lr.setValue(null);
-	
+
 	assertEquals(lr.nestedAbort(), TwoPhaseOutcome.FINISH_ERROR);
 	assertEquals(lr.nestedCommit(), TwoPhaseOutcome.FINISH_ERROR);
 	assertEquals(lr.topLevelAbort(), TwoPhaseOutcome.FINISH_ERROR);
         assertEquals(lr.topLevelCommit(), TwoPhaseOutcome.FINISH_ERROR);
-        
+
         lr = new LockRecord(new AtomicObject(), new AtomicAction());
-        
+
         assertTrue(lr.toString() != null);
-        
+
         lr.print(new PrintWriter(new ByteArrayOutputStream()));
-        
+
         assertTrue(lr.type() != null);
-        
+
         lr.merge(null);
         lr.alter(null);
     }

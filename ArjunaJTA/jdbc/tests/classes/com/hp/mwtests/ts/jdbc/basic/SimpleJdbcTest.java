@@ -41,7 +41,7 @@ public class SimpleJdbcTest {
 		final UserTransaction userTransaction = com.arjuna.ats.jta.UserTransaction
 				.userTransaction();
 		userTransaction.begin();
-		
+
 		final Connection connection1 = dataSource1.getConnection();
 		final Connection connection2 = dataSource2.getConnection();
 

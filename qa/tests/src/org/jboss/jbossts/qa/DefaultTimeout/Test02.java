@@ -33,7 +33,7 @@ import javax.transaction.TransactionManager;
  *
  * Rollback attempt after timeout should work ok, as it's a nullop on
  * tx that is already rolled back.
- * 
+ *
  * Note: build time unit tests jta|jtax SimpleTest|RollbackTest are similar
  * but use custom (short) timeout value so as not to delay the build.
  *

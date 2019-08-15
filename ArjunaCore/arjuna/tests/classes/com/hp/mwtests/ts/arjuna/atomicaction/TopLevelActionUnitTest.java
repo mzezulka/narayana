@@ -36,19 +36,19 @@ public class TopLevelActionUnitTest
         AtomicAction A = new AtomicAction();
         AtomicAction B = new AtomicAction();
         TopLevelAction tl = new TopLevelAction();
-        
+
         A.begin();  // top level
         B.begin();  // nested
-        
+
         tl.begin(); // nested top level
-        
+
         A.abort();  // not recommended in practice!
-        
+
         assertEquals(A.status(), ActionStatus.ABORTED);
         assertEquals(B.status(), ActionStatus.ABORTED);
-        
+
         assertEquals(tl.status(), ActionStatus.RUNNING);
-        
+
         tl.abort();
     }
 }

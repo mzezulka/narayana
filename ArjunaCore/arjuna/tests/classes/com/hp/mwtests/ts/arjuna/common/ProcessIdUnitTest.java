@@ -39,17 +39,17 @@ public class ProcessIdUnitTest
 
         assertTrue(fp.getpid() != -1);
     }
-    
+
     @Test
     public void testManualProcessId()
     {
         arjPropertyManager.getCoreEnvironmentBean().setPid(1);
-        
+
         ManualProcessId mp = new ManualProcessId();
 
         assertTrue(mp.getpid() == 1);
     }
-    
+
     @Test
     public void testExecProcessId()
     {
@@ -65,7 +65,7 @@ public class ProcessIdUnitTest
     public void testMBeanProcessId()
     {
         MBeanProcessId mp = new MBeanProcessId();
-        
+
         assertTrue(mp.getpid() > 0);
     }
 }

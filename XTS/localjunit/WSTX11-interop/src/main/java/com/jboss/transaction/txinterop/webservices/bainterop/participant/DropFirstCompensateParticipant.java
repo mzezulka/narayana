@@ -27,7 +27,7 @@ import com.arjuna.wst.WrongStateException;
 public class DropFirstCompensateParticipant extends CoordinatorCompletionParticipantAdapter
 {
     private boolean dropped ;
-    
+
     public synchronized void compensate()
     	throws FaultedException, WrongStateException, SystemException
     {

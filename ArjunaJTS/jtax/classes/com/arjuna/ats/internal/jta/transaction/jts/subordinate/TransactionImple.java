@@ -341,13 +341,13 @@ public class TransactionImple extends
                         throw new IllegalStateException(ex);
                 }
         }
-        
+
         public boolean doBeforeCompletion () throws javax.transaction.SystemException
         {
             try
             {
                 SubordinateAtomicTransaction subAct = (SubordinateAtomicTransaction) super._theTransaction;
-                
+
                 return subAct.doBeforeCompletion();
             }
             catch (final Exception ex)
@@ -356,7 +356,7 @@ public class TransactionImple extends
 
                 UnexpectedConditionException unexpectedConditionException = new UnexpectedConditionException(ex.toString());
                 unexpectedConditionException.initCause(ex);
-                
+
                 throw unexpectedConditionException;
             }
         }

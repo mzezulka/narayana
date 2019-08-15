@@ -36,7 +36,7 @@ class CrashAbstractRecordMap implements RecordTypeMap
     {
         return CrashAbstractRecord02.class;
     }
-    
+
     public int getType ()
     {
         return RecordType.USER_DEF_FIRST1;
@@ -48,7 +48,7 @@ public class Client001 extends BaseTestClient
 	public static void main(String[] args)
 	{
 	       RecordTypeManager.manager().add(new CrashAbstractRecordMap());
-	            
+
 		@SuppressWarnings("unused")
         Client001 test = new Client001(args);
 	}

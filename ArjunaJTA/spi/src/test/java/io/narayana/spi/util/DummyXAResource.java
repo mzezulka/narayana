@@ -51,7 +51,7 @@ public class DummyXAResource implements Synchronization, XAResource, Serializabl
     {
         init();
     }
-    
+
     public DummyXAResource()
     {
     }
@@ -62,7 +62,7 @@ public class DummyXAResource implements Synchronization, XAResource, Serializabl
 
         if (spec == null)
             throw new IllegalArgumentException("Invalid XA resource failure injection specification");
-        
+
         setFailureMode(spec.getMode(), spec.getModeArg());
         setFailureType(spec.getType());
     }
@@ -215,7 +215,7 @@ public class DummyXAResource implements Synchronization, XAResource, Serializabl
         _isPrepared = false;
         _xids.remove(xid);
     }
-    
+
     public void end(Xid xid, int i) throws XAException
     {
         if (_xaFailureType.equals(ASFailureType.XARES_END))
@@ -244,7 +244,7 @@ public class DummyXAResource implements Synchronization, XAResource, Serializabl
     public int prepare(Xid xid) throws XAException
     {
         _isPrepared = true;
-        
+
         if (_xaFailureType.equals(ASFailureType.XARES_PREPARE))
             applySpec("xa prepare");
 
@@ -269,7 +269,7 @@ public class DummyXAResource implements Synchronization, XAResource, Serializabl
     public boolean setTransactionTimeout(int txTimeout) throws XAException
     {
         this.txTimeout = txTimeout;
-        
+
         return true;    // set was successfull
     }
 
@@ -282,7 +282,7 @@ public class DummyXAResource implements Synchronization, XAResource, Serializabl
     }
 
     public String getEISProductName() { return "Test XAResouce";}
-    
+
     public String getEISProductVersion() { return "v666.0";}
 
     @SuppressWarnings({"ThrowableInstanceNeverThrown"})

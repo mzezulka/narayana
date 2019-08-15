@@ -47,7 +47,7 @@ import com.arjuna.orbportability.logging.opLogger;
 /**
  * An instance of this class provides access to the ORB specific Object Adapter
  * class.
- * 
+ *
  * @author Mark Little (mark@arjuna.com)
  * @version $Id: OA.java 2342 2006-03-30 13:06:17Z $
  * @since JTS 2.1.

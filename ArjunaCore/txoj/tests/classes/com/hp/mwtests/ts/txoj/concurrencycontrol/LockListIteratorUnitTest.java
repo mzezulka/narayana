@@ -45,9 +45,9 @@ public class LockListIteratorUnitTest
     {
         LockList list = new LockList();
         LockListIterator iter = new LockListIterator(list);
-        
+
         assertEquals(iter.iterate(), null);
-        
+
         iter.reset();
     }
 }

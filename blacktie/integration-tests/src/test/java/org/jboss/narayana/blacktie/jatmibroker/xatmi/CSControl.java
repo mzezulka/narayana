@@ -244,7 +244,7 @@ public abstract class CSControl extends TestCase {
                     /*
                      * while ((len = is.read(buf)) > 0) { if (match == -1 && (match = KMPMatch.indexOf(buf, HANDSHAKE, len)) !=
                      * -1) { synchronized (this) { this.notify(); } }
-                     * 
+                     *
                      * ostream.write(buf, 0, len); }
                      */
                     log.debug("server monitoring process I/O ...");

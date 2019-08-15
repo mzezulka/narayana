@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Arjuna Solutions Limited,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.  
+ * UK.
  *
  * $Id: AtomicWorker3.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -99,7 +99,7 @@ public static void randomOperation (int thr, int level)
 		try
 		{
 		    current.begin();
-		
+
 		    logger.info(""+level);
 		    logger.info("begin");
 
@@ -196,14 +196,14 @@ public static void randomOperation (int thr, int level)
 		{
 		    logger.warn(e, e);
 		}
-                    
+
                 logger.info(""+level);
                 logger.info("join");
 	    }
 	break;
 	}
     }
-    
+
 public static void incr12 (int thr, int level)
     {
 	boolean res  = false;
@@ -277,20 +277,20 @@ public static void incr21 (int thr, int level)
 	    logger.info("begin   incr21");
 
 	    ran = Util.rand.nextInt() % 16;
-	
+
 	    res1 = atomicObject_2.incr(ran);
 	    res  = res1;
 
 	    logger.info(""+level);
 	    logger.info("part1   incr21 : " + res1);
-	
+
 	    Util.lowProbYield();
 
 	    if (res)
 	    {
 		res2 = atomicObject_1.incr(-ran);
 		res  = res2;
-	    
+
 		logger.info(""+level);
 		logger.info("part2   incr21 : " + res2);
 	    }
@@ -330,12 +330,12 @@ public static void get12 (int thr, int level)
 	try
 	{
 	    current.begin();
-	
+
 	    logger.info(""+level);
 	    logger.info("begin   get12");
 
 	    res1 = true;
-	    
+
 	    try
 	    {
 		value1 = atomicObject_1.get();
@@ -344,7 +344,7 @@ public static void get12 (int thr, int level)
 	    {
 		res1 = false;
 	    }
-	    
+
 	    res  = res1;
 
 	    logger.info(""+level);
@@ -364,13 +364,13 @@ public static void get12 (int thr, int level)
 		{
 		    res2 = false;
 		}
-		
+
 		res  = res2;
 
 		logger.info(""+level);
 		logger.info("part2   get12  : " + res2);
 	    }
-		 
+
 	    Util.lowProbYield();
 
 	    logger.info(""+level);
@@ -420,7 +420,7 @@ public static void get21 (int thr, int level)
 	    {
 		res1 = false;
 	    }
-	    
+
 	    res  = res1;
 
 	    logger.info(""+level);
@@ -440,7 +440,7 @@ public static void get21 (int thr, int level)
 		{
 		    res2 = false;
 		}
-		
+
 		res  = res2;
 
 		logger.info(""+level);
@@ -526,7 +526,7 @@ public static void get21 (int thr, int level)
     {
 	AtomicWorker3.current = OTSImpleManager.current();
     }
-    
+
     public static AtomicObject atomicObject_1 = null;
     public static AtomicObject atomicObject_2 = null;
     public static CurrentImple current = null;

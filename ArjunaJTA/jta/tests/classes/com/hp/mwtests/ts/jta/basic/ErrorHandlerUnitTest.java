@@ -36,7 +36,7 @@ public class ErrorHandlerUnitTest
     public void test() throws Exception
     {
         tibco tc = new tibco();
-        
+
         assertFalse(tc.notAProblem(new XAException(), false));
         assertEquals(tc.getXAResourceName(), "");
     }

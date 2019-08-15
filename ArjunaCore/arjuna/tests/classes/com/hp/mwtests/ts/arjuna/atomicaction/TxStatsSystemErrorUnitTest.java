@@ -64,7 +64,7 @@ public class TxStatsSystemErrorUnitTest {
         UnreliableTestStore store = (UnreliableTestStore) pstore;
 
         long startTime = System.nanoTime();
-        
+
         for (int i = 0; i < loopCnt; i++)
         {
             if (i % 10 == 0)
@@ -72,7 +72,7 @@ public class TxStatsSystemErrorUnitTest {
 
             AtomicAction A = new AtomicAction();
             AtomicAction B = new AtomicAction();
-            
+
             A.begin();
             B.begin();
 
@@ -100,7 +100,7 @@ public class TxStatsSystemErrorUnitTest {
         AtomicAction B = new AtomicAction();
 
         B.begin();
-        
+
         assertTrue(TxStats.enabled());
         assertEquals(abortCnt + sysErrCnt, TxStats.getInstance().getNumberOfAbortedTransactions());
         assertEquals(abortCnt, TxStats.getInstance().getNumberOfApplicationRollbacks());
@@ -113,9 +113,9 @@ public class TxStatsSystemErrorUnitTest {
         assertEquals(0, TxStats.getInstance().getNumberOfTimedOutTransactions());
         assertEquals(txnCnt, TxStats.getInstance().getNumberOfTransactions());
         assertTrue(TxStats.getInstance().getAverageCommitTime() < avgTxnTime);
-        
+
         PrintWriter pw = new PrintWriter(new StringWriter());
-        
+
         TxStats.getInstance().printStatus(pw);
     }
 

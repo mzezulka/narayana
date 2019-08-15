@@ -39,7 +39,7 @@ import com.arjuna.ats.internal.jts.recovery.transactions.AssumedCompleteHeuristi
  * @author <a href="gytis@redhat.com">Gytis Trikleris</a>
  */
 public final class AssumedCompleteHeuristicServerTransactionUnitTest {
-    
+
     private Uid uid;
 
     private AssumedCompleteHeuristicServerTransaction transaction;

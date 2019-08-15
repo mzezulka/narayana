@@ -28,11 +28,11 @@ import org.jboss.jbossts.xts.environment.WSCEnvironmentBean;
 import org.jboss.jbossts.xts.environment.XTSPropertyManager;
 
 /**
- * The RegistrationResponseService is the endpoint in charge of receiving 
- * asynchronous register responses when <em>useAsynchronousRequest</em> is 
+ * The RegistrationResponseService is the endpoint in charge of receiving
+ * asynchronous register responses when <em>useAsynchronousRequest</em> is
  * configured. This is mainly implemented for inter-operability with Microsoft
  * WS-Coordination implementation and it is not a standard endpoint.
- * 
+ *
  * @author rmatinc
  */
 public class RegistrationCoordinatorResponseInitialisation

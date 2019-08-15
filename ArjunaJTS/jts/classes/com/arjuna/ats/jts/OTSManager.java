@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Hewlett-Packard Arjuna Labs,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.  
+ * UK.
  *
  * $Id: OTSManager.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -77,7 +77,7 @@ public class OTSManager
      * advantage of not needing to register the object withm the ORB, which
      * can affect performance.
      */
-    
+
     public static TransactionFactoryImple factory () throws org.omg.CORBA.SystemException
     {
 	return com.arjuna.ats.internal.jts.OTSImpleManager.factory();
@@ -106,7 +106,7 @@ public class OTSManager
 	if (jtsLogger.logger.isTraceEnabled()) {
         jtsLogger.logger.trace("OTS::destroyControl ( " + control + " )");
     }
-	
+
 	if (control == null)
 	    throw new BadControl();
 
@@ -117,7 +117,7 @@ public class OTSManager
 	 */
 
 	    Coordinator coord = null;
-	
+
 	    try
 	    {
 		coord = control.get_coordinator();
@@ -154,7 +154,7 @@ public class OTSManager
 
 		coord = null;
 	    }
-	
+
 	/*
 	 * Watch out for conflicts with multiple threads deleting
 	 * the same control!
@@ -173,19 +173,19 @@ public class OTSManager
     }
 
 	control.destroy();
-	    
+
 	control = null;
     }
 
     /**
      * Destroy the transaction control.
      */
-	
+
     public static void destroyControl (Control control) throws ActiveTransaction, ActiveThreads, BadControl, Destroyed, SystemException
     {
 	if (control == null)
 	    throw new BadControl();
-	
+
 	ControlImple lCont = Helper.localControl(control);
 
 	if (lCont != null)
@@ -199,10 +199,10 @@ public class OTSManager
 	     * been registered with the reaper, we need to get it removed.
 	     *
 	     */
-    
+
 
 		Coordinator coord = null;
-	
+
 		try
 		{
 		    coord = control.get_coordinator();
@@ -229,7 +229,7 @@ public class OTSManager
 		    coord = null;
 		}
 
-    
+
 	    /*
 	     * Watch out for conflicts with multiple threads deleting
 	     * the same control!
@@ -242,9 +242,9 @@ public class OTSManager
 	    /*
 	     * Remote transaction, so memory management is different!
 	     */
-	
+
 	    ActionControl action = null;
-	    
+
 	    try
 	    {
 		action = com.arjuna.ArjunaOTS.ActionControlHelper.narrow(control);
@@ -268,7 +268,7 @@ public class OTSManager
 		 */
 
 		action.destroy();
-		
+
 		action = null;
 		control = null;
 	    }
@@ -290,7 +290,7 @@ public class OTSManager
     {
 	_localSlotId = slotId;
     }
-    
+
     public static final int getLocalSlotId ()
     {
 	return _localSlotId;
@@ -300,7 +300,7 @@ public class OTSManager
     {
 	_receivedSlotId = slotId;
     }
-    
+
     public static final int getReceivedSlotId ()
     {
 	return _receivedSlotId;
@@ -310,12 +310,12 @@ public class OTSManager
     {
 	com.arjuna.ats.internal.jts.ORBManager.setORB(theOrb);
     }
-    
+
     public static final void setPOA (com.arjuna.orbportability.OA thePoa)
     {
 	com.arjuna.ats.internal.jts.ORBManager.setPOA(thePoa);
     }
-    
+
     public static final int serviceId = jtsPropertyManager.getJTSEnvironmentBean().getTransactionServiceId();
 
     private static int _localSlotId = -1;

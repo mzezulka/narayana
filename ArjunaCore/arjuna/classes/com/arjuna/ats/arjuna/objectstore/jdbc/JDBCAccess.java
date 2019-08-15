@@ -49,12 +49,12 @@ import com.arjuna.ats.arjuna.exceptions.FatalError;
  */
 
 public interface JDBCAccess
-{    
+{
     /**
      * @return the connection to use for the object store.  If a pool of
      * connections is used, this method may be called up to maxpoolsize
      * times.  It <EM>must</EM> not return the same connection each time.
-     * @throws SQLException 
+     * @throws SQLException
      */
 
     public Connection getConnection () throws SQLException;

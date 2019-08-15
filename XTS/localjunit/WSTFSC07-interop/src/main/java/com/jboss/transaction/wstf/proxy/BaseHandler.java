@@ -38,7 +38,7 @@ public class BaseHandler implements ContentHandler
      * The next handler in the sequence.
      */
     private final ContentHandler nextHandler ;
-    
+
     /**
      * Construct the base handler.
      * @param nextHandler The next content handler.
@@ -47,7 +47,7 @@ public class BaseHandler implements ContentHandler
     {
 	this.nextHandler = nextHandler ;
     }
-    
+
     /**
      * Set the document locator.
      * @param locator The document locator.
@@ -56,7 +56,7 @@ public class BaseHandler implements ContentHandler
     {
 	nextHandler.setDocumentLocator(locator) ;
     }
-    
+
     /**
      * Handle the procesing instruction.
      * @param target The pi target.
@@ -68,7 +68,7 @@ public class BaseHandler implements ContentHandler
     {
 	nextHandler.processingInstruction(target, data) ;
     }
-    
+
     /**
      * Start the document.
      * @throws SAXException for any errors.
@@ -78,7 +78,7 @@ public class BaseHandler implements ContentHandler
     {
 	nextHandler.startDocument() ;
     }
-    
+
     /**
      * End the document.
      * @throws SAXException for any errors.
@@ -88,7 +88,7 @@ public class BaseHandler implements ContentHandler
     {
 	nextHandler.endDocument() ;
     }
-    
+
     /**
      * Start a prefix mapping.
      * @param prefix The namespace prefix.
@@ -100,7 +100,7 @@ public class BaseHandler implements ContentHandler
     {
 	nextHandler.startPrefixMapping(prefix, uri) ;
     }
-    
+
     /**
      * End the prefix mapping.
      * @param prefix The namespace prefix.
@@ -111,7 +111,7 @@ public class BaseHandler implements ContentHandler
     {
 	nextHandler.endPrefixMapping(prefix) ;
     }
-    
+
     /**
      * Start an element.
      * @param uri The uri.
@@ -126,7 +126,7 @@ public class BaseHandler implements ContentHandler
     {
 	nextHandler.startElement(uri, localName, qName, attributes) ;
     }
-    
+
     /**
      * End an element.
      * @param uri The uri.
@@ -139,7 +139,7 @@ public class BaseHandler implements ContentHandler
     {
 	nextHandler.endElement(uri, localName, qName) ;
     }
-    
+
     /**
      * Process character text.
      * @param chars The character array.
@@ -152,7 +152,7 @@ public class BaseHandler implements ContentHandler
     {
 	nextHandler.characters(chars, start, length) ;
     }
-    
+
     /**
      * Process ignorable white space.
      * @param chars The character array.
@@ -165,7 +165,7 @@ public class BaseHandler implements ContentHandler
     {
 	nextHandler.ignorableWhitespace(chars, start, length) ;
     }
-    
+
     /**
      * Skip an entity.
      * @throws SAXException for any errors.
@@ -175,7 +175,7 @@ public class BaseHandler implements ContentHandler
     {
 	nextHandler.skippedEntity(name) ;
     }
-    
+
     /**
      * Get the next handler.
      * @return The next handler.

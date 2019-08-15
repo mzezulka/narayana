@@ -43,7 +43,7 @@ import org.jboss.narayana.blacktie.jatmibroker.xatmi.ConnectionFactory;
 
 /**
  * This class is used to send and receive data to and from clients to services.
- * 
+ *
  * @see X_OCTET_Impl
  * @see X_C_TYPE_Impl
  * @see X_COMMON_Impl
@@ -121,7 +121,7 @@ public abstract class BufferImpl implements Serializable, Buffer {
 
     /**
      * The list of types supported by this class of buffer.
-     * 
+     *
      * @see X_OCTET_Impl
      * @see X_C_TYPE_Impl
      * @see X_COMMON_Impl
@@ -162,7 +162,7 @@ public abstract class BufferImpl implements Serializable, Buffer {
 
     /**
      * Create a new buffer.
-     * 
+     *
      * @param type The type of the buffer
      * @param subtype The subtype of the buffer
      * @param requiresSerialization Is the buffer not an X_OCTET?
@@ -174,7 +174,7 @@ public abstract class BufferImpl implements Serializable, Buffer {
      * @see {@link X_C_TYPE_Impl}
      * @see {@link X_COMMON_Impl}
      */
-    BufferImpl(String type, String subtype, boolean requiresSerialization, List<Class> supportedTypes) 
+    BufferImpl(String type, String subtype, boolean requiresSerialization, List<Class> supportedTypes)
     		throws ConfigurationException, ConnectionException {
         this.type = type;
         this.subtype = subtype;
@@ -215,7 +215,7 @@ public abstract class BufferImpl implements Serializable, Buffer {
 
     /**
      * Get the format of the message.
-     * 
+     *
      * @return The format of the message
      */
     public Map<String, Class> getFormat() {
@@ -224,7 +224,7 @@ public abstract class BufferImpl implements Serializable, Buffer {
 
     /**
      * Format the buffer.
-     * 
+     *
      * @param keys The keys
      * @param types The types
      * @param lengths The lengths
@@ -249,7 +249,7 @@ public abstract class BufferImpl implements Serializable, Buffer {
 
     /**
      * Deserialize the buffer.
-     * 
+     *
      * @param data The data to deserialize.
      * @throws ConnectionException In case the data does not match the format defined.
      */
@@ -343,7 +343,7 @@ public abstract class BufferImpl implements Serializable, Buffer {
 
     /**
      * Serialize the buffer.
-     * 
+     *
      * @return The byte array for sending.
      * @throws ConnectionException In case the data cannot be formatted correctly
      */
@@ -514,7 +514,7 @@ public abstract class BufferImpl implements Serializable, Buffer {
 
     /**
      * Write a byte during serialization/
-     * 
+     *
      * @param dos The output stream to write to.
      * @param b The byte to write.
      * @throws IOException In case the output stream fails.
@@ -527,7 +527,7 @@ public abstract class BufferImpl implements Serializable, Buffer {
 
     /**
      * Read a byte during deserialization.
-     * 
+     *
      * @param dis The input stream to read from
      * @return The byte
      * @throws IOException In case the stream cannot be read.
@@ -548,13 +548,13 @@ public abstract class BufferImpl implements Serializable, Buffer {
         //bbuf.order(ByteOrder.LITTLE_ENDIAN);
         bbuf.putLong(x);
         //bbuf.order(ByteOrder.LITTLE_ENDIAN);
-        //long toWrite = bbuf.getLong(0);    
+        //long toWrite = bbuf.getLong(0);
         //bbuf.order(ByteOrder.BIG_ENDIAN);
-        
+
         byte[] data = new byte[8];
         Arrays.fill(data, (byte)0);
         System.arraycopy(bbuf.array(), 4, data, 0, 4);
-        
+
         //dos.write(bbuf.array(), 4, 4);
         dos.write(data);
         currentPos += LONG_SIZE;
@@ -563,12 +563,12 @@ public abstract class BufferImpl implements Serializable, Buffer {
     private long readLong(DataInputStream dis) throws IOException {
         currentPos += LONG_SIZE;
         //long x = dis.readLong();
-         
+
         ByteBuffer bbuf = ByteBuffer.allocate(LONG_SIZE);
         //bbuf.order(ByteOrder.LITTLE_ENDIAN);
         byte[] data = new byte[8];
         Arrays.fill(data, (byte)0);
-        
+
         dis.read(data, 4, 4);
         //bbuf.order(ByteOrder.BIG_ENDIAN);
         bbuf.put(data);
@@ -663,7 +663,7 @@ public abstract class BufferImpl implements Serializable, Buffer {
 
     /**
      * Get the type
-     * 
+     *
      * @return The type
      */
     public String getType() {
@@ -672,7 +672,7 @@ public abstract class BufferImpl implements Serializable, Buffer {
 
     /**
      * Get the subtype
-     * 
+     *
      * @return The subtype
      */
     public String getSubtype() {
@@ -689,7 +689,7 @@ public abstract class BufferImpl implements Serializable, Buffer {
 
     /**
      * Get the value of an attribute.
-     * 
+     *
      * @param key The key
      * @param type The type
      * @return The value
@@ -716,7 +716,7 @@ public abstract class BufferImpl implements Serializable, Buffer {
 
     /**
      * Set the value.
-     * 
+     *
      * @param key The key to set
      * @param type The type of the value.
      * @param value The value to use
@@ -743,7 +743,7 @@ public abstract class BufferImpl implements Serializable, Buffer {
 
     /**
      * Set the raw data, used by the X_OCTET buffer.
-     * 
+     *
      * @param bytes The data to use.
      */
     protected void setRawData(byte[] bytes) {
@@ -752,7 +752,7 @@ public abstract class BufferImpl implements Serializable, Buffer {
 
     /**
      * Get the raw data, used internally and by the X_OCTET buffer.
-     * 
+     *
      * @return The data.
      */
     protected byte[] getRawData() {

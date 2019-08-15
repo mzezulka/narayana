@@ -79,12 +79,12 @@ class DummyOS extends FileLockingStore
     {
         return super.lock(new File("foo"), FileLock.F_WRLCK, true);
     }
-    
+
     public boolean unlock ()
     {
         return super.unlock(new File("foo"));
     }
-    
+
     @Override
     protected InputObjectState read_state (Uid u, String tn, int s)
             throws ObjectStoreException
@@ -138,7 +138,7 @@ class DummyOS extends FileLockingStore
         // TODO Auto-generated method stub
         return false;
     }
-    
+
 }
 
 public class ObjectStoreTest
@@ -150,39 +150,39 @@ public class ObjectStoreTest
         objectStoreEnvironmentBean.setLocalOSRoot( "tmp" );
 
         ActionStore as = new ActionStore(objectStoreEnvironmentBean);
-        
+
         final OutputObjectState buff = new OutputObjectState();
         final String tn = "/StateManager/junit";
-        
+
         for (int i = 0; i < 100; i++)
         {
             Uid u = new Uid();
-            
+
             as.write_uncommitted(u, tn, buff);
-            
+
             as.commit_state(u, tn);
-            
+
             assertTrue(as.currentState(u, tn) != StateStatus.OS_UNCOMMITTED);
-            
+
             InputObjectState ios = new InputObjectState();
-            
+
             as.allObjUids("", ios);
-            
+
             assertTrue(as.read_uncommitted(u, tn) == null);
-            
+
             as.write_committed(u, tn, buff);
             as.read_committed(u, tn);
-            
+
             assertTrue(!as.remove_uncommitted(u, tn));
-            
+
             as.remove_committed(u, tn);
-            
+
             assertTrue(!as.hide_state(u, tn));
-            
+
             assertTrue(!as.reveal_state(u, tn));
         }
     }
-    
+
     @Test
     public void testShadowNoFileLockStore () throws Exception
     {
@@ -190,39 +190,39 @@ public class ObjectStoreTest
         objectStoreEnvironmentBean.setLocalOSRoot( "tmp" );
 
         ShadowNoFileLockStore as = new ShadowNoFileLockStore(objectStoreEnvironmentBean);
-        
+
         final OutputObjectState buff = new OutputObjectState();
         final String tn = "/StateManager/junit";
-        
+
         for (int i = 0; i < 100; i++)
         {
             Uid u = new Uid();
-            
+
             as.write_uncommitted(u, tn, buff);
-            
+
             as.commit_state(u, tn);
-            
+
             assertTrue(as.currentState(u, tn) != StateStatus.OS_UNCOMMITTED);
-            
+
             InputObjectState ios = new InputObjectState();
-            
+
             as.allObjUids("", ios);
-            
+
             assertTrue(as.read_uncommitted(u, tn) == null);
-            
+
             as.write_committed(u, tn, buff);
             as.read_committed(u, tn);
-            
+
             assertTrue(!as.remove_uncommitted(u, tn));
-            
+
             as.remove_committed(u, tn);
-            
+
             assertTrue(!as.hide_state(u, tn));
-            
+
             assertTrue(!as.reveal_state(u, tn));
         }
     }
-    
+
     @Test
     public void testHashedStore () throws Exception
     {
@@ -230,39 +230,39 @@ public class ObjectStoreTest
         objectStoreEnvironmentBean.setLocalOSRoot( "tmp" );
 
         HashedStore as = new HashedStore(objectStoreEnvironmentBean);
-        
+
         final OutputObjectState buff = new OutputObjectState();
         final String tn = "/StateManager/junit";
-        
+
         for (int i = 0; i < 100; i++)
         {
             Uid u = new Uid();
-            
+
             as.write_uncommitted(u, tn, buff);
-            
+
             as.commit_state(u, tn);
-            
+
             assertTrue(as.currentState(u, tn) != StateStatus.OS_UNCOMMITTED);
-            
+
             InputObjectState ios = new InputObjectState();
-            
+
             as.allObjUids("", ios);
-            
+
             assertTrue(as.read_uncommitted(u, tn) == null);
-            
+
             as.write_committed(u, tn, buff);
             as.read_committed(u, tn);
-            
+
             assertTrue(!as.remove_uncommitted(u, tn));
-            
+
             as.remove_committed(u, tn);
-            
+
             assertTrue(!as.hide_state(u, tn));
-            
+
             assertTrue(!as.reveal_state(u, tn));
         }
     }
-    
+
     //@Test
     public void testCacheStore () throws Exception
     {
@@ -270,39 +270,39 @@ public class ObjectStoreTest
         objectStoreEnvironmentBean.setLocalOSRoot( "tmp" );
 
         CacheStore as = new CacheStore(objectStoreEnvironmentBean);
-        
+
         final OutputObjectState buff = new OutputObjectState();
         final String tn = "/StateManager/junit";
-        
+
         for (int i = 0; i < 100; i++)
         {
             Uid u = new Uid();
-            
+
             as.write_uncommitted(u, tn, buff);
-            
+
             as.commit_state(u, tn);
-            
+
             assertTrue(as.currentState(u, tn) != StateStatus.OS_UNCOMMITTED);
-            
+
             InputObjectState ios = new InputObjectState();
-            
+
             as.allObjUids("", ios);
-            
+
             as.read_uncommitted(u, tn);  // may or may not be there if cache flush hasn't happened
-            
+
             as.write_committed(u, tn, buff);
             as.read_committed(u, tn);
-            
+
             as.remove_uncommitted(u, tn);  // may or may not be there if cache flush hasn't happened
-            
+
             as.remove_committed(u, tn);
-            
+
             assertTrue(!as.hide_state(u, tn));
-            
+
             assertTrue(!as.reveal_state(u, tn));
         }
     }
-    
+
     @Test
     public void testHashedActionStore () throws Exception
     {
@@ -310,39 +310,39 @@ public class ObjectStoreTest
         objectStoreEnvironmentBean.setLocalOSRoot( "tmp" );
 
         HashedActionStore as = new HashedActionStore(objectStoreEnvironmentBean);
-        
+
         final OutputObjectState buff = new OutputObjectState();
         final String tn = "/StateManager/junit";
-        
+
         for (int i = 0; i < 100; i++)
         {
             Uid u = new Uid();
-            
+
             as.write_uncommitted(u, tn, buff);
-            
+
             as.commit_state(u, tn);
-            
+
             assertTrue(as.currentState(u, tn) != StateStatus.OS_UNCOMMITTED);
-            
+
             InputObjectState ios = new InputObjectState();
-            
+
             as.allObjUids("", ios);
-            
+
             assertTrue(as.read_uncommitted(u, tn) == null);
-            
+
             as.write_committed(u, tn, buff);
             as.read_committed(u, tn);
-            
+
             assertTrue(!as.remove_uncommitted(u, tn));
-            
+
             as.remove_committed(u, tn);
-            
+
             assertTrue(!as.hide_state(u, tn));
-            
+
             assertTrue(!as.reveal_state(u, tn));
         }
     }
-    
+
     @Test
     public void testShadowingStore () throws Exception
     {
@@ -350,39 +350,39 @@ public class ObjectStoreTest
         objectStoreEnvironmentBean.setLocalOSRoot( "tmp" );
 
         ShadowingStore as = new ShadowingStore(objectStoreEnvironmentBean);
-        
+
         final OutputObjectState buff = new OutputObjectState();
         final String tn = "/StateManager/junit";
-        
+
         for (int i = 0; i < 100; i++)
         {
             Uid u = new Uid();
-            
+
             as.write_uncommitted(u, tn, buff);
-            
+
             as.commit_state(u, tn);
-            
+
             assertTrue(as.currentState(u, tn) != StateStatus.OS_UNCOMMITTED);
-            
+
             InputObjectState ios = new InputObjectState();
-            
+
             as.allObjUids("", ios);
-            
+
             assertTrue(as.read_uncommitted(u, tn) == null);
-            
+
             as.write_committed(u, tn, buff);
             as.read_committed(u, tn);
-            
+
             assertTrue(!as.remove_uncommitted(u, tn));
-            
+
             as.remove_committed(u, tn);
-            
+
             assertTrue(!as.hide_state(u, tn));
-            
+
             assertTrue(!as.reveal_state(u, tn));
         }
     }
-    
+
     @Test
     public void testNullActionStore () throws Exception
     {
@@ -390,35 +390,35 @@ public class ObjectStoreTest
         objectStoreEnvironmentBean.setLocalOSRoot( "tmp" );
 
         NullActionStore as = new NullActionStore(objectStoreEnvironmentBean);
-        
+
         final OutputObjectState buff = new OutputObjectState();
         final String tn = "/StateManager/junit";
-        
+
         for (int i = 0; i < 100; i++)
         {
             Uid u = new Uid();
-            
+
             as.write_uncommitted(u, tn, buff);
 
             as.commit_state(u, tn);
-            
+
             assertTrue(as.currentState(u, tn) != StateStatus.OS_UNCOMMITTED);
-            
+
             InputObjectState ios = new InputObjectState();
-            
+
             as.allObjUids("", ios);
-            
+
             assertTrue(as.read_uncommitted(u, tn) == null);
-            
+
             as.write_committed(u, tn, buff);
             as.read_committed(u, tn);
-            
+
             assertTrue(!as.remove_uncommitted(u, tn));
-            
+
             as.remove_committed(u, tn);
-            
+
             assertTrue(!as.hide_state(u, tn));
-            
+
             assertTrue(!as.reveal_state(u, tn));
         }
     }
@@ -430,24 +430,24 @@ public class ObjectStoreTest
         objectStoreEnvironmentBean.setLocalOSRoot( "tmp" );
 
         VolatileStore as = new VolatileStore(objectStoreEnvironmentBean);
-        
+
         final OutputObjectState buff = new OutputObjectState();
         final String tn = "/StateManager/junit";
-        
+
         for (int i = 0; i < 100; i++)
         {
             Uid u = new Uid();
-            
+
             InputObjectState ios = new InputObjectState();
-            
+
             try
             {
                 as.allObjUids("", ios);
             }
             catch (final Exception ex)
-            {              
+            {
             }
-            
+
             try
             {
                 assertTrue(as.read_uncommitted(u, tn) == null);
@@ -455,7 +455,7 @@ public class ObjectStoreTest
             catch (final Exception ex)
             {
             }
-            
+
             try
             {
                 as.commit_state(u, tn);
@@ -463,13 +463,13 @@ public class ObjectStoreTest
             catch (final Exception ex)
             {
             }
-            
+
             as.write_committed(u, tn, buff);
-            
+
             assertTrue(as.currentState(u, tn) == StateStatus.OS_COMMITTED);
-            
+
             as.read_committed(u, tn);
-            
+
             try
             {
                 assertTrue(as.remove_uncommitted(u, tn));
@@ -477,9 +477,9 @@ public class ObjectStoreTest
             catch (final Exception ex)
             {
             }
-            
+
             as.remove_committed(u, tn);
-            
+
             try
             {
                 assertTrue(as.hide_state(u, tn));
@@ -487,9 +487,9 @@ public class ObjectStoreTest
             catch (final Exception ex)
             {
             }
-            
+
             try
-            {               
+            {
                 assertTrue(as.reveal_state(u, tn));
             }
             catch (final Exception ex)
@@ -690,22 +690,22 @@ public class ObjectStoreTest
         objectStoreEnvironmentBean.setLocalOSRoot( "tmp" );
 
         DummyOS as = new DummyOS(objectStoreEnvironmentBean);
-        
+
         assertTrue(as.typeIs() != -1);
-        
+
         assertTrue(as.lock());
         assertTrue(as.unlock());
     }
-    
+
     @Test
     public void testIterator () throws Exception
     {
         Uid u1 = new Uid();
         Uid u2 = new Uid();
-        
+
         assertTrue(StoreManager.getTxLog().write_committed(u1, "foo", new OutputObjectState()));
         assertTrue(StoreManager.getTxLog().write_committed(u2, "foo", new OutputObjectState()));
-        
+
         ObjectStoreIterator iter = new ObjectStoreIterator(StoreManager.getRecoveryStore(), "foo");
 
         // iteration ordering is not guaranteed.
@@ -738,8 +738,8 @@ public class ObjectStoreTest
     {
         if (objStore == null)
             return false;
-        
-        boolean passed = false;       
+
+        boolean passed = false;
 
         if (objStore.getClass().getName().equals(imple))
         {

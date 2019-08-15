@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Arjuna Solutions Limited,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.  
+ * UK.
  *
  * $Id: Services.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -97,7 +97,7 @@ public Services(ORB orb)
     /**
      * The default implementation (specified on a per-ORB basis.)
      */
-    
+
 public org.omg.CORBA.Object getService (String serviceName,
 					Object[] params) throws org.omg.CORBA.ORBPackage.InvalidName, IOException, SystemException
     {
@@ -121,7 +121,7 @@ public org.omg.CORBA.Object getService (String serviceName,
 					int mechanism) throws org.omg.CORBA.ORBPackage.InvalidName, IOException, SystemException
     {
 	org.omg.CORBA.Object objRef = null;
-	
+
 	switch (mechanism)
 	{
 	case RESOLVE_INITIAL_REFERENCES:
@@ -153,15 +153,15 @@ public org.omg.CORBA.Object getService (String serviceName,
 	case NAME_SERVICE:
 	    {
 		String kind = ((params == null) ? null : (String) params[0]);
-		
+
 		try
 		{
 		    org.omg.CORBA.Object nsRef = _orb.orb().resolve_initial_references(Services.nameService);
-	    
+
 		    NamingContext ncRef = NamingContextHelper.narrow(nsRef);
-	    
+
 		    // bind the Object Reference in Naming
-		    
+
 		    NameComponent nc = new NameComponent(serviceName, kind);
 		    NameComponent path[] = {nc};
 
@@ -197,13 +197,13 @@ public org.omg.CORBA.Object getService (String serviceName,
 
 		    throw new InvalidName();
 		}
-    
+
 		String ior = null;
-    
+
 		try
 		{
 		    boolean finished = false;
-	    
+
 		    while ((ior == null) && !finished)
 		    {
 			String line = input.readLine();
@@ -218,7 +218,7 @@ public org.omg.CORBA.Object getService (String serviceName,
 				ior = line.substring(serviceName.length() +1);  // +1 for space separator
 			}
 		    }
-		    
+
 		    input.close();
 		}
 		catch (SystemException ex)
@@ -264,14 +264,14 @@ public org.omg.CORBA.Object getService (String serviceName,
 			f = new File(fileDir+File.separator+serviceName);
 		    else
 			f = new File(serviceName);
-		    
+
 		    FileInputStream ifile = new FileInputStream(f);
 		    int size = (int) f.length();
 		    byte b[] = new byte[size];
 
 		    ifile.read(b);
 		    ifile.close();
-	
+
 		    String objString = new String(b, StandardCharsets.UTF_8);
 		    objRef = _orb.orb().string_to_object(objString);
 
@@ -301,7 +301,7 @@ public org.omg.CORBA.Object getService (String serviceName,
     /**
      * The default implementation (probably specified on a per-ORB basis.)
      */
-    
+
 public void registerService (org.omg.CORBA.Object objRef,
 		             String serviceName,
 			     Object[] params) throws org.omg.CORBA.ORBPackage.InvalidName, IOException, SystemException
@@ -338,14 +338,14 @@ public void registerService (org.omg.CORBA.Object objRef,
 	case NAME_SERVICE:
 	    {
 		String kind = ((params == null) ? null : (String) params[0]);
-		
+
 		try
 		{
 		    org.omg.CORBA.Object initServ = _orb.orb().resolve_initial_references(Services.nameService);
 		    NamingContext rootContext = NamingContextHelper.narrow(initServ);
 		    NameComponent[] contextName = new NameComponent[1];
 		    contextName[0] = new NameComponent(serviceName, kind);
-	    
+
 		    rootContext.rebind(contextName, objRef);
 
                     if (opLogger.logger.isTraceEnabled()) {
@@ -375,7 +375,7 @@ public void registerService (org.omg.CORBA.Object objRef,
 		String objString = _orb.orb().object_to_string(objRef);
 		File currFile = null;
 		String newFileName = configFile+Services.tmpFile;
-		
+
 		try
 		{
 		    currFile = new File(configFile);
@@ -395,7 +395,7 @@ public void registerService (org.omg.CORBA.Object objRef,
 		     * File not present, so this must be the first
 		     * entry.
 		     */
-		    
+
 		    newFileName = configFile;  // file does not exist, so write directly.
 		}
 
@@ -428,7 +428,7 @@ public void registerService (org.omg.CORBA.Object objRef,
 
 			    outputFile.flush();
 			}
-			
+
 		    } while (line != null);
 		}
 
@@ -443,16 +443,16 @@ public void registerService (org.omg.CORBA.Object objRef,
 		if (input != null)  // file existed.
 		{
 		    input.close();
-		    
+
 		    if (currFile.exists())
 		    {
 			currFile.delete();
 		    }
-		    
+
 		    nuFile.renameTo(currFile);
 		    input = null;
 		}
-		
+
 		newFileName = null;
 		outputFile = null;
 		nuFile = null;
@@ -471,7 +471,7 @@ public void registerService (org.omg.CORBA.Object objRef,
 		    ofile = new FileOutputStream(fileDir+File.separator+serviceName);
 		else
 		    ofile = new FileOutputStream(serviceName);
-		
+
 		String objString = _orb.orb().object_to_string(objRef);
 		byte b[] = objString.getBytes(StandardCharsets.UTF_8);
 
@@ -533,15 +533,15 @@ public final String[] listInitialServices () throws IOException, SystemException
 	}
 
 	Vector otherServices = new Vector();
-	
+
 	if (input != null)
 	{
 	    String line = null;
-	    
+
 	    do
 	    {
 		line = input.readLine();
-		
+
 		if (line != null)
 		{
 		    int index = line.indexOf(separator);
@@ -561,13 +561,13 @@ public final String[] listInitialServices () throws IOException, SystemException
 	}
 
 	String[] completeServices = null;
-	
+
 	int totalSize = ((services == null) ? otherServices.size() : services.length + otherServices.size());
-	
+
 	if (totalSize > 0)
 	{
 	    int index = 0;
-	    
+
 	    completeServices = new String[totalSize];
 
 	    if (services.length > 0)
@@ -575,13 +575,13 @@ public final String[] listInitialServices () throws IOException, SystemException
 		for (index = 0; index < services.length; index++)
 		    completeServices[index] = services[index];
 	    }
-	    
+
 	    for (int j = index; j < otherServices.size(); j++)
 	    {
 		completeServices[j + index] = (String) otherServices.elementAt(j);
 	    }
 	}
-	
+
 	return completeServices;
     }
 
@@ -607,7 +607,7 @@ public final static String bindString (int bindValue)
     }
 
 /**
- * Given a binding mechanism string name return the 
+ * Given a binding mechanism string name return the
  * enumerated value.  If this is not a valid binding
  * mechanism name then return -1.
  *
@@ -617,7 +617,7 @@ public final static String bindString (int bindValue)
 public final static int bindValue(String bindString)
     {
     	int bindValue = -1;
-    	
+
     	for (int count=0;count<BINDING_SERVICES.length;count++)
     	{
     	    if (BINDING_SERVICES[count].equalsIgnoreCase(bindString))
@@ -625,7 +625,7 @@ public final static int bindValue(String bindString)
     	    	bindValue = count;
     	    }
     	}
-    	
+
     	return(bindValue);
     }
 
@@ -673,7 +673,7 @@ public final static int bindValue(String bindString)
 
     private static final int _bindMethod = Services.bindValue(opPropertyManager.getOrbPortabilityEnvironmentBean().getBindMechanism());
 
-    	    	
+
 public static final String nameService = "NameService";
 public static final String transactionService = "TransactionManagerService";
 

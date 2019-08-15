@@ -55,7 +55,7 @@ public class AtomicObjectTest1
     public void test() throws TestException
     {
         txojPropertyManager.getTxojEnvironmentBean().setLockStoreType(BasicPersistentLockStore.class.getName());
-        
+
 	rand = new Random();
 
 	atomicObject1 = new AtomicObject(ObjectModel.MULTIPLE);

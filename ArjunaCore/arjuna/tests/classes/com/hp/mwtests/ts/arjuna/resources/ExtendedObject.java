@@ -1,20 +1,20 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors 
- * as indicated by the @author tags. 
+ * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * as indicated by the @author tags.
  * See the copyright.txt in the distribution for a
- * full listing of individual contributors. 
+ * full listing of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
  * of the GNU Lesser General Public License, v. 2.1.
- * This program is distributed in the hope that it will be useful, but WITHOUT A 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT A
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
  * You should have received a copy of the GNU Lesser General Public License,
  * v.2.1 along with this distribution; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -50,13 +50,13 @@ public class ExtendedObject extends StateManager
         state = 0;
 
         lock();
-        
+
         activate();
         modified();
         deactivate();
-        
+
         setStatus(status());
-        
+
         unlock();
     }
 
@@ -66,17 +66,17 @@ public class ExtendedObject extends StateManager
 
         state = -1;
     }
-    
+
     public void set_status ()
     {
         super.setStatus(ObjectStatus.PASSIVE);
     }
-    
+
     public boolean lock ()
     {
         return super.tryLockMutex();
     }
-    
+
     public boolean unlock ()
     {
         return super.unlockMutex();
@@ -86,7 +86,7 @@ public class ExtendedObject extends StateManager
     {
         return super.rememberAction(act, RecordType.ACTIVATION, ObjectStatus.ACTIVE);
     }
-    
+
     public void incr(int value)
     {
         modified();
@@ -119,12 +119,12 @@ public class ExtendedObject extends StateManager
         super.disable();
         super.persist();
     }
-    
+
     public void terminate ()
     {
         super.terminate();
     }
-    
+
     public boolean deactivate()
     {
         return super.deactivate();

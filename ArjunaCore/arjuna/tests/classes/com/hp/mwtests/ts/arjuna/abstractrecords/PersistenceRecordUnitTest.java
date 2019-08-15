@@ -47,33 +47,33 @@ public class PersistenceRecordUnitTest
     public void test ()
     {
         ParticipantStore store = StoreManager.setupStore(null, StateType.OS_UNSHARED);
-        
+
         PersistenceRecord cr = new PersistenceRecord(new OutputObjectState(), store, new ExtendedObject());
-        
+
         arjPropertyManager.getCoordinatorEnvironmentBean().setClassicPrepare(true);
-        
+
         assertFalse(cr.propagateOnAbort());
         assertTrue(cr.propagateOnCommit());
         assertEquals(cr.typeIs(), RecordType.PERSISTENCE);
-        
+
         assertTrue(cr.type() != null);
         assertEquals(cr.doSave(), true);
 
         assertEquals(cr.topLevelPrepare(), TwoPhaseOutcome.PREPARE_OK);
         assertEquals(cr.topLevelAbort(), TwoPhaseOutcome.FINISH_ERROR);
- 
+
         cr = new PersistenceRecord(new OutputObjectState(), store, new ExtendedObject());
-        
+
         assertEquals(cr.topLevelPrepare(), TwoPhaseOutcome.PREPARE_OK);
         assertEquals(cr.topLevelCommit(), TwoPhaseOutcome.FINISH_OK);
 
         cr.print(new PrintWriter(new ByteArrayOutputStream()));
-        
+
         OutputObjectState os = new OutputObjectState();
-        
+
         assertTrue(cr.save_state(os, ObjectType.ANDPERSISTENT));
         assertTrue(cr.restore_state(new InputObjectState(os), ObjectType.ANDPERSISTENT));
-        
+
         assertEquals(cr.topLevelCleanup(), TwoPhaseOutcome.FINISH_OK);
     }
 }

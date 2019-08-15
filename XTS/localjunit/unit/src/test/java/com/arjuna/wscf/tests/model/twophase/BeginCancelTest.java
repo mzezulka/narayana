@@ -12,12 +12,12 @@ import com.arjuna.wscf.tests.WarDeployment;
 
 @RunWith(Arquillian.class)
 public class BeginCancelTest {
-	
+
 	@Deployment
 	public static WebArchive createDeployment() {
 		return WarDeployment.getDeployment();
 	}
-	
+
 	@Test
     public void testBeginCancel()
             throws Exception

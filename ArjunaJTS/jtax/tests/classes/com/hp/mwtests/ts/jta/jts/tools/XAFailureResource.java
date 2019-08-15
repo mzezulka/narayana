@@ -36,7 +36,7 @@ import java.util.HashMap;
  * @author Mike Musgrove
  */
 /**
- * @deprecated as of 5.0.5.Final In a subsequent release we will change packages names in order to 
+ * @deprecated as of 5.0.5.Final In a subsequent release we will change packages names in order to
  * provide a better separation between public and internal classes.
  */
 @Deprecated // in order to provide a better separation between public and internal classes.
@@ -58,7 +58,7 @@ public class XAFailureResource implements Synchronization, XAResource, Serializa
     {
         init();
     }
-    
+
     public XAFailureResource()
     {
     }
@@ -69,7 +69,7 @@ public class XAFailureResource implements Synchronization, XAResource, Serializa
 
         if (spec == null)
             throw new IllegalArgumentException("Invalid XA resource failure injection specification");
-        
+
         setFailureMode(spec.getMode(), spec.getModeArg());
         setFailureType(spec.getType());
         setRecoveryAttempts(spec.getRecoveryArg());
@@ -212,7 +212,7 @@ public class XAFailureResource implements Synchronization, XAResource, Serializa
         _isPrepared = false;
         _xids.remove(xid);
     }
-    
+
     public void end(Xid xid, int i) throws XAException
     {
         if (_xaFailureType.equals(XAFailureType.XARES_END))
@@ -241,7 +241,7 @@ public class XAFailureResource implements Synchronization, XAResource, Serializa
     public int prepare(Xid xid) throws XAException
     {
         _isPrepared = true;
-        
+
         if (_xaFailureType.equals(XAFailureType.XARES_PREPARE))
             applySpec("xa prepare");
 
@@ -266,7 +266,7 @@ public class XAFailureResource implements Synchronization, XAResource, Serializa
     public boolean setTransactionTimeout(int txTimeout) throws XAException
     {
         this.txTimeout = txTimeout;
-        
+
         return true;    // set was successfull
     }
 
@@ -279,7 +279,7 @@ public class XAFailureResource implements Synchronization, XAResource, Serializa
     }
 
     public String getEISProductName() { return "Test XAResouce";}
-    
+
     public String getEISProductVersion() { return "v666.0";}
 
     public static XAException getXAExceptionType(String type) {

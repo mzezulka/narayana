@@ -104,13 +104,13 @@ public class Client04b
 			 * we had to assume committed was the outcome, but we really don't know and
 			 * can now raise that to the client.
 			 */
-			
+
 			try
 			{
 			    OTS.current().commit(false);
 			}
 			catch (final HeuristicHazard ex)
-			{			    
+			{
 			}
 
 			if (correct)

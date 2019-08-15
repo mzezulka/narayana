@@ -1,20 +1,20 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors 
- * as indicated by the @author tags. 
+ * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * as indicated by the @author tags.
  * See the copyright.txt in the distribution for a
- * full listing of individual contributors. 
+ * full listing of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
  * of the GNU Lesser General Public License, v. 2.1.
- * This program is distributed in the hope that it will be useful, but WITHOUT A 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT A
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
  * You should have received a copy of the GNU Lesser General Public License,
  * v.2.1 along with this distribution; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Arjuna Technologies Ltd,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.  
+ * UK.
  *
  * $Id: xidcheck.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -84,82 +84,82 @@ public class XATerminatorUnitTest
         XATerminatorImple term = new XATerminatorImple();
         XidImple xid = new XidImple(new Uid());
         SubordinationManager.getTransactionImporter().importTransaction(xid);
-        
+
         assertTrue(term.beforeCompletion(xid));
         assertEquals(term.prepare(xid), XAResource.XA_RDONLY);
-        
+
         SubordinationManager.getTransactionImporter().importTransaction(xid);
-        
+
         term.commit(xid, true);
-        
+
         SubordinationManager.getTransactionImporter().importTransaction(xid);
-        
+
         term.rollback(xid);
-        
+
         SubordinationManager.getTransactionImporter().importTransaction(xid);
-        
+
         term.recover(XAResource.TMSTARTRSCAN);
-        
+
         try
         {
             term.recover(XAResource.TMSTARTRSCAN);
-            
+
             fail();
         }
         catch (final XAException ex)
         {
         }
-        
+
         term.recover(XAResource.TMENDRSCAN);
-        
+
         term.forget(xid);
     }
-    
+
     @Test
     public void testFail () throws Exception
     {
         XATerminatorImple term = new XATerminatorImple();
         XidImple xid = new XidImple(new Uid());
         SubordinationManager.getTransactionImporter().importTransaction(xid);
-        
+
         SubordinateTransaction tx = SubordinationManager.getTransactionImporter().getImportedTransaction(xid);
-        
+
         tx.enlistResource(new FailureXAResource(FailLocation.commit, FailType.rollback));
-        
+
         try
         {
             term.commit(xid, false);
-            
+
             fail();
         }
         catch (final XAException ex)
         {
         }
-        
+
         xid = new XidImple(new Uid());
         SubordinationManager.getTransactionImporter().importTransaction(xid);
         tx = SubordinationManager.getTransactionImporter().getImportedTransaction(xid);
-        
+
         tx.enlistResource(new FailureXAResource(FailLocation.commit, FailType.heurcom));
-        
+
         try
         {
             term.commit(xid, false);
-            
+
             fail();
         }
         catch (final XAException ex)
         {
         }
-        
+
         xid = new XidImple(new Uid());
         SubordinationManager.getTransactionImporter().importTransaction(xid);
         tx = SubordinationManager.getTransactionImporter().getImportedTransaction(xid);
-        
+
         tx.enlistResource(new FailureXAResource(FailLocation.commit, FailType.heurcom));
-        
+
         term.prepare(xid);
-        
+
         try
         {
             term.commit(xid, false);
@@ -168,29 +168,29 @@ public class XATerminatorUnitTest
         {
             fail();
         }
-        
+
         xid = new XidImple(new Uid());
         SubordinationManager.getTransactionImporter().importTransaction(xid);
         tx = SubordinationManager.getTransactionImporter().getImportedTransaction(xid);
-        
+
         tx.enlistResource(new FailureXAResource(FailLocation.commit, FailType.normal));
-        
+
         try
         {
             term.commit(xid, false);
-            
+
             fail();
         }
         catch (final XAException ex)
         {
         }
-        
+
         xid = new XidImple(new Uid());
         SubordinationManager.getTransactionImporter().importTransaction(xid);
         tx = SubordinationManager.getTransactionImporter().getImportedTransaction(xid);
-        
+
         tx.enlistResource(new FailureXAResource(FailLocation.rollback, FailType.rollback));
-        
+
         try
         {
             term.rollback(xid);
@@ -199,201 +199,201 @@ public class XATerminatorUnitTest
         {
             fail();
         }
-        
+
         xid = new XidImple(new Uid());
         SubordinationManager.getTransactionImporter().importTransaction(xid);
         tx = SubordinationManager.getTransactionImporter().getImportedTransaction(xid);
-        
+
         tx.enlistResource(new FailureXAResource(FailLocation.rollback, FailType.heurcom));
-        
+
         term.prepare(xid);
-        
+
         try
         {
             term.rollback(xid);
-            
+
             fail();
         }
         catch (final XAException ex)
         {
         }
-        
+
         xid = new XidImple(new Uid());
         SubordinationManager.getTransactionImporter().importTransaction(xid);
         tx = SubordinationManager.getTransactionImporter().getImportedTransaction(xid);
-        
+
         tx.enlistResource(new FailureXAResource(FailLocation.rollback, FailType.normal));
-        
+
         term.prepare(xid);
-        
+
         try
         {
             term.rollback(xid);
-            
+
             fail();
         }
         catch (final XAException ex)
         {
         }
-        
+
         xid = new XidImple(new Uid());
         SubordinationManager.getTransactionImporter().importTransaction(xid);
         tx = SubordinationManager.getTransactionImporter().getImportedTransaction(xid);
-        
+
         tx.enlistResource(new FailureXAResource(FailLocation.prepare_and_rollback, FailType.normal));
 
         try
         {
             term.prepare(xid);
-            
+
             fail();
         }
         catch (final XAException ex)
         {
         }
-        
+
         xid = new XidImple(new Uid());
         SubordinationManager.getTransactionImporter().importTransaction(xid);
         tx = SubordinationManager.getTransactionImporter().getImportedTransaction(xid);
-        
+
         tx.enlistResource(new FailureXAResource(FailLocation.prepare_and_rollback, FailType.heurcom));
 
         try
         {
             term.prepare(xid);
-            
+
             fail();
         }
         catch (final XAException ex)
         {
         }
-        
+
         xid = new XidImple(new Uid());
         SubordinationManager.getTransactionImporter().importTransaction(xid);
         tx = SubordinationManager.getTransactionImporter().getImportedTransaction(xid);
-        
+
         tx.enlistResource(new FailureXAResource(FailLocation.prepare_and_rollback, FailType.rollback));
 
         try
         {
             term.prepare(xid);
-            
+
             fail();
         }
         catch (final XAException ex)
         {
         }
     }
-    
+
     @Test
     public void testUnknownTransaction () throws Exception
     {
         XATerminatorImple term = new XATerminatorImple();
         XidImple xid = new XidImple(new Uid());
-        
+
         try
         {
             term.beforeCompletion(xid);
-            
+
             fail();
         }
         catch (final UnexpectedConditionException ex)
         {
         }
-        
+
         try
         {
             term.prepare(xid);
-            
+
             fail();
         }
         catch (final XAException ex)
         {
         }
-        
+
         try
         {
             term.commit(xid, false);
-            
+
             fail();
         }
         catch (final XAException ex)
         {
         }
-        
+
         try
         {
             term.rollback(xid);
-            
+
             fail();
         }
         catch (final XAException ex)
         {
         }
-        
+
         try
         {
             term.forget(xid);
-            
+
             fail();
         }
         catch (final XAException ex)
         {
         }
     }
-    
+
     @Test
     public void testInvalid () throws Exception
     {
         XATerminatorImple term = new XATerminatorImple();
         XidImple xid = new XidImple(new Uid());
-        
+
         try
         {
             SubordinationManager.getTransactionImporter().importTransaction(null);
-            
+
             fail();
         }
         catch (final IllegalArgumentException ex)
         {
         }
-        
+
         try
         {
             SubordinationManager.getTransactionImporter().recoverTransaction(null);
-            
+
             fail();
         }
         catch (final IllegalArgumentException ex)
         {
         }
-        
+
         try
         {
             SubordinationManager.getTransactionImporter().getImportedTransaction(null);
-            
+
             fail();
         }
         catch (final IllegalArgumentException ex)
         {
         }
-        
+
         try
         {
             SubordinationManager.getTransactionImporter().removeImportedTransaction(null);
-            
+
             fail();
         }
         catch (final IllegalArgumentException ex)
         {
         }
-        
+
         Uid uid = new Uid();
-        
+
         try
         {
             Object obj = SubordinationManager.getTransactionImporter().recoverTransaction(uid);
-        
+
             fail();
         }
         catch (IllegalArgumentException ex)
@@ -443,7 +443,7 @@ public class XATerminatorUnitTest
         int initialLength = recover == null ? 0 : recover.length;
         xa.recover(XAResource.TMENDRSCAN);
 
-        
+
         XidImple xid = new XidImple(new Uid());
         TransactionImporter imp = SubordinationManager.getTransactionImporter();
 

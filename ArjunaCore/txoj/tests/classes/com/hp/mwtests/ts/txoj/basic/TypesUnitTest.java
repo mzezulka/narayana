@@ -1,20 +1,20 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors 
- * as indicated by the @author tags. 
+ * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * as indicated by the @author tags.
  * See the copyright.txt in the distribution for a
- * full listing of individual contributors. 
+ * full listing of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
  * of the GNU Lesser General Public License, v. 2.1.
- * This program is distributed in the hope that it will be useful, but WITHOUT A 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT A
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
  * You should have received a copy of the GNU Lesser General Public License,
  * v.2.1 along with this distribution; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Arjuna Solutions Limited,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.  
+ * UK.
  *
  * $Id: TestException.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -51,30 +51,30 @@ public class TypesUnitTest
         assertEquals(ConflictType.stringForm(ConflictType.CONFLICT), "ConflictType.CONFLICT");
         assertEquals(ConflictType.stringForm(ConflictType.PRESENT), "ConflictType.PRESENT");
         assertEquals(ConflictType.stringForm(-1), "Unknown");
-        
+
         ConflictType.print(new PrintWriter(System.err), ConflictType.COMPATIBLE);
-        
+
         assertEquals(LockMode.stringForm(LockMode.INTENTION_READ), "LockMode.INTENTION_READ");
         assertEquals(LockMode.stringForm(LockMode.INTENTION_WRITE), "LockMode.INTENTION_WRITE");
         assertEquals(LockMode.stringForm(LockMode.READ), "LockMode.READ");
         assertEquals(LockMode.stringForm(LockMode.WRITE), "LockMode.WRITE");
         assertEquals(LockMode.stringForm(LockMode.UPGRADE), "LockMode.UPGRADE");
         assertEquals(LockMode.stringForm(-1), "Unknown");
-        
+
         LockMode.print(new PrintWriter(System.err), LockMode.INTENTION_READ);
-        
+
         assertEquals(LockResult.stringForm(LockResult.GRANTED), "LockResult.GRANTED");
         assertEquals(LockResult.stringForm(LockResult.REFUSED), "LockResult.REFUSED");
         assertEquals(LockResult.stringForm(LockResult.RELEASED), "LockResult.RELEASED");
         assertEquals(LockResult.stringForm(-1), "Unknown");
-        
+
         LockResult.print(new PrintWriter(System.err), LockResult.GRANTED);
-        
+
         assertEquals(LockStatus.printString(LockStatus.LOCKFREE), "LockStatus.LOCKFREE");
         assertEquals(LockStatus.printString(LockStatus.LOCKHELD), "LockStatus.LOCKHELD");
         assertEquals(LockStatus.printString(LockStatus.LOCKRETAINED), "LockStatus.LOCKRETAINED");
         assertEquals(LockStatus.printString(-1), "Unknown");
-        
+
         LockStatus.print(new PrintWriter(System.err), LockStatus.LOCKFREE);
     }
 }

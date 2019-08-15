@@ -43,7 +43,7 @@ public class HttpResponseException extends Error
     {
         this(cause, body, (expectedResponses != null && expectedResponses.length != 0 ? expectedResponses[0] : -1), actualResponse);
     }
-    
+
     public HttpResponseException(int expectedResponse, int actualResponse)
     {
         this(null, null, expectedResponse, actualResponse);

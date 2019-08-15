@@ -1,20 +1,20 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors 
- * as indicated by the @author tags. 
+ * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * as indicated by the @author tags.
  * See the copyright.txt in the distribution for a
- * full listing of individual contributors. 
+ * full listing of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
  * of the GNU Lesser General Public License, v. 2.1.
- * This program is distributed in the hope that it will be useful, but WITHOUT A 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT A
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
  * You should have received a copy of the GNU Lesser General Public License,
  * v.2.1 along with this distribution; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -39,7 +39,7 @@ import java.util.Stack;
 /**
  * This class maintains a mapping between a thread and its notion of the current transaction. Essentially this is a stack of
  * transactions.
- * 
+ *
  * @author Mark Little (mark@arjuna.com)
  * @version $Id: ThreadActionData.java 2342 2006-03-30 13:06:17Z $
  * @since JTS 1.0.
@@ -211,7 +211,7 @@ public class ThreadActionData {
     /**
      * Add a per thread setup object to the global list. This should only happen before the transaction service really begins,
      * or you risk having some threads see one view of the list that is different to other threads.
-     * 
+     *
      * @param s the setup to add.
      */
     /*
@@ -220,17 +220,17 @@ public class ThreadActionData {
     /**
      * Remove a per thread setup object to the global list. This should only happen after the transaction service really ends,
      * or you risk having some threads see one view of the list that is different to other threads.
-     * 
+     *
      */
     /*
      * XXX NOT USED public static boolean removeSetup (ThreadSetup s) { synchronized (_threadSetups) { return
      * _threadSetups.remove(s); } }
-     * 
+     *
      * private static void setup () { for (int i = 0; i < _threadSetups.size(); i++) { ThreadSetup s = (ThreadSetup)
      * _threadSetups.get(i);
-     * 
+     *
      * if (s != null) s.setup(); } }
-     * 
+     *
      * private static ArrayList _threadSetups = new ArrayList();
      */
     private static ThreadLocal _threadList = new ThreadLocal();

@@ -111,7 +111,7 @@ public class JDBCInfoTableImpl01 implements InfoTableOperations
 				}
 
                 String tableName = JDBCProfileStore.getTableName(_dbUser, "Infotable");
-                
+
 				System.err.println("INSERT INTO " + tableName+" VALUES(\'" + name + "\', \'" + value + "\')");
 				statement.executeUpdate("INSERT INTO " + tableName + " VALUES(\'" + name + "\', \'" + value + "\')");
 			}
@@ -187,7 +187,7 @@ public class JDBCInfoTableImpl01 implements InfoTableOperations
 				}
 
                 String tableName = JDBCProfileStore.getTableName(_dbUser, "Infotable");
-                
+
 				System.err.println("UPDATE " + tableName + " SET Value = \'" + value + "\' WHERE Name = \'" + name + "\'");
 				statement.executeUpdate("UPDATE " + tableName + " SET Value = \'" + value + "\' WHERE Name = \'" + name + "\'");
 			}
@@ -264,7 +264,7 @@ public class JDBCInfoTableImpl01 implements InfoTableOperations
 				}
 
                 String tableName = JDBCProfileStore.getTableName(_dbUser, "Infotable");
-                
+
 				System.err.println("SELECT Value FROM " + tableName + " WHERE Name = \'" + name + "\'");
 				resultSet = statement.executeQuery("SELECT Value FROM " + tableName + " WHERE Name = \'" + name + "\'");
 				resultSet.next();
@@ -358,7 +358,7 @@ public class JDBCInfoTableImpl01 implements InfoTableOperations
 				}
 
                 String tableName = JDBCProfileStore.getTableName(_dbUser, "Infotable");
-                
+
 				System.err.println("DELETE FROM " + tableName + " WHERE Name = \'" + name + "\'");
 				statement.executeUpdate("DELETE FROM " + tableName + " WHERE Name = \'" + name + "\'");
 			}

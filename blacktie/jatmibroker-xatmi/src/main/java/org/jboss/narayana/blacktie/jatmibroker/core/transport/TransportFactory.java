@@ -47,7 +47,7 @@ public class TransportFactory {
         } catch (IOException e) {
             throw new ConfigurationException("Could not create socket server", e);
         }
-        
+
         log.debug("Created SocketServer");
     }
 

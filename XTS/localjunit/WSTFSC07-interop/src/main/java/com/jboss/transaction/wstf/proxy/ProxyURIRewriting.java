@@ -30,7 +30,7 @@ public class ProxyURIRewriting
      * The base URI of the proxy.
      */
     private static String PROXY_URI ;
-    
+
     /**
      * Set the proxy URI.
      * @param proxyURI The proxy URI.
@@ -39,7 +39,7 @@ public class ProxyURIRewriting
     {
         PROXY_URI = proxyURI ;
     }
-    
+
     /**
      * Get the proxy URI.
      * @return The proxy URI.
@@ -48,7 +48,7 @@ public class ProxyURIRewriting
     {
         return PROXY_URI ;
     }
-    
+
     /**
      * Rewrite the URI.
      * @param conversationIdentifier The conversation identifier.
@@ -58,7 +58,7 @@ public class ProxyURIRewriting
     public static String rewriteURI(final String conversationIdentifier, final String uri)
     {
         final String proxyURI = getProxyURI() ;
-        
+
         if (uri != null)
         {
             if (uri.startsWith(proxyURI))
@@ -74,7 +74,7 @@ public class ProxyURIRewriting
         }
         return uri ;
     }
-    
+
     /**
      * Decode a URI that has been encoded.
      * @param uri The encoded URI.
@@ -121,7 +121,7 @@ public class ProxyURIRewriting
         }
         return result.toString() ;
     }
-    
+
     /**
      * Encode a URI.
      * @param uri The URI.
@@ -133,7 +133,7 @@ public class ProxyURIRewriting
         {
             return "" ;
         }
-        
+
         final StringBuffer result = new StringBuffer() ;
         final int length = uri.length() ;
         int separatorCount = 0 ;

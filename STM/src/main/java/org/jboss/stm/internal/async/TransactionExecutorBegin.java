@@ -29,7 +29,7 @@ import com.arjuna.ats.arjuna.AtomicAction;
 
 /**
  * Executes the transaction.
- * 
+ *
  * @author marklittle
  *
  */
@@ -47,7 +47,7 @@ public class TransactionExecutorBegin implements Callable<Integer>
     {
         return new Integer(_theTransaction.begin(_timeout));
     }
-    
+
     private int _timeout;
     private AtomicAction _theTransaction;
 }

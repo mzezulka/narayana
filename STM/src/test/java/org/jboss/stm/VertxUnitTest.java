@@ -51,7 +51,7 @@ class DummyVerticle
     {
        public void increment ();
        public void decrement ();
-       
+
        public int value ();
     }
 
@@ -61,7 +61,7 @@ class DummyVerticle
         {
             _isState = init;
         }
-        
+
         @ReadLock
         public int value ()
         {
@@ -73,7 +73,7 @@ class DummyVerticle
         {
             _isState++;
         }
-        
+
         @WriteLock
         public void decrement ()
         {
@@ -117,15 +117,15 @@ public class VertxUnitTest extends TestCase
       A.begin();
 
       int amount = vert.value();
-      
+
       A.commit();  // flush state to disk (if relevant)!
-      
+
       assertEquals(amount, 11);  // initial state of 10 plus 1 from call to value (increment).
-      
+
       A = new AtomicAction();
-      
+
       A.begin();
-      
+
       amount = vert.value();
 
       A.abort();

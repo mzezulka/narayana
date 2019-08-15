@@ -141,7 +141,7 @@ public class TaskReaper
             reaperLock.notify();
 
             // we don't get out of here until the reaper thread has exited
-            
+
             while (!threadShutdown) {
                 try {
                     reaperLock.wait();
@@ -238,7 +238,7 @@ public class TaskReaper
     private boolean shutdown;
     private boolean shutdownWait;
     private boolean threadShutdown;
-    private Object reaperLock;    
+    private Object reaperLock;
     private TaskReaperThread reaperThread;
 
     private TaskReaper()

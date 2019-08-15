@@ -231,7 +231,7 @@ public class DurableTwoPhaseCommitParticipant implements Participant
 			{
                 // either the prepare timed out or the participant was invalid or in an
                 // invalid state
-                
+
                 wstxLogger.i18NLogger.warn_wst_at_participants_Durable2PC_commit_one_phase(_id, _resource, ex);
 
 				v = new VoteCancel();

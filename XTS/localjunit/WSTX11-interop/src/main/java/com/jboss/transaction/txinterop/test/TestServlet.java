@@ -59,7 +59,7 @@ public class TestServlet extends HttpServlet
      * The servlet serial version UID.
      */
     private static final long serialVersionUID = 6764303043215036856L ;
-    
+
     /**
      * The validation templates.
      */
@@ -73,7 +73,7 @@ public class TestServlet extends HttpServlet
         throws ServletException
     {
         super.init(config) ;
-        
+
         final InputStream is = ClassLoaderHelper.getResourceAsStream(getClass(), "processor.xsl") ;
         if (is == null)
         {
@@ -89,7 +89,7 @@ public class TestServlet extends HttpServlet
             throw new ServletException("Error creating transformation template!", tce) ;
         }
     }
-    
+
     /**
      * Execute the test
      * @param request The HTTP servlet request.
@@ -110,9 +110,9 @@ public class TestServlet extends HttpServlet
 
         final int serviceURILength = (serviceURI == null ? 0 : serviceURI.length()) ;
         final int testLength = (test == null ? 0 : test.length()) ;
-        
+
         long testTimeout = 0 ;
-        
+
         boolean testTimeoutValid = false ;
         if ((testTimeoutValue != null) && (testTimeoutValue.length() > 0))
         {
@@ -123,7 +123,7 @@ public class TestServlet extends HttpServlet
             }
             catch (final NumberFormatException nfe) {} // ignore
         }
-        
+
         // final boolean asyncTest = (asyncTestValue != null) ;
         final boolean asyncTest = true ;
 
@@ -133,7 +133,7 @@ public class TestServlet extends HttpServlet
             dispatcher.forward(request, response) ;
             return ;
         }
-        
+
         final HttpSession session = request.getSession() ;
         final String id = session.getId() ;
         final int logCount = getLogCount(session) ;
@@ -152,9 +152,9 @@ public class TestServlet extends HttpServlet
             if (result != null)
             {
                 session.setAttribute(TestConstants.ATTRIBUTE_TEST_RESULT, result) ;
-                
+
                 threadLog = MessageLogging.getThreadLog() ;
-                
+
                 try
                 {
                     TestLogController.writeLog(logName, threadLog) ;
@@ -174,7 +174,7 @@ public class TestServlet extends HttpServlet
         {
             MessageLogging.clearThreadLog() ;
         }
-        
+
         if ((threadLog != null) && (threadLog.length() > 0))
         {
             try
@@ -187,11 +187,11 @@ public class TestServlet extends HttpServlet
                 log("Unexpected throwable transforming message log", th) ;
             }
         }
-        
+
         final RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(resultPageAddress) ;
         dispatcher.forward(request, response) ;
     }
-    
+
     /**
      * Get the log count from the session, incrementing afterwards.
      * @param session The current HTTP session.
@@ -204,7 +204,7 @@ public class TestServlet extends HttpServlet
         session.setAttribute(TestConstants.ATTRIBUTE_LOG_COUNT, new Integer(logCount)) ;
         return logCount ;
     }
-    
+
     /**
      * Transform the specified message log.
      * @param messageLog The specified message log.

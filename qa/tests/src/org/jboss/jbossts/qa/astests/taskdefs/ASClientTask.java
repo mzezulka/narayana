@@ -69,7 +69,7 @@ public class ASClientTask extends Task
         try
         {
             suspendFor(waitFor);
-            
+
             action = (ClientAction) Class.forName(impl).getDeclaredConstructor().newInstance();
         }
         catch (ClassCastException e)

@@ -164,7 +164,7 @@ public class XAResourceRecord extends com.arjuna.ArjunaOTS.OTSAbstractRecordPOA
             _recoveryCoordinator = null;
             _phaseTwoStarted = true;
 	}
-	
+
 	public final Uid get_uid()
 	{
 		return _theUid;
@@ -350,7 +350,7 @@ public class XAResourceRecord extends com.arjuna.ArjunaOTS.OTSAbstractRecordPOA
 				    	    try {
 				    	    	    _theXAResource.rollback(_tranID);
 				    	    } catch (XAException e2)
-				    	    {	
+				    	    {
                                 		jtaxLogger.i18NLogger.warn_jtax_resources_jts_orbspecific_xaerror("XAResourceRecord.rollback",
                                 XAHelper.printXAErrorCode(e2), _theXAResource.toString(), XAHelper.xidToString(_tranID), e2);
 
@@ -914,7 +914,7 @@ public class XAResourceRecord extends com.arjuna.ArjunaOTS.OTSAbstractRecordPOA
 		{
 			os.packInt(_heuristic);
 			os.packBoolean(_committed);
-			
+
 			/*
 			 * Since we don't know what type of Xid we are using, leave it up to
 			 * XID to pack.
@@ -941,7 +941,7 @@ public class XAResourceRecord extends com.arjuna.ArjunaOTS.OTSAbstractRecordPOA
         					o.close();
 
         					os.packBoolean(true);
-        					
+
                             String name = _theXAResource.getClass().getName();
                             os.packString(name);
 
@@ -1118,10 +1118,10 @@ public class XAResourceRecord extends com.arjuna.ArjunaOTS.OTSAbstractRecordPOA
                  * If we're here then we've restored enough to print data on
                  * this instance.
                  */
-                
+
                 if (_heuristic != TwoPhaseOutcome.FINISH_OK)
                 {
-                    jtaxLogger.logger.warn("XAResourceRecord restored heuristic instance: "+this); 
+                    jtaxLogger.logger.warn("XAResourceRecord restored heuristic instance: "+this);
                 }
 	    }
 
@@ -1150,7 +1150,7 @@ public class XAResourceRecord extends com.arjuna.ArjunaOTS.OTSAbstractRecordPOA
 	{
 		return _recoveryCoordinator;
 	}
-	
+
 	public String toString ()
 	{
 	    return "XAResourceRecord < resource:"+_theXAResource+", txid:"+_tranID+", heuristic"+TwoPhaseOutcome.stringForm(_heuristic)+" "+super.toString()+" >";
@@ -1493,7 +1493,7 @@ public class XAResourceRecord extends com.arjuna.ArjunaOTS.OTSAbstractRecordPOA
         }
         return serializableXAResourceDeserializers;
     }
-	
+
 	protected XAResource _theXAResource;
 
 	private RecoverableXAConnection _recoveryObject;
@@ -1515,6 +1515,6 @@ public class XAResourceRecord extends com.arjuna.ArjunaOTS.OTSAbstractRecordPOA
 	private String _cachedUidStringForm;
 
 	private static boolean _rollbackOptimization = jtaPropertyManager.getJTAEnvironmentBean().isXaRollbackOptimization();
-	
+
     private List<SerializableXAResourceDeserializer> serializableXAResourceDeserializers;
 }

@@ -1,20 +1,20 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors 
- * as indicated by the @author tags. 
+ * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * as indicated by the @author tags.
  * See the copyright.txt in the distribution for a
- * full listing of individual contributors. 
+ * full listing of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
  * of the GNU Lesser General Public License, v. 2.1.
- * This program is distributed in the hope that it will be useful, but WITHOUT A 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT A
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
  * You should have received a copy of the GNU Lesser General Public License,
  * v.2.1 along with this distribution; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -56,7 +56,7 @@ public class TransactionStatusConnector
       _pid    = pid ;
       _pidUid = pidUid ;
    }
-   
+
    /**
     * Check that a connection can be made to the Transaction Status
     * Manager's process.
@@ -68,7 +68,7 @@ public class TransactionStatusConnector
       _tsmi = tsmi ;
 
       boolean ok = establishConnection() ;
-      
+
       if ( !ok )
       {
          setDeadTSM() ;
@@ -93,7 +93,7 @@ public class TransactionStatusConnector
           tsLogger.i18NLogger.warn_recovery_TransactionStatusConnector_1();
       }
    }
-   
+
    /**
     * Has the TransactionStatusManagers' process died.
     */
@@ -102,7 +102,7 @@ public class TransactionStatusConnector
    {
       return _dead ;
    }
-   
+
    /**
     * Retrieve the transaction status for the specified transaction,
     * attempts to re-establish connection if necessary.
@@ -118,7 +118,7 @@ public class TransactionStatusConnector
          {
             // try to establish/re-establish the connection
             _tsmFound = recreateTransactionStatusManagerItem() ;
-            
+
             if ( _tsmFound )
             {
                _tsmFound = establishConnection() ;
@@ -163,7 +163,7 @@ public class TransactionStatusConnector
 
       return status ;
    }
-   
+
    /**
     * Assume the Transaction Status Managers' process has died.
     */
@@ -183,7 +183,7 @@ public class TransactionStatusConnector
    private boolean establishConnection()
    {
       boolean connectionEstablished = false ;
-      
+
       if ( _tsmi != null )
       {
          try
@@ -193,17 +193,17 @@ public class TransactionStatusConnector
 
             _connector_socket = new Socket ( serverHost, serverPort ) ;
             _connector_socket.setSoTimeout ( _socket_timeout_in_msecs ) ;
-   
+
             // streams to and from the TransactionStatusManager
             _from_server = new BufferedReader ( new InputStreamReader( _connector_socket.getInputStream(), StandardCharsets.UTF_8 )) ;
-                              
+
             _to_server = new PrintWriter ( new OutputStreamWriter( _connector_socket.getOutputStream(), StandardCharsets.UTF_8 ) ) ;
 
             // Check that the process id of the server is the same as
             // this connectors process id.
 
             String server_pid = _from_server.readLine() ;
-          
+
             if ( Utility.hexStringToInt(server_pid) == Utility.hexStringToInt(_pid) )
             {
                if ( ! _testMode )
@@ -221,7 +221,7 @@ public class TransactionStatusConnector
 
                   _connector_socket.close() ;
                }
-               
+
                connectionEstablished = true ;
             }
             else
@@ -231,11 +231,11 @@ public class TransactionStatusConnector
 	       //	       _to_server.close();
 
                _connector_socket.close() ;
-               
+
                setDeadTSM() ;
-	       
+
        	       tsLogger.i18NLogger.info_recovery_TransactionStatusConnector_5(_pid);
-	       
+
             }
          }
          catch ( IOException ex )
@@ -244,13 +244,13 @@ public class TransactionStatusConnector
          }
 
          _attempts_to_establish_connection = connectionEstablished ? 0 : _attempts_to_establish_connection + 1 ;
-         
+
          if ( _attempts_to_establish_connection > _max_attempts_to_establish_connection )
          {
             setDeadTSM() ;
          }
       }
-      
+
       return connectionEstablished ;
    }
 
@@ -260,7 +260,7 @@ public class TransactionStatusConnector
    private boolean recreateTransactionStatusManagerItem()
    {
       boolean tsmiFound = false ;
-      
+
       if ( _tsmi == null )
       {
          try
@@ -287,36 +287,36 @@ public class TransactionStatusConnector
    // Process id & process Uid.
    private String _pid ;        // HexString format
    private Uid    _pidUid ;
-   
+
    // Host/port pair for TransactionStatusManager.
    private TransactionStatusManagerItem _tsmi = null ;
-   
-   // If transaction status manager item exists AND able to 
+
+   // If transaction status manager item exists AND able to
    // connect to its host/port then _tsmFound = true.
    private boolean _tsmFound = false ;
-   
+
    // Several attempts are made to recreate _tsmi,
    // if limit reached then this connector is marked dead.
    private int _attempts_to_recreate_tsmi = 0 ;
    private int _max_attempts_to_recreate_tsmi = 3 ;
-   
+
    // Several attempts are made to establish a connection to the
    // Transaction Status Manager, if limit reached then this connector
    // is marked dead.
    private int _attempts_to_establish_connection = 0 ;
    private int _max_attempts_to_establish_connection = 3 ;
-   
+
    // Socket to connect to host/port pair maintained in _tsmi.
    private Socket _connector_socket ;
    private int    _socket_timeout_in_msecs = 1000 ;
-   
+
    // IO to/from TransactionStatusManager
    private BufferedReader _from_server;
    private PrintWriter    _to_server;
-   
+
    // Indicates the TransactionStatusManagers' process does not exist.
    private boolean _dead = false ;
-   
+
    // Used to check that a connection can be established to the
    // TransactionStatusManagers' process.
    private boolean _testMode = false ;

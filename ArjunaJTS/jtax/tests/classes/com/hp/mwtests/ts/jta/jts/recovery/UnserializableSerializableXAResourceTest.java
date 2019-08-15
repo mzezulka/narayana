@@ -288,7 +288,7 @@ public class UnserializableSerializableXAResourceTest {
 
 
         recoveryManager.scan();
-        
+
         assertTrue(committed);
 
     }

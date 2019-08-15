@@ -86,7 +86,7 @@ public class Cleanup01
 			}
 
             String tableName = JDBCProfileStore.getTableName(databaseUser, "Infotable");
-            
+
 			while (trying)
 			{
 				try

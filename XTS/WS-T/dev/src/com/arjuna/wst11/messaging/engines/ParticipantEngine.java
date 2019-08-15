@@ -841,7 +841,7 @@ public class ParticipantEngine implements ParticipantInboundEvents
         final String messageId = MessageId.getMessageId() ;
         return AddressingHelper.createNotificationContext(messageId) ;
     }
-    
+
     /**
      * Get the coordinator id.
      * @return The coordinator id.

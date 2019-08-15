@@ -45,15 +45,15 @@ public class BATest {
     private int testTimeout = 120000;
     private boolean asyncTest = true;
     private String name = "BATest";
-    
+
     @Inject
     BATestCase test;
-    
+
     @Deployment
     public static WebArchive createDeployment() {
         return WarDeployment.getDeployment();
     }
-    
+
     @Before
     public void setUp() {
         test.setParticipantURI(participantURI);
@@ -63,57 +63,57 @@ public class BATest {
         String conversationId = ProxyConversation.createConversation();
         test.setConversationId(conversationId);
     }
-    
+
     @Test
     public void testBA1_1() throws Exception {
         test.testBA1_1();
     }
-    
+
     @Test
     public void testBA1_2() throws Exception {
         test.testBA1_2();
     }
-    
+
     @Test
     public void testBA1_3() throws Exception {
         test.testBA1_3();
     }
-    
+
     @Test
     public void testBA1_4() throws Exception {
         test.testBA1_4();
     }
-    
+
     @Test
     public void testBA1_5() throws Exception {
         test.testBA1_5();
     }
-    
+
     @Test
     public void testBA1_6() throws Exception {
         test.testBA1_6();
     }
-    
+
     @Test
     public void testBA1_8() throws Exception {
         test.testBA1_8();
     }
-    
+
     @Test
     public void testBA1_9() throws Exception {
         test.testBA1_9();
     }
-    
+
     @Test
     public void testBA1_10() throws Exception {
         test.testBA1_10();
     }
-    
+
     @Test
     public void testBA1_11() throws Exception {
         test.testBA1_11();
     }
-    
+
     @After
     public void tearDown() {
         String conversationId = test.getConversationId();

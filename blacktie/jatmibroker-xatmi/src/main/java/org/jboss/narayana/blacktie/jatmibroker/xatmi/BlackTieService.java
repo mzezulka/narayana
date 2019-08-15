@@ -74,7 +74,7 @@ public abstract class BlackTieService implements Service {
 
     /**
      * Entry points should pass control to this method as soon as reasonably possible.
-     * 
+     *
      * @param serviceName The name of the service
      * @param message The message to process
      * @throws ConnectionException
@@ -84,7 +84,7 @@ public abstract class BlackTieService implements Service {
      * @throws SystemException
      * @throws IllegalStateException
      * @throws InvalidTransactionException
-     * @throws TransactionException 
+     * @throws TransactionException
      */
     protected void processMessage(String serviceName, Message message) throws ConnectionException, ConfigurationException,
     NamingException, InvalidTransactionException, IllegalStateException, SystemException, TransactionException {

@@ -29,7 +29,7 @@ public class ParticipantStub implements Participant, PersistableParticipant
     {
         // id will be supplied as null during recovery in which case we can delay creation
         // of the coordinator until restore_state is called
-        
+
         if (id != null) {
             coordinator = new CoordinatorEngine(id, durable, twoPCParticipant) ;
         }

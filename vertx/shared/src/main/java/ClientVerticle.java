@@ -91,7 +91,7 @@ public class ClientVerticle extends AbstractVerticle {
     if (doCommit)
     {
 	B.commit();
-	
+
 	System.out.println("ClientVerticle initialised state: "+value);
     }
     else

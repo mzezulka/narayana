@@ -84,10 +84,10 @@ public class SubordinateJTAXAResourceOrphanFilter implements XAResourceOrphanFil
 
 	/**
 	 * Is there a log file for this transaction?
-	 * 
+	 *
 	 * @param recoveredResourceXid
 	 *            the transaction to check.
-	 * 
+	 *
 	 * @return <code>boolean</code>true if there is a log file,
 	 *         <code>false</code> if there isn't.
 	 */

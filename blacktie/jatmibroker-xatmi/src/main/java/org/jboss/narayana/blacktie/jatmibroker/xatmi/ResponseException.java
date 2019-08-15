@@ -26,7 +26,7 @@ public class ResponseException extends ConnectionException {
 
     /**
      * An exception for reporting events
-     * 
+     *
      * @param tperrno This will always be TPEEVENT
      * @param string The message
      * @param event The event may be any from Connection
@@ -42,7 +42,7 @@ public class ResponseException extends ConnectionException {
 
     /**
      * Get the event
-     * 
+     *
      * @return The event
      */
     public long getEvent() {
@@ -51,7 +51,7 @@ public class ResponseException extends ConnectionException {
 
     /**
      * Get the rcode.
-     * 
+     *
      * @return The rcode.
      */
     public int getRcode() {
@@ -60,7 +60,7 @@ public class ResponseException extends ConnectionException {
 
     /**
      * Get a received buffer
-     * 
+     *
      * @return The received buffer
      */
     public Buffer getReceived() {

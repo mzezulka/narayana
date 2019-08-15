@@ -284,7 +284,7 @@ public interface jtaxI18NLogger {
 	@Message(id = 24062, value = "ORB ''{0}'' occured on one phase commit for xid {1}", format = MESSAGE_FORMAT)
 	@LogMessage(level = WARN)
 	public void warn_jtax_resources_jts_orbspecific_cant_commit_onephase(Xid xid, Class<? extends Throwable> corbaException, @Cause() Throwable e);
-	
+
 	@Message(id = 24063, value = "Cannot save state of xid {0}", format = MESSAGE_FORMAT)
 	@LogMessage(level = WARN)
 	public void warn_jtax_resources_jts_cant_save_state(Xid xid, @Cause() Throwable e);

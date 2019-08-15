@@ -83,7 +83,7 @@ public class AssumedCompleteHeuristicTransaction extends RecoveredTransaction {
                 lastActiveTime = new Date();
             }
         }
-        
+
         return result;
     }
 
@@ -92,13 +92,13 @@ public class AssumedCompleteHeuristicTransaction extends RecoveredTransaction {
 
         if (result) {
             lastActiveTime = new Date();
-            
+
             try {
                 objectState.packLong(lastActiveTime.getTime());
             } catch (final IOException ex) {
             }
         }
-        
+
         return result;
     }
 

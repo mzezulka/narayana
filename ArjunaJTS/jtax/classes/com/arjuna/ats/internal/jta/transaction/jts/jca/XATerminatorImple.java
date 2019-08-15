@@ -72,7 +72,7 @@ import com.arjuna.ats.jts.logging.jtsLogger;
 
 /**
  * The XATerminator implementation.
- * 
+ *
  * @author mcl
  */
 
@@ -378,9 +378,9 @@ public class XATerminatorImple implements javax.resource.spi.XATerminator, XATer
         catch (final Exception ex)
         {
             UnexpectedConditionException e = new UnexpectedConditionException();
-            
+
             e.initCause(ex);
-            
+
             throw e;
         }
     }

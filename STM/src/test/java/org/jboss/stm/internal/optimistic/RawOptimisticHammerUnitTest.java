@@ -53,7 +53,7 @@ import junit.framework.TestCase;
 
 /**
  * Unit tests for the Class class.
- * 
+ *
  * @author Mark Little
  */
 
@@ -65,7 +65,7 @@ public class RawOptimisticHammerUnitTest extends TestCase
         public AtomicObject()
         {
             super(ObjectType.ANDPERSISTENT, ObjectModel.MULTIPLE);
-            
+
             state = 0;
 
             AtomicAction A = new AtomicAction();
@@ -86,11 +86,11 @@ public class RawOptimisticHammerUnitTest extends TestCase
                 System.out.println("setlock error.");
             }
         }
-        
+
         public AtomicObject(Uid u, int objectModel)
         {
             super(u, objectModel);
-            
+
             state = 0;
 
             AtomicAction A = new AtomicAction();
@@ -111,7 +111,7 @@ public class RawOptimisticHammerUnitTest extends TestCase
                 System.out.println("setlock error.");
             }
         }
-  
+
         /*
          * In the pessimistic locking case we use Locks to guard against concurrent
          * access. In the optimistic case we don't. However, this means that multiple
@@ -120,13 +120,13 @@ public class RawOptimisticHammerUnitTest extends TestCase
          * obviously this could be finer grained. Since these are language constructs they
          * are not maintained for the duration of the transaction.
          */
-        
+
         public synchronized void incr (int value) throws Exception
         {
             AtomicAction A = new AtomicAction();
 
             A.begin();
-            
+
             /*
              * setlock will activate the state and create a checkpoint. It will also
              * add a LockRecord, which takes a snapshot of the state for later comparison.
@@ -159,7 +159,7 @@ public class RawOptimisticHammerUnitTest extends TestCase
             AtomicAction A = new AtomicAction();
 
             A.begin();
-            
+
             if (setlock(new OptimisticLock(LockMode.WRITE), 0) == LockResult.GRANTED)
             {
                 state = value;
@@ -181,7 +181,7 @@ public class RawOptimisticHammerUnitTest extends TestCase
             int value = -1;
 
             A.begin();
-            
+
             if (setlock(new OptimisticLock(LockMode.READ), 0) == LockResult.GRANTED)
             {
                 value = state;
@@ -193,7 +193,7 @@ public class RawOptimisticHammerUnitTest extends TestCase
                  * but should ignore if it is write, because modified must be called later
                  * instead which will do the registration.
                  */
-                
+
                 if (A.commit() == ActionStatus.COMMITTED)
                     return value;
                 else
@@ -255,26 +255,26 @@ public class RawOptimisticHammerUnitTest extends TestCase
     {
         public static final int COMMIT = 0;
         public static final int ABORT = 1;
-        
+
         public Worker (AtomicObject obj1, int commitOutcome)
         {
             _obj1 = obj1;
             _commit = commitOutcome;
         }
-        
+
         public void run ()
         {
             for (int i = 0; i < 10; i++)
             {
                 boolean fault;
-                
+
                 do
                 {
                     fault = false;
-                    
+
                     AtomicAction A = new AtomicAction();
                     boolean doCommit = true;
-                    
+
                     A.begin();
 
                     try
@@ -285,7 +285,7 @@ public class RawOptimisticHammerUnitTest extends TestCase
                     {
                         doCommit = false;
                     }
-                    
+
                     if (_commit == ABORT)
                         doCommit = false;
 
@@ -294,17 +294,17 @@ public class RawOptimisticHammerUnitTest extends TestCase
                         if (A.commit() != ActionStatus.COMMITTED)
                         {
                             System.err.println("Failed to commit!");
-                            
+
                             fault = true;
                         }
                     }
                     else
                         A.abort();
-                    
+
                 } while (fault);
             }
         }
-        
+
         private AtomicObject _obj1;
         private int _commit;
     }
@@ -312,27 +312,27 @@ public class RawOptimisticHammerUnitTest extends TestCase
     public void testBasic () throws Exception
     {
         init();
-        
+
         AtomicObject obj1 = new AtomicObject();
         AtomicObject obj2 = new AtomicObject(obj1.get_uid(), ObjectModel.MULTIPLE);
-        
+
         obj1.set(1234);
-        
+
         assertEquals(obj2.get(), 1234);
     }
 
     public void testRecoverableHammerAbort () throws Exception
     {
         init();
-        
+
         AtomicObject obj1 = new AtomicObject();
         AtomicObject obj2 = new AtomicObject(obj1.get_uid(), ObjectModel.MULTIPLE);
         Worker worker1 = new Worker(obj1, Worker.ABORT);
         Worker worker2 = new Worker(obj2, Worker.ABORT);
-        
+
         worker1.start();
         worker2.start();
-        
+
         try
         {
             worker1.join();
@@ -341,22 +341,22 @@ public class RawOptimisticHammerUnitTest extends TestCase
         catch (final Throwable ex)
         {
         }
-        
+
         assertEquals(obj1.get(), 0);
     }
 
     public void testRecoverableHammerCommit () throws Exception
     {
         init();
-        
+
         AtomicObject obj1 = new AtomicObject();
         AtomicObject obj2 = new AtomicObject(obj1.get_uid(), ObjectModel.MULTIPLE);
         Worker worker1 = new Worker(obj1, Worker.COMMIT);
         Worker worker2 = new Worker(obj2, Worker.COMMIT);
-        
+
         worker1.start();
         worker2.start();
-        
+
         try
         {
             worker1.join();
@@ -365,7 +365,7 @@ public class RawOptimisticHammerUnitTest extends TestCase
         catch (final Throwable ex)
         {
         }
-        
+
         assertTrue(obj1.get() > 0);
     }
 
@@ -374,10 +374,10 @@ public class RawOptimisticHammerUnitTest extends TestCase
         if (!_init)
         {
             StoreManager sm = new StoreManager(null, new TwoPhaseVolatileStore(new ObjectStoreEnvironmentBean()), null);
-            
+
             _init = true;
         }
     }
-    
+
     private static boolean _init = false;
 }

@@ -77,7 +77,7 @@ public class BACoordinatorRecoveryModule implements XTSRecoveryModule
             XTSBARecoveryManager baRecoveryManager = new XTSBARecoveryManagerImple(_recoveryStore);
             XTSBARecoveryManager.setRecoveryManager(baRecoveryManager);
         }
-        
+
         Implementations.install();
     }
 
@@ -259,7 +259,7 @@ public class BACoordinatorRecoveryModule implements XTSRecoveryModule
 
             uidVector.addElement( theUid ) ;
         }
-        
+
         return uidVector ;
     }
 

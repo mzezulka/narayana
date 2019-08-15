@@ -196,7 +196,7 @@ public class TestGroup_txcore_recovery extends TestGroupBase
         startAndWaitForClientWithFixedStoreDir(org.jboss.jbossts.qa.ArjunaCore.AbstractRecord.CrashRecovery.client.Client001.class, "100", "10", "1", "1", "$(1)");
 	}
 
-    
+
 	@Test public void Recovery_Restore_AbstractRecord_Test001()
 	{
         startServer(com.arjuna.ats.arjuna.recovery.RecoveryManager.class, "-test");

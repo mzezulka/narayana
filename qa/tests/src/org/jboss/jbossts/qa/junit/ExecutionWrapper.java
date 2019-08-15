@@ -77,16 +77,16 @@ public class ExecutionWrapper
             // strip off the trailing '/emptyObjectStore' to get the test rather than task dir
             objectStoreBaseDirBaseName = objectStoreBaseDirBaseName.substring(0, objectStoreBaseDirBaseName.lastIndexOf(System.getProperty("file.separator")));
 
-            
+
             File directory = new File(objectStoreBaseDirBaseName);
-            
+
             for(File candidateFile : directory.listFiles()) {
                 if(candidateFile.isDirectory()) {
                     System.err.println("emptying "+candidateFile.getCanonicalPath());
                     EmptyObjectStore.removeContents(candidateFile);
                 }
             }
-            
+
             System.out.println("Passed");
         }
         else
@@ -133,7 +133,7 @@ public class ExecutionWrapper
             final Properties p = new Properties();
             p.setProperty("OAPort", ""+recoveryOrbPort);
 
-            // for persistent servers the JavaIdl orb requires you to explicitly define which port the 
+            // for persistent servers the JavaIdl orb requires you to explicitly define which port the
             // server will run on and to provide a unique id per server per machine:
             p.setProperty("com.sun.CORBA.POA.ORBPersistentServerPort", ""+recoveryOrbPort);
             p.setProperty("com.sun.CORBA.POA.ORBServerId", ""+recoveryOrbPort);

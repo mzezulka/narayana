@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Hewlett-Packard Arjuna Labs,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.  
+ * UK.
  *
  * $Id: ExtendedResourceRecord.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -32,7 +32,7 @@
 package com.arjuna.ats.internal.jts.resources;
 
 /*
- * 
+ *
  * OTS Abstract Record Class Implementation.
  *
  * (Extended resource functionality.)
@@ -76,10 +76,10 @@ import com.arjuna.ats.jts.logging.jtsLogger;
  * ArjunaOTS module's AbstractRecord interface. This gives users the flexibility
  * of the original Arjuna system's AbstractRecord, and makes resources behave
  * correctly!
- * 
+ *
  * We know that instances of this record will only be called for instances of
  * AbstractRecord objects.
- * 
+ *
  * @author Mark Little (mark@arjuna.com)
  * @version $Id: ExtendedResourceRecord.java 2342 2006-03-30 13:06:17Z  $
  * @since JTS 1.0.
@@ -286,11 +286,11 @@ public class ExtendedResourceRecord extends
 
 	/**
 	 * General nesting rules:
-	 * 
+	 *
 	 * Only SubtransactionAware resources get registered with nested actions.
 	 * The ExtendedResourceRecord creator is assumed to ensure that plain
 	 * Resources are only registered with the appropriate top level action.
-	 * 
+	 *
 	 * That said the _propagateRecord flag ensures that resources registered via
 	 * register_subtran only take part in the action they where registered in
 	 * after which they are dropped.
@@ -494,7 +494,7 @@ public class ExtendedResourceRecord extends
 		}
 
 		if (!lastRecord) {
-            
+
 		try
 		{
 			if (resourceHandle() != null)
@@ -529,7 +529,7 @@ public class ExtendedResourceRecord extends
 		{
 
 		    jtsLogger.i18NLogger.warn_resources_extresrecord_failed_to_commit(order(), e2);
-			
+
 			return TwoPhaseOutcome.FINISH_ERROR;
 		}
 		}
@@ -595,21 +595,21 @@ public class ExtendedResourceRecord extends
 	public int topLevelOnePhaseCommit ()
 	{
 		try
-		{			
+		{
 			if (resourceHandle() != null)
 				_resourceHandle.commit_one_phase();
 		}
 		catch (HeuristicHazard e1)
-		{			
+		{
 			return TwoPhaseOutcome.HEURISTIC_HAZARD;
 		}
 		catch (TRANSACTION_ROLLEDBACK e4)
-		{			
+		{
 		    /*
 		     * It rolled back. That's ok, but we need to be able
 		     * to communicate that back to the caller.
 		     */
-		    
+
 			return TwoPhaseOutcome.ONE_PHASE_ERROR;  // TODO TPO extension required.
 		}
 		catch (INVALID_TRANSACTION e5)
@@ -621,7 +621,7 @@ public class ExtendedResourceRecord extends
 		    /*
 		     * Means we can retry.
 		     */
-		    
+
 		    return TwoPhaseOutcome.FINISH_ERROR;
 		}
 		catch (Exception e5) {
@@ -728,7 +728,7 @@ public class ExtendedResourceRecord extends
 			}
 			else
 				_stringifiedResourceHandle = null;
-			
+
 			lastRecord = os.unpackBoolean();
 		}
 		catch (IOException e)
@@ -836,7 +836,7 @@ public class ExtendedResourceRecord extends
 						jtsLogger.logger.trace("Packed rec co uid of " + _recCoordUid);
 					}
 				}
-				
+
 				os.packBoolean(lastRecord);
 			}
 		}
@@ -874,7 +874,7 @@ public class ExtendedResourceRecord extends
 		default:
 			break;
 		}
-		
+
 		OTSAbstractRecord resHandle = otsRecord();
 		boolean save = true;
 
@@ -894,7 +894,7 @@ public class ExtendedResourceRecord extends
 		resHandle = null;
 
 		_doSave = (save ? 1 : 0);
-		
+
 		return save;
 	}
 

@@ -30,28 +30,28 @@ public class SharedHammer
     {
         boolean creator = true;
         Uid id = null;
-        
+
         for (int i = 0; i < args.length; i++)
         {
             if ("-object".equals(args[i]))
             {
                 creator = false;
-                
+
                 id = new Uid(args[i+1]);
             }
         }
-        
+
         if (creator)
         {
             HammerThreadedObject.object = new AtomicObject();
-            
+
             System.out.println("Object created with id: "+HammerThreadedObject.object);
         }
         else
             HammerThreadedObject.object = new AtomicObject(id);
-        
+
         HammerThreadedObject object1 = new HammerThreadedObject(1);
-        
+
         object1.start();
 
         try

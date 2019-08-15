@@ -60,17 +60,17 @@ public class OptimisticLockManager extends LockManager
      * The only way they differ is with the types of Locks or LockRecords that they create.
      * Probably should refactor later to reduce the amount of copied code.
      */
-    
+
     /*
      * All of this is here to prevent us grabbing a copy of the state of the object when we lock it.
      * Optimistic and pessimistic locks cannot be used in the same transaction on the same object.
-     * 
+     *
      * WARNING HERE BE DRAGONS.
-     * 
+     *
      * (non-Javadoc)
      * @see com.arjuna.ats.txoj.LockManager#setlock(com.arjuna.ats.txoj.Lock, int, int)
      */
-    
+
     public int setlock (Lock toSet, int retry, int sleepTime)
     {
         if (txojLogger.logger.isTraceEnabled()) {
@@ -93,9 +93,9 @@ public class OptimisticLockManager extends LockManager
 
         if (!(toSet instanceof OptimisticLock))
             return LockResult.REFUSED;
-        
+
         initialise();
-        
+
         currAct = BasicAction.Current();
 
         if (currAct != null)
@@ -109,7 +109,7 @@ public class OptimisticLockManager extends LockManager
                 txojLogger.i18NLogger.warn_LockManager_3();
 
                 toSet = null;
-                
+
                 return LockResult.REFUSED;
             }
         }
@@ -121,7 +121,7 @@ public class OptimisticLockManager extends LockManager
                 && ((retry >= 0) || ((retry == LockManager.waitTotalTimeout) && (sleepTime > 0))))
         {
             Object syncObject = ((currAct == null) ? getMutex() : currAct);
-            
+
             synchronized (super.lockStore.getClass())
             {
                 synchronized (syncObject)
@@ -129,7 +129,7 @@ public class OptimisticLockManager extends LockManager
                     synchronized (locksHeldLockObject)
                     {
                         conflict = ConflictType.CONFLICT;
-        
+
                         if (loadState())
                         {
                             conflict = lockConflict(toSet);
@@ -138,46 +138,46 @@ public class OptimisticLockManager extends LockManager
                         {
                             txojLogger.i18NLogger.warn_LockManager_4();
                         }
-                        
+
                         if (conflict != ConflictType.CONFLICT)
                         {
                             /*
                              * When here the conflict was resolved or the retry limit
                              * expired.
                              */
-        
+
                             /* no conflict so set lock */
-        
+
                             modifyRequired = toSet.modifiesObject();
-        
+
                             /* trigger object load from store */
-    
+
                             if (super.activate())
                             {
                                 returnStatus = LockResult.GRANTED;
-        
+
                                 if (conflict == ConflictType.COMPATIBLE)
                                 {
                                     int lrStatus = AddOutcome.AR_ADDED;
-        
+
                                     if (currAct != null)
                                     {
                                         /* add new lock record to action list */
-        
+
                                         newLockR = new OptimisticLockRecord(this, (modifyRequired ? false : true), currAct, true);
-    
+
                                         if ((lrStatus = currAct.add(newLockR)) != AddOutcome.AR_ADDED)
                                         {
                                             newLockR = null;
-    
+
                                             if (lrStatus == AddOutcome.AR_REJECTED)
                                             {
                                                 returnStatus = LockResult.REFUSED;
                                             }
                                         }
-    
+
                                     }
-        
+
                                     if (returnStatus == LockResult.GRANTED)
                                     {
                                         locksHeld.insert(toSet); /*
@@ -196,37 +196,37 @@ public class OptimisticLockManager extends LockManager
                             {
                                 /* activate failed - refuse request */
                                 txojLogger.i18NLogger.warn_LockManager_5();
-    
+
                                 returnStatus = LockResult.REFUSED;
                             }
                         }
-                        
+
                         /*
                          * Unload internal state into lock store only if lock list was
                          * modified if this fails claim the setlock failed. If we are
                          * using the lock daemon we can arbitrarily throw the lock away
                          * as the daemon has it.
                          */
-        
+
                         if ((returnStatus == LockResult.GRANTED)
                                 && (conflict == ConflictType.COMPATIBLE))
                         {
                             if (!unloadState())
                             {
                                 txojLogger.i18NLogger.warn_LockManager_6();
-    
+
                                 returnStatus = LockResult.REFUSED;
                             }
                         }
                         else
                             freeState();
-        
+
                         /*
                          * Postpone call on modified to here so that semaphore will have
                          * been released. This means when modified invokes save_state
                          * that routine may set another lock without blocking.
                          */
-        
+
                         if (returnStatus == LockResult.GRANTED)
                         {
                             if (modifyRequired)
@@ -238,22 +238,22 @@ public class OptimisticLockManager extends LockManager
                                 else
                                 {
                                     conflict = ConflictType.CONFLICT;
-        
+
                                     returnStatus = LockResult.REFUSED;
                                 }
                             }
                         }
-        
+
                         /*
                          * Make sure we free state while we still have the lock.
                          */
-        
+
                         if (conflict == ConflictType.CONFLICT)
                             freeState();
                     }
                 }
             }
-            
+
             if (conflict == ConflictType.CONFLICT)
             {
                 if (retry != 0)
@@ -270,10 +270,10 @@ public class OptimisticLockManager extends LockManager
                     retry--;
             }
         }
-        
+
         return returnStatus;
     }
-    
+
     /*
      * Lock and load the concurrency control state. First we grab the semaphore
      * to ensure exclusive access and then we build the held lock list by
@@ -409,13 +409,13 @@ public class OptimisticLockManager extends LockManager
             {
                 mutex.unlock(); // and exit mutual exclusion
             }
-            
+
             objectLocked = false;
         }
-        
+
         return stateLoaded;
     }
-    
+
     protected boolean doRelease (Uid u, boolean all)
     {
         synchronized (super.lockStore.getClass())
@@ -423,7 +423,7 @@ public class OptimisticLockManager extends LockManager
             return super.doRelease(u, all);
         }
     }
-    
+
     public boolean propagate (Uid from, Uid to)
     {
         synchronized (super.lockStore.getClass())
@@ -431,7 +431,7 @@ public class OptimisticLockManager extends LockManager
             return super.propagate(from, to);
         }
     }
-    
+
     /**
      * Overload StateManager.type()
      */
@@ -440,27 +440,27 @@ public class OptimisticLockManager extends LockManager
     {
         return "StateManager/LockManager/OptimisticLockManager";
     }
-    
+
     protected OptimisticLockManager ()
     {
         super();
     }
-    
+
     protected OptimisticLockManager (int ot)
     {
         super(ot);
     }
-    
+
     protected OptimisticLockManager (int ot, int om)
     {
         super(ot, om);
     }
-    
+
     protected OptimisticLockManager (Uid u)
     {
         super(u);
     }
-    
+
     protected OptimisticLockManager (Uid u, int objectModel)
     {
         super(u, ObjectType.ANDPERSISTENT, objectModel);

@@ -60,7 +60,7 @@ public abstract class BaseStoreBean extends NotificationBroadcasterSupport imple
     public void start() {
         StoreManagerProxy.registerBean(getMBeanName(), this, true);
 		generateNotification("Registering ObjectStore MBean");
-//		store.start ();        
+//		store.start ();
 	}
 
     /**

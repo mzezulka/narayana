@@ -155,7 +155,7 @@ public class JDBC3Test extends JDBC2Test
 	public void testStatements() throws SQLException
 	{
 		System.out.println("testStatements...");
-		
+
 
 		Statement stmt = conn.createStatement();  // non-tx statement
 
@@ -172,7 +172,7 @@ public class JDBC3Test extends JDBC2Test
 
 		javax.transaction.UserTransaction tx = com.arjuna.ats.jta.UserTransaction.userTransaction();
 
-		
+
 
 		try
 		{

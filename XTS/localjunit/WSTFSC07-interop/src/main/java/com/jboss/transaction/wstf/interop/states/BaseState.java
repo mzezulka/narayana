@@ -37,7 +37,7 @@ abstract class BaseState implements ProxyConversationState
      * The success flag.
      */
     private boolean success ;
-    
+
     /**
      * Mark the conversation as successfully completed.
      */
@@ -55,7 +55,7 @@ abstract class BaseState implements ProxyConversationState
             System.out.println("KEV: AAAAAARRRRRRRGGGGGGGHHHHHHHHH, multiple successes called for conversation!") ;
         }
     }
-    
+
     /**
      * Wait a specified period for the conversation to complete.
      * @param timeout The timeout period of the conversation.
@@ -83,10 +83,10 @@ abstract class BaseState implements ProxyConversationState
             }
             while(!complete) ;
         }
-        
+
         complete = true ;
     }
-    
+
     /**
      * Has the conversation complete?
      * @return true if the conversation has complete, false otherwise.
@@ -95,7 +95,7 @@ abstract class BaseState implements ProxyConversationState
     {
         return complete ;
     }
-    
+
     /**
      * Was the conversation successful?
      * @return true if the conversation was successful, false otherwise.

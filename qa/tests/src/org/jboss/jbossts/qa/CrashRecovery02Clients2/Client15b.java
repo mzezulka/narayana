@@ -103,7 +103,7 @@ public class Client15b
 				OTS.current().commit(false);
 			}
 			catch (final HeuristicHazard ex)
-			{			    
+			{
 			}
 			catch (TRANSACTION_ROLLEDBACK transactionRolledback)
 			{

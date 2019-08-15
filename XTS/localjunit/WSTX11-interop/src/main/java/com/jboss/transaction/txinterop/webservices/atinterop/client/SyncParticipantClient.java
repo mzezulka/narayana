@@ -36,7 +36,7 @@ public class SyncParticipantClient
      * The client singleton.
      */
     private static final SyncParticipantClient CLIENT = new SyncParticipantClient() ;
-    
+
     /**
      * Construct the interop synch client.
      */
@@ -223,7 +223,7 @@ public class SyncParticipantClient
         throws SoapFault, IOException
     {
     }
-    
+
     /**
      * Get the Interop client singleton.
      * @return The Interop client singleton.

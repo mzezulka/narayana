@@ -46,7 +46,7 @@ public class LockConflictUnitTest
         HammerThreadedObject object2 = new HammerThreadedObject(-2);
 
         HammerThreadedObject.object.setRetry(2);
-        
+
         object1.start();
         object2.start();
 

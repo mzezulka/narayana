@@ -104,7 +104,7 @@ public abstract class ATParticipantRecoveryRecord implements PersistableParticip
             WSTLogger.i18NLogger.warn_recovery_participant_at_ATParticipantRecoveryRecord_restoreState_2(id, ioe);
             return false;
         }
-        
+
         return true;
     }
 
@@ -143,7 +143,7 @@ public abstract class ATParticipantRecoveryRecord implements PersistableParticip
 
             throw new Exception(mesg);
         }
-        
+
         return false;
     }
 

@@ -1,7 +1,7 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
+ * as indicated by the @author tags.
  * See the copyritypeght.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -56,7 +56,7 @@ import java.util.Collection;
  * synchronization support but without thread management. This is the
  * subordinate coordinator implementation which we use when doing
  * interposition.
- * 
+ *
  * @author Mark Little (mark.little@arjuna.com)
  * @version $Id: SubordinateATCoordinator.java,v 1.1 2005/05/19 12:13:39 nmcl Exp $
  * @since 2.0.
@@ -105,13 +105,13 @@ public class SubordinateATCoordinator extends ATCoordinator
 	 * then this method can be used to execute a coordination protocol on the
 	 * currently enlisted participants at any time prior to the termination of
 	 * the coordination scope.
-	 * 
+	 *
 	 * This implementation only supports coordination at the end of the
 	 * activity.
-	 * 
+	 *
 	 * @param     cs The completion status to use when determining how to
 	 *            execute the protocol.
-	 * 
+	 *
 	 * @exception WrongStateException
 	 *                Thrown if the coordinator is in a state the does not allow
 	 *                coordination to occur.
@@ -120,7 +120,7 @@ public class SubordinateATCoordinator extends ATCoordinator
 	 *                execution.
 	 * @exception SystemException
 	 *                Thrown if any other error occurs.
-	 * 
+	 *
 	 * @return The result of executing the protocol, or null.
 	 */
 
@@ -134,7 +134,7 @@ public class SubordinateATCoordinator extends ATCoordinator
 	{
 		return ActionStatus.INVALID;
 	}
-	
+
 	public int cancel ()
 	{
 		return ActionStatus.INVALID;
@@ -186,12 +186,12 @@ public class SubordinateATCoordinator extends ATCoordinator
 		super.phase2Commit(true);
 
 		int status;
-		
+
 		switch (super.getHeuristicDecision())
 		{
 		case TwoPhaseOutcome.PREPARE_OK:
 		case TwoPhaseOutcome.FINISH_OK:
-			status = super.status();		
+			status = super.status();
 			break;
 		case TwoPhaseOutcome.HEURISTIC_ROLLBACK:
 			status = ActionStatus.H_ROLLBACK;
@@ -214,7 +214,7 @@ public class SubordinateATCoordinator extends ATCoordinator
         if (status != ActionStatus.COMMITTING) {
             SubordinateATCoordinator.removeRecoveredCoordinator(this);
         }
-        
+
         // run any callback associated with this transaction
 
         runCallback(get_uid().stringForm());
@@ -247,9 +247,9 @@ public class SubordinateATCoordinator extends ATCoordinator
 		    heuristicList = new RecordList();
 
 		super.phase2Abort(true);
-		
+
 		int status;
-		
+
 		switch (super.getHeuristicDecision())
 		{
 		case TwoPhaseOutcome.PREPARE_OK:
@@ -277,7 +277,7 @@ public class SubordinateATCoordinator extends ATCoordinator
         // run any callback associated with this transaction
 
         runCallback(get_uid().stringForm());
-        
+
         this.finalStatus = status;
 	}
 
@@ -408,7 +408,7 @@ public class SubordinateATCoordinator extends ATCoordinator
     {
         return subordinateType;
     }
-    
+
     @Override
     public boolean save_state(OutputObjectState os, int ot) {
         // also need to save the subordinate type
@@ -433,7 +433,7 @@ public class SubordinateATCoordinator extends ATCoordinator
             } catch (IOException ioe) {
             }
         }
-        
+
         return false;
     }
 

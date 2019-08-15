@@ -49,7 +49,7 @@ public class RecoverIOR
         String new_object_key = object_key.substring(0, position).concat(Key);
 //        org.omg.CORBA.Object corbject = ORBManager.getORB().orb().string_to_object(str);
         org.omg.CORBA.ORB orbImple = ORBManager.getORB().orb();
-        org.omg.CORBA.Object corbject = orbImple.string_to_object(str); 
+        org.omg.CORBA.Object corbject = orbImple.string_to_object(str);
 
         com.sun.corba.se.spi.ior.IOR ior = IORFactories.getIOR(corbject);
         ObjectId oid = IORFactories.makeObjectId(new_object_key.getBytes(StandardCharsets.UTF_8));

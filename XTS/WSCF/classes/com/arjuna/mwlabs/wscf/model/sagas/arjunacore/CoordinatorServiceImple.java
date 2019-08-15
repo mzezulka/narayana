@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -131,7 +131,7 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
         }
 
 	UserActivityFactory.userActivity().start(coordinationType, timeout);
-    }	
+    }
 
 
     /**
@@ -184,7 +184,7 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
 		if (res instanceof CoordinationOutcome)
 		{
 		    CoordinationOutcome co = (CoordinationOutcome) res;
-		    
+
 		    switch (co.result())
 		    {
 		    case TwoPhaseResult.FINISH_OK:
@@ -216,7 +216,7 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
 	    // ?? assume the coordination protocol will cancel children anyway.
 	}
     }
-    
+
     /**
      * Cancel the activity.
      *
@@ -251,7 +251,7 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
 		if (res instanceof CoordinationOutcome)
 		{
 		    CoordinationOutcome co = (CoordinationOutcome) res;
-		    
+
 		    switch (co.result())
 		    {
 		    case TwoPhaseResult.CONFIRMED:
@@ -307,7 +307,7 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
 
 	_coordManager.complete();
     }
-    
+
     /**
      * Set the termination status for the current activity to cancel only.
      *
@@ -330,7 +330,7 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
 	{
 	    throw new NoCoordinatorException();
 	}
-    }	
+    }
 
     /**
      * Get the timeout value currently associated with activities.
@@ -348,7 +348,7 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
         }
 
 	return UserActivityFactory.userActivity().getTimeout();
-    }	
+    }
 
     /**
      * Set the timeout to be associated with all subsequently created
@@ -372,8 +372,8 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
         }
 
 	UserActivityFactory.userActivity().setTimeout(timeout);
-    }	
-    
+    }
+
     /**
      * @exception SystemException Thrown if any error occurs.
      *
@@ -391,13 +391,13 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
         }
 
 	ActivityImple curr = current();
-	
+
 	if (curr == null)
 	    return NoActivity.instance();
-	
+
 	return _coordManager.status();
     }
-    
+
     /**
      * Suspend the current activity from this thread and return the token
      * representing the context, if any, or null otherwise. Once called, the
@@ -476,7 +476,7 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
      * protocol the coordinator is committing.)
      * @exception SystemException Thrown if any other error occurs.
      */
-    
+
     public void delistParticipant (String participantId) throws InvalidParticipantException, NoCoordinatorException, WrongStateException, SystemException
     {
         if (wscfLogger.logger.isTraceEnabled()) {
@@ -515,7 +515,7 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
 	    throw new SystemException(ex.toString());
 	}
     }
-    
+
     public void participantCannotComplete (String participantId) throws NoActivityException, InvalidParticipantException, WrongStateException, SystemException
     {
         if (wscfLogger.logger.isTraceEnabled()) {
@@ -562,7 +562,7 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
         }
 
 	ActivityImple curr = current();
-	
+
 	if (curr == null)
 	    throw new NoActivityException();
 
@@ -576,7 +576,7 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
         }
 
 	UserActivityImple imple = (UserActivityImple) UserActivityFactory.userActivity();
-	
+
 	return imple.current();
     }
 

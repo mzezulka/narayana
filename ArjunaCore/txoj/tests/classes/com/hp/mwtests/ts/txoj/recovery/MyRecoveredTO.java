@@ -42,7 +42,7 @@ public class MyRecoveredTO extends RecoveredTransactionalObject
     {
         super(objectUid, originalType, participantStore);
     }
-    
+
     public void replay ()
     {
         super.replayPhase2();

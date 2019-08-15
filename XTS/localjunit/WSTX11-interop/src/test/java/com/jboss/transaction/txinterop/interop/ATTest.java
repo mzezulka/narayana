@@ -49,7 +49,7 @@ public class ATTest {
     private int testTimeout = 120000;
     private boolean asyncTest = true;
     private String name = "ATTest";
-    
+
     @Inject
     ATTestCase test;
 
@@ -67,7 +67,7 @@ public class ATTest {
     public static void removeBytemanScript() {
         BMScript.remove(ParticipantCompletionReadOnlyRules.RESOURCE_PATH);
     }
-    
+
     @Before
     public void setUp() {
         test.setParticipantURI(participantURI);
@@ -77,83 +77,83 @@ public class ATTest {
         String conversationId = ProxyConversation.createConversation();
         test.setConversationId(conversationId);
     }
-    
+
     @Test
     public void testAT1_1() throws Exception {
        test.testAT1_1();
     }
-    
+
     @Test
     public void testAT1_2() throws Exception {
         test.testAT1_2();
     }
-    
+
     @Test
     public void testAT2_1() throws Exception {
         test.testAT2_1();
     }
-    
+
     @Test
     public void testAT2_2() throws Exception {
         test.testAT2_2();
     }
-    
+
     @Test
     public void testAT3_1() throws Exception {
         test.testAT3_1();
     }
-    
+
     @Test
     public void testAT3_2() throws Exception {
         test.testAT3_2();
     }
-    
+
     @Test
     public void testAT3_3() throws Exception {
         test.testAT3_3();
     }
-    
+
     @Test
     public void testAT4_1() throws Exception {
         ParticipantCompletionReadOnlyRules.enableReadOnlyCheck();
         test.testAT4_1();
     }
-    
+
     @Test
     public void testAT4_2() throws Exception {
         test.testAT4_2();
     }
-    
+
     @Test
     public void testAT5_1() throws Exception {
         test.testAT5_1();
     }
-    
+
     @Test
     public void testAT5_2() throws Exception {
         test.testAT5_2();
     }
-    
+
     @Test
     public void testAT5_3() throws Exception {
         test.testAT5_3();
     }
-    
+
     @Test
     public void testAT5_4() throws Exception {
         test.testAT5_4();
     }
-    
+
     @Test
     public void testAT5_5() throws Exception {
         test.testAT5_5();
     }
-    
+
     @Test
     public void testAT5_6() throws Exception {
         test.testAT5_6();
     }
-    
+
     @After
     public void tearDown() {
         String conversationId = test.getConversationId();

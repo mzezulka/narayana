@@ -64,13 +64,13 @@ import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
 /**
  * This CommitMarkableResourceRecord assumes the following table has been
  * created:
- * 
+ *
  * create table xids (xid varbinary(255), transactionManagerID varchar(255))
  * (ora/syb/mysql) create table xids (xid bytea, transactionManagerID
  * varchar(255)) (psql) sp_configure "lock scheme",0,datarows (syb)
- * 
+ *
  * The CommitMarkableResourceRecord does not support nested transactions
- * 
+ *
  * TODO you have to set max_allowed_packet for large reaps on mysql
  */
 public class CommitMarkableResourceRecordRecoveryModule implements
@@ -122,7 +122,7 @@ public class CommitMarkableResourceRecordRecoveryModule implements
 				.getDefaultInstance(JTAEnvironmentBean.class);
 		jndiNamesToContact.addAll(jtaEnvironmentBean
 				.getCommitMarkableResourceJNDINames());
-		
+
 		if (tsLogger.logger.isTraceEnabled()) {
 			tsLogger.logger
 					.trace("CommitMarkableResourceRecordRecoveryModule::list to contact");
@@ -338,18 +338,18 @@ public class CommitMarkableResourceRecordRecoveryModule implements
 						}
 					} else {
     				    state = recoveryStore.read_committed(currentUid, CONNECTABLE_ATOMIC_ACTION_TYPE);
-    				    // TX may have been in progress and cleaned up by now 
+    				    // TX may have been in progress and cleaned up by now
     	                if (state != null) {
     						RecoverConnectableAtomicAction rcaa = new RecoverConnectableAtomicAction(
     								CONNECTABLE_ATOMIC_ACTION_TYPE, currentUid, state);
-    
+
     						if (rcaa.containsIncompleteCommitMarkableResourceRecord()) {
     							String commitMarkableResourceJndiName = rcaa
     									.getCommitMarkableResourceJndiName();
     							// Check if the resource manager is online yet
     							if (queriedResourceManagers
     									.contains(commitMarkableResourceJndiName)) {
-    
+
     								// If it is remove the CRR and move it back and
     								// let
     								// the
@@ -365,11 +365,11 @@ public class CommitMarkableResourceRecordRecoveryModule implements
                                 // It is now safe to move it back to being an AA so that it can call getNewXAResourceRecord
                                 moveRecord(currentUid,
                                         CONNECTABLE_ATOMIC_ACTION_TYPE,
-                                        ATOMIC_ACTION_TYPE);    						    
+                                        ATOMIC_ACTION_TYPE);
     						}
                         }
 					}
-					
+
 					currentUid = UidHelper.unpackFrom(uidList);
 				}
 			} catch (ObjectStoreException | IOException ex) {
@@ -425,7 +425,7 @@ public class CommitMarkableResourceRecordRecoveryModule implements
                                     // Swap the type to avoid the rest of recovery round processing this TX as it already called getNewXAResourceRecord
                                     moveRecord(currentUid, ATOMIC_ACTION_TYPE,
                                             CONNECTABLE_ATOMIC_ACTION_TYPE);
-                                    
+
     							}
     						}
 	                    }
@@ -506,7 +506,7 @@ public class CommitMarkableResourceRecordRecoveryModule implements
 
 	/**
 	 * Can only be called after the first phase has executed
-	 * 
+	 *
 	 * @param xid
 	 * @throws ObjectStoreException if the resource manager was offline
 	 * @return whether the Xid was commited by the resource manager

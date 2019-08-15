@@ -52,7 +52,7 @@ import com.arjuna.ats.internal.arjuna.recovery.RecoveryManagerImple;
 import com.hp.mwtests.ts.arjuna.resources.CrashRecord;
 
 /**
- * @deprecated as of 5.0.5.Final In a subsequent release we will change packages names in order to 
+ * @deprecated as of 5.0.5.Final In a subsequent release we will change packages names in order to
  * provide a better separation between public and internal classes.
  */
 @Deprecated // in order to provide a better separation between public and internal classes.
@@ -116,10 +116,10 @@ public class ObjStoreBrowserTest {
 
 		// listing beans of an invalid type returns null
 		assertNull(osb.probe("InvalidType"));
-		
+
 		// JBTM-1230
 		// This does not work on the JDBC object store as this test assumes a previous
-		// run has left the "Recovery" entry on disk which won't happen in a JDBC store 
+		// run has left the "Recovery" entry on disk which won't happen in a JDBC store
 //		// TODO windows
 //		if (System.getProperty("os.name").toLowerCase().indexOf("windows") == -1) {
 //			// listing beans of a valid type returns an empty list
@@ -141,7 +141,7 @@ public class ObjStoreBrowserTest {
 		aaTest(true);
 
 	}
-	
+
 	/**
 	 * Similar to aaReplayTest except that the whole transaction record is removed from the object store
 	 * (instead of replaying the record that generates a heuristic).
@@ -242,7 +242,7 @@ public class ObjStoreBrowserTest {
 	public void testJMXServer() throws Exception {
 
 		class NonCompliantBean implements NotAnotherMBean {}
-		
+
 		ObjStoreBrowser osb = createObjStoreBrowser();
 		OSEntryBean bean;
 		String validName = "jboss.jta:type=TestObjectStore";

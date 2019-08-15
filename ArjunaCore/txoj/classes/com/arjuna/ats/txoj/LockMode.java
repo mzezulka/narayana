@@ -54,7 +54,7 @@ public class LockMode
     {
 	return printString(l);
     }
-    
+
     /**
      * Print a human-readable form of the lock type.
      */

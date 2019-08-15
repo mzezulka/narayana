@@ -39,7 +39,7 @@ public class TxSupportTest extends BaseTest {
 
         // There should be no txns in progress, since none were started in this test
         Assert.assertEquals(0, txn.txCount());
-        
+
         Assert.assertEquals(0, transactionsInProgress.size());
     }
 

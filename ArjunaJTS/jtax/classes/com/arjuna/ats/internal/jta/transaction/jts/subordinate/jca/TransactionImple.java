@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. 
- * See the copyright.txt in the distribution for a full listing 
+ * as indicated by the @author tags.
+ * See the copyright.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -58,7 +58,7 @@ public class TransactionImple extends
 	{
 		this(timeout, null);
 	}
-	
+
 	public TransactionImple (int timeout, Xid importedXid)
 	{
 		super(new SubordinateAtomicTransaction(new Uid(), importedXid, timeout));
@@ -68,25 +68,25 @@ public class TransactionImple extends
 
 	/**
 	 * For crash recovery purposes.
-	 * 
+	 *
 	 * @param actId the transaction to recover.
 	 */
-	
+
 	public TransactionImple (Uid actId)
 	{
 		super(new SubordinateAtomicTransaction(actId));
 	}
-	
+
 	/**
 	 * Only to be used by crash recovery. Should not be called directly by any
 	 * other classes.
 	 */
-	
+
 	public final void recordTransaction ()
 	{
 		TransactionImple.putTransaction(this);
 	}
-	
+
 	public String toString ()
 	{
 		if (super._theTransaction == null)
@@ -101,11 +101,11 @@ public class TransactionImple extends
 	/**
 	 * If this is an imported transaction (via JCA) then this will be the Xid
 	 * we are pretending to be. Otherwise, it will be null.
-	 * 
+	 *
 	 * @return null if we are a local transaction, a valid Xid if we have been
 	 * imported.
 	 */
-	
+
 	public Xid baseXid ()
 	{
 		return ((SubordinateAtomicTransaction) _theTransaction).getXid();
@@ -122,7 +122,7 @@ public class TransactionImple extends
             implHandle.activate();
         }
     }
-    
+
     public boolean activated() {
         return true; // TODO: more sensible implementation.
     }

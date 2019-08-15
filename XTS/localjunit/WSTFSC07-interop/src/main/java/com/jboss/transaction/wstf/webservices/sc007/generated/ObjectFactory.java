@@ -28,18 +28,18 @@ import javax.xml.namespace.QName;
 
 
 /**
- * This object contains factory methods for each 
- * Java content interface and Java element interface 
- * generated in the com.jboss.transaction.wstf.webservices.sc007.generated package. 
- * <p>An ObjectFactory allows you to programatically 
- * construct new instances of the Java representation 
- * for XML content. The Java representation of XML 
- * content can consist of schema derived interfaces 
- * and classes representing the binding of schema 
- * type definitions, element declarations and model 
- * groups.  Factory methods for each of these are 
+ * This object contains factory methods for each
+ * Java content interface and Java element interface
+ * generated in the com.jboss.transaction.wstf.webservices.sc007.generated package.
+ * <p>An ObjectFactory allows you to programatically
+ * construct new instances of the Java representation
+ * for XML content. The Java representation of XML
+ * content can consist of schema derived interfaces
+ * and classes representing the binding of schema
+ * type definitions, element declarations and model
+ * groups.  Factory methods for each of these are
  * provided in this class.
- * 
+ *
  */
 @XmlRegistry
 public class ObjectFactory {
@@ -63,14 +63,14 @@ public class ObjectFactory {
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: com.jboss.transaction.wstf.webservices.sc007.generated
-     * 
+     *
      */
     public ObjectFactory() {
     }
 
     /**
      * Create an instance of {@link TestMessageType }
-     * 
+     *
      */
     public TestMessageType createTestMessageType() {
         return new TestMessageType();
@@ -78,7 +78,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TestMessageType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.wstf.org/sc007", name = "Response")
     public JAXBElement<TestMessageType> createResponse(TestMessageType value) {
@@ -87,7 +87,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TestMessageType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.wstf.org/sc007", name = "Readonly")
     public JAXBElement<TestMessageType> createReadonly(TestMessageType value) {
@@ -96,7 +96,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TestMessageType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.wstf.org/sc007", name = "VolatileAndDurable")
     public JAXBElement<TestMessageType> createVolatileAndDurable(TestMessageType value) {
@@ -105,7 +105,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TestMessageType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.wstf.org/sc007", name = "ReplayCommit")
     public JAXBElement<TestMessageType> createReplayCommit(TestMessageType value) {
@@ -114,7 +114,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TestMessageType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.wstf.org/sc007", name = "EarlyReadonly")
     public JAXBElement<TestMessageType> createEarlyReadonly(TestMessageType value) {
@@ -123,7 +123,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TestMessageType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.wstf.org/sc007", name = "PreparedAfterTimeout")
     public JAXBElement<TestMessageType> createPreparedAfterTimeout(TestMessageType value) {
@@ -132,7 +132,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TestMessageType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.wstf.org/sc007", name = "Phase2Rollback")
     public JAXBElement<TestMessageType> createPhase2Rollback(TestMessageType value) {
@@ -141,7 +141,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TestMessageType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.wstf.org/sc007", name = "EarlyAborted")
     public JAXBElement<TestMessageType> createEarlyAborted(TestMessageType value) {
@@ -150,7 +150,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TestMessageType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.wstf.org/sc007", name = "Commit")
     public JAXBElement<TestMessageType> createCommit(TestMessageType value) {
@@ -159,7 +159,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TestMessageType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.wstf.org/sc007", name = "Rollback")
     public JAXBElement<TestMessageType> createRollback(TestMessageType value) {
@@ -168,7 +168,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.wstf.org/sc007", name = "CompletionCommit")
     public JAXBElement<String> createCompletionCommit(String value) {
@@ -177,7 +177,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TestMessageType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.wstf.org/sc007", name = "RetryCommit")
     public JAXBElement<TestMessageType> createRetryCommit(TestMessageType value) {
@@ -186,7 +186,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TestMessageType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.wstf.org/sc007", name = "RetryPreparedCommit")
     public JAXBElement<TestMessageType> createRetryPreparedCommit(TestMessageType value) {
@@ -195,7 +195,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TestMessageType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.wstf.org/sc007", name = "RetryPreparedAbort")
     public JAXBElement<TestMessageType> createRetryPreparedAbort(TestMessageType value) {
@@ -204,7 +204,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TestMessageType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.wstf.org/sc007", name = "LostCommitted")
     public JAXBElement<TestMessageType> createLostCommitted(TestMessageType value) {
@@ -213,7 +213,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.wstf.org/sc007", name = "CompletionRollback")
     public JAXBElement<String> createCompletionRollback(String value) {

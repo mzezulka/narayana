@@ -34,15 +34,15 @@ import javax.xml.ws.handler.MessageContext;
 import org.jboss.ws.api.addressing.MAP;
 
 /**
- * Asynchronous endpoint to receive Registration responses that are requested 
+ * Asynchronous endpoint to receive Registration responses that are requested
  * using the <em>org.jboss.jbossts.xts.useAsynchronousRequest</em> property.
  * Microsoft WSCOOR implementation needs to receive a valid <em>ReplyTo</em>
  * ws-addressing header in order to respond correctly. This endpoint is not
  * part of the standard.
- * 
+ *
  * @author rmartinc
  */
-@WebService(targetNamespace = "http://docs.oasis-open.org/ws-tx/wscoor/2006/06", 
+@WebService(targetNamespace = "http://docs.oasis-open.org/ws-tx/wscoor/2006/06",
         name = "RegistrationResponsePortType",
         serviceName = "RegistrationResponseService",
         portName = "RegistrationResponsePortType"
@@ -51,7 +51,7 @@ import org.jboss.ws.api.addressing.MAP;
 @HandlerChain(file="/ws-c_handlers.xml")
 @Addressing(required=true)
 public class RegistrationResponsePortTypeImpl {
-    
+
     @Resource private WebServiceContext webServiceCtx;
 
     @WebMethod(operationName = "RegisterResponseOperation", action = "http://docs.oasis-open.org/ws-tx/wscoor/2006/06/RegisterResponse")
@@ -60,7 +60,7 @@ public class RegistrationResponsePortTypeImpl {
     public void registerResponseOperation(
         @WebParam(targetNamespace = "http://docs.oasis-open.org/ws-tx/wscoor/2006/06", partName = "parameters", name = "RegisterResponse")
         org.oasis_open.docs.ws_tx.wscoor._2006._06.RegisterResponseType parameters) {
-        
+
         MessageContext ctx = webServiceCtx.getMessageContext();
         MAP inboundMap = AddressingHelper.inboundMap(ctx);
         if (inboundMap.getRelatesTo() != null)  {

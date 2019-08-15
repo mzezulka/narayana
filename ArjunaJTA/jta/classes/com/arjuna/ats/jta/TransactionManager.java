@@ -1,20 +1,20 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors 
- * as indicated by the @author tags. 
+ * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * as indicated by the @author tags.
  * See the copyright.txt in the distribution for a
- * full listing of individual contributors. 
+ * full listing of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
  * of the GNU Lesser General Public License, v. 2.1.
- * This program is distributed in the hope that it will be useful, but WITHOUT A 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT A
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
  * You should have received a copy of the GNU Lesser General Public License,
  * v.2.1 along with this distribution; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -43,7 +43,7 @@ public class TransactionManager
 	 * @param ctx The JNDI initial context to lookup the Transaction Manager reference from.
 	 * @return The transaction manager bound to the appropriate JNDI context.  Returns null
      * if the transaction manager cannot be found.
-     * 
+     *
 	 */
     public static javax.transaction.TransactionManager transactionManager (InitialContext ctx)
     {
@@ -65,7 +65,7 @@ public class TransactionManager
      * Retrieve the singleton transaction manager reference.
      * @return The singleton transaction manager.  Can return null if the instantiation failed.
      */
-	
+
     public synchronized static javax.transaction.TransactionManager transactionManager ()
     {
 		return jtaPropertyManager.getJTAEnvironmentBean().getTransactionManager();

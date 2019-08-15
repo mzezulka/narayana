@@ -63,10 +63,10 @@ public class STMVerticle extends AbstractVerticle {
     {
        public void increment ();
        public void decrement ();
-       
+
        public int value ();
     }
-    
+
     @Transactional
     public static class SampleLockable implements Sample
     {
@@ -74,7 +74,7 @@ public class STMVerticle extends AbstractVerticle {
         {
             _isState = init;
         }
-        
+
         @ReadLock
         public int value ()
         {
@@ -86,7 +86,7 @@ public class STMVerticle extends AbstractVerticle {
         {
             _isState++;
         }
-        
+
         @WriteLock
         public void decrement ()
         {

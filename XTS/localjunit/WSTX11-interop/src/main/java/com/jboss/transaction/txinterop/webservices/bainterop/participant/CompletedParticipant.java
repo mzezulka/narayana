@@ -28,12 +28,12 @@ import com.arjuna.wst11.messaging.engines.ParticipantCompletionParticipantEngine
 public class CompletedParticipant extends ParticipantCompletionParticipantAdapter
 {
     private ParticipantCompletionParticipantEngine engine ;
-    
+
     public void setEngine(final ParticipantCompletionParticipantEngine engine)
     {
 	this.engine = engine ;
     }
-    
+
     public void initialiseTimeout()
     {
         final TimerTask timerTask = new TimerTask() {

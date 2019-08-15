@@ -46,7 +46,7 @@ class DummyMap2 implements RecordTypeMap
     public int getType ()
     {
         return RecordType.USER_DEF_FIRST0;
-    }    
+    }
 }
 
 public class LogEditorUnitTest
@@ -59,7 +59,7 @@ public class LogEditorUnitTest
 
         arjPropertyManager.getObjectStoreEnvironmentBean().setLocalOSRoot(localOSRoot);
         arjPropertyManager.getObjectStoreEnvironmentBean().setObjectStoreDir(objectStoreDir);
-        
+
         // dummy to set up ObjectStore
 
         AtomicAction A = new AtomicAction();
@@ -97,15 +97,15 @@ public class LogEditorUnitTest
 
         System.out.println("Transaction " + B + " committed with "
                 + ActionStatus.stringForm(outcome));
-        
+
         RecordTypeManager.manager().add(new DummyMap2());
-        
+
         EditableAtomicAction eaa = new EditableAtomicAction(B.get_uid());
-        
+
         assertTrue(eaa.toString() != null);
-        
+
         eaa.moveHeuristicToPrepared(1);
-        
+
         try
         {
             eaa.moveHeuristicToPrepared(-1);
@@ -114,11 +114,11 @@ public class LogEditorUnitTest
         catch (final Exception ex)
         {
         }
-        
+
         eaa = new EditableAtomicAction(A.get_uid());
-        
+
         eaa.deleteHeuristicParticipant(0);
-        
+
         try
         {
             eaa.deleteHeuristicParticipant(-1);

@@ -116,7 +116,7 @@ public class DemoBusinessParticipant implements BusinessAgreementWithParticipant
 	    return "Unknown";
 	}
     }
-    
+
     public String identifier () throws SystemException
     {
 	return _id;
@@ -130,10 +130,10 @@ public class DemoBusinessParticipant implements BusinessAgreementWithParticipant
     {
 	return "Unknown";
     }
-    
+
     protected boolean _passed = false;
     protected String  _id = null;
     protected int     _outcome;
-    
+
 }
 

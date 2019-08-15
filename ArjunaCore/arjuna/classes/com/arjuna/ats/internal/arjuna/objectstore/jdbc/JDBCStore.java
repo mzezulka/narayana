@@ -53,7 +53,7 @@ import com.arjuna.ats.arjuna.state.OutputObjectState;
 /**
  * An object store implementation which uses a JDBC database for maintaining
  * object states. All states are maintained within a single table.
- * 
+ *
  * It is assumed that only one object will use a given instance of the
  * JDBCStore. Hence, there is no need for synchronizations.
  */
@@ -77,7 +77,7 @@ public class JDBCStore implements ObjectStoreAPI {
 
     /**
      * Does this store need to do the full write_uncommitted/commit protocol?
-     * 
+     *
      * @return <code>true</code> if full commit is needed, <code>false</code>
      *         otherwise.
      */
@@ -98,14 +98,14 @@ public class JDBCStore implements ObjectStoreAPI {
     /**
      * Is the current state of the object the same as that provided as the last
      * parameter?
-     * 
+     *
      * @param u
      *            The object to work on.
      * @param tn
      *            The type of the object.
      * @param st
      *            The expected type of the object.
-     * 
+     *
      * @return <code>true</code> if the current state is as expected,
      *         <code>false</code> otherwise.
      */
@@ -180,7 +180,7 @@ public class JDBCStore implements ObjectStoreAPI {
 
     /**
      * Create a new JDBCStore
-     * 
+     *
      * @param jdbcStoreEnvironmentBean
      *            The environment bean containing the configuration
      * @throws ObjectStoreException

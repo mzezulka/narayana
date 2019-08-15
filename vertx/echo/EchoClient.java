@@ -53,7 +53,7 @@ public class EchoClient extends AbstractVerticle {
 	   * If you want to see how this might work then just go with the example state in the ObjectStore
 	   * shipped as part of this example and uncomment the lines.
 	   */
-	  
+
 	  /*
 	   * STM states are identified by Uids in the ObjectStore. This is an example.
 	   */
@@ -94,10 +94,10 @@ public class EchoClient extends AbstractVerticle {
     {
        public void increment ();
        public void decrement ();
-       
+
        public int value ();
     }
-    
+
     @Transactional
     public class SampleLockable implements Sample
     {
@@ -105,7 +105,7 @@ public class EchoClient extends AbstractVerticle {
         {
             _isState = init;
         }
-        
+
         @ReadLock
         public int value ()
         {
@@ -117,7 +117,7 @@ public class EchoClient extends AbstractVerticle {
         {
             _isState++;
         }
-        
+
         @WriteLock
         public void decrement ()
         {

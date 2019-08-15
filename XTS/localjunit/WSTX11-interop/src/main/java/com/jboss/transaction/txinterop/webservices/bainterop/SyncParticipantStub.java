@@ -38,7 +38,7 @@ public class SyncParticipantStub implements ParticipantStub
      * The participant stub singletong.
      */
     private static final ParticipantStub PARTICIPANT_STUB = new SyncParticipantStub() ;
-    
+
     /**
      * Get the participant stub singleton.
      * @return The participant stub singleton.
@@ -47,7 +47,7 @@ public class SyncParticipantStub implements ParticipantStub
     {
         return PARTICIPANT_STUB ;
     }
-    
+
     /**
      * Send a cancel request.
      * @param serviceURI The target service URI.
@@ -60,10 +60,10 @@ public class SyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         SyncParticipantClient.getClient().sendCancel(coordinationContext, map) ;
     }
-    
+
     /**
      * Send a exit request.
      * @param serviceURI The target service URI.
@@ -76,10 +76,10 @@ public class SyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         SyncParticipantClient.getClient().sendExit(coordinationContext, map) ;
     }
-    
+
     /**
      * Send a fail request.
      * @param serviceURI The target service URI.
@@ -92,10 +92,10 @@ public class SyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         SyncParticipantClient.getClient().sendFail(coordinationContext, map) ;
     }
-    
+
     /**
      * Send a cannotComplete request.
      * @param serviceURI The target service URI.
@@ -108,10 +108,10 @@ public class SyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         SyncParticipantClient.getClient().sendCannotComplete(coordinationContext, map) ;
     }
-    
+
     /**
      * Send a participantCompleteClose request.
      * @param serviceURI The target service URI.
@@ -124,10 +124,10 @@ public class SyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         SyncParticipantClient.getClient().sendParticipantCompleteClose(coordinationContext, map) ;
     }
-    
+
     /**
      * Send a coordinatorCompleteClose request.
      * @param serviceURI The target service URI.
@@ -140,10 +140,10 @@ public class SyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         SyncParticipantClient.getClient().sendCoordinatorCompleteClose(coordinationContext, map) ;
     }
-    
+
     /**
      * Send a unsolicitedComplete request.
      * @param serviceURI The target service URI.
@@ -156,10 +156,10 @@ public class SyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         SyncParticipantClient.getClient().sendUnsolicitedComplete(coordinationContext, map) ;
     }
-    
+
     /**
      * Send a compensate request.
      * @param serviceURI The target service URI.
@@ -172,10 +172,10 @@ public class SyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         SyncParticipantClient.getClient().sendCompensate(coordinationContext, map) ;
     }
-    
+
     /**
      * Send a compensationFail request.
      * @param serviceURI The target service URI.
@@ -188,10 +188,10 @@ public class SyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         SyncParticipantClient.getClient().sendCompensationFail(coordinationContext, map) ;
     }
-    
+
     /**
      * Send a participantCancelCompletedRace request.
      * @param serviceURI The target service URI.
@@ -204,10 +204,10 @@ public class SyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         SyncParticipantClient.getClient().sendParticipantCancelCompletedRace(coordinationContext, map) ;
     }
-    
+
     /**
      * Send a messageLossAndRecovery request.
      * @param serviceURI The target service URI.
@@ -220,10 +220,10 @@ public class SyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         SyncParticipantClient.getClient().sendMessageLossAndRecovery(coordinationContext, map) ;
     }
-    
+
     /**
      * Send a mixedOutcome request.
      * @param serviceURI The target service URI.
@@ -236,7 +236,7 @@ public class SyncParticipantStub implements ParticipantStub
     {
         final String messageId = MessageId.getMessageId() ;
         final MAP map = AddressingHelper.createRequestContext(serviceURI, messageId) ;
-        
+
         SyncParticipantClient.getClient().sendMixedOutcome(coordinationContext, map) ;
     }
 }

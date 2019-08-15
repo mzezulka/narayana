@@ -83,7 +83,7 @@ public class ObjectStateWrapper implements Serializable {
         byte[] b = getBuff() == null ? new byte[0] : getBuff();
         return new InputObjectState(u, t, b);
     }
-    
+
     public OutputObjectState getOOS() {
         if (getBuff() == null || getBuff().length == 0)
             return null;

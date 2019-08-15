@@ -53,7 +53,7 @@ public class CrashBMTBean implements SessionBean {
 
         if (txStatus != null)
             System.out.println("BMT method called with tx status: " + txStatus);
-        
+
         System.out.println("BMT testXA called with " + specs.length + " specs");
 
         for (ASFailureSpec spec : specs)

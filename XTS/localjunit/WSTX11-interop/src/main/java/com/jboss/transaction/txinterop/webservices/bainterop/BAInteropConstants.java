@@ -45,7 +45,7 @@ public interface BAInteropConstants
      * The interop namespace prefix.
      */
     public String INTEROP_PREFIX = "bainterop" ;
-    
+
     /**
      * The participant action prefix.
      */
@@ -67,7 +67,7 @@ public interface BAInteropConstants
      * The Cancel Action.
      */
     public String INTEROP_ACTION_CANCEL = INTEROP_ACTION_PARTICIPANT_PREFIX + INTEROP_ELEMENT_CANCEL ;
-    
+
     /**
      * The Exit element.
      */
@@ -80,7 +80,7 @@ public interface BAInteropConstants
      * The Exit Action.
      */
     public String INTEROP_ACTION_EXIT = INTEROP_ACTION_PARTICIPANT_PREFIX + INTEROP_ELEMENT_EXIT ;
-    
+
     /**
      * The Fail element.
      */
@@ -93,7 +93,7 @@ public interface BAInteropConstants
      * The Fail Action.
      */
     public String INTEROP_ACTION_FAIL = INTEROP_ACTION_PARTICIPANT_PREFIX + INTEROP_ELEMENT_FAIL ;
-    
+
     /**
      * The Cannot Complete element.
      */
@@ -106,7 +106,7 @@ public interface BAInteropConstants
      * The Cannot Complete Action.
      */
     public String INTEROP_ACTION_CANNOT_COMPLETE = INTEROP_ACTION_PARTICIPANT_PREFIX + INTEROP_ELEMENT_CANNOT_COMPLETE ;
-    
+
     /**
      * The Participant Complete Close element.
      */
@@ -119,7 +119,7 @@ public interface BAInteropConstants
      * The Participant Complete Close Action.
      */
     public String INTEROP_ACTION_PARTICIPANT_COMPLETE_CLOSE = INTEROP_ACTION_PARTICIPANT_PREFIX + INTEROP_ELEMENT_PARTICIPANT_COMPLETE_CLOSE ;
-    
+
     /**
      * The Coordinator Complete Close element.
      */
@@ -132,7 +132,7 @@ public interface BAInteropConstants
      * The Coordinator Complete Close Action.
      */
     public String INTEROP_ACTION_COORDINATOR_COMPLETE_CLOSE = INTEROP_ACTION_PARTICIPANT_PREFIX + INTEROP_ELEMENT_COORDINATOR_COMPLETE_CLOSE ;
-    
+
     /**
      * The Unsolicited Complete element.
      */
@@ -145,7 +145,7 @@ public interface BAInteropConstants
      * The Unsolicited Complete Action.
      */
     public String INTEROP_ACTION_UNSOLICITED_COMPLETE = INTEROP_ACTION_PARTICIPANT_PREFIX + INTEROP_ELEMENT_UNSOLICITED_COMPLETE ;
-    
+
     /**
      * The Compensate element.
      */
@@ -158,7 +158,7 @@ public interface BAInteropConstants
      * The Compensate Action.
      */
     public String INTEROP_ACTION_COMPENSATE = INTEROP_ACTION_PARTICIPANT_PREFIX + INTEROP_ELEMENT_COMPENSATE ;
-    
+
     /**
      * The Compensation Fail element.
      */
@@ -171,7 +171,7 @@ public interface BAInteropConstants
      * The Compensation Fail Action.
      */
     public String INTEROP_ACTION_COMPENSATION_FAIL = INTEROP_ACTION_PARTICIPANT_PREFIX + INTEROP_ELEMENT_COMPENSATION_FAIL ;
-    
+
     /**
      * The Participant Cancel Completed Race element.
      */
@@ -184,7 +184,7 @@ public interface BAInteropConstants
      * The Participant Cancel Completed Race Action.
      */
     public String INTEROP_ACTION_PARTICIPANT_CANCEL_COMPLETED_RACE = INTEROP_ACTION_PARTICIPANT_PREFIX + INTEROP_ELEMENT_PARTICIPANT_CANCEL_COMPLETED_RACE ;
-    
+
     /**
      * The Message Loss And Recovery element.
      */
@@ -197,7 +197,7 @@ public interface BAInteropConstants
      * The Message Loss And Recovery Action.
      */
     public String INTEROP_ACTION_MESSAGE_LOSS_AND_RECOVERY = INTEROP_ACTION_PARTICIPANT_PREFIX + INTEROP_ELEMENT_MESSAGE_LOSS_AND_RECOVERY ;
-    
+
     /**
      * The Mixed Outcome element.
      */
@@ -210,7 +210,7 @@ public interface BAInteropConstants
      * The Mixed Outcome Action.
      */
     public String INTEROP_ACTION_MIXED_OUTCOME = INTEROP_ACTION_PARTICIPANT_PREFIX + INTEROP_ELEMENT_MIXED_OUTCOME ;
-    
+
     /**
      * The response element.
      */

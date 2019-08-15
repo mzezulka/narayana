@@ -38,5 +38,5 @@ public class RollbackDurable2PCParticipant extends ParticipantAdapter implements
         throws WrongStateException, SystemException
     {
         return new Aborted() ;
-    }    
+    }
 }

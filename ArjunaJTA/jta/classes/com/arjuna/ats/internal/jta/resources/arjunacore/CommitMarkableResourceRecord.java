@@ -67,33 +67,33 @@ import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
 
 /**
  * The CommitMarkableResourceRecord does not support nested transactions
- * 
+ *
  * If the database is down forever that a CommitMarkableResourceRecord is linked
  * to, it will have the side effect of never expiring a RecoverAtomicAction.
- * 
+ *
  * The CommitMarkableResourceRecord assumes the following table has been
  * created:
- * 
+ *
  * syb:
- * 
+ *
  * create table xids (xid varbinary(144), transactionManagerID varchar(64),
  * actionuid varbinary(28))
- * 
+ *
  * ora:
- * 
+ *
  * create table xids (xid RAW(144), transactionManagerID varchar(64), actionuid
  * RAW(28))
- * 
+ *
  * psql:
- * 
+ *
  * create table xids (xid bytea, transactionManagerID varchar(64), actionuid
  * bytea)
- * 
+ *
  * h2:
- * 
+ *
  * create table xids (xid varbinary(144), transactionManagerID varchar(64),
  * actionuid varbinary(28))
- * 
+ *
  * sybase notes: sp_configure "lock scheme",0,datarows
  */
 public class CommitMarkableResourceRecord extends AbstractRecord {
@@ -161,7 +161,7 @@ public class CommitMarkableResourceRecord extends AbstractRecord {
 		super(new Uid(), null, ObjectType.ANDPERSISTENT);
 
 		if (tsLogger.logger.isTraceEnabled()) {
-			tsLogger.logger.trace("CommitMarkableResourceRecord.CommitMarkableResourceRecord ( " + tx + ", " + xaResource + ", " 
+			tsLogger.logger.trace("CommitMarkableResourceRecord.CommitMarkableResourceRecord ( " + tx + ", " + xaResource + ", "
 			+ xid + ", " + basicAction + " ), record id=" + order());
 		}
 
@@ -189,7 +189,7 @@ public class CommitMarkableResourceRecord extends AbstractRecord {
 		}
 
 		if (isPerformImmediateCleanupOfBranches) {
-			// a session synch may enlist a CMR in a transaction so this sycnh must be correctly ordered 
+			// a session synch may enlist a CMR in a transaction so this sycnh must be correctly ordered
 			new TransactionSynchronizationRegistryImple()
 					.registerInterposedSynchronization(new Synchronization() {
 
@@ -266,7 +266,7 @@ public class CommitMarkableResourceRecord extends AbstractRecord {
 				}
 			});
 		} else if (isNotifyRecoveryModuleOfCompletedBranches) {
-			// a session synch may enlist a CMR in a transaction so this sycnh must be correctly ordered 
+			// a session synch may enlist a CMR in a transaction so this sycnh must be correctly ordered
 			new TransactionSynchronizationRegistryImple()
 					.registerInterposedSynchronization(new Synchronization() {
 

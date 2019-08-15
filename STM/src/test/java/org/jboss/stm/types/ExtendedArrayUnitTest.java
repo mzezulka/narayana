@@ -34,7 +34,7 @@ import junit.framework.TestCase;
 
 /**
  * Unit tests for the AtomicInteger class.
- * 
+ *
  * @author Mark Little
  */
 
@@ -45,11 +45,11 @@ public class ExtendedArrayUnitTest extends TestCase
     {
         @WriteLock
         public void set (int val);
-     
+
         @ReadLock
         public int get ();
     }
-    
+
     @Transactional
     public class SampleLockable implements Sample
     {
@@ -57,12 +57,12 @@ public class ExtendedArrayUnitTest extends TestCase
         {
             this(0);
         }
-        
+
         public SampleLockable (int val)
         {
             _val = val;
         }
-        
+
         @ReadLock
         public int get ()
         {
@@ -78,41 +78,41 @@ public class ExtendedArrayUnitTest extends TestCase
         @State
         private int _val;
     }
-    
+
     @SuppressWarnings("unchecked")
     public void test ()
     {
         AtomicArray<Sample> a1 = ArrayFactory.instance().createArray();
-        
+
         a1.set(0, new SampleLockable());
         a1.set(1, new SampleLockable());
-        
+
         assertEquals(a1.get(0).get(), 0);
         assertEquals(a1.get(1).get(), 0);
     }
-    
+
     @SuppressWarnings("unchecked")
     public void testTransaction ()
     {
         AtomicAction act = new AtomicAction();
         AtomicArray<Sample> a1 = ArrayFactory.instance().createArray();
-        
+
         a1.set(0, new SampleLockable());
         a1.set(1, new SampleLockable());
-        
+
         assertEquals(a1.get(0).get(), 0);
         assertEquals(a1.get(1).get(), 0);
-        
+
         act.begin();
-        
+
         a1.set(0, new SampleLockable(1));
         a1.set(1, new SampleLockable(1));
-        
+
         assertEquals(a1.get(0).get(), 1);
         assertEquals(a1.get(1).get(), 1);
-        
+
         act.abort();
-        
+
         assertEquals(a1.get(0).get(), 0);
         assertEquals(a1.get(1).get(), 0);
     }

@@ -35,7 +35,7 @@ public class AtmiBrokerEnvXML {
 
         prop.put("blacktie.BTDomainAdmin.server", "jboss");
         prop.put("blacktie.BTDomainAdmin.conversational", false);
-        
+
         // just for socket server test
         //prop.setProperty("blacktie.java.socketserver.port", "12340");
 
