@@ -86,7 +86,7 @@ public class AddressingProxySAXHandler extends BaseHandler
      */
     public AddressingProxySAXHandler(final ContentHandler nextHandler, final String conversationIdentifier)
     {
-	super(nextHandler) ;
+    super(nextHandler) ;
         this.conversationIdentifier = conversationIdentifier ;
     }
 
@@ -100,7 +100,7 @@ public class AddressingProxySAXHandler extends BaseHandler
      */
     public void startElement(final String uri, final String localName, final String qName,
         final Attributes attributes)
-    	throws SAXException
+        throws SAXException
     {
         if (WSA_NAMESPACE_URI.equals(uri))
         {

@@ -46,7 +46,7 @@ public class ContextImple implements Context
     {
         if (obj instanceof ContextImple)
         {
-    	    ContextImple ci = (ContextImple) obj;
+            ContextImple ci = (ContextImple) obj;
 
             return ci.getCoordinationContext().getIdentifier().getValue().equals(_coordContext.getIdentifier().getValue());
         }
@@ -56,17 +56,17 @@ public class ContextImple implements Context
 
     public CoordinationContextType getCoordinationContext ()
     {
-    	return _coordContext;
+        return _coordContext;
     }
 
     public void setCoordinationContext (CoordinationContextType cc)
     {
-    	_coordContext = cc;
+        _coordContext = cc;
     }
 
     public String toString ()
     {
-    	return "BusinessActivityIdentifier: "+_coordContext.getIdentifier().getValue();
+        return "BusinessActivityIdentifier: "+_coordContext.getIdentifier().getValue();
     }
 
     private CoordinationContextType _coordContext;

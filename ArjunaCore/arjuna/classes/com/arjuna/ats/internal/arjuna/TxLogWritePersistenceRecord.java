@@ -51,12 +51,12 @@ public class TxLogWritePersistenceRecord extends PersistenceRecord
 
     public TxLogWritePersistenceRecord (OutputObjectState state, ParticipantStore participantStore, StateManager sm)
     {
-	super(state, participantStore, sm);
+    super(state, participantStore, sm);
     }
 
     public int typeIs ()
     {
-	return RecordType.TXLOG_PERSISTENCE;
+    return RecordType.TXLOG_PERSISTENCE;
     }
 
     /**
@@ -65,60 +65,60 @@ public class TxLogWritePersistenceRecord extends PersistenceRecord
 
     public int topLevelCommit ()
     {
-	boolean result = false;
-	LogWriteStateManager sm = null;
-	boolean writeToLog = true;
+    boolean result = false;
+    LogWriteStateManager sm = null;
+    boolean writeToLog = true;
 
-	try
-	{
-	    sm = (LogWriteStateManager) super.objectAddr;
+    try
+    {
+        sm = (LogWriteStateManager) super.objectAddr;
 
-	    writeToLog = sm.writeOptimisation();
-	}
-	catch (ClassCastException ex)
-	{
-	    writeToLog = false;
-	}
+        writeToLog = sm.writeOptimisation();
+    }
+    catch (ClassCastException ex)
+    {
+        writeToLog = false;
+    }
 
-	if (targetParticipantStore != null)
-	{
-	    try
-	    {
-		if (shadowMade)
-		{
-		    result = targetParticipantStore.commit_state(order(), super.getTypeOfObject());
+    if (targetParticipantStore != null)
+    {
+        try
+        {
+        if (shadowMade)
+        {
+            result = targetParticipantStore.commit_state(order(), super.getTypeOfObject());
 
-		    if (!result) {
+            if (!result) {
                 tsLogger.i18NLogger.warn_PersistenceRecord_2(order());
             }
-		}
-		else
-		{
-		    if (topLevelState != null)
-		    {
-			if (!writeToLog)
-			    result = targetParticipantStore.write_committed(order(), super.getTypeOfObject(), topLevelState);
-			else
-			    result = true;
-		    }
-		}
-	    }
-	    catch (ObjectStoreException e)
-	    {
-		result = false;
-	    }
-	}
-	else
-	{
-	}
+        }
+        else
+        {
+            if (topLevelState != null)
+            {
+            if (!writeToLog)
+                result = targetParticipantStore.write_committed(order(), super.getTypeOfObject(), topLevelState);
+            else
+                result = true;
+            }
+        }
+        }
+        catch (ObjectStoreException e)
+        {
+        result = false;
+        }
+    }
+    else
+    {
+    }
 
-	if (!result)
-	{
-	}
+    if (!result)
+    {
+    }
 
-	super.forgetAction(true);
+    super.forgetAction(true);
 
-	return ((result) ? TwoPhaseOutcome.FINISH_OK : TwoPhaseOutcome.FINISH_ERROR);
+    return ((result) ? TwoPhaseOutcome.FINISH_OK : TwoPhaseOutcome.FINISH_ERROR);
     }
 
     /**
@@ -136,84 +136,84 @@ public class TxLogWritePersistenceRecord extends PersistenceRecord
 
     public int topLevelPrepare ()
     {
-	int result = TwoPhaseOutcome.PREPARE_NOTOK;
-	StateManager sm = super.objectAddr;
-	LogWriteStateManager lwsm = null;
-	boolean writeToLog = true;
+    int result = TwoPhaseOutcome.PREPARE_NOTOK;
+    StateManager sm = super.objectAddr;
+    LogWriteStateManager lwsm = null;
+    boolean writeToLog = true;
 
-	try
-	{
-	    lwsm = (LogWriteStateManager) sm;
+    try
+    {
+        lwsm = (LogWriteStateManager) sm;
 
-	    writeToLog = lwsm.writeOptimisation();
-	}
-	catch (ClassCastException ex)
-	{
-	    writeToLog = false;
-	}
+        writeToLog = lwsm.writeOptimisation();
+    }
+    catch (ClassCastException ex)
+    {
+        writeToLog = false;
+    }
 
-	if ((sm != null) && (targetParticipantStore != null))
-	{
-	    topLevelState = new OutputObjectState(sm.get_uid(), sm.type());
+    if ((sm != null) && (targetParticipantStore != null))
+    {
+        topLevelState = new OutputObjectState(sm.get_uid(), sm.type());
 
-	    if (writeToLog || (!targetParticipantStore.fullCommitNeeded() &&
-			       (sm.save_state(topLevelState, ObjectType.ANDPERSISTENT)) &&
-			       (topLevelState.size() <= PersistenceRecord.MAX_OBJECT_SIZE)))
-	    {
-		if (PersistenceRecord.classicPrepare)
-		{
-		    OutputObjectState dummy = new OutputObjectState(Uid.nullUid(), null);
+        if (writeToLog || (!targetParticipantStore.fullCommitNeeded() &&
+                   (sm.save_state(topLevelState, ObjectType.ANDPERSISTENT)) &&
+                   (topLevelState.size() <= PersistenceRecord.MAX_OBJECT_SIZE)))
+        {
+        if (PersistenceRecord.classicPrepare)
+        {
+            OutputObjectState dummy = new OutputObjectState(Uid.nullUid(), null);
 
-		    /*
-		     * Write an empty shadow state to the store to indicate
-		     * one exists, and to prevent bogus activation in the case
-		     * where crash recovery hasn't run yet.
-		     */
+            /*
+             * Write an empty shadow state to the store to indicate
+             * one exists, and to prevent bogus activation in the case
+             * where crash recovery hasn't run yet.
+             */
 
-		    try
-		    {
-			targetParticipantStore.write_uncommitted(sm.get_uid(), sm.type(), dummy);
-			result = TwoPhaseOutcome.PREPARE_OK;
-		    }
-		    catch (ObjectStoreException e) {
+            try
+            {
+            targetParticipantStore.write_uncommitted(sm.get_uid(), sm.type(), dummy);
+            result = TwoPhaseOutcome.PREPARE_OK;
+            }
+            catch (ObjectStoreException e) {
                 tsLogger.i18NLogger.warn_PersistenceRecord_21(e);
             }
 
-		    dummy = null;
-		}
-		else
-	        {
-		    result = TwoPhaseOutcome.PREPARE_OK;
-		}
-	    }
-	    else
-	    {
-		if (sm.deactivate(targetParticipantStore.getStoreName(), false))
-		{
- 		    shadowMade = true;
+            dummy = null;
+        }
+        else
+            {
+            result = TwoPhaseOutcome.PREPARE_OK;
+        }
+        }
+        else
+        {
+        if (sm.deactivate(targetParticipantStore.getStoreName(), false))
+        {
+             shadowMade = true;
 
-		    result = TwoPhaseOutcome.PREPARE_OK;
-		}
-		else {
+            result = TwoPhaseOutcome.PREPARE_OK;
+        }
+        else {
             tsLogger.i18NLogger.warn_PersistenceRecord_7();
         }
-	    }
-	}
-	else {
+        }
+    }
+    else {
         tsLogger.i18NLogger.warn_PersistenceRecord_8();
     }
 
-	return result;
+    return result;
     }
 
     public String type ()
     {
-	return "/StateManager/AbstractRecord/RecoveryRecord/PersistenceRecord/TxLogPersistenceRecord";
+    return "/StateManager/AbstractRecord/RecoveryRecord/PersistenceRecord/TxLogPersistenceRecord";
     }
 
     public TxLogWritePersistenceRecord ()
     {
-	super();
+    super();
     }
 
 }

@@ -54,7 +54,7 @@ import com.arjuna.common.internal.util.ClassloadingUtility;
 public class ModifierFactory
 {
 
-	public static synchronized void putModifier (String dbName, int major, int minor, String modclass)
+    public static synchronized void putModifier (String dbName, int major, int minor, String modclass)
     {
         ConnectionModifier connectionModifier = ClassloadingUtility.loadAndInstantiateClass(ConnectionModifier.class, modclass, null);
         if(connectionModifier != null) {
@@ -68,47 +68,47 @@ public class ModifierFactory
 
     public static synchronized ConnectionModifier getModifier (String dbName, int major, int minor)
     {
-	String exactMatch = null;
-	String majorMatch = null;
-	String driverMatch = null;
-	Enumeration e = _modifiers.keys();
+    String exactMatch = null;
+    String majorMatch = null;
+    String driverMatch = null;
+    Enumeration e = _modifiers.keys();
 
-	dbName = dbName.toLowerCase();
+    dbName = dbName.toLowerCase();
 
-	while (e.hasMoreElements())
-	{
-	    String s = (String) e.nextElement();
+    while (e.hasMoreElements())
+    {
+        String s = (String) e.nextElement();
 
-	    if (s.equalsIgnoreCase(dbName + "_" + major + "_" + minor))
-		exactMatch = s;
-	    if (s.equalsIgnoreCase(dbName + "_" + major + "_-1"))
-		majorMatch = s;
-	    if (s.equalsIgnoreCase(dbName + "_-1_-1"))
-		driverMatch = s;
-	}
-	ConnectionModifier modifier = defaultIsSameRMOverride ? isSameRMModifier : null;
+        if (s.equalsIgnoreCase(dbName + "_" + major + "_" + minor))
+        exactMatch = s;
+        if (s.equalsIgnoreCase(dbName + "_" + major + "_-1"))
+        majorMatch = s;
+        if (s.equalsIgnoreCase(dbName + "_-1_-1"))
+        driverMatch = s;
+    }
+    ConnectionModifier modifier = defaultIsSameRMOverride ? isSameRMModifier : null;
 
-	if (driverMatch != null)
-		modifier = _modifiers.get(driverMatch);
-	if (majorMatch != null)
-		modifier = _modifiers.get(majorMatch);
-	if (exactMatch != null)
-		modifier = _modifiers.get(exactMatch);
+    if (driverMatch != null)
+        modifier = _modifiers.get(driverMatch);
+    if (majorMatch != null)
+        modifier = _modifiers.get(majorMatch);
+    if (exactMatch != null)
+        modifier = _modifiers.get(exactMatch);
 
-	if (jdbcLogger.logger.isTraceEnabled()) {
-		jdbcLogger.logger.tracef("ConnectionModifier for: %s for %s %d/%d (defaultIsSameRMOverride was %b)", modifier == null? null : modifier.getClass().getName(), dbName, major, minor ,defaultIsSameRMOverride);
-	}
-	return modifier;
+    if (jdbcLogger.logger.isTraceEnabled()) {
+        jdbcLogger.logger.tracef("ConnectionModifier for: %s for %s %d/%d (defaultIsSameRMOverride was %b)", modifier == null? null : modifier.getClass().getName(), dbName, major, minor ,defaultIsSameRMOverride);
+    }
+    return modifier;
     }
 
     private static ConnectionModifier isSameRMModifier = new IsSameRMModifier();
 
-	private static boolean defaultIsSameRMOverride = jdbcPropertyManager.getJDBCEnvironmentBean().getDefaultIsSameRMOverride();
+    private static boolean defaultIsSameRMOverride = jdbcPropertyManager.getJDBCEnvironmentBean().getDefaultIsSameRMOverride();
 
     private static Hashtable<String,ConnectionModifier> _modifiers = new Hashtable<String,ConnectionModifier>();
 
     static
     {
-	new list();
+    new list();
     }
 }

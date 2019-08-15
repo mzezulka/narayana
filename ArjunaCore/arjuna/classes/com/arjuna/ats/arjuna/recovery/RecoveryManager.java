@@ -50,12 +50,12 @@ class ScanThread extends Thread
 
     public ScanThread (RecoveryManagerImple theImple, RecoveryScan callback)
     {
-	super("RecoveryManagerScanThread");
+    super("RecoveryManagerScanThread");
 
-	_theImple = theImple;
-	_callback = callback;
+    _theImple = theImple;
+    _callback = callback;
 
-	setDaemon(true);
+    setDaemon(true);
     }
 
     public void run ()
@@ -108,8 +108,8 @@ public class RecoveryManager
 
     public static synchronized final RecoveryManager manager () throws IllegalArgumentException
     {
-   	if (_recoveryManager == null)
-   		return manager(RecoveryManager.INDIRECT_MANAGEMENT);
+       if (_recoveryManager == null)
+           return manager(RecoveryManager.INDIRECT_MANAGEMENT);
     return _recoveryManager;
     }
 
@@ -128,15 +128,15 @@ public class RecoveryManager
 
     public static synchronized final RecoveryManager manager (int mode) throws IllegalArgumentException
     {
-	if (_recoveryManager == null)
-	    _recoveryManager = new RecoveryManager(mode);
-	else
-	{
-	    if (_recoveryManager.mode() != mode)
-		throw new IllegalArgumentException();
-	}
+    if (_recoveryManager == null)
+        _recoveryManager = new RecoveryManager(mode);
+    else
+    {
+        if (_recoveryManager.mode() != mode)
+        throw new IllegalArgumentException();
+    }
 
-	return _recoveryManager;
+    return _recoveryManager;
     }
 
     /**
@@ -177,9 +177,9 @@ public class RecoveryManager
     {
         checkState();
 
-	ScanThread st = new ScanThread(_theImple, callback);
+    ScanThread st = new ScanThread(_theImple, callback);
 
-	st.start();
+    st.start();
     }
 
     /**
@@ -309,7 +309,7 @@ public class RecoveryManager
     {
         checkState();
 
-	_theImple.addModule(module);
+    _theImple.addModule(module);
     }
 
     /**
@@ -324,7 +324,7 @@ public class RecoveryManager
     {
         checkState();
 
-	_theImple.removeModule(module, waitOnScan);
+    _theImple.removeModule(module, waitOnScan);
     }
 
     /**
@@ -351,7 +351,7 @@ public class RecoveryManager
     {
         checkState();
 
-	return _theImple.getModules();
+    return _theImple.getModules();
     }
 
     /**
@@ -363,7 +363,7 @@ public class RecoveryManager
 
     public final int mode ()
     {
-	return _mode;
+    return _mode;
     }
 
     public static InetAddress getRecoveryManagerHost() throws UnknownHostException
@@ -399,25 +399,25 @@ public class RecoveryManager
 
     public static void main (String[] args)
     {
-	boolean testMode = false;
+    boolean testMode = false;
 
-	for (int i = 0; i < args.length; i++)
-	{
-	    if (args[i].compareTo("-help") == 0)
-	    {
-		System.out.println("Usage: com.arjuna.ats.arjuna.recovery.RecoveryManager [-help] [-test] [-version]");
-		System.exit(0);
-	    }
-	    if (args[i].compareTo("-version") == 0)
-	    {
-		System.out.println("Version " + ConfigurationInfo.getVersion());
-		System.exit(0);
-	    }
-	    if (args[i].compareTo("-test") == 0)
-	    {
-		testMode = true;
-	    }
-	}
+    for (int i = 0; i < args.length; i++)
+    {
+        if (args[i].compareTo("-help") == 0)
+        {
+        System.out.println("Usage: com.arjuna.ats.arjuna.recovery.RecoveryManager [-help] [-test] [-version]");
+        System.exit(0);
+        }
+        if (args[i].compareTo("-version") == 0)
+        {
+        System.out.println("Version " + ConfigurationInfo.getVersion());
+        System.exit(0);
+        }
+        if (args[i].compareTo("-test") == 0)
+        {
+        testMode = true;
+        }
+    }
 
         try
         {
@@ -471,12 +471,12 @@ public class RecoveryManager
 
     private RecoveryManager (int mode)
     {
-	if ((mode == RecoveryManager.INDIRECT_MANAGEMENT) && !delayRecoveryManagerThread)
-	    _theImple = new RecoveryManagerImple(true);
-	else
-	    _theImple = new RecoveryManagerImple(false);
+    if ((mode == RecoveryManager.INDIRECT_MANAGEMENT) && !delayRecoveryManagerThread)
+        _theImple = new RecoveryManagerImple(true);
+    else
+        _theImple = new RecoveryManagerImple(false);
 
-	_mode = mode;
+    _mode = mode;
     }
 
     private final void checkState ()

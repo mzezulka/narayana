@@ -36,112 +36,112 @@ import java.net.UnknownHostException;
 
 public class JDBCProfileStore
 {
-	private final static String BASE_DIRECTORY_PROPERTY = "jdbcprofilestore.dir";
+    private final static String BASE_DIRECTORY_PROPERTY = "jdbcprofilestore.dir";
 
-	public static int numberOfDrivers(String profileName)
-			throws Exception
-	{
-		loadProfile();
+    public static int numberOfDrivers(String profileName)
+            throws Exception
+    {
+        loadProfile();
 
-		return Integer.parseInt((String) _profile.get(profileName + "_NumberOfDrivers"));
-	}
+        return Integer.parseInt((String) _profile.get(profileName + "_NumberOfDrivers"));
+    }
 
-	public static String driver(String profileName, int driverNumber)
-			throws Exception
-	{
-		loadProfile();
+    public static String driver(String profileName, int driverNumber)
+            throws Exception
+    {
+        loadProfile();
 
-		return (String) _profile.get(profileName + "_Driver" + driverNumber);
-	}
+        return (String) _profile.get(profileName + "_Driver" + driverNumber);
+    }
 
-	public static String databaseURL(String profileName)
-			throws Exception
-	{
-		loadProfile();
+    public static String databaseURL(String profileName)
+            throws Exception
+    {
+        loadProfile();
 
-		return (String) _profile.get(profileName + "_DatabaseURL");
-	}
+        return (String) _profile.get(profileName + "_DatabaseURL");
+    }
 
-	public static String databaseUser(String profileName)
-			throws Exception
-	{
-		loadProfile();
+    public static String databaseUser(String profileName)
+            throws Exception
+    {
+        loadProfile();
 
-		return (String) _profile.get(profileName + "_DatabaseUser");
-	}
+        return (String) _profile.get(profileName + "_DatabaseUser");
+    }
 
-	public static String databasePassword(String profileName)
-			throws Exception
-	{
-		loadProfile();
+    public static String databasePassword(String profileName)
+            throws Exception
+    {
+        loadProfile();
 
-		return (String) _profile.get(profileName + "_DatabasePassword");
-	}
+        return (String) _profile.get(profileName + "_DatabasePassword");
+    }
 
-	public static String databaseDynamicClass(String profileName)
-			throws Exception
-	{
-		loadProfile();
+    public static String databaseDynamicClass(String profileName)
+            throws Exception
+    {
+        loadProfile();
 
-		return (String) _profile.get(profileName + "_DatabaseDynamicClass");
-	}
+        return (String) _profile.get(profileName + "_DatabaseDynamicClass");
+    }
 
-	// new methods for jndi
-	public static String binding(String profileName)
-			throws Exception
-	{
-		loadProfile();
+    // new methods for jndi
+    public static String binding(String profileName)
+            throws Exception
+    {
+        loadProfile();
 
-		return (String) _profile.get(profileName + "_Binding");
-	}
+        return (String) _profile.get(profileName + "_Binding");
+    }
 
-	public static String databaseName(String profileName)
-			throws Exception
-	{
-		loadProfile();
+    public static String databaseName(String profileName)
+            throws Exception
+    {
+        loadProfile();
 
-		return (String) _profile.get(profileName + "_DatabaseName");
-	}
+        return (String) _profile.get(profileName + "_DatabaseName");
+    }
 
-	public static String host(String profileName)
-			throws Exception
-	{
-		loadProfile();
+    public static String host(String profileName)
+            throws Exception
+    {
+        loadProfile();
 
-		return (String) _profile.get(profileName + "_Host");
-	}
+        return (String) _profile.get(profileName + "_Host");
+    }
 
-	public static String port(String profileName)
-			throws Exception
-	{
-		loadProfile();
+    public static String port(String profileName)
+            throws Exception
+    {
+        loadProfile();
 
-		return (String) _profile.get(profileName + "_Port");
-	}
+        return (String) _profile.get(profileName + "_Port");
+    }
 
-	// new method to get a single driver
-	public static String driver(String profileName)
-			throws Exception
-	{
-		loadProfile();
+    // new method to get a single driver
+    public static String driver(String profileName)
+            throws Exception
+    {
+        loadProfile();
 
-		return (String) _profile.get(profileName + "_Driver");
-	}
+        return (String) _profile.get(profileName + "_Driver");
+    }
 
 // end of new methods
 
-	/**
-	 * New method call to get query timeout value
-	 */
-	public static int timeout(String profileName)
-			throws Exception
-	{
-		loadProfile();
-		//get loaded value or default
-		String loadedvalue = _profile.getProperty(profileName + "_Timeout", "20");
+    /**
+     * New method call to get query timeout value
+     */
+    public static int timeout(String profileName)
+            throws Exception
+    {
+        loadProfile();
+        //get loaded value or default
+        String loadedvalue = _profile.getProperty(profileName + "_Timeout", "20");
 
-		return Integer.parseInt(loadedvalue);
-	}
+        return Integer.parseInt(loadedvalue);
+    }
 
     public static String getTableName(String username, String suffix) throws UnknownHostException {
         // read JBTM-390 before messing with this function.
@@ -163,20 +163,20 @@ public class JDBCProfileStore
         return hostName;
     }
 
-	private static void loadProfile()
-			throws Exception
-	{
-		if (_profile == null)
-		{
-			String hostName = java.net.InetAddress.getLocalHost().getHostName();
-			String baseDir = System.getProperty(BASE_DIRECTORY_PROPERTY);
+    private static void loadProfile()
+            throws Exception
+    {
+        if (_profile == null)
+        {
+            String hostName = java.net.InetAddress.getLocalHost().getHostName();
+            String baseDir = System.getProperty(BASE_DIRECTORY_PROPERTY);
 
-			if (baseDir == null)
-			{
-				throw new Exception(BASE_DIRECTORY_PROPERTY + " property not set - cannot find JDBC test profiles!");
-			}
+            if (baseDir == null)
+            {
+                throw new Exception(BASE_DIRECTORY_PROPERTY + " property not set - cannot find JDBC test profiles!");
+            }
 
-			_profile = new Properties();
+            _profile = new Properties();
 
             File file = new File(baseDir + File.separator + stripHostName(hostName) + File.separator + "JDBCProfiles");
 
@@ -185,25 +185,25 @@ public class JDBCProfileStore
                 file = new File(baseDir + File.separator + "default" + File.separator + "JDBCProfiles");
             }
 
-			FileInputStream profileFileInputStream = new FileInputStream(file);
-			_profile.load(profileFileInputStream);
-			profileFileInputStream.close();
-		}
-	}
+            FileInputStream profileFileInputStream = new FileInputStream(file);
+            _profile.load(profileFileInputStream);
+            profileFileInputStream.close();
+        }
+    }
 
 
 
-	private static String stripHostName(String hostName)
-	{
-		hostName = hostName.toLowerCase();
+    private static String stripHostName(String hostName)
+    {
+        hostName = hostName.toLowerCase();
 
-		if (hostName.indexOf('.') != -1)
-		{
-			hostName = hostName.substring(0, hostName.indexOf('.'));
-		}
+        if (hostName.indexOf('.') != -1)
+        {
+            hostName = hostName.substring(0, hostName.indexOf('.'));
+        }
 
-		return hostName;
-	}
+        return hostName;
+    }
 
-	private static Properties _profile = null;
+    private static Properties _profile = null;
 }

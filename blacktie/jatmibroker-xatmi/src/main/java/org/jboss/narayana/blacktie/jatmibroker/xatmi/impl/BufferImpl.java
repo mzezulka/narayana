@@ -175,14 +175,14 @@ public abstract class BufferImpl implements Serializable, Buffer {
      * @see {@link X_COMMON_Impl}
      */
     BufferImpl(String type, String subtype, boolean requiresSerialization, List<Class> supportedTypes)
-    		throws ConfigurationException, ConnectionException {
+            throws ConfigurationException, ConnectionException {
         this.type = type;
         this.subtype = subtype;
         this.requiresSerialization = requiresSerialization;
         this.supportedTypes = supportedTypes;
 
         if (requiresSerialization) {
-        	Properties properties = ConnectionFactory.getConnectionFactory().getProperties();
+            Properties properties = ConnectionFactory.getConnectionFactory().getProperties();
             Map<String, BufferStructure> buffers = (Map<String, BufferStructure>) properties.get("blacktie.domain.buffers");
             BufferStructure buffer = buffers.get(subtype);
             if (buffer == null) {

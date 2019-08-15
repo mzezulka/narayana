@@ -46,37 +46,37 @@ import com.hp.mwtests.ts.jta.common.DummyXA;
  */
 @Deprecated // in order to provide a better separation between public and internal classes.
 class ExtendedFailureXAResource extends FailureXAResource {
-	private boolean forgotten;
+    private boolean forgotten;
 
-	@Override
-	public void commit(Xid id, boolean onePhase) throws XAException {
-		if (!forgotten)
-			super.commit(id, onePhase);
-	}
+    @Override
+    public void commit(Xid id, boolean onePhase) throws XAException {
+        if (!forgotten)
+            super.commit(id, onePhase);
+    }
 
-	@Override
-	public void forget(Xid xid) throws XAException {
-		super.forget(xid);
-		forgotten = true;
-	}
+    @Override
+    public void forget(Xid xid) throws XAException {
+        super.forget(xid);
+        forgotten = true;
+    }
 }
 
 public class ObjStoreBrowserTest {
     private ObjStoreBrowser osb;
 
-	private ObjStoreBrowser createObjStoreBrowser() {
-		ObjStoreBrowser osb = new ObjStoreBrowser();
+    private ObjStoreBrowser createObjStoreBrowser() {
+        ObjStoreBrowser osb = new ObjStoreBrowser();
 
-		osb.setType("com.arjuna.ats.arjuna.AtomicAction", "com.arjuna.ats.internal.jta.tools.osb.mbean.jta.JTAActionBean");
+        osb.setType("com.arjuna.ats.arjuna.AtomicAction", "com.arjuna.ats.internal.jta.tools.osb.mbean.jta.JTAActionBean");
 
-		return osb;
-	}
+        return osb;
+    }
 
-	@BeforeClass
-	public static void setUp() {
-	}
+    @BeforeClass
+    public static void setUp() {
+    }
 
-	@Before
+    @Before
     public void beforeTest() {
         FailureXAResource.resetForgetCounts();
         osb = createObjStoreBrowser();
@@ -89,15 +89,15 @@ public class ObjStoreBrowserTest {
         osb.stop();
     }
 
-	@Test
-	public void testXAResourceRecordBean() throws Exception {
-		com.arjuna.common.tests.simple.EnvironmentBeanTest.testBeanByReflection(new XAResourceRecordBean(new UidWrapper(Uid.nullUid())));
-	}
+    @Test
+    public void testXAResourceRecordBean() throws Exception {
+        com.arjuna.common.tests.simple.EnvironmentBeanTest.testBeanByReflection(new XAResourceRecordBean(new UidWrapper(Uid.nullUid())));
+    }
 
-	@Test
-	public void testCommitMarkableResourceRecordBean() throws Exception {
-		com.arjuna.common.tests.simple.EnvironmentBeanTest.testBeanByReflection(new CommitMarkableResourceRecordBean(new UidWrapper(Uid.nullUid())));
-	}
+    @Test
+    public void testCommitMarkableResourceRecordBean() throws Exception {
+        com.arjuna.common.tests.simple.EnvironmentBeanTest.testBeanByReflection(new CommitMarkableResourceRecordBean(new UidWrapper(Uid.nullUid())));
+    }
 
     /**
      * Test that resources that generate heuristics are instrumented correctly

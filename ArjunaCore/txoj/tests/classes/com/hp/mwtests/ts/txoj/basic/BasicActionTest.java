@@ -46,70 +46,70 @@ public class BasicActionTest
     @Test
     public void run() throws TestException
     {
-	AtomicObject foo = null;
-	Uid u = null;
+    AtomicObject foo = null;
+    Uid u = null;
 
-	if (u == null)
-	    foo = new AtomicObject();
-	else
-	    foo = new AtomicObject(u);
+    if (u == null)
+        foo = new AtomicObject();
+    else
+        foo = new AtomicObject(u);
 
-	AtomicAction A = new AtomicAction();
+    AtomicAction A = new AtomicAction();
 
         int value  = foo.get();
-	try
-	{
-	    A.begin();
+    try
+    {
+        A.begin();
 
-		foo.set(foo.get()+2);
+        foo.set(foo.get()+2);
 
-	    A.commit();
+        A.commit();
 
         assertEquals(value+2, foo.get());
 
-	}
-	catch (Exception e)
-	{
-	    A.abort();
+    }
+    catch (Exception e)
+    {
+        A.abort();
         fail("AtomicObject exception raised.");
-	}
+    }
 
-	System.out.println("\nWill now try some erroneous conditions.\n");
+    System.out.println("\nWill now try some erroneous conditions.\n");
 
-	    AtomicAction B = new AtomicAction();
+        AtomicAction B = new AtomicAction();
 
-	    u = new Uid();
-	    foo = new AtomicObject(u);
+        u = new Uid();
+        foo = new AtomicObject(u);
 
-	    B.begin();
+        B.begin();
 
-	    try
-	    {
-		System.out.println("attempting to get value from non-existent object: "+foo.get());
-	    }
-	    catch (Exception e)
-	    {
-	    }
+        try
+        {
+        System.out.println("attempting to get value from non-existent object: "+foo.get());
+        }
+        catch (Exception e)
+        {
+        }
 
-	    System.out.println("trying to set value to 5");
+        System.out.println("trying to set value to 5");
 
-	    try
-	    {
-		foo.set(5);
-	    }
-	    catch (Exception e)
-	    {
-	    }
+        try
+        {
+        foo.set(5);
+        }
+        catch (Exception e)
+        {
+        }
 
-	    try
-	    {
-		System.out.println("attempting to get value again: "+foo.get());
-	    }
-	    catch (Exception e)
-	    {
-	    }
+        try
+        {
+        System.out.println("attempting to get value again: "+foo.get());
+        }
+        catch (Exception e)
+        {
+        }
 
-	    B.commit();
-	}
+        B.commit();
+    }
 
 }

@@ -102,77 +102,77 @@ public class ActivityReaper
             }
         }
 
-	    /*
-	     * Only force rollback if the activity is still running.
-	     */
+        /*
+         * Only force rollback if the activity is still running.
+         */
 
-	    Status status = com.arjuna.mw.wsas.status.Unknown.instance();
+        Status status = com.arjuna.mw.wsas.status.Unknown.instance();
 
-	    try
-	    {
-		status = element._activity.status();
-	    }
-	    catch (Exception ex)
-	    {
-	    }
+        try
+        {
+        status = element._activity.status();
+        }
+        catch (Exception ex)
+        {
+        }
 
-	    if (status instanceof Active)
-	    {
-		/*
-		 * If this is a local activity, then we can roll it
-		 * back completely. Otherwise, just mark it as rollback only.
-		 */
+        if (status instanceof Active)
+        {
+        /*
+         * If this is a local activity, then we can roll it
+         * back completely. Otherwise, just mark it as rollback only.
+         */
 
-		boolean problem = false;
+        boolean problem = false;
 
-		    try
-		    {
-			/*
-			 * TODO
-			 *
-			 * Everything works on thread-to-activity association
-			 * so we can't just tell an activity to end: we have
-			 * to resume it and then tell it to end. The reason
-			 * is that all HLS-es assume that the invoking thread
-			 * has the current context on it.
-			 */
+            try
+            {
+            /*
+             * TODO
+             *
+             * Everything works on thread-to-activity association
+             * so we can't just tell an activity to end: we have
+             * to resume it and then tell it to end. The reason
+             * is that all HLS-es assume that the invoking thread
+             * has the current context on it.
+             */
 
-			//			e._activity.end(Failure.instance());
+            //            e._activity.end(Failure.instance());
 
-			UserActivityFactory.userActivity().resume(new ActivityHierarchyImple(element._activity));
-			UserActivityFactory.userActivity().end(Failure.instance());
-			UserActivityFactory.userActivity().suspend();
-		    }
-		    catch (Exception ex)
-		    {
-			problem = true;
-		    }
+            UserActivityFactory.userActivity().resume(new ActivityHierarchyImple(element._activity));
+            UserActivityFactory.userActivity().end(Failure.instance());
+            UserActivityFactory.userActivity().suspend();
+            }
+            catch (Exception ex)
+            {
+            problem = true;
+            }
 
-		if (problem)
-		{
-		    boolean error = false;
+        if (problem)
+        {
+            boolean error = false;
 
-		    try
-		    {
-			element._activity.setCompletionStatus(FailureOnly.instance());
-		    }
-		    catch (Exception ex3)
-		    {
-			error = true;
-		    }
+            try
+            {
+            element._activity.setCompletionStatus(FailureOnly.instance());
+            }
+            catch (Exception ex3)
+            {
+            error = true;
+            }
 
-		    if (error)
-		    {
+            if (error)
+            {
                 wsasLogger.i18NLogger.warn_activity_ActivityReaper_1();
-		    }
-		}
-	    }
+            }
+        }
+        }
 
         synchronized (_list) {
             _list.remove(element);
         }
 
-	return true;
+    return true;
     }
 
     /**
@@ -192,15 +192,15 @@ public class ActivityReaper
 
     public final boolean insert (ActivityImple activity, int timeout)
     {
-	/*
-	 * Ignore if the timeout is zero, since this means the activity
-	 * should never timeout.
-	 */
+    /*
+     * Ignore if the timeout is zero, since this means the activity
+     * should never timeout.
+     */
 
-	if (timeout == 0)
-	    return true;
+    if (timeout == 0)
+        return true;
 
-	ReaperElement e = new ReaperElement(activity, timeout);
+    ReaperElement e = new ReaperElement(activity, timeout);
 
         synchronized (_list) {
             _list.add(e);
@@ -251,24 +251,24 @@ public class ActivityReaper
     {
         // TODO -- problem here because nothing calls shutdown
 
-	if (_theReaper == null)
-	{
-	    ActivityReaper._theReaper = new ActivityReaper();
+    if (_theReaper == null)
+    {
+        ActivityReaper._theReaper = new ActivityReaper();
 
-	    _reaperThread = new ReaperThread(ActivityReaper._theReaper);
-	    //	    _reaperThread.setPriority(Thread.MIN_PRIORITY);
+        _reaperThread = new ReaperThread(ActivityReaper._theReaper);
+        //        _reaperThread.setPriority(Thread.MIN_PRIORITY);
 
-	    _reaperThread.setDaemon(true);
+        _reaperThread.setDaemon(true);
 
-	    _reaperThread.start();
-	}
+        _reaperThread.start();
+    }
 
-	return _theReaper;
+    return _theReaper;
     }
 
     public static synchronized ActivityReaper activityReaper ()
     {
-	return activityReaper(false);
+    return activityReaper(false);
     }
 
     /*
@@ -277,10 +277,10 @@ public class ActivityReaper
 
     public static synchronized ActivityReaper activityReaper (boolean createReaper)
     {
-	if (createReaper)
-	    return create();
-	else
-	    return _theReaper;
+    if (createReaper)
+        return create();
+    else
+        return _theReaper;
     }
 
     /**
@@ -300,7 +300,7 @@ public class ActivityReaper
 
     static final void reset ()
     {
-	_theReaper = null;
+    _theReaper = null;
     }
 
     private SortedSet<ReaperElement> _list;

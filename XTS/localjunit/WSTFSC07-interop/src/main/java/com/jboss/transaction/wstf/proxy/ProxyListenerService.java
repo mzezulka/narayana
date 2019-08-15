@@ -180,8 +180,8 @@ System.out.println("KEV: handled SOAP action " + trimAction(soapAction)) ;
 
                 // Set content length
                 destConnection.setRequestProperty("Content-Length", Integer.toString(newMessageBuffer.length())) ;
-        		final int port = destURL.getPort() ;
-        		final String host = (port > 0 ? destURL.getHost() + ":" + port : destURL.getHost()) ;
+                final int port = destURL.getPort() ;
+                final String host = (port > 0 ? destURL.getHost() + ":" + port : destURL.getHost()) ;
                 destConnection.setRequestProperty("Host", host) ;
                 destConnection.setRequestMethod("POST") ;
                 // Connect
@@ -343,7 +343,7 @@ System.out.println("KEV: handled SOAP action " + trimAction(soapAction)) ;
      * @throws IOException for errors.
      */
     private byte[] getContents(final InputStream is)
-    	throws IOException
+        throws IOException
     {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream() ;
         final byte[] buffer = new byte[1024] ;

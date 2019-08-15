@@ -48,8 +48,8 @@ import com.hp.mwtests.ts.jts.resources.TestUtility;
 
 public class TimeoutClient
 {
-	static int timeout = 8;
-	static int mfactor = arjPropertyManager.getCoreEnvironmentBean().getTimeoutFactor();
+    static int timeout = 8;
+    static int mfactor = arjPropertyManager.getCoreEnvironmentBean().getTimeoutFactor();
 
     public static void main(String[] args) throws Exception
     {
@@ -108,15 +108,15 @@ public class TimeoutClient
 
             try
             {
-            	long timeNow = System.currentTimeMillis();
-            	long setTime = (timeNow - startTime);
-            	long timeoutTime = (timeout * 1000L * mfactor);
-            	long sleepTime =  timeoutTime - setTime;
-            	if (sleepTime > 0) {
-            		System.out.println("Now sleeping for " + sleepTime*mfactor + " milliseconds.");
+                long timeNow = System.currentTimeMillis();
+                long setTime = (timeNow - startTime);
+                long timeoutTime = (timeout * 1000L * mfactor);
+                long sleepTime =  timeoutTime - setTime;
+                if (sleepTime > 0) {
+                    System.out.println("Now sleeping for " + sleepTime*mfactor + " milliseconds.");
 
-            		Thread.sleep(sleepTime*mfactor);
-            	}
+                    Thread.sleep(sleepTime*mfactor);
+                }
             }
             catch (Exception e)
             {
@@ -133,7 +133,7 @@ public class TimeoutClient
             {
                 System.out.println("Caught TransactionRolledBack");
             }
-            catch (INVALID_TRANSACTION  e1)	/* For JacORB */
+            catch (INVALID_TRANSACTION  e1)    /* For JacORB */
             {
                 System.out.println("Caught InvalidTransaction");
             }

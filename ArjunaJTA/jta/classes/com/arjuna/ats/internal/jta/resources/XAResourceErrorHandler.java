@@ -69,7 +69,7 @@ public class XAResourceErrorHandler
         }
         else
         {
-// TODO			addDeferredThrowable(e);
+// TODO            addDeferredThrowable(e);
 
             jtaLogger.i18NLogger.warn_resources_arjunacore_rollbackerror(XAHelper.xidToString(xid),
                     xaResource.toString(), XAHelper.printXAErrorCode(e), e);
@@ -190,7 +190,7 @@ public class XAResourceErrorHandler
                 case XAException.XAER_RMFAIL:
                     committed = true;  // will cause log to be rewritten
 
-	                /*
+                    /*
                      * Could do timeout retry here, but that could cause other resources in the list to go down the
                      * heuristic path (some are far too keen to do this). Fail and let recovery retry. Meanwhile
                      * the coordinator will continue to commit the other resources immediately.
@@ -209,23 +209,23 @@ public class XAResourceErrorHandler
         return committed;
     }
 
-	public static boolean notAProblem (XAResource res, XAException ex, boolean commit)
-	{
-		boolean isNotAProblem = false;
-		XAResourceMap theMap = _maps.get(res.getClass().getName());
+    public static boolean notAProblem (XAResource res, XAException ex, boolean commit)
+    {
+        boolean isNotAProblem = false;
+        XAResourceMap theMap = _maps.get(res.getClass().getName());
 
-		if (theMap != null)
-			isNotAProblem = theMap.notAProblem(ex, commit);
+        if (theMap != null)
+            isNotAProblem = theMap.notAProblem(ex, commit);
 
-		return isNotAProblem;
-	}
+        return isNotAProblem;
+    }
 
-	public static void addXAResourceMap (String type, XAResourceMap map)
-	{
-		_maps.put(type, map);
-	}
+    public static void addXAResourceMap (String type, XAResourceMap map)
+    {
+        _maps.put(type, map);
+    }
 
-	private static HashMap<String, XAResourceMap> _maps = new HashMap<String, XAResourceMap> ();
+    private static HashMap<String, XAResourceMap> _maps = new HashMap<String, XAResourceMap> ();
 
     /**
      * Static block puts all XAResourceMap instances defined in JTAEnvironmentBean to the XAResourceErrorHandler's hash map.

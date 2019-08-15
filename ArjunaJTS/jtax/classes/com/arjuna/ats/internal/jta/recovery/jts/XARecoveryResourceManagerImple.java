@@ -42,17 +42,17 @@ public class XARecoveryResourceManagerImple implements XARecoveryResourceManager
 
     public XARecoveryResource getResource (Uid uid)
     {
-	return new XARecoveryResourceImple(uid);
+    return new XARecoveryResourceImple(uid);
     }
 
     public XARecoveryResource getResource (Uid uid, XAResource res)
     {
-	return new XARecoveryResourceImple(uid, res);
+    return new XARecoveryResourceImple(uid, res);
     }
 
     public String type ()
     {
-	return XARecoveryResourceImple.typeName();
+    return XARecoveryResourceImple.typeName();
     }
 
 }

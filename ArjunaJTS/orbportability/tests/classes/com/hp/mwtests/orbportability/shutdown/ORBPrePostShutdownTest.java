@@ -46,7 +46,7 @@ public class ORBPrePostShutdownTest implements PrePostTestCallback
     public static final int NONE = 0, PRESHUTDOWN = 1, POSTSHUTDOWN = 2, INVALID = 3;
     private static final String[] STATE_STRING = {"NONE", "PRESHUTDOWN", "POSTSHUTDOWN", "INVALID" };
 
-    public int	_currentState;
+    public int    _currentState;
 
     /**
      * Generates a String version of the 'enumerated value'.
@@ -56,10 +56,10 @@ public class ORBPrePostShutdownTest implements PrePostTestCallback
      */
     public static String PrettyPrintState(int value)
     {
-    	if ( (value >= NONE) && (value <= INVALID) )
-    	    return(STATE_STRING[value]);
+        if ( (value >= NONE) && (value <= INVALID) )
+            return(STATE_STRING[value]);
 
-    	return("##ERROR##");
+        return("##ERROR##");
     }
 
     /**
@@ -69,22 +69,22 @@ public class ORBPrePostShutdownTest implements PrePostTestCallback
      */
     public void preShutdownCalled(String name)
     {
-    	System.out.println( "Previous State : "+ PrettyPrintState( _currentState ) );
+        System.out.println( "Previous State : "+ PrettyPrintState( _currentState ) );
 
-    	switch ( _currentState )
+        switch ( _currentState )
         {
-    	    case NONE :
-    	    case POSTSHUTDOWN :
-    	    	_currentState = PRESHUTDOWN;
-    	    	break;
+            case NONE :
+            case POSTSHUTDOWN :
+                _currentState = PRESHUTDOWN;
+                break;
 
-    	    case PRESHUTDOWN :
-    	    default :
-    	    	_currentState = INVALID;
-    	    	break;
-    	}
+            case PRESHUTDOWN :
+            default :
+                _currentState = INVALID;
+                break;
+        }
 
-    	System.out.println( " Current State : "+ PrettyPrintState( _currentState ) );
+        System.out.println( " Current State : "+ PrettyPrintState( _currentState ) );
     }
 
     /**
@@ -94,22 +94,22 @@ public class ORBPrePostShutdownTest implements PrePostTestCallback
      */
     public void postShutdownCalled(String name)
     {
-    	System.out.println( "Previous State : "+ PrettyPrintState( _currentState ) );
+        System.out.println( "Previous State : "+ PrettyPrintState( _currentState ) );
 
-    	switch ( _currentState )
+        switch ( _currentState )
         {
-    	    case PRESHUTDOWN :
-    	    	_currentState = POSTSHUTDOWN;
-    	    	break;
+            case PRESHUTDOWN :
+                _currentState = POSTSHUTDOWN;
+                break;
 
-    	    case NONE :
-    	    case POSTSHUTDOWN :
-    	    default :
-    	    	_currentState = INVALID;
-    	    	break;
-    	}
+            case NONE :
+            case POSTSHUTDOWN :
+            default :
+                _currentState = INVALID;
+                break;
+        }
 
-    	System.out.println( " Current State : "+ PrettyPrintState( _currentState ) );
+        System.out.println( " Current State : "+ PrettyPrintState( _currentState ) );
     }
 
     @Test
@@ -142,22 +142,22 @@ public class ORBPrePostShutdownTest implements PrePostTestCallback
      */
     public class TestPreShutdown extends com.arjuna.orbportability.orb.PreShutdown
     {
-    	private PrePostTestCallback 	_callback;
+        private PrePostTestCallback     _callback;
 
-    	public TestPreShutdown(String name, PrePostTestCallback callback)
-    	{
-    	    super(name);
+        public TestPreShutdown(String name, PrePostTestCallback callback)
+        {
+            super(name);
 
-    	    _callback = callback;
-    	}
+            _callback = callback;
+        }
 
-    	/**
-    	 * Should be called before the ORB is shutdown
-    	 */
-    	public void work ()
-    	{
- 	    _callback.preShutdownCalled(name());
-	}
+        /**
+         * Should be called before the ORB is shutdown
+         */
+        public void work ()
+        {
+         _callback.preShutdownCalled(name());
+    }
     }
 
     /**
@@ -165,21 +165,21 @@ public class ORBPrePostShutdownTest implements PrePostTestCallback
      */
     public class TestPostShutdown extends com.arjuna.orbportability.orb.PostShutdown
     {
-    	private PrePostTestCallback 	_callback;
+        private PrePostTestCallback     _callback;
 
-    	public TestPostShutdown(String name, PrePostTestCallback callback)
-    	{
-    	    super(name);
+        public TestPostShutdown(String name, PrePostTestCallback callback)
+        {
+            super(name);
 
-    	    _callback = callback;
-    	}
+            _callback = callback;
+        }
 
-    	/**
-    	 * Should be called before the ORB is shutdown
-    	 */
-    	public void work ()
-    	{
- 	    _callback.postShutdownCalled(name());
-	}
+        /**
+         * Should be called before the ORB is shutdown
+         */
+        public void work ()
+        {
+         _callback.postShutdownCalled(name());
+    }
     }
 }

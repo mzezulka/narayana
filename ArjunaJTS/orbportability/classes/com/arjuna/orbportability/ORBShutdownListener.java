@@ -1,5 +1,5 @@
 package com.arjuna.orbportability;
 
 public interface ORBShutdownListener {
-	public void orbShutdown();
+    public void orbShutdown();
 }

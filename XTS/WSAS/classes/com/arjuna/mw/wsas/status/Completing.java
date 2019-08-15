@@ -44,12 +44,12 @@ public class Completing implements Status
 
     public static Completing instance ()
     {
-	return _instance;
+    return _instance;
     }
 
     public String toString ()
     {
-	return "Status.Completing";
+    return "Status.Completing";
     }
 
     private Completing ()

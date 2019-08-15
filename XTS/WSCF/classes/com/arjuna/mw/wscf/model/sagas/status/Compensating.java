@@ -46,12 +46,12 @@ public class Compensating implements Status
 
     public static Compensating instance ()
     {
-	return _instance;
+    return _instance;
     }
 
     public String toString ()
     {
-	return "org.w3c.wscf.sagas.status.Compensating";
+    return "org.w3c.wscf.sagas.status.Compensating";
     }
 
     private Compensating ()

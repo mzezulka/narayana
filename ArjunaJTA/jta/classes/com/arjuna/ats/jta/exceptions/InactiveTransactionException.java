@@ -49,12 +49,12 @@ public class InactiveTransactionException extends IllegalStateException
 
     public InactiveTransactionException ()
     {
-	super();
+    super();
     }
 
     public InactiveTransactionException (String s)
     {
-	super(s);
+    super(s);
     }
 }
 

@@ -174,8 +174,8 @@ public class JavaIdlRCManager implements RcvCoManager
         String env3 = System.getProperty("com.arjuna.ats.internal.jts.orbspecific.ibmorb.recoverycoordinators.noDaemon");
 
         _runWithoutDaemon = (env != null && env.equals("YES"))
-		    || (env2 != null && env2.equals("YES"))
-		    || (env3 != null && env3.equals("YES"));
+            || (env2 != null && env2.equals("YES"))
+            || (env3 != null && env3.equals("YES"));
     }
 
 }

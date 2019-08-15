@@ -62,7 +62,7 @@ import org.w3c.dom.NodeList;
  */
 public class IDLCompiler extends Task
 {
-    private final static String	NAME_ELEMENT = "name";
+    private final static String    NAME_ELEMENT = "name";
     private final static String VALUE_ELEMENT = "value";
 
     protected String _parameters = null;
@@ -203,26 +203,26 @@ public class IDLCompiler extends Task
                                         String name = paramAttributes.getNamedItem("name").getNodeValue();
                                         boolean required = Boolean.valueOf(paramAttributes.getNamedItem("required").getNodeValue()).booleanValue();
                                         String delimiter = null;
-					String replace = null;
-					boolean isClasspath = false;
-					Node isClasspathNode = paramAttributes.getNamedItem("classpath");
+                    String replace = null;
+                    boolean isClasspath = false;
+                    Node isClasspathNode = paramAttributes.getNamedItem("classpath");
                                         Node delimiterNode = paramAttributes.getNamedItem("delimiter");
-					Node replaceNode = paramAttributes.getNamedItem("replace");
+                    Node replaceNode = paramAttributes.getNamedItem("replace");
 
                                         if ( delimiterNode != null )
                                         {
                                             delimiter = delimiterNode.getNodeValue();
                                         }
 
-					if ( replaceNode != null )
-					{
-					    replace = replaceNode.getNodeValue();
-					}
+                    if ( replaceNode != null )
+                    {
+                        replace = replaceNode.getNodeValue();
+                    }
 
                                         if ( isClasspathNode != null )
-					{
-					    isClasspath = new Boolean(isClasspathNode.getNodeValue()).booleanValue();
-					}
+                    {
+                        isClasspath = new Boolean(isClasspathNode.getNodeValue()).booleanValue();
+                    }
 
                                         idlDetails.addInParameter(name, required, delimiter, isClasspath, replace);
                                     }
@@ -239,7 +239,7 @@ public class IDLCompiler extends Task
 
                                         if (outParamNode.getNodeName().equals("param"))
                                         {
-					    Node forEachNode = outParamNode.getAttributes().getNamedItem("foreach");
+                        Node forEachNode = outParamNode.getAttributes().getNamedItem("foreach");
                                             if (childrenContainsSubParam(outParamNode))
                                             {
                                                 NodeList children = outParamNode.getChildNodes();
@@ -255,14 +255,14 @@ public class IDLCompiler extends Task
                                                     }
                                                 }
 
-						if ( forEachNode != null )
-						{
-						    idlDetails.addOutParameter(multiParam,forEachNode.getNodeValue());
-						}
-						else
-						{
-						    idlDetails.addOutParameter(multiParam);
-						}
+                        if ( forEachNode != null )
+                        {
+                            idlDetails.addOutParameter(multiParam,forEachNode.getNodeValue());
+                        }
+                        else
+                        {
+                            idlDetails.addOutParameter(multiParam);
+                        }
                                             }
                                             else
                                             {
@@ -669,27 +669,27 @@ public class IDLCompiler extends Task
                 }
                 else
                 {
-		    if ( inParamDef.isClasspath() )
-		    {
-			if ( !inParamDef.hasDelimiter() )
-			{
-				throw new BuildException("Param defined as classpath but delimiter defined");
-			}
+            if ( inParamDef.isClasspath() )
+            {
+            if ( !inParamDef.hasDelimiter() )
+            {
+                throw new BuildException("Param defined as classpath but delimiter defined");
+            }
 
-			value = createClasspath( value, inParamDef.getDelimiter() );
-		    }
+            value = createClasspath( value, inParamDef.getDelimiter() );
+            }
 
-		    if ( inParamDef.getReplaceString() != null )
-		    {
-			String replaceString = inParamDef.getReplaceString();
-			String find = replaceString.substring( 0, replaceString.indexOf(',') );
-			String replaceWith = replaceString.substring( replaceString.indexOf(',') + 1 );
+            if ( inParamDef.getReplaceString() != null )
+            {
+            String replaceString = inParamDef.getReplaceString();
+            String find = replaceString.substring( 0, replaceString.indexOf(',') );
+            String replaceWith = replaceString.substring( replaceString.indexOf(',') + 1 );
 
-			while ( value.indexOf(find) != -1 )
-			{
-			    value = value.substring(0, value.indexOf(find)) + replaceWith + value.substring( value.indexOf(find) + find.length() );
-			}
-		    }
+            while ( value.indexOf(find) != -1 )
+            {
+                value = value.substring(0, value.indexOf(find)) + replaceWith + value.substring( value.indexOf(find) + find.length() );
+            }
+            }
 
                     values.add(value);
                 }
@@ -718,13 +718,13 @@ public class IDLCompiler extends Task
 
                         outputParameters.addAll(multiParam);
                     }
-		    catch (BuildException e)
-		    {
-			throw e;
-		    }
+            catch (BuildException e)
+            {
+            throw e;
+            }
                     catch (Exception e)
                     {
-			// If one of the parameters in the multi-param block is not defined
+            // If one of the parameters in the multi-param block is not defined
                         // then ignore this block
                     }
                 }
@@ -734,10 +734,10 @@ public class IDLCompiler extends Task
                     {
                         generateOutputParameters(_outParameters.get(count), usedParameters, outputParameters);
                     }
-		    catch (BuildException e)
-		    {
-			throw e;
-		    }
+            catch (BuildException e)
+            {
+            throw e;
+            }
                     catch (Exception e)
                     {
                         // If one of the parameters in the multi-param block is not defined
@@ -752,23 +752,23 @@ public class IDLCompiler extends Task
             return (returnArray);
         }
 
-		private String createClasspath( String value, String delimiter )
-		{
-			String returnValue = "";
-			StringTokenizer st = new StringTokenizer(value, delimiter);
+        private String createClasspath( String value, String delimiter )
+        {
+            String returnValue = "";
+            StringTokenizer st = new StringTokenizer(value, delimiter);
 
-			while ( st.hasMoreTokens() )
-			{
-				returnValue += (String)st.nextToken();
+            while ( st.hasMoreTokens() )
+            {
+                returnValue += (String)st.nextToken();
 
-				if ( st.hasMoreTokens() )
-				{
-					returnValue += File.pathSeparatorChar;
-				}
-			}
+                if ( st.hasMoreTokens() )
+                {
+                    returnValue += File.pathSeparatorChar;
+                }
+            }
 
-			return returnValue;
-		}
+            return returnValue;
+        }
 
         private void generateOutputParameters(Object forEachKey, HashSet usedParameters, ArrayList outputParameters) throws Exception
         {
@@ -776,18 +776,18 @@ public class IDLCompiler extends Task
 
             if (forEach == null)
             {
-		if ( forEachKey instanceof ArrayList )
-		{
-		    ArrayList al = (ArrayList)forEachKey;
-		    for (int count=0;count<al.size();count++)
-		    {
-		    	outputParameters.add(replaceVariables((String) al.get(count), _parameterValueMap, usedParameters));
-		    }
-		}
-		else
-		{
+        if ( forEachKey instanceof ArrayList )
+        {
+            ArrayList al = (ArrayList)forEachKey;
+            for (int count=0;count<al.size();count++)
+            {
+                outputParameters.add(replaceVariables((String) al.get(count), _parameterValueMap, usedParameters));
+            }
+        }
+        else
+        {
                     outputParameters.add(replaceVariables((String) forEachKey, _parameterValueMap, usedParameters));
-		}
+        }
             }
             else
             {
@@ -806,19 +806,19 @@ public class IDLCompiler extends Task
                         for (int paramCount=0;paramCount<paramList.size();paramCount++)
                         {
                             newParamValueMap.put( forEach, paramList.get(paramCount) );
-			    if ( !( forEachKey instanceof ArrayList ) )
-			    {
-                            	outputParameters.add(replaceVariables((String) forEachKey, newParamValueMap, usedParameters));
-			    }
-			    else
-			    {
-				ArrayList forEachArrayList = (ArrayList)forEachKey;
+                if ( !( forEachKey instanceof ArrayList ) )
+                {
+                                outputParameters.add(replaceVariables((String) forEachKey, newParamValueMap, usedParameters));
+                }
+                else
+                {
+                ArrayList forEachArrayList = (ArrayList)forEachKey;
 
-				for (int count=0;count<forEachArrayList.size();count++)
-				{
-					outputParameters.add(replaceVariables((String) forEachArrayList.get(count), newParamValueMap, usedParameters));
-				}
-			    }
+                for (int count=0;count<forEachArrayList.size();count++)
+                {
+                    outputParameters.add(replaceVariables((String) forEachArrayList.get(count), newParamValueMap, usedParameters));
+                }
+                }
                         }
                     }
                 }
@@ -838,17 +838,17 @@ public class IDLCompiler extends Task
             while (data.indexOf("${") != -1)
             {
                 String variableName = data.substring(data.indexOf("${") + 2);
-		String variableElement = null;
+        String variableElement = null;
 
-		if ( ( variableName.indexOf('-') != -1 ) && ( variableName.indexOf('-') < variableName.indexOf('}') ) )
-		{
-		    variableElement = variableName.substring( variableName.indexOf('-') + 1, variableName.indexOf('}'));
-		    variableName = variableName.substring(0, variableName.indexOf('-'));
-		}
-		else
-		{
+        if ( ( variableName.indexOf('-') != -1 ) && ( variableName.indexOf('-') < variableName.indexOf('}') ) )
+        {
+            variableElement = variableName.substring( variableName.indexOf('-') + 1, variableName.indexOf('}'));
+            variableName = variableName.substring(0, variableName.indexOf('-'));
+        }
+        else
+        {
                     variableName = variableName.substring(0, variableName.indexOf('}'));
-		}
+        }
                 String value = null;
                 Object obj = variableValueMap.get(variableName);
 
@@ -861,24 +861,24 @@ public class IDLCompiler extends Task
                     value = (String)obj;
                 }
 
-		if ( ( value != null ) && ( variableElement != null ) )
-		{
-		    if ( variableElement.equalsIgnoreCase(NAME_ELEMENT) )
-		    {
-			value = value.substring(0, value.indexOf('='));
-		    }
-		    else
-		    {
-			if ( variableElement.equalsIgnoreCase(VALUE_ELEMENT) )
-			{
-			    value = value.substring(value.indexOf('=')+1);
-			}
-			else
-			{
-			    throw new BuildException("Unknown variable element '"+variableElement+"'");
-			}
-		    }
-		}
+        if ( ( value != null ) && ( variableElement != null ) )
+        {
+            if ( variableElement.equalsIgnoreCase(NAME_ELEMENT) )
+            {
+            value = value.substring(0, value.indexOf('='));
+            }
+            else
+            {
+            if ( variableElement.equalsIgnoreCase(VALUE_ELEMENT) )
+            {
+                value = value.substring(value.indexOf('=')+1);
+            }
+            else
+            {
+                throw new BuildException("Unknown variable element '"+variableElement+"'");
+            }
+            }
+        }
 
                 if (value == null)
                 {
@@ -900,19 +900,19 @@ public class IDLCompiler extends Task
 
         private class InParameterDetails
         {
-            public String 	_parameter;
-            public boolean 	_required;
-            public String 	_delimiter;
-	    public boolean 	_isClasspath;
-	    public String	_replaceString;
+            public String     _parameter;
+            public boolean     _required;
+            public String     _delimiter;
+        public boolean     _isClasspath;
+        public String    _replaceString;
 
             public InParameterDetails(String param, boolean required, String delimiter, boolean isClasspath, String replaceString)
             {
                 _parameter = param;
                 _required = required;
                 _delimiter = delimiter;
-		_isClasspath = isClasspath;
-		_replaceString = replaceString;
+        _isClasspath = isClasspath;
+        _replaceString = replaceString;
             }
 
             public String getParameter()
@@ -920,10 +920,10 @@ public class IDLCompiler extends Task
                 return (_parameter);
             }
 
-	    public boolean isClasspath()
-	    {
-		return _isClasspath;
-	    }
+        public boolean isClasspath()
+        {
+        return _isClasspath;
+        }
 
             public boolean isRequired()
             {
@@ -935,10 +935,10 @@ public class IDLCompiler extends Task
                 return (_delimiter);
             }
 
-	    public String getReplaceString()
-	    {
-		return _replaceString;
-	    }
+        public String getReplaceString()
+        {
+        return _replaceString;
+        }
 
             public boolean hasDelimiter()
             {

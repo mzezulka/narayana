@@ -68,86 +68,86 @@ import org.omg.CosTransactions.TransactionFactoryHelper;
 
 public class Client05
 {
-	public static void main(String[] args)
-	{
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+    public static void main(String[] args)
+    {
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			TransactionFactory transactionFactory = null;
-
-
-			String[] transactionFactoryParams = new String[1];
-			transactionFactoryParams[0] = ORBServices.otsKind;
-
-			transactionFactory = TransactionFactoryHelper.narrow(ORBServices.getService(ORBServices.transactionService, transactionFactoryParams));
+            TransactionFactory transactionFactory = null;
 
 
-			boolean correct;
-			Control control = transactionFactory.create(4);
+            String[] transactionFactoryParams = new String[1];
+            transactionFactoryParams[0] = ORBServices.otsKind;
 
-			Thread.sleep(8000);
+            transactionFactory = TransactionFactoryHelper.narrow(ORBServices.getService(ORBServices.transactionService, transactionFactoryParams));
 
-			try
-			{
-				control.get_terminator().commit(false);
-				correct = false;
-			}
-			catch (INVALID_TRANSACTION invalidTransaction)
-			{
-				correct = true;
-			}
-			catch (BAD_OPERATION badOperation)
-			{
-				correct = true;
-			}
-			catch (org.omg.CORBA.OBJECT_NOT_EXIST object_not_exist_exception)
-			{
-				// This test creates a transaction with timeout period of 4 seconds then
-				// sleeps for 8 seconds.
-				// When the timeout goes off at the transaction service, the transaction is
-				// rolled back and destroyed.
-				// The subsequent call to commit on the transaction results in an
-				// org.omg.CORBA.OBJECT_NOT_EXIST exception being thrown.
-				// The JTS specification appears to be quite vague in this area, however our
-				// implementation is compliant with this vagueness.
-				// Hence, For the purposes of this test, org.omg.CORBA.OBJECT_NOT_EXIST being thrown
-				// does not indicate a failure - BD 20/06/01
 
-				correct = true;
-			}
-			catch (Exception exception)
-			{
-				System.err.println("Client05.main: commit exception = " + exception);
-				correct = false;
-			}
+            boolean correct;
+            Control control = transactionFactory.create(4);
 
-			if (correct)
-			{
-				System.out.println("Passed");
-			}
-			else
-			{
-				System.out.println("Failed");
-			}
-		}
-		catch (Exception exception)
-		{
-			System.out.println("Failed");
-			System.err.println("Client05.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
+            Thread.sleep(8000);
 
-		try
-		{
-			OAInterface.shutdownOA();
-			ORBInterface.shutdownORB();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Client05.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
-	}
+            try
+            {
+                control.get_terminator().commit(false);
+                correct = false;
+            }
+            catch (INVALID_TRANSACTION invalidTransaction)
+            {
+                correct = true;
+            }
+            catch (BAD_OPERATION badOperation)
+            {
+                correct = true;
+            }
+            catch (org.omg.CORBA.OBJECT_NOT_EXIST object_not_exist_exception)
+            {
+                // This test creates a transaction with timeout period of 4 seconds then
+                // sleeps for 8 seconds.
+                // When the timeout goes off at the transaction service, the transaction is
+                // rolled back and destroyed.
+                // The subsequent call to commit on the transaction results in an
+                // org.omg.CORBA.OBJECT_NOT_EXIST exception being thrown.
+                // The JTS specification appears to be quite vague in this area, however our
+                // implementation is compliant with this vagueness.
+                // Hence, For the purposes of this test, org.omg.CORBA.OBJECT_NOT_EXIST being thrown
+                // does not indicate a failure - BD 20/06/01
+
+                correct = true;
+            }
+            catch (Exception exception)
+            {
+                System.err.println("Client05.main: commit exception = " + exception);
+                correct = false;
+            }
+
+            if (correct)
+            {
+                System.out.println("Passed");
+            }
+            else
+            {
+                System.out.println("Failed");
+            }
+        }
+        catch (Exception exception)
+        {
+            System.out.println("Failed");
+            System.err.println("Client05.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
+
+        try
+        {
+            OAInterface.shutdownOA();
+            ORBInterface.shutdownORB();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Client05.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
+    }
 }

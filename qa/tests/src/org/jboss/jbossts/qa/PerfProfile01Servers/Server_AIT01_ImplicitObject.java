@@ -65,29 +65,29 @@ import org.jboss.jbossts.qa.Utils.ServerIORStore;
 
 public class Server_AIT01_ImplicitObject
 {
-	public static void main(String args[])
-	{
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+    public static void main(String args[])
+    {
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			AITImplicitObjectImpl01 aitImplicitObjectImpl = new AITImplicitObjectImpl01();
-			ImplicitObjectPOATie servant = new ImplicitObjectPOATie(aitImplicitObjectImpl);
+            AITImplicitObjectImpl01 aitImplicitObjectImpl = new AITImplicitObjectImpl01();
+            ImplicitObjectPOATie servant = new ImplicitObjectPOATie(aitImplicitObjectImpl);
 
-			OAInterface.objectIsReady(servant);
-			ImplicitObject aitImplicitObject = ImplicitObjectHelper.narrow(OAInterface.corbaReference(servant));
+            OAInterface.objectIsReady(servant);
+            ImplicitObject aitImplicitObject = ImplicitObjectHelper.narrow(OAInterface.corbaReference(servant));
 
-			ServerIORStore.storeIOR(args[args.length - 1], ORBInterface.orb().object_to_string(aitImplicitObject));
+            ServerIORStore.storeIOR(args[args.length - 1], ORBInterface.orb().object_to_string(aitImplicitObject));
 
-			System.out.println("Ready");
+            System.out.println("Ready");
 
-			ORBInterface.run();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Server_AIT01_ImplicitObject.main: " + exception);
-		}
-	}
+            ORBInterface.run();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Server_AIT01_ImplicitObject.main: " + exception);
+        }
+    }
 }
 

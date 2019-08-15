@@ -54,33 +54,33 @@ public class TxInfo
 
     public TxInfo (Xid xid, int state)
     {
-	_xid = xid;
-	_thread = Thread.currentThread();
+    _xid = xid;
+    _thread = Thread.currentThread();
 
-	setState(state);
+    setState(state);
     }
 
     public final Thread thread ()
     {
-	return _thread;
+    return _thread;
     }
 
     public final Xid xid ()
     {
-	return _xid;
+    return _xid;
     }
 
     public final int getState ()
     {
-	return _state;
+    return _state;
     }
 
     public final void setState (int s)
     {
-	if ((s >= TxInfo.ASSOCIATED) && (s <= TxInfo.UNKNOWN))
-	    _state = s;
-	else
-	    _state = TxInfo.UNKNOWN;
+    if ((s >= TxInfo.ASSOCIATED) && (s <= TxInfo.UNKNOWN))
+        _state = s;
+    else
+        _state = TxInfo.UNKNOWN;
     }
 
     private Xid    _xid;

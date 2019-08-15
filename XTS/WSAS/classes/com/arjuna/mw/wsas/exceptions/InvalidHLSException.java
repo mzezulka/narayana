@@ -44,17 +44,17 @@ public class InvalidHLSException extends WSASException
 
     public InvalidHLSException ()
     {
-	super();
+    super();
     }
 
     public InvalidHLSException (String s)
     {
-	super(s);
+    super(s);
     }
 
     public InvalidHLSException (String s, int errorcode)
     {
-	super(s, errorcode);
+    super(s, errorcode);
     }
 
 }

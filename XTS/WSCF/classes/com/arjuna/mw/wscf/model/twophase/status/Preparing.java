@@ -46,12 +46,12 @@ public class Preparing implements Status
 
     public static Preparing instance ()
     {
-	return _instance;
+    return _instance;
     }
 
     public String toString ()
     {
-	return "org.w3c.wscf.twophase.status.Preparing";
+    return "org.w3c.wscf.twophase.status.Preparing";
     }
 
     private Preparing ()

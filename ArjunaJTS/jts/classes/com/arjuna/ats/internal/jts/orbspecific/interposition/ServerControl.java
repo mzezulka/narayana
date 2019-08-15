@@ -67,227 +67,227 @@ import com.arjuna.ats.jts.logging.jtsLogger;
 public class ServerControl extends ControlImple
 {
 
-	public ServerControl (Uid actUid, Control parentCon, ArjunaTransactionImple parentTran, Coordinator realCoord, Terminator realTerm)
-	{
-		super();
+    public ServerControl (Uid actUid, Control parentCon, ArjunaTransactionImple parentTran, Coordinator realCoord, Terminator realTerm)
+    {
+        super();
 
-		_realCoordinator = realCoord;
-		_realTerminator = realTerm;
+        _realCoordinator = realCoord;
+        _realTerminator = realTerm;
 
-		_parentControl = parentCon;
+        _parentControl = parentCon;
 
-		/*
-		 * allControls only contains local controls. Have we seen this
-		 * transaction before, i.e., is it a locally created transaction that we
-		 * are re-importing?
-		 */
+        /*
+         * allControls only contains local controls. Have we seen this
+         * transaction before, i.e., is it a locally created transaction that we
+         * are re-importing?
+         */
 
-		ControlImple cont = ((ControlImple.allControls != null) ? (ControlImple) ControlImple.allControls.get(actUid)
-				: null);
+        ControlImple cont = ((ControlImple.allControls != null) ? (ControlImple) ControlImple.allControls.get(actUid)
+                : null);
 
-		/*
-		 * We could do optimisations based on whether this is a transaction we
-		 * have locally created anyway and somehow it is being re-imported. If
-		 * that is the case, then why create a new transaction to manage it -
-		 * this will only add to the disk access? However, currently we cannot
-		 * do this optimisation because:
-		 *
-		 * (i) if the original control is being terminated from a remote
-		 * process, it will not be able to force thread-to-transaction
-		 * association (ArjunaTransactionImple et al don't do that.)
-		 *
-		 * (ii) certain AIT records require thread-to-transaction association in
-		 * order to work (e.g., LockRecord).
-		 *
-		 * What this means is that if we do this optimisation and an application
-		 * uses AIT, all AIT records will be added to the parent (original)
-		 * transaction and not the interposed transaction (which does do
-		 * thread-to-transaction association - or the resource does). Then when
-		 * the transaction is terminated, these records will be processed and
-		 * they will not be able to determine the current transaction.
-		 */
+        /*
+         * We could do optimisations based on whether this is a transaction we
+         * have locally created anyway and somehow it is being re-imported. If
+         * that is the case, then why create a new transaction to manage it -
+         * this will only add to the disk access? However, currently we cannot
+         * do this optimisation because:
+         *
+         * (i) if the original control is being terminated from a remote
+         * process, it will not be able to force thread-to-transaction
+         * association (ArjunaTransactionImple et al don't do that.)
+         *
+         * (ii) certain AIT records require thread-to-transaction association in
+         * order to work (e.g., LockRecord).
+         *
+         * What this means is that if we do this optimisation and an application
+         * uses AIT, all AIT records will be added to the parent (original)
+         * transaction and not the interposed transaction (which does do
+         * thread-to-transaction association - or the resource does). Then when
+         * the transaction is terminated, these records will be processed and
+         * they will not be able to determine the current transaction.
+         */
 
-		if (cont != null)
-		{
-			_isWrapper = true;
-			_transactionHandle = cont.getImplHandle();
+        if (cont != null)
+        {
+            _isWrapper = true;
+            _transactionHandle = cont.getImplHandle();
 
-			Coordinator coord = null;
-			Terminator term = null;
+            Coordinator coord = null;
+            Terminator term = null;
 
-			try
-			{
-				coord = cont.get_coordinator();
-				term = cont.get_terminator();
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
+            try
+            {
+                coord = cont.get_coordinator();
+                term = cont.get_terminator();
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
 
-				try
-				{
-					if (coord != null)
-						coord.rollback_only();
-				}
-				catch (Exception ex)
-				{
-				}
-			}
+                try
+                {
+                    if (coord != null)
+                        coord.rollback_only();
+                }
+                catch (Exception ex)
+                {
+                }
+            }
 
-			super.duplicateTransactionHandle(coord, term);
-		}
-		else
-		{
-			_transactionHandle = new ServerTransaction(actUid, _parentControl,
-					parentTran);
-			_isWrapper = false;
+            super.duplicateTransactionHandle(coord, term);
+        }
+        else
+        {
+            _transactionHandle = new ServerTransaction(actUid, _parentControl,
+                    parentTran);
+            _isWrapper = false;
 
-			super.createTransactionHandle();
+            super.createTransactionHandle();
 
-			/*
-			 * Pass a pointer to the control to the transaction so it knows what
-			 * the control is. We use this for transaction comparison and
-			 * thread-to-context management.
-			 */
+            /*
+             * Pass a pointer to the control to the transaction so it knows what
+             * the control is. We use this for transaction comparison and
+             * thread-to-context management.
+             */
 
-			_transactionHandle.setControlHandle(this);
-		}
+            _transactionHandle.setControlHandle(this);
+        }
 
-		_theUid = _transactionHandle.get_uid();
+        _theUid = _transactionHandle.get_uid();
 
-		addControl();
-	}
+        addControl();
+    }
 
-	public final boolean isWrapper ()
-	{
-		return _isWrapper;
-	}
+    public final boolean isWrapper ()
+    {
+        return _isWrapper;
+    }
 
-	public Coordinator originalCoordinator ()
-	{
-		return _realCoordinator;
-	}
+    public Coordinator originalCoordinator ()
+    {
+        return _realCoordinator;
+    }
 
-	public Terminator originalTerminator ()
-	{
-		return _realTerminator;
-	}
+    public Terminator originalTerminator ()
+    {
+        return _realTerminator;
+    }
 
-	public synchronized void destroy () throws ActiveTransaction,
-			ActiveThreads, BadControl, Destroyed, SystemException
-	{
-		if (super._destroyed)
-			throw new Destroyed();
+    public synchronized void destroy () throws ActiveTransaction,
+            ActiveThreads, BadControl, Destroyed, SystemException
+    {
+        if (super._destroyed)
+            throw new Destroyed();
 
-		/*
-		 * We are about to delete ourself (!) so make sure we don't using
-		 * anything on the stack after this point. This includes returning
-		 * variables.
-		 */
+        /*
+         * We are about to delete ourself (!) so make sure we don't using
+         * anything on the stack after this point. This includes returning
+         * variables.
+         */
 
-		try
-		{
-			if (_isWrapper)
-			{
-				_transactionHandle = null;
-			}
+        try
+        {
+            if (_isWrapper)
+            {
+                _transactionHandle = null;
+            }
 
-			super.destroy();
-		}
-		catch (BAD_PARAM e)
-		{
-			// already destroyed
-		}
-		catch (Destroyed de)
-		{
-			// already destroyed
-		}
-		catch (Exception e) {
+            super.destroy();
+        }
+        catch (BAD_PARAM e)
+        {
+            // already destroyed
+        }
+        catch (Destroyed de)
+        {
+            // already destroyed
+        }
+        catch (Exception e) {
             jtsLogger.i18NLogger.warn_orbspecific_interposition_destfailed("ServerControl", e);
         }
-	}
+    }
 
-	public ServerControl (ServerTransaction stx)
-	{
-		super();
+    public ServerControl (ServerTransaction stx)
+    {
+        super();
 
-		_realCoordinator = null;
-		_realTerminator = null;
-		_isWrapper = false;
+        _realCoordinator = null;
+        _realTerminator = null;
+        _isWrapper = false;
 
-		_transactionHandle = stx;
-		_theUid = stx.get_uid();
+        _transactionHandle = stx;
+        _theUid = stx.get_uid();
 
         _transactionHandle.setControlHandle(this); // JBTM-957
 
-		createTransactionHandle();
+        createTransactionHandle();
 
-		addControl();
-	}
+        addControl();
+    }
 
-	public ControlImple getParentImple ()
-	{
-		BasicAction parent = _transactionHandle.parent();
+    public ControlImple getParentImple ()
+    {
+        BasicAction parent = _transactionHandle.parent();
 
-		if (parent != null)
-		{
-			synchronized (ServerControl.allControls)
-			{
-				return (ControlImple) ServerControl.allServerControls.get(parent.get_uid());
-			}
-		}
-		else
-			return null;
-	}
+        if (parent != null)
+        {
+            synchronized (ServerControl.allControls)
+            {
+                return (ControlImple) ServerControl.allServerControls.get(parent.get_uid());
+            }
+        }
+        else
+            return null;
+    }
 
-	public String toString ()
-	{
-		return "ServerControl < " + get_uid() + " >";
-	}
+    public String toString ()
+    {
+        return "ServerControl < " + get_uid() + " >";
+    }
 
-	public final boolean forgetHeuristics ()
-	{
-		if (_transactionHandle != null)
-			return _transactionHandle.forgetHeuristics();
-		else
-			return true;
-	}
+    public final boolean forgetHeuristics ()
+    {
+        if (_transactionHandle != null)
+            return _transactionHandle.forgetHeuristics();
+        else
+            return true;
+    }
 
-	protected boolean addControl ()
-	{
-		synchronized (ServerControl.allServerControls)
-		{
-			ServerControl.allServerControls.put(get_uid(), this);
-		}
+    protected boolean addControl ()
+    {
+        synchronized (ServerControl.allServerControls)
+        {
+            ServerControl.allServerControls.put(get_uid(), this);
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	protected boolean removeControl ()
-	{
-		try
-		{
-			synchronized (ServerControl.allServerControls)
-			{
-				ServerControl.allServerControls.remove(get_uid());
-			}
-		}
-		catch (Exception ex)
-		{
-			return false;
-		}
+    protected boolean removeControl ()
+    {
+        try
+        {
+            synchronized (ServerControl.allServerControls)
+            {
+                ServerControl.allServerControls.remove(get_uid());
+            }
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	/*
-	 * Make private, with public accessor.
-	 */
+    /*
+     * Make private, with public accessor.
+     */
 
-	public static Hashtable allServerControls = new Hashtable();
+    public static Hashtable allServerControls = new Hashtable();
 
-	private Coordinator _realCoordinator;
-	private Terminator _realTerminator;
-	private boolean _isWrapper;
+    private Coordinator _realCoordinator;
+    private Terminator _realTerminator;
+    private boolean _isWrapper;
 
 }

@@ -47,72 +47,72 @@ import com.arjuna.ats.jta.xa.XidImple;
 public class XAUtils
 {
 
-	public static final boolean mustEndSuspendedRMs (XAResource res)
-	{
-		boolean end = false;
+    public static final boolean mustEndSuspendedRMs (XAResource res)
+    {
+        boolean end = false;
 
-		if (res != null)
-		{
-			String name = res.getClass().getName().toLowerCase();
+        if (res != null)
+        {
+            String name = res.getClass().getName().toLowerCase();
 
-			if (name.indexOf(XAUtils.ORACLE) != -1)
-				end = true;
-		}
+            if (name.indexOf(XAUtils.ORACLE) != -1)
+                end = true;
+        }
 
-		return end;
-	}
+        return end;
+    }
 
-	public static final boolean canOptimizeDelist (XAResource res)
-	{
-		boolean optimize = true;
+    public static final boolean canOptimizeDelist (XAResource res)
+    {
+        boolean optimize = true;
 
-		if (res != null)
-		{
-			String name = res.getClass().getName().toLowerCase();
+        if (res != null)
+        {
+            String name = res.getClass().getName().toLowerCase();
 
-			if (name.indexOf(XAUtils.ORACLE) != -1)
-				optimize = false;
-		}
+            if (name.indexOf(XAUtils.ORACLE) != -1)
+                optimize = false;
+        }
 
-		return optimize;
-	}
+        return optimize;
+    }
 
-	/**
-	 * Trying to convert {@link Xid} to Narayana implementation
-	 * for being able to access the internal byte array
-	 * in order to return node name codified inside of the Xid.
-	 *
-	 * @param xid  the xid to check the node name
-	 * @return  node name saved in the xid
-	 */
-	public static final String getXANodeName (Xid xid)
-	{
+    /**
+     * Trying to convert {@link Xid} to Narayana implementation
+     * for being able to access the internal byte array
+     * in order to return node name codified inside of the Xid.
+     *
+     * @param xid  the xid to check the node name
+     * @return  node name saved in the xid
+     */
+    public static final String getXANodeName (Xid xid)
+    {
         return XATxConverter.getNodeName(getXIDfromXid(xid));
-	}
+    }
 
-	/**
-	 * Returning subordinate node name codified inside of the Xid.
-	 *
-	 * @param xid  the xid to check the subordinate node name
-	 * @return  subordinate node name saved in the xid
-	 */
-	public static final String getSubordinateNodeName (Xid xid)
-	{
-	    return XATxConverter.getSubordinateNodeName(getXIDfromXid(xid));
-	}
+    /**
+     * Returning subordinate node name codified inside of the Xid.
+     *
+     * @param xid  the xid to check the subordinate node name
+     * @return  subordinate node name saved in the xid
+     */
+    public static final String getSubordinateNodeName (Xid xid)
+    {
+        return XATxConverter.getSubordinateNodeName(getXIDfromXid(xid));
+    }
 
-	/**
-	 * Returning eis name codified inside of the Xid.
-	 *
-	 * @param xid  the xid to check the eis name
-	 * @return  eis name integer saved in the xid
-	 */
-	public static final Integer getEisName (Xid xid)
-	{
-	    return XATxConverter.getEISName(getXIDfromXid(xid));
-	}
+    /**
+     * Returning eis name codified inside of the Xid.
+     *
+     * @param xid  the xid to check the eis name
+     * @return  eis name integer saved in the xid
+     */
+    public static final Integer getEisName (Xid xid)
+    {
+        return XATxConverter.getEISName(getXIDfromXid(xid));
+    }
 
-	private static final XID getXIDfromXid(Xid xid) {
+    private static final XID getXIDfromXid(Xid xid) {
          XidImple xidImple;
          if(xid instanceof XidImple) {
              xidImple = (XidImple)xid;
@@ -120,7 +120,7 @@ public class XAUtils
              xidImple = new XidImple(xid);
          }
          return xidImple.getXID();
-	}
+    }
 
-	private static final String ORACLE = "oracle";
+    private static final String ORACLE = "oracle";
 }

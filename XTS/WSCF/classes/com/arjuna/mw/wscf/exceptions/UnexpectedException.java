@@ -46,17 +46,17 @@ public class UnexpectedException extends SystemException
 
     public UnexpectedException ()
     {
-	super();
+    super();
     }
 
     public UnexpectedException (String s)
     {
-	super(s);
+    super(s);
     }
 
     public UnexpectedException (String s, int errorcode)
     {
-	super(s, errorcode);
+    super(s, errorcode);
     }
 
 }

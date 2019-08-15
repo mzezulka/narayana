@@ -46,7 +46,7 @@ public class ExpiredToplevelScanner extends ExpiredAssumedCompleteScanner
      */
     public ExpiredToplevelScanner ()
     {
-	super(AssumedCompleteTransaction.typeName(),StoreManager.getRecoveryStore());
+    super(AssumedCompleteTransaction.typeName(),StoreManager.getRecoveryStore());
 
     }
 }

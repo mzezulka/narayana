@@ -49,48 +49,48 @@ public class DemoVolatileParticipant implements Volatile2PCParticipant
 {
     public DemoVolatileParticipant ()
     {
-	_passed = false;
+    _passed = false;
     _prepared = false;
     _resolved = false;
     }
 
     public final boolean resolved ()
     {
-	return _resolved;
+    return _resolved;
     }
 
     public final boolean prepared ()
     {
-	return _prepared;
+    return _prepared;
     }
 
     public final boolean passed ()
     {
-	return _passed;
+    return _passed;
     }
 
     public Vote prepare () throws WrongStateException, SystemException
     {
-	System.out.println("DemoVolatileParticipant.prepare for "+this);
+    System.out.println("DemoVolatileParticipant.prepare for "+this);
 
     _prepared = true;
-	return new Prepared();
+    return new Prepared();
     }
 
     public void commit () throws WrongStateException, SystemException
     {
-	System.out.println("DemoVolatileParticipant.commit for "+this);
+    System.out.println("DemoVolatileParticipant.commit for "+this);
 
     _resolved = true;
-	_passed = true;
+    _passed = true;
     }
 
     public void rollback () throws WrongStateException, SystemException
     {
-	System.out.println("DemoVolatileParticipant.rollback for "+this);
+    System.out.println("DemoVolatileParticipant.rollback for "+this);
 
     _resolved = true;
-	_passed = false;
+    _passed = false;
     }
 
     public void unknown () throws SystemException
@@ -103,12 +103,12 @@ public class DemoVolatileParticipant implements Volatile2PCParticipant
 
     public String toString ()
     {
-	return identifier();
+    return identifier();
     }
 
     public String identifier ()
     {
-	return _id.stringForm();
+    return _id.stringForm();
     }
 
     private boolean _passed;

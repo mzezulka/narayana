@@ -61,12 +61,12 @@ public class ContextManager
         {
             _threadTxData.set(null) ;
         }
-	return ctx;
+    return ctx;
     }
 
     public TxContext currentTransaction () throws SystemException
     {
-	return (TxContext) _threadTxData.get();
+    return (TxContext) _threadTxData.get();
     }
 
     private static ThreadLocal _threadTxData = new ThreadLocal();

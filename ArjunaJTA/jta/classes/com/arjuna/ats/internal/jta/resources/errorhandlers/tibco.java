@@ -40,12 +40,12 @@ public class tibco implements XAResourceMap
 
     public boolean notAProblem (XAException ex, boolean commit)
     {
-	return false;
+    return false;
     }
 
     public String getXAResourceName ()
     {
-	return "";
+    return "";
     }
 
 }

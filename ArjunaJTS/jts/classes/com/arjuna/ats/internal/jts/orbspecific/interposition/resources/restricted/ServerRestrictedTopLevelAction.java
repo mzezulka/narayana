@@ -60,9 +60,9 @@ public class ServerRestrictedTopLevelAction extends ServerTopLevelAction
 
 public ServerRestrictedTopLevelAction (ServerControl myControl)
     {
-	super(myControl);
+    super(myControl);
 
-	if (jtsLogger.logger.isTraceEnabled()) {
+    if (jtsLogger.logger.isTraceEnabled()) {
         jtsLogger.logger.trace("ServerRestrictedTopLevelAction::ServerRestrictedTopLevelAction ( " +
                 ((myControl != null) ? myControl.get_uid() : Uid.nullUid()) + " )");
     }
@@ -70,12 +70,12 @@ public ServerRestrictedTopLevelAction (ServerControl myControl)
 
 public final synchronized ServerControl deepestControl ()
     {
-	ServerRestrictedNestedAction myChild = child();
+    ServerRestrictedNestedAction myChild = child();
 
-	if (myChild != null)
-	    return myChild.deepestControl();
-	else
-	    return control();
+    if (myChild != null)
+        return myChild.deepestControl();
+    else
+        return control();
     }
 
     public final synchronized ServerRestrictedNestedAction child ()
@@ -101,7 +101,7 @@ public final synchronized ServerControl deepestControl ()
 
 public String type ()
     {
-	return "/Resources/Arjuna/ServerTopLevelAction/ServerRestrictedTopLevelAction";
+    return "/Resources/Arjuna/ServerTopLevelAction/ServerRestrictedTopLevelAction";
     }
 
 }

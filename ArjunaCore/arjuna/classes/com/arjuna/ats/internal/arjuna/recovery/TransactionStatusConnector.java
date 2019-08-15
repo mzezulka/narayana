@@ -136,17 +136,17 @@ public class TransactionStatusConnector
                _to_server.println ( tranUid.toString() ) ;
                _to_server.flush() ;
 
-	       /*
-		* TODO we should optimise this so we only close once
-		* all transactions for a particular host have been sent.
-		*/
+           /*
+        * TODO we should optimise this so we only close once
+        * all transactions for a particular host have been sent.
+        */
 
                // Retrieve current status from the TransactionStatusManager.
                String server_data = _from_server.readLine() ;
                status = Integer.parseInt ( server_data ) ;
 
-	       //	       _to_server.close();
-	       //	       _from_server.close();
+           //           _to_server.close();
+           //           _from_server.close();
             }
             catch ( IOException ex ) {
                 tsLogger.i18NLogger.warn_recovery_TransactionStatusConnector_2();
@@ -172,7 +172,7 @@ public class TransactionStatusConnector
       _dead = true ;
 
       if (_tsmi != null)
-	  _tsmi.markAsDead();
+      _tsmi.markAsDead();
    }
 
    /**
@@ -217,7 +217,7 @@ public class TransactionStatusConnector
                {
                   _to_server.println ( "TEST" ) ;
                   _to_server.flush() ;
-		  //		  _to_server.close();
+          //          _to_server.close();
 
                   _connector_socket.close() ;
                }
@@ -228,19 +228,19 @@ public class TransactionStatusConnector
             {
                _to_server.println ( "DEAD" ) ;
                _to_server.flush() ;
-	       //	       _to_server.close();
+           //           _to_server.close();
 
                _connector_socket.close() ;
 
                setDeadTSM() ;
 
-       	       tsLogger.i18NLogger.info_recovery_TransactionStatusConnector_5(_pid);
+                  tsLogger.i18NLogger.info_recovery_TransactionStatusConnector_5(_pid);
 
             }
          }
          catch ( IOException ex )
          {
-	        tsLogger.i18NLogger.info_recovery_TransactionStatusConnector_6();
+            tsLogger.i18NLogger.info_recovery_TransactionStatusConnector_6();
          }
 
          _attempts_to_establish_connection = connectionEstablished ? 0 : _attempts_to_establish_connection + 1 ;

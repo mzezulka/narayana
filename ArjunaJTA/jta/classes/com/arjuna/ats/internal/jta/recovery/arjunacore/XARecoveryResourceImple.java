@@ -45,14 +45,14 @@ public class XARecoveryResourceImple extends XAResourceRecord implements XARecov
 
     public XARecoveryResourceImple (Uid u)
     {
-	super(u);
+    super(u);
     }
 
     public XARecoveryResourceImple (Uid u, XAResource res)
     {
-	super(u);
+    super(u);
 
-	super._theXAResource = res;
+    super._theXAResource = res;
     }
 
     /**
@@ -60,26 +60,26 @@ public class XARecoveryResourceImple extends XAResourceRecord implements XARecov
      */
     public final XAResource getXAResource ()
     {
-	return super._theXAResource;
+    return super._theXAResource;
     }
 
     public int recoverable ()
     {
-	/*
-	 * If we don't have an XAResource then we cannot recover at
-	 * this stage. The XAResource will have to be provided for
-	 * us and then we can retry.
-	 */
+    /*
+     * If we don't have an XAResource then we cannot recover at
+     * this stage. The XAResource will have to be provided for
+     * us and then we can retry.
+     */
 
-	if (super._theXAResource == null)
-	    return XARecoveryResource.INCOMPLETE_STATE;
-	else
-	    return XARecoveryResource.RECOVERY_REQUIRED;
+    if (super._theXAResource == null)
+        return XARecoveryResource.INCOMPLETE_STATE;
+    else
+        return XARecoveryResource.RECOVERY_REQUIRED;
     }
 
     public int recover ()
     {
-	return super.recover();
+    return super.recover();
     }
 
     /**
@@ -93,17 +93,17 @@ public class XARecoveryResourceImple extends XAResourceRecord implements XARecov
 
     protected boolean notAProblem (XAException ex, boolean commit)
     {
-	if (ex.errorCode == XAException.XAER_NOTA)
-	{
-	    if (jtaLogger.logger.isDebugEnabled()) {
+    if (ex.errorCode == XAException.XAER_NOTA)
+    {
+        if (jtaLogger.logger.isDebugEnabled()) {
             jtaLogger.logger.debug("XARecoveryResourceImple.notAProblem - no error with XAER_NOTA on "
                     + (commit ? " commit" : " rollback"));
         }
 
-	    return true;
-	}
+        return true;
+    }
 
-	return false;
+    return false;
     }
 
 }

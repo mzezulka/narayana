@@ -41,34 +41,34 @@ public class CadaverUnitTest
     @Test
     public void testCommit () throws Exception
     {
-	AtomicAction A = new AtomicAction();
-	AtomicObject B = new AtomicObject(ObjectModel.MULTIPLE);
-	Uid u = B.get_uid();
+    AtomicAction A = new AtomicAction();
+    AtomicObject B = new AtomicObject(ObjectModel.MULTIPLE);
+    Uid u = B.get_uid();
 
-	A.begin();
+    A.begin();
 
-	B.set(1234);
+    B.set(1234);
 
-	A.commit();
+    A.commit();
 
-	A = new AtomicAction();
-	B = new AtomicObject(u, ObjectModel.MULTIPLE);
+    A = new AtomicAction();
+    B = new AtomicObject(u, ObjectModel.MULTIPLE);
 
-	A.begin();
+    A.begin();
 
-	AtomicAction C = new AtomicAction();
+    AtomicAction C = new AtomicAction();
 
-	C.begin();
+    C.begin();
 
-	assertEquals(B.get(), 1234);
+    assertEquals(B.get(), 1234);
 
-	B.set(5678);
+    B.set(5678);
 
-	B.terminate();
+    B.terminate();
 
-	C.commit();
+    C.commit();
 
-	assertEquals(A.commit(), ActionStatus.COMMITTED);
+    assertEquals(A.commit(), ActionStatus.COMMITTED);
     }
 
     @Test

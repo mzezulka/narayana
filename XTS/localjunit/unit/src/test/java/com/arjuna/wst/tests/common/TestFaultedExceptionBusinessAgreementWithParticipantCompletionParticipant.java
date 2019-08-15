@@ -45,12 +45,12 @@ public class TestFaultedExceptionBusinessAgreementWithParticipantCompletionParti
 
     public void compensate () throws FaultedException, WrongStateException, SystemException
     {
-	throw new FaultedException();
+    throw new FaultedException();
     }
 
     public String status () throws SystemException
     {
-	return Status.STATUS_ACTIVE;
+    return Status.STATUS_ACTIVE;
     }
 
     public void forget () throws WrongStateException, SystemException

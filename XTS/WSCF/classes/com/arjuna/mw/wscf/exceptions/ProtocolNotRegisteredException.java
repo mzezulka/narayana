@@ -47,17 +47,17 @@ public class ProtocolNotRegisteredException extends WSASException
 
     public ProtocolNotRegisteredException ()
     {
-	super();
+    super();
     }
 
     public ProtocolNotRegisteredException (String s)
     {
-	super(s);
+    super(s);
     }
 
     public ProtocolNotRegisteredException (String s, int errorcode)
     {
-	super(s, errorcode);
+    super(s, errorcode);
     }
 
 }

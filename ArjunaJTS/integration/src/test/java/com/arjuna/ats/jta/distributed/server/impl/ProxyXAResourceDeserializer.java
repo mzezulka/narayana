@@ -9,18 +9,18 @@ import com.arjuna.ats.jta.recovery.SerializableXAResourceDeserializer;
 
 public class ProxyXAResourceDeserializer implements SerializableXAResourceDeserializer {
 
-	@Override
-	public boolean canDeserialze(String className) {
-		if (className.equals(ProxyXAResource.class.getName())) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+    @Override
+    public boolean canDeserialze(String className) {
+        if (className.equals(ProxyXAResource.class.getName())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	@Override
-	public XAResource deserialze(ObjectInputStream ois) throws IOException, ClassNotFoundException {
-		return (XAResource) ois.readObject();
-	}
+    @Override
+    public XAResource deserialze(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+        return (XAResource) ois.readObject();
+    }
 
 }

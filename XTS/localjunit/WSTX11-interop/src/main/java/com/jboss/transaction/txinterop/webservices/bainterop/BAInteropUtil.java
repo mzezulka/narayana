@@ -78,7 +78,7 @@ public class BAInteropUtil
      * @throws Exception for errors.
      */
     private static CoordinationContextType createCoordinationContext(final String coordinatorURI, final String protocol)
-    	throws Exception
+        throws Exception
     {
         return ActivationCoordinator.createCoordinationContext(coordinatorURI, MessageId.getMessageId(), protocol, null, null) ;
     }
@@ -106,10 +106,10 @@ public class BAInteropUtil
      * @throws Exception for errors.
      */
     public static ParticipantCompletionParticipantEngine registerParticipantCompletion(final CoordinationContextType context,
-	final BusinessAgreementWithParticipantCompletionParticipant participant, final String id)
+    final BusinessAgreementWithParticipantCompletionParticipant participant, final String id)
         throws Exception
     {
-	final W3CEndpointReference coordinator = RegistrationCoordinator.register(context, MessageId.getMessageId(),
+    final W3CEndpointReference coordinator = RegistrationCoordinator.register(context, MessageId.getMessageId(),
             getParticipantCompletionParticipant(id), BusinessActivityConstants.WSBA_SUB_PROTOCOL_PARTICIPANT_COMPLETION) ;
         final ParticipantCompletionParticipantEngine engine = new ParticipantCompletionParticipantEngine(id, coordinator, participant) ;
         ParticipantCompletionParticipantProcessor.getProcessor().activateParticipant(engine, id) ;
@@ -125,10 +125,10 @@ public class BAInteropUtil
      * @throws Exception for errors.
      */
     public static CoordinatorCompletionParticipantEngine registerCoordinatorCompletion(final CoordinationContextType context,
-	final BusinessAgreementWithCoordinatorCompletionParticipant participant, final String id)
+    final BusinessAgreementWithCoordinatorCompletionParticipant participant, final String id)
         throws Exception
     {
-	final W3CEndpointReference coordinator = RegistrationCoordinator.register(context, MessageId.getMessageId(),
+    final W3CEndpointReference coordinator = RegistrationCoordinator.register(context, MessageId.getMessageId(),
             getCoordinatorCompletionParticipant(id), BusinessActivityConstants.WSBA_SUB_PROTOCOL_COORDINATOR_COMPLETION) ;
         final CoordinatorCompletionParticipantEngine engine = new CoordinatorCompletionParticipantEngine(id, coordinator, participant) ;
         CoordinatorCompletionParticipantProcessor.getProcessor().activateParticipant(engine, id) ;

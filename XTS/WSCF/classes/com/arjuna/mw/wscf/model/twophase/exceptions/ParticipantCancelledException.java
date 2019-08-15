@@ -46,17 +46,17 @@ public class ParticipantCancelledException extends SystemException
 
     public ParticipantCancelledException ()
     {
-	super();
+    super();
     }
 
     public ParticipantCancelledException (String s)
     {
-	super(s);
+    super(s);
     }
 
     public ParticipantCancelledException (String s, int errorcode)
     {
-	super(s, errorcode);
+    super(s, errorcode);
     }
 
 }

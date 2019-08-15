@@ -50,19 +50,19 @@ public class Unknown implements CompletionStatus
     public boolean equals (Object param)
     {
         if (this == param)
-       	    return true;
-       	else
-       	{
-       	    if (param instanceof Unknown)
-       		    return true;
-       	    else
-       		    return false;
-       	}
+               return true;
+           else
+           {
+               if (param instanceof Unknown)
+                   return true;
+               else
+                   return false;
+           }
     }
 
     public String toString ()
     {
-	return "CompletionStatus.Unknown";
+    return "CompletionStatus.Unknown";
     }
 
 }

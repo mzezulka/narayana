@@ -52,97 +52,97 @@ import com.arjuna.orbportability.ORB;
 import com.arjuna.orbportability.RootOA;
 
 public class XAResourceTest {
-	@Before
-	public void setup() {
-//		System.setProperty("jacorb.implname", "1");
-//		recoveryPropertyManager.getRecoveryEnvironmentBean().setRecoveryActivatorClassNames(Arrays.asList(new String[] {com.arjuna.ats.internal.jts.orbspecific.recovery.RecoveryEnablement.class.getName()}));
-	}
+    @Before
+    public void setup() {
+//        System.setProperty("jacorb.implname", "1");
+//        recoveryPropertyManager.getRecoveryEnvironmentBean().setRecoveryActivatorClassNames(Arrays.asList(new String[] {com.arjuna.ats.internal.jts.orbspecific.recovery.RecoveryEnablement.class.getName()}));
+    }
 
-	@After
-	public void tearDown() {
-//		recoveryPropertyManager.getRecoveryEnvironmentBean().setRecoveryActivatorClassNames(null);
-//		System.setProperty("jacorb.implname", "");
-	}
+    @After
+    public void tearDown() {
+//        recoveryPropertyManager.getRecoveryEnvironmentBean().setRecoveryActivatorClassNames(null);
+//        System.setProperty("jacorb.implname", "");
+    }
 
-	@Test
-	public void testTwoResourcesReturnXA_RDONLY() throws Exception {
+    @Test
+    public void testTwoResourcesReturnXA_RDONLY() throws Exception {
 
-		ORB myORB = ORB.getInstance("test");
-		RootOA myOA = OA.getRootOA(myORB);
-		myORB.initORB(new String[] {}, null);
-		myOA.initOA();
-		ORBManager.setORB(myORB);
-		ORBManager.setPOA(myOA);
+        ORB myORB = ORB.getInstance("test");
+        RootOA myOA = OA.getRootOA(myORB);
+        myORB.initORB(new String[] {}, null);
+        myOA.initOA();
+        ORBManager.setORB(myORB);
+        ORBManager.setPOA(myOA);
 
-		RecoveryManager.manager();
+        RecoveryManager.manager();
 
-		javax.transaction.TransactionManager tm = com.arjuna.ats.jta.TransactionManager
-				.transactionManager();
+        javax.transaction.TransactionManager tm = com.arjuna.ats.jta.TransactionManager
+                .transactionManager();
 
-		tm.begin();
+        tm.begin();
 
-		javax.transaction.Transaction theTransaction = tm.getTransaction();
+        javax.transaction.Transaction theTransaction = tm.getTransaction();
 
-		assertTrue(theTransaction.enlistResource(new XA_READONLYXAResource()));
-		assertTrue(theTransaction.enlistResource(new XA_READONLYXAResource()));
-		assertTrue(theTransaction.enlistResource(new XA_READONLYXAResource()));
+        assertTrue(theTransaction.enlistResource(new XA_READONLYXAResource()));
+        assertTrue(theTransaction.enlistResource(new XA_READONLYXAResource()));
+        assertTrue(theTransaction.enlistResource(new XA_READONLYXAResource()));
 
-		tm.commit();
+        tm.commit();
 
-		RecoveryManager.manager().terminate();
+        RecoveryManager.manager().terminate();
 
-		myOA.destroy();
-		myORB.shutdown();
-	}
+        myOA.destroy();
+        myORB.shutdown();
+    }
 
-	private class XA_READONLYXAResource implements XAResource {
+    private class XA_READONLYXAResource implements XAResource {
 
-		@Override
-		public void commit(Xid xid, boolean onePhase) throws XAException {
-			System.out.println("commit");
-		}
+        @Override
+        public void commit(Xid xid, boolean onePhase) throws XAException {
+            System.out.println("commit");
+        }
 
-		@Override
-		public void end(Xid xid, int flags) throws XAException {
-		}
+        @Override
+        public void end(Xid xid, int flags) throws XAException {
+        }
 
-		@Override
-		public void forget(Xid xid) throws XAException {
+        @Override
+        public void forget(Xid xid) throws XAException {
 
-		}
+        }
 
-		@Override
-		public int getTransactionTimeout() throws XAException {
-			return 0;
-		}
+        @Override
+        public int getTransactionTimeout() throws XAException {
+            return 0;
+        }
 
-		@Override
-		public boolean isSameRM(XAResource xares) throws XAException {
-			return false;
-		}
+        @Override
+        public boolean isSameRM(XAResource xares) throws XAException {
+            return false;
+        }
 
-		@Override
-		public int prepare(Xid xid) throws XAException {
-			return XAResource.XA_RDONLY;
-		}
+        @Override
+        public int prepare(Xid xid) throws XAException {
+            return XAResource.XA_RDONLY;
+        }
 
-		@Override
-		public Xid[] recover(int flag) throws XAException {
-			return null;
-		}
+        @Override
+        public Xid[] recover(int flag) throws XAException {
+            return null;
+        }
 
-		@Override
-		public void rollback(Xid xid) throws XAException {
-		}
+        @Override
+        public void rollback(Xid xid) throws XAException {
+        }
 
-		@Override
-		public boolean setTransactionTimeout(int seconds) throws XAException {
-			return false;
-		}
+        @Override
+        public boolean setTransactionTimeout(int seconds) throws XAException {
+            return false;
+        }
 
-		@Override
-		public void start(Xid xid, int flags) throws XAException {
-		}
+        @Override
+        public void start(Xid xid, int flags) throws XAException {
+        }
 
-	}
+    }
 }

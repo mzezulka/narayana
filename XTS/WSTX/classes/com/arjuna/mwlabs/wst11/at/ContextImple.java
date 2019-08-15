@@ -12,29 +12,29 @@ import org.oasis_open.docs.ws_tx.wscoor._2006._06.CoordinationContextType;
 public class ContextImple implements Context
 {
 
-	public ContextImple(final CoordinationContextType ctx)
-	{
-		_coordContext = ctx;
+    public ContextImple(final CoordinationContextType ctx)
+    {
+        _coordContext = ctx;
     }
 
-	public boolean equals (Object obj)
-	{
-		if (obj instanceof ContextImple)
-		{
-			ContextImple ci = (ContextImple) obj;
+    public boolean equals (Object obj)
+    {
+        if (obj instanceof ContextImple)
+        {
+            ContextImple ci = (ContextImple) obj;
 
-			return ci.getCoordinationContext().getIdentifier().getValue().equals(_coordContext.getIdentifier().getValue());
-		}
-		else
-			return false;
-	}
+            return ci.getCoordinationContext().getIdentifier().getValue().equals(_coordContext.getIdentifier().getValue());
+        }
+        else
+            return false;
+    }
 
-	public String toString ()
-	{
-		// return DomUtil.nodeAsString(toXML());
+    public String toString ()
+    {
+        // return DomUtil.nodeAsString(toXML());
 
-		return "AtomicTransactionIdentifier: " + _coordContext.getIdentifier().getValue();
-	}
+        return "AtomicTransactionIdentifier: " + _coordContext.getIdentifier().getValue();
+    }
 
     public CoordinationContextType getCoordinationContext()
     {

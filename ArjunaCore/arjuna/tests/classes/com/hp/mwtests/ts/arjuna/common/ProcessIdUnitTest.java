@@ -53,13 +53,13 @@ public class ProcessIdUnitTest
     @Test
     public void testExecProcessId()
     {
-		ExecProcessId xp = new ExecProcessId();
-		// TODO windows
-		if (System.getProperty("os.name").toLowerCase().indexOf("windows") == -1) {
+        ExecProcessId xp = new ExecProcessId();
+        // TODO windows
+        if (System.getProperty("os.name").toLowerCase().indexOf("windows") == -1) {
 
-			assertTrue(xp.getpid() > 0);
-		}
-	}
+            assertTrue(xp.getpid() > 0);
+        }
+    }
 
     @Test
     public void testMBeanProcessId()

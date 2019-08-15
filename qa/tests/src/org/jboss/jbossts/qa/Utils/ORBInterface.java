@@ -37,33 +37,33 @@ import java.util.Properties;
 
 public class ORBInterface
 {
-	private final static String ORB_NAME = "ats-qa-orb";
+    private final static String ORB_NAME = "ats-qa-orb";
 
-	private static ORB _orb = null;
+    private static ORB _orb = null;
 
-	public static void initORB(String[] params, Properties props)
-	{
-		_orb = ORB.getInstance(ORB_NAME);
-		_orb.initORB(params, props);
-	}
+    public static void initORB(String[] params, Properties props)
+    {
+        _orb = ORB.getInstance(ORB_NAME);
+        _orb.initORB(params, props);
+    }
 
-	public static ORB getORB()
-	{
-		return _orb;
-	}
+    public static ORB getORB()
+    {
+        return _orb;
+    }
 
-	public static org.omg.CORBA.ORB orb()
-	{
-		return _orb.orb();
-	}
+    public static org.omg.CORBA.ORB orb()
+    {
+        return _orb.orb();
+    }
 
-	public static void run()
-	{
-		_orb.orb().run();
-	}
+    public static void run()
+    {
+        _orb.orb().run();
+    }
 
-	public static void shutdownORB()
-	{
-		_orb.shutdown();
-	}
+    public static void shutdownORB()
+    {
+        _orb.shutdown();
+    }
 }

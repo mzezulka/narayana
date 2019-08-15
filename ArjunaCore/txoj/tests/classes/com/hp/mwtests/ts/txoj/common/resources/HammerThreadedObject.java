@@ -42,54 +42,54 @@ public class HammerThreadedObject extends Thread
 
 public HammerThreadedObject (int value)
     {
-	_uid = new Uid();
-	_value = value;
+    _uid = new Uid();
+    _value = value;
     }
 
 public void run ()
     {
-	for (int i = 0; i < HammerThreadedObject.iter; i++)
-	{
-	    AtomicAction A = new AtomicAction();
-	    float f = HammerThreadedObject.rand.nextFloat();
+    for (int i = 0; i < HammerThreadedObject.iter; i++)
+    {
+        AtomicAction A = new AtomicAction();
+        float f = HammerThreadedObject.rand.nextFloat();
 
-	    try
-	    {
-		Thread.yield();
+        try
+        {
+        Thread.yield();
 
-		A.begin();
+        A.begin();
 
-		int v = HammerThreadedObject.object.get();
+        int v = HammerThreadedObject.object.get();
 
-		if (f > 0.25)
-		    System.out.println(_uid+": atomic object value: "+v);
-		else
-		{
-		    int nv = v+_value;
+        if (f > 0.25)
+            System.out.println(_uid+": atomic object value: "+v);
+        else
+        {
+            int nv = v+_value;
 
-		    HammerThreadedObject.object.set(nv);
+            HammerThreadedObject.object.set(nv);
 
-		    System.out.println(_uid+": atomic object value set to : "+nv);
-		}
+            System.out.println(_uid+": atomic object value set to : "+nv);
+        }
 
-		A.commit();
+        A.commit();
 
-		try
-		{
-		    Thread.sleep((int) HammerThreadedObject.rand.nextFloat()*1000);
-		}
-		catch (InterruptedException e)
-		{
-		}
-	    }
-	    catch (TestException e)
-	    {
-		System.out.println(_uid+": AtomicObject exception raised: "+e);
-		A.abort();
+        try
+        {
+            Thread.sleep((int) HammerThreadedObject.rand.nextFloat()*1000);
+        }
+        catch (InterruptedException e)
+        {
+        }
+        }
+        catch (TestException e)
+        {
+        System.out.println(_uid+": AtomicObject exception raised: "+e);
+        A.abort();
 
-		Thread.yield();
-	    }
-	}
+        Thread.yield();
+        }
+    }
     }
 
 private Uid _uid;

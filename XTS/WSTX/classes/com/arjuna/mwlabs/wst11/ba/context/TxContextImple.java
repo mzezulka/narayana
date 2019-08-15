@@ -60,19 +60,19 @@ public class TxContextImple implements TxContext
 
     public boolean valid ()
     {
-    	return (_context != null) ;
+        return (_context != null) ;
     }
 
     public boolean equals (Object obj)
     {
-    	if (obj instanceof TxContextImple)
-    	{
-    	    TxContextImple compare = (TxContextImple) obj;
+        if (obj instanceof TxContextImple)
+        {
+            TxContextImple compare = (TxContextImple) obj;
 
-    	    return compare.context().equals(_context);
-    	}
-    	else
-    	    return false;
+            return compare.context().equals(_context);
+        }
+        else
+            return false;
     }
 
     public final String identifier ()

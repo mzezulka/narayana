@@ -66,56 +66,56 @@ import org.omg.CosTransactions.InvalidControl;
 
 public class Test27
 {
-	public static void main(String[] args)
-	{
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+    public static void main(String[] args)
+    {
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			boolean correct = true;
+            boolean correct = true;
 
-			Current current = OTS.get_current();
+            Current current = OTS.get_current();
 
-			current.begin();
-			Control control = current.get_control();
-			current.commit(false);
+            current.begin();
+            Control control = current.get_control();
+            current.commit(false);
 
-			try
-			{
-				current.resume(control);
-			}
-			catch (InvalidControl invalidControl)
-			{
-				System.err.println("Failed to resume committed transaction!");
-				correct = false;
-			}
+            try
+            {
+                current.resume(control);
+            }
+            catch (InvalidControl invalidControl)
+            {
+                System.err.println("Failed to resume committed transaction!");
+                correct = false;
+            }
 
-			if (correct)
-			{
-				System.out.println("Passed");
-			}
-			else
-			{
-				System.out.println("Failed");
-			}
-		}
-		catch (Exception exception)
-		{
-			System.out.println("Failed");
-			System.err.println("Test27.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
+            if (correct)
+            {
+                System.out.println("Passed");
+            }
+            else
+            {
+                System.out.println("Failed");
+            }
+        }
+        catch (Exception exception)
+        {
+            System.out.println("Failed");
+            System.err.println("Test27.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
 
-		try
-		{
-			OAInterface.shutdownOA();
-			ORBInterface.shutdownORB();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Testt27.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
-	}
+        try
+        {
+            OAInterface.shutdownOA();
+            ORBInterface.shutdownORB();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Testt27.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
+    }
 }

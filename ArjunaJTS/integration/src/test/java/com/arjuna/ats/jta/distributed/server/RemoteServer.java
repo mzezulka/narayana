@@ -27,17 +27,17 @@ import javax.transaction.xa.Xid;
 
 public interface RemoteServer {
 
-	public int prepare(Xid xid, boolean recover) throws XAException;
+    public int prepare(Xid xid, boolean recover) throws XAException;
 
-	public void commit(Xid xid, boolean onePhase, boolean recover) throws XAException;
+    public void commit(Xid xid, boolean onePhase, boolean recover) throws XAException;
 
-	public void rollback(Xid xid, boolean recover) throws XAException;
+    public void rollback(Xid xid, boolean recover) throws XAException;
 
-	public void forget(Xid xid, boolean recover) throws XAException;
+    public void forget(Xid xid, boolean recover) throws XAException;
 
-	public void beforeCompletion(Xid xid) throws SystemException;
+    public void beforeCompletion(Xid xid) throws SystemException;
 
-	public Xid[] recoverFor(String localServerName) throws XAException;
+    public Xid[] recoverFor(String localServerName) throws XAException;
 
-	public int getTransactionCount();
+    public int getTransactionCount();
 }

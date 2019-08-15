@@ -48,13 +48,13 @@ public class VoteConfirm implements Vote
 
     public boolean equals (Object o)
     {
-	if (o == null)
-	    return false;
+    if (o == null)
+        return false;
 
-	if (o instanceof VoteConfirm)
-	    return true;
-	else
-	    return false;
+    if (o instanceof VoteConfirm)
+        return true;
+    else
+        return false;
     }
 
     /**
@@ -63,7 +63,7 @@ public class VoteConfirm implements Vote
 
     public String toString ()
     {
-	return "org.w3c.wscf.twophase.vote.VoteConfirm";
+    return "org.w3c.wscf.twophase.vote.VoteConfirm";
     }
 
 }

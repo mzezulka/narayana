@@ -72,247 +72,247 @@ import java.util.Hashtable;
 
 public class EnlistDelistEnlistImpl01 implements ServiceOperations
 {
-	private boolean _isCorrect = true;
-	private XADataSource _xaDataSource = null;
+    private boolean _isCorrect = true;
+    private XADataSource _xaDataSource = null;
 
-	private String _databaseUser;
-	private String _databasePassword;
+    private String _databaseUser;
+    private String _databasePassword;
 
-	public EnlistDelistEnlistImpl01(String binding, String databaseUser, String databasePassword)
-			throws InvocationException
-	{
-		_databaseUser = databaseUser;
-		_databasePassword = databasePassword;
+    public EnlistDelistEnlistImpl01(String binding, String databaseUser, String databasePassword)
+            throws InvocationException
+    {
+        _databaseUser = databaseUser;
+        _databasePassword = databasePassword;
 
-		try
-		{
-			Hashtable env = new Hashtable();
-			String initialCtx = System.getProperty("Context.INITIAL_CONTEXT_FACTORY");
-			String bindingsLocation = System.getProperty("Context.PROVIDER_URL");
+        try
+        {
+            Hashtable env = new Hashtable();
+            String initialCtx = System.getProperty("Context.INITIAL_CONTEXT_FACTORY");
+            String bindingsLocation = System.getProperty("Context.PROVIDER_URL");
 
-			if (bindingsLocation != null)
-			{
-				env.put(javax.naming.Context.PROVIDER_URL, bindingsLocation);
-			}
+            if (bindingsLocation != null)
+            {
+                env.put(javax.naming.Context.PROVIDER_URL, bindingsLocation);
+            }
 
-			env.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY, initialCtx);
-			javax.naming.Context ctx = new InitialContext(env);
-			_xaDataSource = (XADataSource) ctx.lookup(binding);
-		}
-		catch (Exception exception)
-		{
-			System.err.println("EnlistDelistEnlist01.constructor: " + exception);
-			throw new InvocationException();
-		}
-	}
+            env.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY, initialCtx);
+            javax.naming.Context ctx = new InitialContext(env);
+            _xaDataSource = (XADataSource) ctx.lookup(binding);
+        }
+        catch (Exception exception)
+        {
+            System.err.println("EnlistDelistEnlist01.constructor: " + exception);
+            throw new InvocationException();
+        }
+    }
 
-	public void finalize()
-			throws Throwable
-	{
-		try
-		{
-			// close XADataSource ?
-		}
-		catch (Exception exception)
-		{
-			System.err.println("EnlistDelistEnlist01.finalize: " + exception);
-			throw exception;
-		}
-	}
+    public void finalize()
+            throws Throwable
+    {
+        try
+        {
+            // close XADataSource ?
+        }
+        catch (Exception exception)
+        {
+            System.err.println("EnlistDelistEnlist01.finalize: " + exception);
+            throw exception;
+        }
+    }
 
-	public boolean isCorrect()
-			throws InvocationException
-	{
-		return _isCorrect;
-	}
+    public boolean isCorrect()
+            throws InvocationException
+    {
+        return _isCorrect;
+    }
 
-	public void begin_begin()
-			throws InvocationException
-	{
-		boolean correct = true;
+    public void begin_begin()
+            throws InvocationException
+    {
+        boolean correct = true;
 
-		try
-		{
-			XAConnection xaConnection = _xaDataSource.getXAConnection(_databaseUser, _databasePassword);
+        try
+        {
+            XAConnection xaConnection = _xaDataSource.getXAConnection(_databaseUser, _databasePassword);
 
-			XAResource xaResource = xaConnection.getXAResource();
+            XAResource xaResource = xaConnection.getXAResource();
 
-			javax.transaction.TransactionManager tm = com.arjuna.ats.jta.TransactionManager.transactionManager();
+            javax.transaction.TransactionManager tm = com.arjuna.ats.jta.TransactionManager.transactionManager();
 
-			tm.begin();
+            tm.begin();
 
-			Transaction transaction = tm.getTransaction();
+            Transaction transaction = tm.getTransaction();
 
-			correct = correct && transaction.enlistResource(xaResource);
+            correct = correct && transaction.enlistResource(xaResource);
 
-			if (correct)
-			{
-				try
-				{
-					tm.begin();
-					correct = false;
-				}
-				catch (NotSupportedException notSupportedException)
-				{
-					// correct behaviour for nested XA transaction
-				}
-			}
+            if (correct)
+            {
+                try
+                {
+                    tm.begin();
+                    correct = false;
+                }
+                catch (NotSupportedException notSupportedException)
+                {
+                    // correct behaviour for nested XA transaction
+                }
+            }
 
-			tm.rollback();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			correct = false;
-		}
+            tm.rollback();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            correct = false;
+        }
 
-		_isCorrect = _isCorrect && correct;
-		return;
-	}
+        _isCorrect = _isCorrect && correct;
+        return;
+    }
 
-	public void begin_enlist_delist_enlist_commit()
-			throws InvocationException
-	{
-		boolean correct = true;
+    public void begin_enlist_delist_enlist_commit()
+            throws InvocationException
+    {
+        boolean correct = true;
 
-		try
-		{
-			XAConnection xaConnection = _xaDataSource.getXAConnection(_databaseUser, _databasePassword);
+        try
+        {
+            XAConnection xaConnection = _xaDataSource.getXAConnection(_databaseUser, _databasePassword);
 
-			XAResource xaResource = xaConnection.getXAResource();
+            XAResource xaResource = xaConnection.getXAResource();
 
-			javax.transaction.TransactionManager tm = com.arjuna.ats.jta.TransactionManager.transactionManager();
+            javax.transaction.TransactionManager tm = com.arjuna.ats.jta.TransactionManager.transactionManager();
 
-			tm.begin();
+            tm.begin();
 
-			Transaction transaction = tm.getTransaction();
+            Transaction transaction = tm.getTransaction();
 
-			correct = correct && transaction.enlistResource(xaResource);
+            correct = correct && transaction.enlistResource(xaResource);
 
-			if (correct)
-			{
-				correct = correct && transaction.delistResource(xaResource, XAResource.TMSUCCESS);
-			}
+            if (correct)
+            {
+                correct = correct && transaction.delistResource(xaResource, XAResource.TMSUCCESS);
+            }
 
-			if (correct)
-			{
-				correct = correct && transaction.enlistResource(xaResource);
-			}
+            if (correct)
+            {
+                correct = correct && transaction.enlistResource(xaResource);
+            }
 
-			if (correct)
-			{
-				tm.commit();
-			}
-			else
-			{
-				tm.rollback();
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			correct = false;
-		}
+            if (correct)
+            {
+                tm.commit();
+            }
+            else
+            {
+                tm.rollback();
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            correct = false;
+        }
 
-		_isCorrect = _isCorrect && correct;
-		return;
-	}
+        _isCorrect = _isCorrect && correct;
+        return;
+    }
 
-	public void begin_enlist_delist_close_commit()
-			throws InvocationException
-	{
-		boolean correct = true;
+    public void begin_enlist_delist_close_commit()
+            throws InvocationException
+    {
+        boolean correct = true;
 
-		try
-		{
-			XAConnection xaConnection = _xaDataSource.getXAConnection(_databaseUser, _databasePassword);
+        try
+        {
+            XAConnection xaConnection = _xaDataSource.getXAConnection(_databaseUser, _databasePassword);
 
-			XAResource xaResource = xaConnection.getXAResource();
-			Connection conn = xaConnection.getConnection();
+            XAResource xaResource = xaConnection.getXAResource();
+            Connection conn = xaConnection.getConnection();
 
-			javax.transaction.TransactionManager tm = com.arjuna.ats.jta.TransactionManager.transactionManager();
+            javax.transaction.TransactionManager tm = com.arjuna.ats.jta.TransactionManager.transactionManager();
 
-			tm.begin();
+            tm.begin();
 
-			Transaction transaction = tm.getTransaction();
+            Transaction transaction = tm.getTransaction();
 
-			correct = correct && transaction.enlistResource(xaResource);
+            correct = correct && transaction.enlistResource(xaResource);
 
-			if (correct)
-			{
-				correct = correct && transaction.delistResource(xaResource, XAResource.TMSUCCESS);
-			}
+            if (correct)
+            {
+                correct = correct && transaction.delistResource(xaResource, XAResource.TMSUCCESS);
+            }
 
-			if (correct)
-			{
-				conn.close();
-			}
+            if (correct)
+            {
+                conn.close();
+            }
 
-			if (correct)
-			{
-				tm.commit();
-			}
-			else
-			{
-				tm.rollback();
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			correct = false;
-		}
+            if (correct)
+            {
+                tm.commit();
+            }
+            else
+            {
+                tm.rollback();
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            correct = false;
+        }
 
-		_isCorrect = _isCorrect && correct;
-		return;
-	}
+        _isCorrect = _isCorrect && correct;
+        return;
+    }
 
-	public void begin_enlist_enlist_delist_commit()
-			throws InvocationException
-	{
-		boolean correct = true;
+    public void begin_enlist_enlist_delist_commit()
+            throws InvocationException
+    {
+        boolean correct = true;
 
-		try
-		{
-			XAConnection xaConnection = _xaDataSource.getXAConnection(_databaseUser, _databasePassword);
+        try
+        {
+            XAConnection xaConnection = _xaDataSource.getXAConnection(_databaseUser, _databasePassword);
 
-			XAResource xaResource = xaConnection.getXAResource();
-			Connection conn = xaConnection.getConnection();
+            XAResource xaResource = xaConnection.getXAResource();
+            Connection conn = xaConnection.getConnection();
 
-			javax.transaction.TransactionManager tm = com.arjuna.ats.jta.TransactionManager.transactionManager();
+            javax.transaction.TransactionManager tm = com.arjuna.ats.jta.TransactionManager.transactionManager();
 
-			tm.begin();
+            tm.begin();
 
-			Transaction transaction = tm.getTransaction();
+            Transaction transaction = tm.getTransaction();
 
-			correct = correct && transaction.enlistResource(xaResource);
+            correct = correct && transaction.enlistResource(xaResource);
 
-			if (correct)
-			{
-				correct = correct && transaction.enlistResource(xaResource);
-			}
+            if (correct)
+            {
+                correct = correct && transaction.enlistResource(xaResource);
+            }
 
-			if (correct)
-			{
-				correct = correct && transaction.delistResource(xaResource, XAResource.TMSUCCESS);
-			}
+            if (correct)
+            {
+                correct = correct && transaction.delistResource(xaResource, XAResource.TMSUCCESS);
+            }
 
-			if (correct)
-			{
-				tm.commit();
-			}
-			else
-			{
-				tm.rollback();
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			correct = false;
-		}
+            if (correct)
+            {
+                tm.commit();
+            }
+            else
+            {
+                tm.rollback();
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            correct = false;
+        }
 
-		_isCorrect = _isCorrect && correct;
-		return;
-	}
+        _isCorrect = _isCorrect && correct;
+        return;
+    }
 }

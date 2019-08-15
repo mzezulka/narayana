@@ -32,16 +32,16 @@ import org.jboss.tm.XAResourceRecovery;
 
 public class TestResourceRecovery implements XAResourceRecovery {
 
-	private String nodeName;
+    private String nodeName;
 
-	public TestResourceRecovery(String nodeName) {
-		this.nodeName = nodeName;
-		System.out.println("[" + Thread.currentThread().getName() + "] TestResourceRecovery (" + nodeName + ")");
-	}
+    public TestResourceRecovery(String nodeName) {
+        this.nodeName = nodeName;
+        System.out.println("[" + Thread.currentThread().getName() + "] TestResourceRecovery (" + nodeName + ")");
+    }
 
-	@Override
-	public XAResource[] getXAResources() throws RuntimeException {
-	    List<TestResource> resources = new ArrayList<TestResource>();
+    @Override
+    public XAResource[] getXAResources() throws RuntimeException {
+        List<TestResource> resources = new ArrayList<TestResource>();
         File file = new File(System.getProperty("user.dir") + "/distributedjta-tests/TestResource/" + nodeName + "/");
         if (file.exists() && file.isDirectory()) {
             File[] listFiles = file.listFiles();
@@ -57,8 +57,8 @@ public class TestResourceRecovery implements XAResourceRecovery {
                 }
             }
         }
-		System.out.println("[" + Thread.currentThread().getName() + "] TestResourceRecovery (" + nodeName + ") returning list of TestResources of length: " + resources.size());
-		return resources.toArray(new XAResource[] {});
-	}
+        System.out.println("[" + Thread.currentThread().getName() + "] TestResourceRecovery (" + nodeName + ") returning list of TestResources of length: " + resources.size());
+        return resources.toArray(new XAResource[] {});
+    }
 
 }

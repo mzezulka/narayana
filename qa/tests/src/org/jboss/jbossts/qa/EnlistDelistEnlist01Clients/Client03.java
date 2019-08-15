@@ -64,46 +64,46 @@ import org.jboss.jbossts.qa.Utils.ServerIORStore;
 
 public class Client03
 {
-	public static void main(String[] args)
-	{
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+    public static void main(String[] args)
+    {
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			String serviceIOR = ServerIORStore.loadIOR(args[args.length - 1]);
-			Service service = ServiceHelper.narrow(ORBInterface.orb().string_to_object(serviceIOR));
+            String serviceIOR = ServerIORStore.loadIOR(args[args.length - 1]);
+            Service service = ServiceHelper.narrow(ORBInterface.orb().string_to_object(serviceIOR));
 
-			boolean correct = true;
+            boolean correct = true;
 
-			service.begin_enlist_delist_close_commit();
-			correct = service.isCorrect();
+            service.begin_enlist_delist_close_commit();
+            correct = service.isCorrect();
 
-			if (correct)
-			{
-				System.out.println("Passed");
-			}
-			else
-			{
-				System.out.println("Failed");
-			}
-		}
-		catch (Exception exception)
-		{
-			System.out.println("Failed");
-			System.err.println("Client02.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
+            if (correct)
+            {
+                System.out.println("Passed");
+            }
+            else
+            {
+                System.out.println("Failed");
+            }
+        }
+        catch (Exception exception)
+        {
+            System.out.println("Failed");
+            System.err.println("Client02.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
 
-		try
-		{
-			OAInterface.shutdownOA();
-			ORBInterface.shutdownORB();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Client02.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
-	}
+        try
+        {
+            OAInterface.shutdownOA();
+            ORBInterface.shutdownORB();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Client02.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
+    }
 }

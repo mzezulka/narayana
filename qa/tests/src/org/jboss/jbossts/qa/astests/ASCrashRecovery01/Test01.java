@@ -28,7 +28,7 @@ import java.util.Map;
 public class Test01 implements ClientAction
 {
     public static void main(String args[])
-	{
+    {
         System.out.println("Passed");
     }
 

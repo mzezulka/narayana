@@ -26,76 +26,76 @@ import org.jboss.jbossts.qa.ArjunaCore.Utils.qautil;
 
 public class MemoryClient004 extends BaseTestClient
 {
-	public static void main(String[] args)
-	{
-		MemoryClient004 test = new MemoryClient004(args);
-	}
+    public static void main(String[] args)
+    {
+        MemoryClient004 test = new MemoryClient004(args);
+    }
 
-	private MemoryClient004(String[] args)
-	{
-		super(args);
-	}
+    private MemoryClient004(String[] args)
+    {
+        super(args);
+    }
 
-	public void Test()
-	{
-		try
-		{
-			setNumberOfCalls(3);
-			setNumberOfResources(2);
-			getClientThreshold(1);
+    public void Test()
+    {
+        try
+        {
+            setNumberOfCalls(3);
+            setNumberOfResources(2);
+            getClientThreshold(1);
 
-			TXBasicStateRecord[] mStateRecordList = new TXBasicStateRecord[mNumberOfResources];
-			//set up abstract records
-			for (int i = 0; i < mNumberOfResources; i++)
-			{
-				mStateRecordList[i] = new TXBasicStateRecord();
-			}
+            TXBasicStateRecord[] mStateRecordList = new TXBasicStateRecord[mNumberOfResources];
+            //set up abstract records
+            for (int i = 0; i < mNumberOfResources; i++)
+            {
+                mStateRecordList[i] = new TXBasicStateRecord();
+            }
 
-			for (int j = 0; j < mNumberOfResources; j++)
-			{
-				for (int i = 0; i < mMaxIteration; i++)
-				{
-					//start transaction
-					startTx();
-					mStateRecordList[j].increase();
-					if (i % 2 == 0)
-					{
-						commit();
-					}
-					else
-					{
-						abort();
-					}
-				}
-			}
+            for (int j = 0; j < mNumberOfResources; j++)
+            {
+                for (int i = 0; i < mMaxIteration; i++)
+                {
+                    //start transaction
+                    startTx();
+                    mStateRecordList[j].increase();
+                    if (i % 2 == 0)
+                    {
+                        commit();
+                    }
+                    else
+                    {
+                        abort();
+                    }
+                }
+            }
 
-			//get first memory reading.
-			getFirstReading();
+            //get first memory reading.
+            getFirstReading();
 
-			for (int j = 0; j < mNumberOfResources; j++)
-			{
-				for (int i = 0; i < mMaxIteration; i++)
-				{
-					startTx();
-					mStateRecordList[j].increase();
-					if (i % 2 == 0)
-					{
-						commit();
-					}
-					else
-					{
-						abort();
-					}
-				}
-			}
+            for (int j = 0; j < mNumberOfResources; j++)
+            {
+                for (int i = 0; i < mMaxIteration; i++)
+                {
+                    startTx();
+                    mStateRecordList[j].increase();
+                    if (i % 2 == 0)
+                    {
+                        commit();
+                    }
+                    else
+                    {
+                        abort();
+                    }
+                }
+            }
 
-			getSecondReading();
+            getSecondReading();
 
-			qaMemoryAssert();
-		}
-		catch (Exception e)
-		{
-			Fail("Error in MemoryClient004.test() :", e);
-		}
-	}
+            qaMemoryAssert();
+        }
+        catch (Exception e)
+        {
+            Fail("Error in MemoryClient004.test() :", e);
+        }
+    }
 }

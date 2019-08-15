@@ -65,47 +65,47 @@ import org.omg.CosTransactions.Status;
 
 public class Test34
 {
-	public static void main(String[] args)
-	{
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+    public static void main(String[] args)
+    {
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			boolean correct = true;
+            boolean correct = true;
 
-			Current current = OTS.get_current();
+            Current current = OTS.get_current();
 
-			current.begin();
-			current.rollback_only();
-			correct = (current.get_status() == Status.StatusMarkedRollback);
-			current.rollback();
+            current.begin();
+            current.rollback_only();
+            correct = (current.get_status() == Status.StatusMarkedRollback);
+            current.rollback();
 
-			if (correct)
-			{
-				System.out.println("Passed");
-			}
-			else
-			{
-				System.out.println("Failed");
-			}
-		}
-		catch (Exception exception)
-		{
-			System.out.println("Failed");
-			System.err.println("Test34.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
+            if (correct)
+            {
+                System.out.println("Passed");
+            }
+            else
+            {
+                System.out.println("Failed");
+            }
+        }
+        catch (Exception exception)
+        {
+            System.out.println("Failed");
+            System.err.println("Test34.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
 
-		try
-		{
-			OAInterface.shutdownOA();
-			ORBInterface.shutdownORB();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Test34.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
-	}
+        try
+        {
+            OAInterface.shutdownOA();
+            ORBInterface.shutdownORB();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Test34.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
+    }
 }

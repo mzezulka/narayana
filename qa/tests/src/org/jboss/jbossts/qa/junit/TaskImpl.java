@@ -454,8 +454,8 @@ public class TaskImpl implements Task
                 System.out.printf("%s waitFor removing task from reaper%n", getTaskPrefix());
                 TaskReaper.getReaper().remove(this);
             } else {
-			    System.out.printf("%s waitFor timed out%n", getTaskPrefix());
-			}
+                System.out.printf("%s waitFor timed out%n", getTaskPrefix());
+            }
             // setting this will forestall any pending attempt to timeout this task
             isDone = true;
 

@@ -45,17 +45,17 @@ import com.arjuna.ats.jts.logging.jtsLogger;
  */
 
 public class TopLevelTransactionRecoveryModule extends TransactionRecoveryModule
-		    implements RecoveryModule
+            implements RecoveryModule
 {
     public TopLevelTransactionRecoveryModule ()
     {
-	if (jtsLogger.logger.isDebugEnabled()) {
+    if (jtsLogger.logger.isDebugEnabled()) {
         jtsLogger.logger.debug("TopLevelTransactionRecoveryModule created");
     }
 
-	// Set the transaction type that this module wants to recover
-	if (_transactionType == null)
-	    _transactionType = ArjunaTransactionImple.typeName();
+    // Set the transaction type that this module wants to recover
+    if (_transactionType == null)
+        _transactionType = ArjunaTransactionImple.typeName();
     }
 
     /**
@@ -64,13 +64,13 @@ public class TopLevelTransactionRecoveryModule extends TransactionRecoveryModule
     public void periodicWorkFirstPass ()
     {
         jtsLogger.i18NLogger.info_recovery_transactions_TopLevelTransactionRecoveryModule_3();
-	super.periodicWorkFirstPass();
+    super.periodicWorkFirstPass();
     }
 
     public void periodicWorkSecondPass ()
     {
         jtsLogger.i18NLogger.info_recovery_transactions_TopLevelTransactionRecoveryModule_4();
-	super.periodicWorkSecondPass();
+    super.periodicWorkSecondPass();
     }
 
     /**
@@ -78,10 +78,10 @@ public class TopLevelTransactionRecoveryModule extends TransactionRecoveryModule
      */
     protected void initialise ()
     {
-	if (jtsLogger.logger.isDebugEnabled()) {
+    if (jtsLogger.logger.isDebugEnabled()) {
         jtsLogger.logger.debug("TopLevelTransactionRecoveryModule.initialise()");
     }
-	super.initialise();
+    super.initialise();
     }
 
 };

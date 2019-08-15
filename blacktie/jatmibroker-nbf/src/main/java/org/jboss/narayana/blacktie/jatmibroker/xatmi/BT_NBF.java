@@ -19,15 +19,15 @@ package org.jboss.narayana.blacktie.jatmibroker.xatmi;
 
 public interface BT_NBF extends Buffer {
 
-	public boolean btaddattribute(String attrId, Object attrValue);
+    public boolean btaddattribute(String attrId, Object attrValue);
 
-	public Object btgetattribute(String attrId, int index);
+    public Object btgetattribute(String attrId, int index);
 
-	public boolean btdelattribute(String attrId, int index);
+    public boolean btdelattribute(String attrId, int index);
 
-	public boolean btsetattribute(String attrId, int index, Object newValue);
+    public boolean btsetattribute(String attrId, int index, Object newValue);
 
-	public int getLen();
+    public int getLen();
 
-	public String toString();
+    public String toString();
 }

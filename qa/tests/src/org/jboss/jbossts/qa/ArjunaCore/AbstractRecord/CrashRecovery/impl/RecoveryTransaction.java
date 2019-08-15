@@ -37,26 +37,26 @@ import com.arjuna.ats.arjuna.coordinator.BasicAction;
 public class RecoveryTransaction extends BasicAction
 {
 
-	public RecoveryTransaction(Uid txId)
-	{
-		super(txId);
+    public RecoveryTransaction(Uid txId)
+    {
+        super(txId);
 
-		activate();
-	}
+        activate();
+    }
 
-	public void doAbort()
-	{
-		super.phase2Abort(true);
-	}
+    public void doAbort()
+    {
+        super.phase2Abort(true);
+    }
 
-	public void doCommit()
-	{
-		super.phase2Commit(true);
-	}
+    public void doCommit()
+    {
+        super.phase2Commit(true);
+    }
 
-	public String type()
-	{
-		return "/StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction";
-	}
+    public String type()
+    {
+        return "/StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction";
+    }
 
 }

@@ -28,33 +28,33 @@ import com.arjuna.wst.WrongStateException;
 class ParticipantCompletionParticipantAdapter implements BusinessAgreementWithParticipantCompletionParticipant
 {
     public void cancel()
-    	throws WrongStateException, SystemException
+        throws WrongStateException, SystemException
     {
     }
 
     public void close()
-    	throws WrongStateException, SystemException
+        throws WrongStateException, SystemException
     {
     }
 
     public void compensate()
-    	throws FaultedException, WrongStateException, SystemException
+        throws FaultedException, WrongStateException, SystemException
     {
     }
 
     public void error()
-    	throws SystemException
+        throws SystemException
     {
     }
 
     public String status()
-    	throws SystemException
+        throws SystemException
     {
-	return null ;
+    return null ;
     }
 
     public void unknown()
-    	throws SystemException
+        throws SystemException
     {
     }
 }

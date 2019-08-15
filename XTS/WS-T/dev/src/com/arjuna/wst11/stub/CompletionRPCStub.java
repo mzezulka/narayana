@@ -26,14 +26,14 @@ public class CompletionRPCStub implements
     private W3CEndpointReference _completionCoordinator = null;
     private String _id;
 
-	public CompletionRPCStub(final String id, final W3CEndpointReference completionCoordinator)
-			throws Exception
-	{
-		_completionCoordinator = completionCoordinator;
-		_id = id;
-	}
+    public CompletionRPCStub(final String id, final W3CEndpointReference completionCoordinator)
+            throws Exception
+    {
+        _completionCoordinator = completionCoordinator;
+        _id = id;
+    }
 
-	public void commit () throws TransactionRolledBackException,
+    public void commit () throws TransactionRolledBackException,
             UnknownTransactionException, SystemException
     {
         final MAP map = AddressingHelper.createNotificationContext(MessageId.getMessageId()) ;
@@ -63,10 +63,10 @@ public class CompletionRPCStub implements
         if (!result) {
             throw new TransactionRolledBackException() ;
         }
-	}
+    }
 
-	public void rollback () throws UnknownTransactionException, SystemException
-	{
+    public void rollback () throws UnknownTransactionException, SystemException
+    {
         final MAP map = AddressingHelper.createNotificationContext(MessageId.getMessageId()) ;
 
         try
@@ -85,5 +85,5 @@ public class CompletionRPCStub implements
             th.printStackTrace() ;
             throw new SystemException(th.getMessage()) ;
         }
-	}
+    }
 }

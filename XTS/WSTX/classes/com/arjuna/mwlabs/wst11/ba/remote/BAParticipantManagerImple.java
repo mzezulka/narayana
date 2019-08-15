@@ -62,55 +62,55 @@ public class BAParticipantManagerImple implements BAParticipantManager
             wstxLogger.logger.trace(getClass().getSimpleName() + " constructor. Participant id: " + participantId);
         }
 
-	try
-	{
-	    _coordManager = CoordinatorManagerFactory.coordinatorManager();
-	    _hier = _coordManager.currentActivity();
-	    _participantId = participantId;
-	}
-	catch (Exception ex)
-	{
-	    ex.printStackTrace();
-	}
+    try
+    {
+        _coordManager = CoordinatorManagerFactory.coordinatorManager();
+        _hier = _coordManager.currentActivity();
+        _participantId = participantId;
+    }
+    catch (Exception ex)
+    {
+        ex.printStackTrace();
+    }
     }
 
     public void exit () throws WrongStateException, UnknownTransactionException, SystemException
     {
-	try
-	{
+    try
+    {
         if (wstxLogger.logger.isTraceEnabled()) {
             wstxLogger.logger.trace(getClass().getSimpleName() + ".exit. Participant id: " + _participantId);
         }
 
-	    if (_hier == null)
-		throw new UnknownTransactionException();
+        if (_hier == null)
+        throw new UnknownTransactionException();
 
-	    _coordManager.resume(_hier);
+        _coordManager.resume(_hier);
 
-	    _coordManager.delistParticipant(_participantId);
+        _coordManager.delistParticipant(_participantId);
 
-	    _coordManager.suspend();
-	}
-	catch (com.arjuna.mw.wsas.exceptions.NoActivityException ex)
-	{
-	    throw new UnknownTransactionException();
-	}
-	catch (com.arjuna.mw.wscf.exceptions.InvalidParticipantException ex)
-	{
-	    throw new SystemException("UnknownParticipantException");
-	}
-	catch (com.arjuna.mw.wsas.exceptions.WrongStateException ex)
-	{
-	    throw new WrongStateException();
-	}
-	catch (InvalidActivityException ex)
-	{
-	    throw new UnknownTransactionException();
-	}
-	catch (com.arjuna.mw.wsas.exceptions.SystemException ex)
-	{
-	    throw new SystemException(ex.toString());
-	}
+        _coordManager.suspend();
+    }
+    catch (com.arjuna.mw.wsas.exceptions.NoActivityException ex)
+    {
+        throw new UnknownTransactionException();
+    }
+    catch (com.arjuna.mw.wscf.exceptions.InvalidParticipantException ex)
+    {
+        throw new SystemException("UnknownParticipantException");
+    }
+    catch (com.arjuna.mw.wsas.exceptions.WrongStateException ex)
+    {
+        throw new WrongStateException();
+    }
+    catch (InvalidActivityException ex)
+    {
+        throw new UnknownTransactionException();
+    }
+    catch (com.arjuna.mw.wsas.exceptions.SystemException ex)
+    {
+        throw new SystemException(ex.toString());
+    }
     }
 
     public void completed () throws WrongStateException, UnknownTransactionException, SystemException
@@ -119,37 +119,37 @@ public class BAParticipantManagerImple implements BAParticipantManager
             wstxLogger.logger.trace(getClass().getSimpleName() + ".completed. Participant id: " + _participantId);
         }
 
-	try
-	{
-	    if (_hier == null)
-		throw new UnknownTransactionException();
+    try
+    {
+        if (_hier == null)
+        throw new UnknownTransactionException();
 
-	    _coordManager.resume(_hier);
+        _coordManager.resume(_hier);
 
-	    _coordManager.participantCompleted(_participantId);
+        _coordManager.participantCompleted(_participantId);
 
-	    _coordManager.suspend();
-	}
-    	catch (com.arjuna.mw.wsas.exceptions.NoActivityException ex)
-	{
-	    throw new UnknownTransactionException();
-	}
-	catch (com.arjuna.mw.wscf.exceptions.InvalidParticipantException ex)
-	{
-	    throw new SystemException("UnknownParticipantException");
-	}
-	catch (com.arjuna.mw.wsas.exceptions.WrongStateException ex)
-	{
-	    throw new WrongStateException();
-	}
-	catch (InvalidActivityException ex)
-	{
-	    throw new UnknownTransactionException();
-	}
-	catch (com.arjuna.mw.wsas.exceptions.SystemException ex)
-	{
-	    throw new SystemException(ex.toString());
-	}
+        _coordManager.suspend();
+    }
+        catch (com.arjuna.mw.wsas.exceptions.NoActivityException ex)
+    {
+        throw new UnknownTransactionException();
+    }
+    catch (com.arjuna.mw.wscf.exceptions.InvalidParticipantException ex)
+    {
+        throw new SystemException("UnknownParticipantException");
+    }
+    catch (com.arjuna.mw.wsas.exceptions.WrongStateException ex)
+    {
+        throw new WrongStateException();
+    }
+    catch (InvalidActivityException ex)
+    {
+        throw new UnknownTransactionException();
+    }
+    catch (com.arjuna.mw.wsas.exceptions.SystemException ex)
+    {
+        throw new SystemException(ex.toString());
+    }
     }
 
     public void fail (final QName exceptionIdentifier) throws SystemException
@@ -159,8 +159,8 @@ public class BAParticipantManagerImple implements BAParticipantManager
                     + ", exceptionIdentifier: " + exceptionIdentifier);
         }
 
-	try
-	{
+    try
+    {
         if (_hier == null)
             throw new UnknownTransactionException();
 
@@ -170,7 +170,7 @@ public class BAParticipantManagerImple implements BAParticipantManager
             _coordManager.participantFaulted(_participantId);
 
             _coordManager.suspend();
-	}
+    }
     catch (final InvalidActivityException iae)
     {
         throw new SystemException("UnknownTransactionException");
@@ -179,18 +179,18 @@ public class BAParticipantManagerImple implements BAParticipantManager
     {
         throw new SystemException("UnknownTransactionException");
     }
-	catch (com.arjuna.mw.wscf.exceptions.InvalidParticipantException ex)
-	{
-	    throw new SystemException("UnknownParticipantException");
-	}
-    	catch (com.arjuna.mw.wsas.exceptions.NoActivityException ex)
-	{
-	    throw new SystemException("UnknownTransactionException");
-	}
-	catch (com.arjuna.mw.wsas.exceptions.SystemException ex)
-	{
-	    throw new SystemException(ex.toString());
-	}
+    catch (com.arjuna.mw.wscf.exceptions.InvalidParticipantException ex)
+    {
+        throw new SystemException("UnknownParticipantException");
+    }
+        catch (com.arjuna.mw.wsas.exceptions.NoActivityException ex)
+    {
+        throw new SystemException("UnknownTransactionException");
+    }
+    catch (com.arjuna.mw.wsas.exceptions.SystemException ex)
+    {
+        throw new SystemException(ex.toString());
+    }
     }
 
     public void cannotComplete () throws WrongStateException, UnknownTransactionException, SystemException
@@ -242,18 +242,18 @@ public class BAParticipantManagerImple implements BAParticipantManager
             wstxLogger.logger.trace(getClass().getSimpleName() + ".error. Participant id: " + _participantId);
         }
 
-	try
-	{
-	    _coordManager.setCancelOnly();
-	}
-	catch (com.arjuna.mw.wsas.exceptions.WrongStateException ex)
-	{
-	    throw new SystemException(ex.toString());
-	}
-	catch (com.arjuna.mw.wsas.exceptions.SystemException ex)
-	{
-	    throw new SystemException(ex.toString());
-	}
+    try
+    {
+        _coordManager.setCancelOnly();
+    }
+    catch (com.arjuna.mw.wsas.exceptions.WrongStateException ex)
+    {
+        throw new SystemException(ex.toString());
+    }
+    catch (com.arjuna.mw.wsas.exceptions.SystemException ex)
+    {
+        throw new SystemException(ex.toString());
+    }
     }
 
     private CoordinatorManager _coordManager = null;

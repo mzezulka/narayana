@@ -29,29 +29,29 @@ import com.arjuna.ats.jta.distributed.server.LookupProvider;
 
 public class ProxySynchronization implements Synchronization {
 
-	private String localServerName;
-	private String remoteServerName;
-	private Xid toRegisterAgainst;
+    private String localServerName;
+    private String remoteServerName;
+    private Xid toRegisterAgainst;
 
-	public ProxySynchronization(String localServerName, String remoteServerName, Xid toRegisterAgainst) {
-		this.localServerName = localServerName;
-		this.remoteServerName = remoteServerName;
-		this.toRegisterAgainst = toRegisterAgainst;
-	}
+    public ProxySynchronization(String localServerName, String remoteServerName, Xid toRegisterAgainst) {
+        this.localServerName = localServerName;
+        this.remoteServerName = remoteServerName;
+        this.toRegisterAgainst = toRegisterAgainst;
+    }
 
-	@Override
-	public void beforeCompletion() {
-		System.out.println("ProxySynchronization (" + localServerName + ":" + remoteServerName + ") beforeCompletion");
-		try {
-			LookupProvider.getInstance().lookup(remoteServerName).beforeCompletion(toRegisterAgainst);
-		} catch (SystemException e) {
-			// Nothing we can really do here
-			e.printStackTrace();
-		}
-	}
+    @Override
+    public void beforeCompletion() {
+        System.out.println("ProxySynchronization (" + localServerName + ":" + remoteServerName + ") beforeCompletion");
+        try {
+            LookupProvider.getInstance().lookup(remoteServerName).beforeCompletion(toRegisterAgainst);
+        } catch (SystemException e) {
+            // Nothing we can really do here
+            e.printStackTrace();
+        }
+    }
 
-	@Override
-	public void afterCompletion(int status) {
-		// These are not proxied but are handled during local commits
-	}
+    @Override
+    public void afterCompletion(int status) {
+        // These are not proxied but are handled during local commits
+    }
 }

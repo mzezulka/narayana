@@ -76,7 +76,7 @@ public class BlacktieStompAdministrationService extends MDBBlacktieService imple
     private static ModelControllerClient client;
 
     private class ServerInfo {
-	public final String name;
+    public final String name;
         public final boolean conversational;
         public final String type;
         public ServerInfo(String name, boolean conversational, String type) {
@@ -109,7 +109,7 @@ public class BlacktieStompAdministrationService extends MDBBlacktieService imple
         String type = "queue";
         if (!serviceName.startsWith(".")) {
             ServerInfo info = SERVICE_OWNERS.get(serviceName);
-	    if(info != null)
+        if(info != null)
             {
                conversational = info.conversational;
                type = info.type;
@@ -279,7 +279,7 @@ public class BlacktieStompAdministrationService extends MDBBlacktieService imple
                         prefix = "BTR_";
                     }
                     QUEUE_CREATION_TIMES.put(serviceName, System.currentTimeMillis());
-		    SERVICE_OWNERS.put(serviceName, new ServerInfo(serverName, conversational, type));
+            SERVICE_OWNERS.put(serviceName, new ServerInfo(serverName, conversational, type));
 
                     log.trace(serviceName);
 
@@ -409,8 +409,8 @@ public class BlacktieStompAdministrationService extends MDBBlacktieService imple
                 log.trace("Service " + serviceName + " exists for server: " + server);
                 if (operation.equals("tpadvertise")) {
                     log.trace("Advertising: " + serviceName);
-		    boolean conversational = st.nextToken().equals("1");
-		    String type = st.nextToken();
+            boolean conversational = st.nextToken().equals("1");
+            String type = st.nextToken();
                     String version = st.nextToken();
                     success[0] = (byte) deployQueue(serviceName, serverName, conversational, type, version);
                     log.trace("Advertised: " + serviceName);

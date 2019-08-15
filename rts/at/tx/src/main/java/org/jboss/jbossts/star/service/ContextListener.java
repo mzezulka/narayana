@@ -25,12 +25,12 @@ import javax.servlet.ServletContextListener;
 
 public class ContextListener implements ServletContextListener
 {
-	public void contextInitialized(ServletContextEvent event)
-	{
+    public void contextInitialized(ServletContextEvent event)
+    {
 //        String value = event.getServletContext().getInitParameter("resteasy.servlet.mapping.prefix");
         System.setProperty("resttx.context.path", event.getServletContext().getContextPath());
-	}
+    }
 
-	public void contextDestroyed(ServletContextEvent event) {
-	}
+    public void contextDestroyed(ServletContextEvent event) {
+    }
 }

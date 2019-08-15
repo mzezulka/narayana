@@ -43,122 +43,122 @@ import java.util.Properties;
 
 public class Cleanup01
 {
-	public static void main(String[] args)
-	{
-		boolean success = false;
-		boolean trying = true;
-		int tries = 0;
+    public static void main(String[] args)
+    {
+        boolean success = false;
+        boolean trying = true;
+        int tries = 0;
 
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			String profileName = args[args.length - 1];
+            String profileName = args[args.length - 1];
 
-			int numberOfDrivers = JDBCProfileStore.numberOfDrivers(profileName);
-			for (int index = 0; index < numberOfDrivers; index++)
-			{
-				String driver = JDBCProfileStore.driver(profileName, index);
+            int numberOfDrivers = JDBCProfileStore.numberOfDrivers(profileName);
+            for (int index = 0; index < numberOfDrivers; index++)
+            {
+                String driver = JDBCProfileStore.driver(profileName, index);
 
-				Class.forName(driver);
-			}
+                Class.forName(driver);
+            }
 
-			String databaseURL = JDBCProfileStore.databaseURL(profileName);
-			String databaseUser = JDBCProfileStore.databaseUser(profileName);
-			String databasePassword = JDBCProfileStore.databasePassword(profileName);
-			String databaseDynamicClass = JDBCProfileStore.databaseDynamicClass(profileName);
+            String databaseURL = JDBCProfileStore.databaseURL(profileName);
+            String databaseUser = JDBCProfileStore.databaseUser(profileName);
+            String databasePassword = JDBCProfileStore.databasePassword(profileName);
+            String databaseDynamicClass = JDBCProfileStore.databaseDynamicClass(profileName);
 
-			Connection connection;
-			if (databaseDynamicClass != null)
-			{
-				Properties databaseProperties = new Properties();
+            Connection connection;
+            if (databaseDynamicClass != null)
+            {
+                Properties databaseProperties = new Properties();
 
-				databaseProperties.put(com.arjuna.ats.jdbc.TransactionalDriver.userName, databaseUser);
-				databaseProperties.put(com.arjuna.ats.jdbc.TransactionalDriver.password, databasePassword);
-				databaseProperties.put(com.arjuna.ats.jdbc.TransactionalDriver.dynamicClass, databaseDynamicClass);
+                databaseProperties.put(com.arjuna.ats.jdbc.TransactionalDriver.userName, databaseUser);
+                databaseProperties.put(com.arjuna.ats.jdbc.TransactionalDriver.password, databasePassword);
+                databaseProperties.put(com.arjuna.ats.jdbc.TransactionalDriver.dynamicClass, databaseDynamicClass);
 
-				connection = DriverManager.getConnection(databaseURL, databaseProperties);
-			}
-			else
-			{
-				connection = DriverManager.getConnection(databaseURL, databaseUser, databasePassword);
-			}
+                connection = DriverManager.getConnection(databaseURL, databaseProperties);
+            }
+            else
+            {
+                connection = DriverManager.getConnection(databaseURL, databaseUser, databasePassword);
+            }
 
-			while (trying)
-			{
-				try
-				{
-					Statement statement = connection.createStatement();
+            while (trying)
+            {
+                try
+                {
+                    Statement statement = connection.createStatement();
 
-					System.err.println("DROP TABLE " + databaseUser + "_NumberTable");
-					statement.executeUpdate("DROP TABLE " + databaseUser + "_NumberTable");
+                    System.err.println("DROP TABLE " + databaseUser + "_NumberTable");
+                    statement.executeUpdate("DROP TABLE " + databaseUser + "_NumberTable");
 
-					statement.close();
-					connection.close();
+                    statement.close();
+                    connection.close();
 
-					trying = false;
-					success = true;
-					/* Server might have crashed and table might still be busy. */
-				}
-				catch (java.sql.SQLException s)
-				{
-					System.err.println("Cleanup01.main: " + s);
-					System.err.println("SQL state is: " + s.getSQLState());
-					if (s.getSQLState() == "42000" ||	/* no table to drop */
-							s.getSQLState() == "42S02" ||	/* table not found */
-							s.getSQLState() == null)		/* connection failed */
-					{
-						trying = false;
-					}
-					else
-					{
-						tries++;
-						if (tries >= 6)
-						{
-							trying = false;
-							System.err.println("Giving up.");
-						}
-						else
-						{
-							try
-							{
-								System.err.println("Sleeping " + (tries * 10) + " seconds and re-trying ...");
-								Thread.sleep(tries * 10000);
-							}
-							catch (Exception e)
-							{
-								System.err.println("Cleanup01.main: " + e);
-								trying = false;
-							}
-						}
-					}
-				}
-				catch (Exception e)
-				{
-					System.err.println("Cleanup01.main: " + e);
-					trying = false;
-				}
-			}
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Cleanup01.main: " + exception);
-		}
+                    trying = false;
+                    success = true;
+                    /* Server might have crashed and table might still be busy. */
+                }
+                catch (java.sql.SQLException s)
+                {
+                    System.err.println("Cleanup01.main: " + s);
+                    System.err.println("SQL state is: " + s.getSQLState());
+                    if (s.getSQLState() == "42000" ||    /* no table to drop */
+                            s.getSQLState() == "42S02" ||    /* table not found */
+                            s.getSQLState() == null)        /* connection failed */
+                    {
+                        trying = false;
+                    }
+                    else
+                    {
+                        tries++;
+                        if (tries >= 6)
+                        {
+                            trying = false;
+                            System.err.println("Giving up.");
+                        }
+                        else
+                        {
+                            try
+                            {
+                                System.err.println("Sleeping " + (tries * 10) + " seconds and re-trying ...");
+                                Thread.sleep(tries * 10000);
+                            }
+                            catch (Exception e)
+                            {
+                                System.err.println("Cleanup01.main: " + e);
+                                trying = false;
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    System.err.println("Cleanup01.main: " + e);
+                    trying = false;
+                }
+            }
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Cleanup01.main: " + exception);
+        }
 
-		try
-		{
-			OAInterface.shutdownOA();
-			ORBInterface.shutdownORB();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Cleanup01.main: " + exception);
-			exception.printStackTrace(System.err);
+        try
+        {
+            OAInterface.shutdownOA();
+            ORBInterface.shutdownORB();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Cleanup01.main: " + exception);
+            exception.printStackTrace(System.err);
 
-			success = false;
-		}
+            success = false;
+        }
 
-		System.out.println(success ? "Passed" : "Failed");
-	}
+        System.out.println(success ? "Passed" : "Failed");
+    }
 }

@@ -65,8 +65,8 @@ public class CoordinatorManagerFactory
 
     public static CoordinatorManager coordinatorManager () throws ProtocolNotRegisteredException, SystemException
     {
-		return coordinatorManager("TwoPhase11HLS");
-	}
+        return coordinatorManager("TwoPhase11HLS");
+    }
 
     /**
      * Obtain a reference to a coordinator that implements the specified

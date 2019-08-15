@@ -55,29 +55,29 @@ public class LockRecord extends AbstractRecord
 
     public LockRecord (LockManager lm, boolean rdOnly, BasicAction currAct)
     {
-	super(lm.get_uid(), lm.type(), ObjectType.ANDPERSISTENT);
+    super(lm.get_uid(), lm.type(), ObjectType.ANDPERSISTENT);
 
-	if (txojLogger.logger.isTraceEnabled())
-	{
-	    txojLogger.logger.trace("LockRecord::LockRecord("+lm.get_uid()+", "
-				       +(rdOnly ? "PREPARE_READONLY" : "WRITEABLE")+")");
-	}
+    if (txojLogger.logger.isTraceEnabled())
+    {
+        txojLogger.logger.trace("LockRecord::LockRecord("+lm.get_uid()+", "
+                       +(rdOnly ? "PREPARE_READONLY" : "WRITEABLE")+")");
+    }
 
-	actionHandle = currAct;
+    actionHandle = currAct;
 
-	managerAddress = lm;
-	readOnly = rdOnly;
-	managerType = lm.type();
+    managerAddress = lm;
+    readOnly = rdOnly;
+    managerType = lm.type();
     }
 
     public int typeIs ()
     {
-	return RecordType.LOCK;
+    return RecordType.LOCK;
     }
 
     public Object value ()
     {
-	return (Object) managerAddress;
+    return (Object) managerAddress;
     }
 
     public void setValue (Object o)
@@ -87,145 +87,145 @@ public class LockRecord extends AbstractRecord
 
     public int nestedAbort ()
     {
-	if (txojLogger.logger.isTraceEnabled())
-	{
-	    txojLogger.logger.trace("LockRecord::nestedAbort() for "+order());
-	}
+    if (txojLogger.logger.isTraceEnabled())
+    {
+        txojLogger.logger.trace("LockRecord::nestedAbort() for "+order());
+    }
 
-	/* default constructor problem. */
+    /* default constructor problem. */
 
-	if (managerAddress == null)
-	    return TwoPhaseOutcome.FINISH_ERROR;
+    if (managerAddress == null)
+        return TwoPhaseOutcome.FINISH_ERROR;
 
-	if (actionHandle != null)
-	{
-	    Uid toRelease = actionHandle.get_uid();
+    if (actionHandle != null)
+    {
+        Uid toRelease = actionHandle.get_uid();
 
-	    actionHandle = actionHandle.parent();
+        actionHandle = actionHandle.parent();
 
-	    if (!managerAddress.releaseAll(toRelease))
-	    {
+        if (!managerAddress.releaseAll(toRelease))
+        {
             txojLogger.i18NLogger.warn_LockRecord_2(toRelease);
 
-    		return TwoPhaseOutcome.FINISH_ERROR;
-	    }
-	}
-	else
+            return TwoPhaseOutcome.FINISH_ERROR;
+        }
+    }
+    else
         txojLogger.i18NLogger.warn_LockRecord_3();
 
-	return TwoPhaseOutcome.FINISH_OK;
+    return TwoPhaseOutcome.FINISH_OK;
     }
 
     public int nestedCommit ()
     {
-	if (txojLogger.logger.isTraceEnabled())
-	{
-	    txojLogger.logger.trace("LockRecord::nestedCommit() for "+order());
-	}
+    if (txojLogger.logger.isTraceEnabled())
+    {
+        txojLogger.logger.trace("LockRecord::nestedCommit() for "+order());
+    }
 
-	/* default constructor problem. */
+    /* default constructor problem. */
 
-	if (managerAddress == null)
-	    return TwoPhaseOutcome.FINISH_ERROR;
+    if (managerAddress == null)
+        return TwoPhaseOutcome.FINISH_ERROR;
 
-	if (actionHandle != null)
-	{
-	    Uid toRelease = actionHandle.get_uid();
+    if (actionHandle != null)
+    {
+        Uid toRelease = actionHandle.get_uid();
 
-	    actionHandle = actionHandle.parent();
+        actionHandle = actionHandle.parent();
 
-	    return (managerAddress.propagate(toRelease, actionHandle.get_uid()) ? TwoPhaseOutcome.FINISH_OK : TwoPhaseOutcome.FINISH_ERROR);
-	}
-	else
-	{
+        return (managerAddress.propagate(toRelease, actionHandle.get_uid()) ? TwoPhaseOutcome.FINISH_OK : TwoPhaseOutcome.FINISH_ERROR);
+    }
+    else
+    {
         txojLogger.i18NLogger.warn_LockRecord_4();
-	}
+    }
 
-	return TwoPhaseOutcome.FINISH_ERROR;
+    return TwoPhaseOutcome.FINISH_ERROR;
     }
 
     public int nestedPrepare ()
     {
-	if (txojLogger.logger.isTraceEnabled())
-	{
-	    txojLogger.logger.trace("LockRecord::nestedPrepare() for "+order());
-	}
+    if (txojLogger.logger.isTraceEnabled())
+    {
+        txojLogger.logger.trace("LockRecord::nestedPrepare() for "+order());
+    }
 
-	return TwoPhaseOutcome.PREPARE_OK;
+    return TwoPhaseOutcome.PREPARE_OK;
     }
 
     public int topLevelAbort ()
     {
-	if (txojLogger.logger.isTraceEnabled())
-	{
-	    txojLogger.logger.trace("LockRecord::topLevelAbort() for "+order());
-	}
+    if (txojLogger.logger.isTraceEnabled())
+    {
+        txojLogger.logger.trace("LockRecord::topLevelAbort() for "+order());
+    }
 
-	return nestedAbort();
+    return nestedAbort();
     }
 
     public int topLevelCommit ()
     {
-	if (txojLogger.logger.isTraceEnabled())
-	{
-	    txojLogger.logger.trace("LockRecord::topLevelCommit() for "+order());
-	}
+    if (txojLogger.logger.isTraceEnabled())
+    {
+        txojLogger.logger.trace("LockRecord::topLevelCommit() for "+order());
+    }
 
-	/* default constructor problem. */
+    /* default constructor problem. */
 
-	if (managerAddress == null)
-	    return TwoPhaseOutcome.FINISH_ERROR;
+    if (managerAddress == null)
+        return TwoPhaseOutcome.FINISH_ERROR;
 
-	if (actionHandle != null)
-	{
-	    if (!managerAddress.releaseAll(actionHandle.get_uid()))
-	    {
+    if (actionHandle != null)
+    {
+        if (!managerAddress.releaseAll(actionHandle.get_uid()))
+        {
             txojLogger.i18NLogger.warn_LockRecord_5(actionHandle.get_uid());
 
-    		return TwoPhaseOutcome.FINISH_ERROR;
-	    }
-	}
-	else
-	{
+            return TwoPhaseOutcome.FINISH_ERROR;
+        }
+    }
+    else
+    {
         txojLogger.i18NLogger.warn_LockRecord_6();
 
-	    return TwoPhaseOutcome.FINISH_ERROR;
-	}
+        return TwoPhaseOutcome.FINISH_ERROR;
+    }
 
-	return TwoPhaseOutcome.FINISH_OK;
+    return TwoPhaseOutcome.FINISH_OK;
     }
 
     public int topLevelPrepare ()
     {
-	if (txojLogger.logger.isTraceEnabled())
-	{
-	    txojLogger.logger.trace("LockRecord::topLevelPrepare() for "+order());
-	}
+    if (txojLogger.logger.isTraceEnabled())
+    {
+        txojLogger.logger.trace("LockRecord::topLevelPrepare() for "+order());
+    }
 
-	if (readOnly)
-	{
-	    if (topLevelCommit() == TwoPhaseOutcome.FINISH_OK)
-		return TwoPhaseOutcome.PREPARE_READONLY;
-	    else
-		return TwoPhaseOutcome.PREPARE_NOTOK;
-	}
+    if (readOnly)
+    {
+        if (topLevelCommit() == TwoPhaseOutcome.FINISH_OK)
+        return TwoPhaseOutcome.PREPARE_READONLY;
+        else
+        return TwoPhaseOutcome.PREPARE_NOTOK;
+    }
 
-	return TwoPhaseOutcome.PREPARE_OK;
+    return TwoPhaseOutcome.PREPARE_OK;
     }
 
     public String toString ()
     {
-	StringWriter strm = new StringWriter();
+    StringWriter strm = new StringWriter();
 
-	print(new PrintWriter(strm));
+    print(new PrintWriter(strm));
 
-	return strm.toString();
+    return strm.toString();
     }
 
     public void print (PrintWriter strm)
     {
-	super.print(strm);
-	strm.println("LockRecord");
+    super.print(strm);
+    strm.println("LockRecord");
     }
 
     /*
@@ -236,27 +236,27 @@ public class LockRecord extends AbstractRecord
     public boolean restore_state (InputObjectState o, int t)
     {
         txojLogger.i18NLogger.warn_LockRecord_7(type(), order());
-    	return false;
+        return false;
     }
 
     public boolean save_state (OutputObjectState o, int t)
     {
-	return true;
+    return true;
     }
 
     public String type ()
     {
-	return "/StateManager/AbstractRecord/LockRecord";
+    return "/StateManager/AbstractRecord/LockRecord";
     }
 
     public final boolean isReadOnly ()
     {
-	return readOnly;
+    return readOnly;
     }
 
     public final String lockType ()
     {
-	return managerType;
+    return managerType;
     }
 
     public void merge (AbstractRecord a)
@@ -269,48 +269,48 @@ public class LockRecord extends AbstractRecord
 
     public boolean shouldAdd (AbstractRecord a)
     {
-	return false;
+    return false;
     }
 
     public boolean shouldAlter (AbstractRecord a)
     {
-	return false;
+    return false;
     }
 
     public boolean shouldMerge (AbstractRecord a)
     {
-	return false;
+    return false;
     }
 
     public boolean shouldReplace (AbstractRecord ar)
     {
-	if ((order().equals(ar.order())) && typeIs() == ar.typeIs())
-	{
-	    /*
-	     * The first test should ensure that ar is a LockRecord.
-	     */
+    if ((order().equals(ar.order())) && typeIs() == ar.typeIs())
+    {
+        /*
+         * The first test should ensure that ar is a LockRecord.
+         */
 
-	    if (((LockRecord) ar).isReadOnly() && !readOnly)
-		return true;
-	}
+        if (((LockRecord) ar).isReadOnly() && !readOnly)
+        return true;
+    }
 
-	return false;
+    return false;
     }
 
     public LockRecord ()
     {
-	super();
+    super();
 
-	if (txojLogger.logger.isTraceEnabled())
-	{
-	    txojLogger.logger.trace("LockRecord::LockRecord()");
-	}
+    if (txojLogger.logger.isTraceEnabled())
+    {
+        txojLogger.logger.trace("LockRecord::LockRecord()");
+    }
 
-	actionHandle = null;
+    actionHandle = null;
 
-	managerAddress = null;
-	readOnly = false;
-	managerType = null;
+    managerAddress = null;
+    readOnly = false;
+    managerType = null;
     }
 
     protected BasicAction actionHandle;  // must be changed if we propagate

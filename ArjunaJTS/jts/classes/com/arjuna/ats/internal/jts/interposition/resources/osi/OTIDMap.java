@@ -49,18 +49,18 @@ class OTIDWrapper
 
     public OTIDWrapper (otid_t otid)
     {
-	_otid = otid;
-	_uid = new Uid();
+    _otid = otid;
+    _uid = new Uid();
     }
 
     public Uid get_uid ()
     {
-	return _uid;
+    return _uid;
     }
 
     public otid_t get_otid ()
     {
-	return _otid;
+    return _otid;
     }
 
     private otid_t _otid;
@@ -73,44 +73,44 @@ public class OTIDMap
 
     public static synchronized Uid find (otid_t otid)
     {
-	OTIDWrapper element = null;
+    OTIDWrapper element = null;
 
-	if (_otids.size() > 0)
-	{
-	    Enumeration e = _otids.elements();
+    if (_otids.size() > 0)
+    {
+        Enumeration e = _otids.elements();
 
-	    while (e.hasMoreElements())
-	    {
-		element = (OTIDWrapper) e.nextElement();
+        while (e.hasMoreElements())
+        {
+        element = (OTIDWrapper) e.nextElement();
 
-		if (OTIDMap.same(element.get_otid(), otid))
-		    return element.get_uid();
-	    }
-	}
+        if (OTIDMap.same(element.get_otid(), otid))
+            return element.get_uid();
+        }
+    }
 
-	/*
-	 * Got here, so must be new otid.
-	 */
+    /*
+     * Got here, so must be new otid.
+     */
 
-	element = new OTIDWrapper(otid);
+    element = new OTIDWrapper(otid);
 
-	_otids.put(element.get_uid(), element);
+    _otids.put(element.get_uid(), element);
 
-	return element.get_uid();
+    return element.get_uid();
     }
 
     public static synchronized boolean remove (Uid uid)
     {
-	OTIDWrapper wrapper = (OTIDWrapper) _otids.remove(uid);
+    OTIDWrapper wrapper = (OTIDWrapper) _otids.remove(uid);
 
-	if (wrapper != null)
-	{
-	    wrapper = null;
+    if (wrapper != null)
+    {
+        wrapper = null;
 
-	    return true;
-	}
-	else
-	    return false;
+        return true;
+    }
+    else
+        return false;
     }
 
     /*
@@ -119,23 +119,23 @@ public class OTIDMap
 
     private static boolean same (otid_t otid1, otid_t otid2)
     {
-	if ((otid1.formatID == otid2.formatID) &&
-	    (otid1.bqual_length == otid2.bqual_length))
-	{
-	    for (int i = 0; i < otid1.bqual_length; i++)
-	    {
-		if (otid1.tid[i] != otid2.tid[i])
-		    return false;
-	    }
+    if ((otid1.formatID == otid2.formatID) &&
+        (otid1.bqual_length == otid2.bqual_length))
+    {
+        for (int i = 0; i < otid1.bqual_length; i++)
+        {
+        if (otid1.tid[i] != otid2.tid[i])
+            return false;
+        }
 
-	    /*
-	     * Got here, so must be equal!
-	     */
+        /*
+         * Got here, so must be equal!
+         */
 
-	    return true;
-	}
-	else
-	    return false;
+        return true;
+    }
+    else
+        return false;
     }
 
     private static Hashtable _otids = new Hashtable();

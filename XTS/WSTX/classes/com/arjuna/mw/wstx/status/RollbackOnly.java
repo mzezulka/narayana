@@ -47,12 +47,12 @@ public class RollbackOnly implements Status
 
     public static RollbackOnly instance ()
     {
-	return _instance;
+    return _instance;
     }
 
     public String toString ()
     {
-	return "Status.RollbackOnly";
+    return "Status.RollbackOnly";
     }
 
     private RollbackOnly ()

@@ -65,63 +65,63 @@ import org.omg.CosTransactions.*;
 
 public class ServiceImpl01 implements ServiceOperations
 {
-	public ServiceImpl01(int objectNumber)
-	{
-		_objectNumber = objectNumber;
-	}
+    public ServiceImpl01(int objectNumber)
+    {
+        _objectNumber = objectNumber;
+    }
 
-	public void setup_oper(Control ctrl, int number_of_resources)
-	{
-		_resourceImpl = new ResourceImpl01[number_of_resources];
-		_resource = new Resource[number_of_resources];
-		_recoveryCoordinator = new RecoveryCoordinator[number_of_resources];
+    public void setup_oper(Control ctrl, int number_of_resources)
+    {
+        _resourceImpl = new ResourceImpl01[number_of_resources];
+        _resource = new Resource[number_of_resources];
+        _recoveryCoordinator = new RecoveryCoordinator[number_of_resources];
 
-		for (int index = 0; index < number_of_resources; index++)
-		{
-			try
-			{
-				_resourceImpl[index] = new ResourceImpl01(_objectNumber, index);
-				ResourcePOATie servant = new ResourcePOATie(_resourceImpl[index]);
+        for (int index = 0; index < number_of_resources; index++)
+        {
+            try
+            {
+                _resourceImpl[index] = new ResourceImpl01(_objectNumber, index);
+                ResourcePOATie servant = new ResourcePOATie(_resourceImpl[index]);
 
-				OAInterface.objectIsReady(servant);
-				_resource[index] = ResourceHelper.narrow(OAInterface.corbaReference(servant));
+                OAInterface.objectIsReady(servant);
+                _resource[index] = ResourceHelper.narrow(OAInterface.corbaReference(servant));
 
-				_recoveryCoordinator[index] = ctrl.get_coordinator().register_resource(_resource[index]);
-			}
-			catch (Exception exception)
-			{
-				System.err.println("ServiceImpl01.setup_oper: " + exception);
-				exception.printStackTrace(System.err);
-				_isCorrect = false;
-			}
-		}
-	}
+                _recoveryCoordinator[index] = ctrl.get_coordinator().register_resource(_resource[index]);
+            }
+            catch (Exception exception)
+            {
+                System.err.println("ServiceImpl01.setup_oper: " + exception);
+                exception.printStackTrace(System.err);
+                _isCorrect = false;
+            }
+        }
+    }
 
-	public boolean is_correct()
-	{
-		System.err.println("ServiceImpl01.is_correct: " + _isCorrect);
+    public boolean is_correct()
+    {
+        System.err.println("ServiceImpl01.is_correct: " + _isCorrect);
 
-		return _isCorrect;
-	}
+        return _isCorrect;
+    }
 
-	public ResourceTrace get_resource_trace(int resource_number)
-	{
-		ResourceTrace resourceTrace = ResourceTrace.ResourceTraceUnknown;
+    public ResourceTrace get_resource_trace(int resource_number)
+    {
+        ResourceTrace resourceTrace = ResourceTrace.ResourceTraceUnknown;
 
-		if ((resource_number >= 0) && (resource_number < _resourceImpl.length))
-		{
-			resourceTrace = _resourceImpl[resource_number].getTrace();
-		}
+        if ((resource_number >= 0) && (resource_number < _resourceImpl.length))
+        {
+            resourceTrace = _resourceImpl[resource_number].getTrace();
+        }
 
-		System.err.println("ServiceImpl01.get_resource_trace [O" + _objectNumber + ".R" + resource_number + "]: " + resourceTrace.value());
+        System.err.println("ServiceImpl01.get_resource_trace [O" + _objectNumber + ".R" + resource_number + "]: " + resourceTrace.value());
 
-		return resourceTrace;
-	}
+        return resourceTrace;
+    }
 
-	private int _objectNumber;
-	private boolean _isCorrect = true;
+    private int _objectNumber;
+    private boolean _isCorrect = true;
 
-	private ResourceImpl01[] _resourceImpl = null;
-	private Resource[] _resource = null;
-	private RecoveryCoordinator[] _recoveryCoordinator = null;
+    private ResourceImpl01[] _resourceImpl = null;
+    private Resource[] _resource = null;
+    private RecoveryCoordinator[] _recoveryCoordinator = null;
 }

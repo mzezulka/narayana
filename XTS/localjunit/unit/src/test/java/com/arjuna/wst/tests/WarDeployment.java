@@ -46,49 +46,49 @@ import com.arjuna.wst.tests.common.TestWrongStateExceptionBusinessAgreementWithP
 import com.arjuna.wst.tests.common.TestWrongStateExceptionParticipant;
 
 public class WarDeployment {
-	public static WebArchive getDeployment(Class<?>...args){
-		WebArchive archive = ShrinkWrap
-		.create(WebArchive.class, "test.war")
-		.addClass(TestInitialisation.class)
-		.addClass(TestUtil.class)
-		.addClass(TestAbortedVoteParticipant.class)
-		.addClass(TestFaultedExceptionBusinessAgreementWithCoordinatorCompletionParticipant.class)
-		.addClass(TestFaultedExceptionBusinessAgreementWithParticipantCompletionParticipant.class)
-		.addClass(TestNoExceptionBusinessAgreementWithCoordinatorCompletionParticipant.class)
-		.addClass(TestNoExceptionBusinessAgreementWithParticipantCompletionParticipant.class)
-		.addClass(TestNoExceptionParticipant.class)
-		.addClass(TestPreparedVoteParticipant.class)
-		.addClass(TestReadOnlyVoteParticipant.class)
-		.addClass(TestTransactionRolledBackExceptionParticipant.class)
-		.addClass(TestWrongStateExceptionParticipant.class)
-		.addClass(TestSystemExceptionParticipant.class)
-		.addClass(TestSystemExceptionBusinessAgreementWithParticipantCompletionParticipant.class)
-		.addClass(TestWrongStateExceptionBusinessAgreementWithParticipantCompletionParticipant.class)
-		.addClass(TestSystemExceptionBusinessAgreementWithCoordinatorCompletionParticipant.class)
-		.addClass(TestWrongStateExceptionBusinessAgreementWithCoordinatorCompletionParticipant.class)
-		.addClass(TestNoExceptionCompletionCoordinatorParticipant.class)
-		.addClass(TestTransactionRolledBackExceptionCompletionCoordinatorParticipant.class)
-		.addClass(TestUnknownTransactionExceptionCompletionCoordinatorParticipant.class)
-		.addClass(TestSystemExceptionCompletionCoordinatorParticipant.class)
-		.addClass(TestNoExceptionBAPMParticipant.class)
-		.addClass(TestWrongStateExceptionBAPMParticipant.class)
-		.addClass(TestSystemExceptionBAPMParticipant.class)
-		.addClass(TestNoExceptionBusinessActivityTerminator.class)
-		.addClass(TestUnknownTransactionExceptionBusinessActivityTerminator.class)
-		.addClass(TestTransactionRolledBackExceptionBusinessActivityTerminator.class)
-		.addClass(TestSystemExceptionBusinessActivityTerminator.class)
-		.addClass(BaseWSTTest.class)
-		.addClasses(args)
-		.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+    public static WebArchive getDeployment(Class<?>...args){
+        WebArchive archive = ShrinkWrap
+        .create(WebArchive.class, "test.war")
+        .addClass(TestInitialisation.class)
+        .addClass(TestUtil.class)
+        .addClass(TestAbortedVoteParticipant.class)
+        .addClass(TestFaultedExceptionBusinessAgreementWithCoordinatorCompletionParticipant.class)
+        .addClass(TestFaultedExceptionBusinessAgreementWithParticipantCompletionParticipant.class)
+        .addClass(TestNoExceptionBusinessAgreementWithCoordinatorCompletionParticipant.class)
+        .addClass(TestNoExceptionBusinessAgreementWithParticipantCompletionParticipant.class)
+        .addClass(TestNoExceptionParticipant.class)
+        .addClass(TestPreparedVoteParticipant.class)
+        .addClass(TestReadOnlyVoteParticipant.class)
+        .addClass(TestTransactionRolledBackExceptionParticipant.class)
+        .addClass(TestWrongStateExceptionParticipant.class)
+        .addClass(TestSystemExceptionParticipant.class)
+        .addClass(TestSystemExceptionBusinessAgreementWithParticipantCompletionParticipant.class)
+        .addClass(TestWrongStateExceptionBusinessAgreementWithParticipantCompletionParticipant.class)
+        .addClass(TestSystemExceptionBusinessAgreementWithCoordinatorCompletionParticipant.class)
+        .addClass(TestWrongStateExceptionBusinessAgreementWithCoordinatorCompletionParticipant.class)
+        .addClass(TestNoExceptionCompletionCoordinatorParticipant.class)
+        .addClass(TestTransactionRolledBackExceptionCompletionCoordinatorParticipant.class)
+        .addClass(TestUnknownTransactionExceptionCompletionCoordinatorParticipant.class)
+        .addClass(TestSystemExceptionCompletionCoordinatorParticipant.class)
+        .addClass(TestNoExceptionBAPMParticipant.class)
+        .addClass(TestWrongStateExceptionBAPMParticipant.class)
+        .addClass(TestSystemExceptionBAPMParticipant.class)
+        .addClass(TestNoExceptionBusinessActivityTerminator.class)
+        .addClass(TestUnknownTransactionExceptionBusinessActivityTerminator.class)
+        .addClass(TestTransactionRolledBackExceptionBusinessActivityTerminator.class)
+        .addClass(TestSystemExceptionBusinessActivityTerminator.class)
+        .addClass(BaseWSTTest.class)
+        .addClasses(args)
+        .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
 
-		archive.delete(ArchivePaths.create("META-INF/MANIFEST.MF"));
+        archive.delete(ArchivePaths.create("META-INF/MANIFEST.MF"));
 
-		final String ManifestMF = "Manifest-Version: 1.0\n"
-			+ "Dependencies: org.jboss.modules,org.jboss.msc,"
-			+ "org.jboss.jts,org.jboss.ws.api,javax.xml.ws.api,org.jboss.xts,"
-			+ "org.jboss.ws.jaxws-client services export,org.jboss.ws.cxf.jbossws-cxf-client services export\n";
-		archive.setManifest(new StringAsset(ManifestMF));
+        final String ManifestMF = "Manifest-Version: 1.0\n"
+            + "Dependencies: org.jboss.modules,org.jboss.msc,"
+            + "org.jboss.jts,org.jboss.ws.api,javax.xml.ws.api,org.jboss.xts,"
+            + "org.jboss.ws.jaxws-client services export,org.jboss.ws.cxf.jbossws-cxf-client services export\n";
+        archive.setManifest(new StringAsset(ManifestMF));
 
-		return archive;
-	}
+        return archive;
+    }
 }

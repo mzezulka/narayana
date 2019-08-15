@@ -18,7 +18,7 @@ public class JBossAS7ServerKillProcessor extends BaseServerKillProcessor {
     @Override
     protected boolean jbossIsAlive() throws Exception {
         //Command will 'exit 1' if jboss is not running and 'exit 0' if it is.
-    	return runShellCommandExitCode(getJBossAliveCmd()) == 0;
+        return runShellCommandExitCode(getJBossAliveCmd()) == 0;
     }
 
     @Override
@@ -29,15 +29,15 @@ public class JBossAS7ServerKillProcessor extends BaseServerKillProcessor {
 
     @Override
     protected void shutdownJBoss() throws Exception {
-    	runShellCommand(getShutdownJBossCmd());
+        runShellCommand(getShutdownJBossCmd());
 
         // wait 5 * 60 second for jboss-as shutdown complete
         for (int i = 0; i < numChecks; i++) {
 
             if (jbossIsAlive()) {
-            	Thread.sleep(5000);
+                Thread.sleep(5000);
             } else {
-            	getLogger().info("jboss-as shutdown after sending shutdown command");
+                getLogger().info("jboss-as shutdown after sending shutdown command");
                 return;
             }
         }
@@ -58,9 +58,9 @@ public class JBossAS7ServerKillProcessor extends BaseServerKillProcessor {
         return p.exitValue();
     }
 
-	@Override
-	protected String runShellCommand(String cmd) throws Exception {
-		getLogger().info("Executing shell command: '" + cmd + "'");
+    @Override
+    protected String runShellCommand(String cmd) throws Exception {
+        getLogger().info("Executing shell command: '" + cmd + "'");
         ProcessBuilder pb = new ProcessBuilder("/bin/sh", "-c", cmd);
         Process p = pb.start();
         String res = dumpStream("std out", p.getInputStream());
@@ -71,30 +71,30 @@ public class JBossAS7ServerKillProcessor extends BaseServerKillProcessor {
         p.destroy();
 
         return res;
-	}
+    }
 
-	@Override
-	protected Logger getLogger() {
-		return logger;
-	}
+    @Override
+    protected Logger getLogger() {
+        return logger;
+    }
 
-	@Override
-	protected String getJBossAliveCmd() {
-		return CHECK_JBOSS_ALIVE_CMD;
-	}
+    @Override
+    protected String getJBossAliveCmd() {
+        return CHECK_JBOSS_ALIVE_CMD;
+    }
 
-	@Override
-	protected String getDefunctJavaCmd() {
-		return CHECK_FOR_DEFUNCT_JAVA_CMD;
-	}
+    @Override
+    protected String getDefunctJavaCmd() {
+        return CHECK_FOR_DEFUNCT_JAVA_CMD;
+    }
 
-	@Override
-	protected String getShutdownJBossCmd() {
-		return SHUTDOWN_JBOSS_CMD;
-	}
+    @Override
+    protected String getShutdownJBossCmd() {
+        return SHUTDOWN_JBOSS_CMD;
+    }
 
-	@Override
-	protected String getProcessesCmd() {
-		return PS_AUX_CMD;
-	}
+    @Override
+    protected String getProcessesCmd() {
+        return PS_AUX_CMD;
+    }
 }

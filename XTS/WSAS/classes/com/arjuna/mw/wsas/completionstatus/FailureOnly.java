@@ -45,7 +45,7 @@ public class FailureOnly implements CompletionStatus
 
     public static FailureOnly instance ()
     {
-	return _instance;
+    return _instance;
     }
 
     /**
@@ -54,20 +54,20 @@ public class FailureOnly implements CompletionStatus
 
     public boolean equals (Object param)
     {
-	if (this == param)
-	    return true;
-	else
-	{
-	    if (param instanceof FailureOnly)
-		return true;
-	    else
-		return false;
-	}
+    if (this == param)
+        return true;
+    else
+    {
+        if (param instanceof FailureOnly)
+        return true;
+        else
+        return false;
+    }
     }
 
     public String toString ()
     {
-	return "CompletionStatus.FailureOnly";
+    return "CompletionStatus.FailureOnly";
     }
 
     private FailureOnly ()

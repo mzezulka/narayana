@@ -48,16 +48,16 @@ public class CadaverActivationRecord extends ActivationRecord
 
     public CadaverActivationRecord (StateManager sm)
     {
-	super(ObjectStatus.PASSIVE, sm, null);
+    super(ObjectStatus.PASSIVE, sm, null);
 
-	if (tsLogger.logger.isTraceEnabled()) {
+    if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("CadaverActivationRecord::CadaverActivationRecord(" + sm.get_uid() + ")");
     }
     }
 
     public boolean propagateOnAbort ()
     {
-	return true;
+    return true;
     }
 
     /*
@@ -66,73 +66,73 @@ public class CadaverActivationRecord extends ActivationRecord
 
     public int nestedAbort ()
     {
-	if (tsLogger.logger.isTraceEnabled()) {
+    if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("CadaverActivationRecord::nestedAbort() for " + get_uid());
     }
 
-	super.nestedAbort();
+    super.nestedAbort();
 
-	return TwoPhaseOutcome.FINISH_OK;
+    return TwoPhaseOutcome.FINISH_OK;
     }
 
     public int nestedCommit ()
     {
-	if (tsLogger.logger.isTraceEnabled()) {
+    if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("CadaverActivationRecord::nestedCommit() for " + get_uid());
     }
 
-	return TwoPhaseOutcome.FINISH_OK;
+    return TwoPhaseOutcome.FINISH_OK;
     }
 
     public int nestedPrepare ()
     {
-	if (tsLogger.logger.isTraceEnabled()) {
+    if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("CadaverActivationRecord::nestedPrepare() for " + get_uid());
     }
 
-	super.nestedPrepare();
+    super.nestedPrepare();
 
-	return TwoPhaseOutcome.PREPARE_READONLY;
+    return TwoPhaseOutcome.PREPARE_READONLY;
     }
 
     public int topLevelAbort ()
     {
-	if (tsLogger.logger.isTraceEnabled()) {
+    if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("CadaverActivationRecord::topLevelAbort() for " + get_uid());
     }
 
-	super.topLevelAbort();
+    super.topLevelAbort();
 
-	return TwoPhaseOutcome.FINISH_OK;
+    return TwoPhaseOutcome.FINISH_OK;
     }
 
     public int topLevelCommit ()
     {
-	if (tsLogger.logger.isTraceEnabled()) {
+    if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("CadaverActivationRecord::topLevelCommit() for " + get_uid());
     }
 
-	super.topLevelCommit();
+    super.topLevelCommit();
 
-	return TwoPhaseOutcome.FINISH_OK;
+    return TwoPhaseOutcome.FINISH_OK;
     }
 
     public int topLevelPrepare ()
     {
-	if (tsLogger.logger.isTraceEnabled()) {
+    if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("CadaverActivationRecord::topLevelPrepare() for " + get_uid());
     }
 
-	// make sure SM instance forgets about action
+    // make sure SM instance forgets about action
 
-	super.topLevelCommit();
+    super.topLevelCommit();
 
-	return TwoPhaseOutcome.PREPARE_READONLY;
+    return TwoPhaseOutcome.PREPARE_READONLY;
     }
 
     public String type ()
     {
-	return "/StateManager/AbstractRecord/CadaverActivationRecord";
+    return "/StateManager/AbstractRecord/CadaverActivationRecord";
     }
 
     /*
@@ -148,15 +148,15 @@ public class CadaverActivationRecord extends ActivationRecord
 
     public boolean shouldReplace (AbstractRecord ar)
     {
-	return  (((order().equals(ar.order())) &&
-		  ar.typeIs() == RecordType.ACTIVATION ) ? true : false);
+    return  (((order().equals(ar.order())) &&
+          ar.typeIs() == RecordType.ACTIVATION ) ? true : false);
     }
 
     protected CadaverActivationRecord ()
     {
-	super();
+    super();
 
-	if (tsLogger.logger.isTraceEnabled()) {
+    if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("CadaverActivationRecord::CadaverActivationRecord ()");
     }
     }

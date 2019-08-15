@@ -86,9 +86,9 @@ public class RecoveryBACoordinator extends BACoordinator {
                (status == ActionStatus.H_COMMIT) ||
                (status == ActionStatus.H_MIXED) ||
                (status == ActionStatus.H_HAZARD))
-	   {
-	       super.phase2Commit( _reportHeuristics ) ;
-	   } else if ((status ==  ActionStatus.ABORTED) ||
+       {
+           super.phase2Commit( _reportHeuristics ) ;
+       } else if ((status ==  ActionStatus.ABORTED) ||
                (status == ActionStatus.H_ROLLBACK) ||
                (status == ActionStatus.ABORTING) ||
                (status == ActionStatus.ABORT_ONLY))

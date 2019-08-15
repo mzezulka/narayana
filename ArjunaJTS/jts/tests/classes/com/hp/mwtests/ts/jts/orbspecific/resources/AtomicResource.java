@@ -47,54 +47,54 @@ public class AtomicResource extends org.omg.CosTransactions.ResourcePOA
 
     public AtomicResource (boolean doCommit)
     {
-	ORBManager.getPOA().objectIsReady(this);
+    ORBManager.getPOA().objectIsReady(this);
 
-	shouldCommit = doCommit;
+    shouldCommit = doCommit;
 
-	ref = org.omg.CosTransactions.ResourceHelper.narrow(ORBManager.getPOA().corbaReference(this));
+    ref = org.omg.CosTransactions.ResourceHelper.narrow(ORBManager.getPOA().corbaReference(this));
     }
 
     public Resource getReference ()
     {
-	return ref;
+    return ref;
     }
 
     public org.omg.CosTransactions.Vote prepare () throws SystemException, HeuristicMixed, HeuristicHazard
     {
-	System.out.println("ATOMIC : PREPARE");
+    System.out.println("ATOMIC : PREPARE");
 
-	if (shouldCommit)
-	{
-	    System.out.println("\tATOMIC : VoteCommit");
+    if (shouldCommit)
+    {
+        System.out.println("\tATOMIC : VoteCommit");
 
-	    return Vote.VoteCommit;
-	}
-	else
-	{
-	    System.out.println("\tATOMIC : VoteRollback");
+        return Vote.VoteCommit;
+    }
+    else
+    {
+        System.out.println("\tATOMIC : VoteRollback");
 
-	    return Vote.VoteRollback;
-	}
+        return Vote.VoteRollback;
+    }
     }
 
     public void rollback () throws SystemException, HeuristicCommit, HeuristicMixed, HeuristicHazard
     {
-	System.out.println("ATOMIC : ROLLBACK");
+    System.out.println("ATOMIC : ROLLBACK");
     }
 
     public void commit () throws SystemException, NotPrepared, HeuristicRollback, HeuristicMixed, HeuristicHazard
     {
-	System.out.println("ATOMIC : COMMIT");
+    System.out.println("ATOMIC : COMMIT");
     }
 
     public void forget () throws SystemException
     {
-	System.out.println("ATOMIC : FORGET");
+    System.out.println("ATOMIC : FORGET");
     }
 
     public void commit_one_phase () throws SystemException, HeuristicHazard
     {
-	System.out.println("ATOMIC : COMMIT_ONE_PHASE");
+    System.out.println("ATOMIC : COMMIT_ONE_PHASE");
     }
 
     private boolean shouldCommit;

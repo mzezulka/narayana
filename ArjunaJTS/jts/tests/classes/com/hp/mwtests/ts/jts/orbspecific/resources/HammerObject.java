@@ -54,207 +54,207 @@ public class HammerObject extends LockManager implements com.hp.mwtests.ts.jts.T
 
     public HammerObject ()
     {
-	super(ObjectType.ANDPERSISTENT);
+    super(ObjectType.ANDPERSISTENT);
 
-	CurrentImple current = OTSImpleManager.current();
+    CurrentImple current = OTSImpleManager.current();
 
-	_value = 0;
+    _value = 0;
 
-	try
-	{
-	    current.begin();
+    try
+    {
+        current.begin();
 
-	    if (setlock(new Lock(LockMode.WRITE), 0) == LockResult.GRANTED)
-	    {
-		_value = 0;
-		current.commit(true);
-	    }
-	    else
-		current.rollback();
-	}
-	catch (Exception e)
-	{
-	    System.err.println("HammerObject: "+e);
-	}
+        if (setlock(new Lock(LockMode.WRITE), 0) == LockResult.GRANTED)
+        {
+        _value = 0;
+        current.commit(true);
+        }
+        else
+        current.rollback();
+    }
+    catch (Exception e)
+    {
+        System.err.println("HammerObject: "+e);
+    }
     }
 
     public HammerObject (Uid u)
     {
-	super(u);
+    super(u);
     }
 
     public void finalize () throws Throwable
     {
-	super.terminate();
-	super.finalize();
+    super.terminate();
+    super.finalize();
     }
 
     public boolean incr (int value, Control control) throws SystemException
     {
-	boolean res = false;
-	ExplicitInterposition inter = new ExplicitInterposition();
+    boolean res = false;
+    ExplicitInterposition inter = new ExplicitInterposition();
 
-	try
-	{
-	    inter.registerTransaction(control);
-	}
-	catch (Exception e)
-	{
-	    System.err.println("WARNING HammerObject.incr - could not do interposition");
-	    return false;
-	}
+    try
+    {
+        inter.registerTransaction(control);
+    }
+    catch (Exception e)
+    {
+        System.err.println("WARNING HammerObject.incr - could not do interposition");
+        return false;
+    }
 
-	CurrentImple current = OTSImpleManager.current();
+    CurrentImple current = OTSImpleManager.current();
 
-	try
-	{
-	    current.begin();
+    try
+    {
+        current.begin();
 
-	    if (setlock(new Lock(LockMode.WRITE), 0) == LockResult.GRANTED)
-	    {
-		_value = _value + value;
+        if (setlock(new Lock(LockMode.WRITE), 0) == LockResult.GRANTED)
+        {
+        _value = _value + value;
 
-		current.commit(true);
-		res = true;
-	    }
-	    else
-		current.rollback();
-	}
-	catch (Exception e)
-	{
-	    System.err.println("HammerObject.incr: "+e);
+        current.commit(true);
+        res = true;
+        }
+        else
+        current.rollback();
+    }
+    catch (Exception e)
+    {
+        System.err.println("HammerObject.incr: "+e);
 
-	    res = false;
-	}
+        res = false;
+    }
 
-	inter.unregisterTransaction();
+    inter.unregisterTransaction();
 
-	return res;
+    return res;
     }
 
     public boolean set (int value, Control control) throws SystemException
     {
-	boolean res = false;
-	ExplicitInterposition inter = new ExplicitInterposition();
+    boolean res = false;
+    ExplicitInterposition inter = new ExplicitInterposition();
 
-	try
-	{
-	    inter.registerTransaction(control);
-	}
-	catch (Exception e)
-	{
-	    System.err.println("WARNING HammerObject.set - could not do interposition");
-	    return false;
-	}
+    try
+    {
+        inter.registerTransaction(control);
+    }
+    catch (Exception e)
+    {
+        System.err.println("WARNING HammerObject.set - could not do interposition");
+        return false;
+    }
 
-	CurrentImple current = OTSImpleManager.current();
+    CurrentImple current = OTSImpleManager.current();
 
-	try
-	{
-	    current.begin();
+    try
+    {
+        current.begin();
 
-	    if (setlock(new Lock(LockMode.WRITE), 0) == LockResult.GRANTED)
-	    {
-		_value = value;
+        if (setlock(new Lock(LockMode.WRITE), 0) == LockResult.GRANTED)
+        {
+        _value = value;
 
-		current.commit(true);
-		res = true;
-	    }
-	    else
-		current.rollback();
-	}
-	catch (Exception e)
-	{
-	    System.err.println("HammerObject.set: "+e);
+        current.commit(true);
+        res = true;
+        }
+        else
+        current.rollback();
+    }
+    catch (Exception e)
+    {
+        System.err.println("HammerObject.set: "+e);
 
-	    res = false;
-	}
+        res = false;
+    }
 
-	inter.unregisterTransaction();
+    inter.unregisterTransaction();
 
-	return res;
+    return res;
     }
 
     public boolean get (IntHolder value, Control control) throws SystemException
     {
-	boolean res = false;
-	ExplicitInterposition inter = new ExplicitInterposition();
+    boolean res = false;
+    ExplicitInterposition inter = new ExplicitInterposition();
 
-	try
-	{
-	    inter.registerTransaction(control);
-	}
-	catch (Exception e)
-	{
-	    System.err.println("WARNING HammerObject.incr - could not do interposition");
-	    return false;
-	}
+    try
+    {
+        inter.registerTransaction(control);
+    }
+    catch (Exception e)
+    {
+        System.err.println("WARNING HammerObject.incr - could not do interposition");
+        return false;
+    }
 
-	CurrentImple current = OTSImpleManager.current();
+    CurrentImple current = OTSImpleManager.current();
 
-	try
-	{
-	    current.begin();
+    try
+    {
+        current.begin();
 
-	    if (setlock(new Lock(LockMode.READ), 0) == LockResult.GRANTED)
-	    {
-		value.value = _value;
+        if (setlock(new Lock(LockMode.READ), 0) == LockResult.GRANTED)
+        {
+        value.value = _value;
 
-		current.commit(true);
-		res = true;
-	    }
-	    else
-		current.rollback();
-	}
-	catch (Exception e)
-	{
-	    System.err.println("HammerObject.get: "+e);
+        current.commit(true);
+        res = true;
+        }
+        else
+        current.rollback();
+    }
+    catch (Exception e)
+    {
+        System.err.println("HammerObject.get: "+e);
 
-	    res = false;
-	}
+        res = false;
+    }
 
-	inter.unregisterTransaction();
+    inter.unregisterTransaction();
 
-	return res;
+    return res;
     }
 
     public boolean save_state (OutputObjectState os, int ot)
     {
-	if (!super.save_state(os, ot))
-	    return false;
+    if (!super.save_state(os, ot))
+        return false;
 
-	try
-	{
-	    os.packInt(_value);
+    try
+    {
+        os.packInt(_value);
 
-	    return true;
-	}
-	catch (IOException e)
-	{
-	    return false;
-	}
+        return true;
+    }
+    catch (IOException e)
+    {
+        return false;
+    }
     }
 
     public boolean restore_state (InputObjectState os, int ot)
     {
-	if (!super.restore_state(os, ot))
-	    return false;
+    if (!super.restore_state(os, ot))
+        return false;
 
-	try
-	{
-	    _value = os.unpackInt();
+    try
+    {
+        _value = os.unpackInt();
 
-	    return true;
-	}
-	catch (IOException e)
-	{
-	    return false;
-	}
+        return true;
+    }
+    catch (IOException e)
+    {
+        return false;
+    }
     }
 
     public String type ()
     {
-	return "/StateManager/LockManager/HammerObject";
+    return "/StateManager/LockManager/HammerObject";
     }
 
     private int _value;

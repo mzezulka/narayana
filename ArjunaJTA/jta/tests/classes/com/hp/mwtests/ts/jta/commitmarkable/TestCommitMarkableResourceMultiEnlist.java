@@ -36,49 +36,49 @@ import com.arjuna.ats.arjuna.recovery.RecoveryManager;
 
 public class TestCommitMarkableResourceMultiEnlist {
 
-	private String resetPropertiesFile;
+    private String resetPropertiesFile;
 
-	@Before
-	public void setup() throws Exception {
+    @Before
+    public void setup() throws Exception {
 
-		resetPropertiesFile = System
-				.getProperty("com.arjuna.ats.arjuna.common.propertiesFile");
+        resetPropertiesFile = System
+                .getProperty("com.arjuna.ats.arjuna.common.propertiesFile");
 
-		System.setProperty("com.arjuna.ats.arjuna.common.propertiesFile",
-					"commitmarkableresourcejbossts-properties.xml");
+        System.setProperty("com.arjuna.ats.arjuna.common.propertiesFile",
+                    "commitmarkableresourcejbossts-properties.xml");
 
-		RecoveryManager.manager(RecoveryManager.DIRECT_MANAGEMENT);
-	}
+        RecoveryManager.manager(RecoveryManager.DIRECT_MANAGEMENT);
+    }
 
-	@After
-	public void tearDown() {
-		if (resetPropertiesFile != null) {
-			System.setProperty("com.arjuna.ats.arjuna.common.propertiesFile",
-					resetPropertiesFile);
-		} else {
-			System.clearProperty("com.arjuna.ats.arjuna.common.propertiesFile");
-		}
-	}
+    @After
+    public void tearDown() {
+        if (resetPropertiesFile != null) {
+            System.setProperty("com.arjuna.ats.arjuna.common.propertiesFile",
+                    resetPropertiesFile);
+        } else {
+            System.clearProperty("com.arjuna.ats.arjuna.common.propertiesFile");
+        }
+    }
 
-	@Test
-	public void testFailDoubleEnlist() throws NotSupportedException,
-			SystemException, IllegalStateException, RollbackException,
-			SQLException {
-		JdbcDataSource dataSource = new JdbcDataSource();
-		dataSource.setURL("jdbc:h2:mem:JBTMDB;MVCC=TRUE");
+    @Test
+    public void testFailDoubleEnlist() throws NotSupportedException,
+            SystemException, IllegalStateException, RollbackException,
+            SQLException {
+        JdbcDataSource dataSource = new JdbcDataSource();
+        dataSource.setURL("jdbc:h2:mem:JBTMDB;MVCC=TRUE");
 
-		javax.transaction.TransactionManager tm = com.arjuna.ats.jta.TransactionManager
-				.transactionManager();
+        javax.transaction.TransactionManager tm = com.arjuna.ats.jta.TransactionManager
+                .transactionManager();
 
-		tm.begin();
+        tm.begin();
 
-		tm.getTransaction().enlistResource(
-				new JDBCConnectableResource(dataSource.getConnection()));
-		if (tm.getTransaction().enlistResource(
-				new JDBCConnectableResource(dataSource.getConnection()))) {
-			fail();
-		}
+        tm.getTransaction().enlistResource(
+                new JDBCConnectableResource(dataSource.getConnection()));
+        if (tm.getTransaction().enlistResource(
+                new JDBCConnectableResource(dataSource.getConnection()))) {
+            fail();
+        }
 
-		tm.rollback();
-	}
+        tm.rollback();
+    }
 }

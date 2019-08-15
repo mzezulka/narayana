@@ -48,20 +48,20 @@ public class CheckedActions
 
     public static final synchronized CheckedAction get () throws SystemException
     {
-    	if (otsCheckedAction != null)
+        if (otsCheckedAction != null)
         {
-    	    return (CheckedAction) otsCheckedAction.get(ThreadUtil.getThreadId());
+            return (CheckedAction) otsCheckedAction.get(ThreadUtil.getThreadId());
         }
-    	else
-    	    return null;
+        else
+            return null;
     }
 
     public static final synchronized void set (CheckedAction ca) throws SystemException
     {
-    	if (otsCheckedAction == null)
-    	    otsCheckedAction = new Hashtable<String, CheckedAction>();
+        if (otsCheckedAction == null)
+            otsCheckedAction = new Hashtable<String, CheckedAction>();
 
-    	otsCheckedAction.put(ThreadUtil.getThreadId(), ca);
+        otsCheckedAction.put(ThreadUtil.getThreadId(), ca);
     }
 
     private static Hashtable<String, CheckedAction> otsCheckedAction = null;

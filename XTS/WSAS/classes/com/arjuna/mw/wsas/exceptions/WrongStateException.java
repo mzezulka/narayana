@@ -49,17 +49,17 @@ public class WrongStateException extends WSASException
 
     public WrongStateException ()
     {
-	super();
+    super();
     }
 
     public WrongStateException (String s)
     {
-	super(s);
+    super(s);
     }
 
     public WrongStateException (String s, int errorcode)
     {
-	super(s, errorcode);
+    super(s, errorcode);
     }
 
 }

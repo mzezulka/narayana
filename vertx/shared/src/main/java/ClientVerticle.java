@@ -49,28 +49,28 @@ public class ClientVerticle extends AbstractVerticle {
 
     //Now send some data
     for (int i = 0; i < 10; i++) {
-	AtomicAction A = new AtomicAction();
-	boolean shouldCommit = true;
+    AtomicAction A = new AtomicAction();
+    boolean shouldCommit = true;
 
-	A.begin();
+    A.begin();
 
-	try
-	{
-	    obj1.increment();
+    try
+    {
+        obj1.increment();
 
-	    System.out.println("State value is: "+obj1.value());
-	}
-	catch (final Throwable ex)
-	{
-	    ex.printStackTrace();
+        System.out.println("State value is: "+obj1.value());
+    }
+    catch (final Throwable ex)
+    {
+        ex.printStackTrace();
 
-	    shouldCommit = false;
-	}
+        shouldCommit = false;
+    }
 
-	if (shouldCommit)
-	    A.commit();
-	else
-	    A.abort();
+    if (shouldCommit)
+        A.commit();
+    else
+        A.abort();
     }
 
     AtomicAction B = new AtomicAction();
@@ -81,24 +81,24 @@ public class ClientVerticle extends AbstractVerticle {
 
     try
     {
-	value = obj1.value();
+    value = obj1.value();
     }
     catch (final Throwable ex)
     {
-	doCommit = false;
+    doCommit = false;
     }
 
     if (doCommit)
     {
-	B.commit();
+    B.commit();
 
-	System.out.println("ClientVerticle initialised state: "+value);
+    System.out.println("ClientVerticle initialised state: "+value);
     }
     else
     {
-	B.abort();
+    B.abort();
 
-	System.out.println("ClientVerticle could not initialise state.");
+    System.out.println("ClientVerticle could not initialise state.");
     }
   }
 }

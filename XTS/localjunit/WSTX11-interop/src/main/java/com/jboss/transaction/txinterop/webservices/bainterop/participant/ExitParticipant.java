@@ -31,7 +31,7 @@ public class ExitParticipant extends CoordinatorCompletionParticipantAdapter
 
     public void setEngine(final CoordinatorCompletionParticipantEngine engine)
     {
-	this.engine = engine ;
+    this.engine = engine ;
     }
 
     public void initialiseTimeout()

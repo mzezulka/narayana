@@ -61,14 +61,14 @@ import com.arjuna.ats.jdbc.TransactionalDriver;
 
 public class JDBC2Test
 {
-	protected Connection conn = null;
-	protected boolean commit = true;
-	protected boolean nested = false;
-	protected boolean reuseconn = false;
-	protected Properties dbProperties = null;
-	protected String url = null;
+    protected Connection conn = null;
+    protected boolean commit = true;
+    protected boolean nested = false;
+    protected boolean reuseconn = false;
+    protected Properties dbProperties = null;
+    protected String url = null;
 
-	@Test
+    @Test
     public void testBC() throws SystemException, NotSupportedException, SQLException, HeuristicRollbackException, HeuristicMixedException, RollbackException {
 
         try (Statement stmt = conn.createStatement() ) {
@@ -122,7 +122,7 @@ public class JDBC2Test
     }
 
     @Before
-	public void setup() throws Exception
+    public void setup() throws Exception
     {
         url = "jdbc:arjuna:";
         Properties p = System.getProperties();
@@ -134,30 +134,30 @@ public class JDBC2Test
         dbProperties = new Properties();
 
         JdbcDataSource ds = new JdbcDataSource();
-		ds.setURL("jdbc:h2:./h2/foo");
+        ds.setURL("jdbc:h2:./h2/foo");
         dbProperties.put(TransactionalDriver.XADataSource, ds);
         dbProperties.put(TransactionalDriver.poolConnections, "false");
 
-		conn = DriverManager.getConnection(url, dbProperties);
-	}
+        conn = DriverManager.getConnection(url, dbProperties);
+    }
 
     @Test
-	public void test() throws Exception
-	{
-		Statement stmt = null;  // non-tx statement
-		Statement stmtx = null;	// will be a tx-statement
+    public void test() throws Exception
+    {
+        Statement stmt = null;  // non-tx statement
+        Statement stmtx = null;    // will be a tx-statement
 
-			stmt = conn.createStatement();  // non-tx statement
+            stmt = conn.createStatement();  // non-tx statement
 
             try
             {
                 stmt.executeUpdate("DROP TABLE test_table");
                 stmt.executeUpdate("DROP TABLE test_table2");
-	    }
+        }
             catch (Exception e)
-	    {
-		// Ignore
-	    }
+        {
+        // Ignore
+        }
 
                 stmt.executeUpdate("CREATE TABLE test_table (a INTEGER,b INTEGER)");
                 stmt.executeUpdate("CREATE TABLE test_table2 (a INTEGER,b INTEGER)");
@@ -287,11 +287,11 @@ public class JDBC2Test
 
             System.out.println("\nNow checking state of table 1.");
 
-			tx.begin();
+            tx.begin();
 
             if (!reuseconn)
             {
-				conn = DriverManager.getConnection(url, dbProperties);
+                conn = DriverManager.getConnection(url, dbProperties);
             }
 
             stmtx = conn.createStatement();

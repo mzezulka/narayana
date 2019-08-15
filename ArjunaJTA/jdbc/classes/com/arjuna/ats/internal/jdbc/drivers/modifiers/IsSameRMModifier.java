@@ -49,42 +49,42 @@ import com.arjuna.ats.jta.xa.XAModifier;
 
 public class IsSameRMModifier implements XAModifier, ConnectionModifier {
 
-	@Override
-	public String initialise(String dbName) {
-		return dbName;
-	}
+    @Override
+    public String initialise(String dbName) {
+        return dbName;
+    }
 
-	@Override
-	public Xid createXid(Xid xid) throws SQLException, NotImplementedException {
-		return xid;
-	}
+    @Override
+    public Xid createXid(Xid xid) throws SQLException, NotImplementedException {
+        return xid;
+    }
 
-	@Override
-	public XAConnection getConnection(XAConnection conn) throws SQLException,
-			NotImplementedException {
-		throw new NotImplementedException(); // NEVER CALLED
-	}
+    @Override
+    public XAConnection getConnection(XAConnection conn) throws SQLException,
+            NotImplementedException {
+        throw new NotImplementedException(); // NEVER CALLED
+    }
 
-	@Override
-	public boolean supportsMultipleConnections() throws SQLException,
-			NotImplementedException {
-		return true; // This ensures connection close is delayed
-	}
+    @Override
+    public boolean supportsMultipleConnections() throws SQLException,
+            NotImplementedException {
+        return true; // This ensures connection close is delayed
+    }
 
-	@Override
-	public void setIsolationLevel(Connection conn, int level)
-			throws SQLException, NotImplementedException {
-		conn.setTransactionIsolation(level);
-	}
+    @Override
+    public void setIsolationLevel(Connection conn, int level)
+            throws SQLException, NotImplementedException {
+        conn.setTransactionIsolation(level);
+    }
 
-	@Override
-	public int xaStartParameters(int level) throws SQLException,
-			NotImplementedException {
-		return level;
-	}
+    @Override
+    public int xaStartParameters(int level) throws SQLException,
+            NotImplementedException {
+        return level;
+    }
 
-	@Override
-	public boolean requiresSameRMOverride() {
-		return true;
-	}
+    @Override
+    public boolean requiresSameRMOverride() {
+        return true;
+    }
 }

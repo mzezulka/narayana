@@ -67,154 +67,154 @@ import javax.transaction.TransactionManager;
 
 public class Test06
 {
-	public static void main(String[] args)
-	{
-		Setup orbClass = null;
+    public static void main(String[] args)
+    {
+        Setup orbClass = null;
 
-		try
-		{
-			boolean needOrb = true;
+        try
+        {
+            boolean needOrb = true;
 
-			for (int i = 0; i < args.length; i++)
-			{
-				if (args[i].equals("-local"))
-				{
-					needOrb = false;
-				}
-			}
+            for (int i = 0; i < args.length; i++)
+            {
+                if (args[i].equals("-local"))
+                {
+                    needOrb = false;
+                }
+            }
 
-			if (needOrb)
-			{
-				Class c = Thread.currentThread().getContextClassLoader().loadClass("org.jboss.jbossts.qa.Utils.OrbSetup");
+            if (needOrb)
+            {
+                Class c = Thread.currentThread().getContextClassLoader().loadClass("org.jboss.jbossts.qa.Utils.OrbSetup");
 
-				orbClass = (Setup) c.getDeclaredConstructor().newInstance();
+                orbClass = (Setup) c.getDeclaredConstructor().newInstance();
 
-				orbClass.start(args);
-			}
+                orbClass.start(args);
+            }
 
-			int numberOfWorkers = Integer.parseInt(args[args.length - 2]);
-			int numberOfTransactions = Integer.parseInt(args[args.length - 1]);
+            int numberOfWorkers = Integer.parseInt(args[args.length - 2]);
+            int numberOfTransactions = Integer.parseInt(args[args.length - 1]);
 
-			javax.transaction.TransactionManager transactionManager = com.arjuna.ats.jta.TransactionManager.transactionManager();
+            javax.transaction.TransactionManager transactionManager = com.arjuna.ats.jta.TransactionManager.transactionManager();
 
-			Worker[] workers = new Worker[numberOfWorkers];
+            Worker[] workers = new Worker[numberOfWorkers];
 
-			for (int index = 0; index < workers.length; index++)
-			{
-				workers[index] = new Worker(numberOfTransactions, transactionManager);
-			}
+            for (int index = 0; index < workers.length; index++)
+            {
+                workers[index] = new Worker(numberOfTransactions, transactionManager);
+            }
 
-			for (int index = 0; index < workers.length; index++)
-			{
-				workers[index].start();
-			}
+            for (int index = 0; index < workers.length; index++)
+            {
+                workers[index].start();
+            }
 
-			boolean correct = true;
+            boolean correct = true;
 
-			for (int index = 0; index < workers.length; index++)
-			{
-				workers[index].join();
-				correct = correct && workers[index].isCorrect();
-			}
+            for (int index = 0; index < workers.length; index++)
+            {
+                workers[index].join();
+                correct = correct && workers[index].isCorrect();
+            }
 
-			if (correct)
-			{
-				System.out.println("Passed");
-			}
-			else
-			{
-				System.out.println("Failed");
-			}
-		}
-		catch (Exception exception)
-		{
-			System.out.println("Failed");
-			System.err.print("Test06.main: ");
-			exception.printStackTrace(System.err);
-		}
-		catch (Error error)
-		{
-			System.out.println("Failed");
-			System.err.print("Test06.main: ");
-			error.printStackTrace(System.err);
-		}
+            if (correct)
+            {
+                System.out.println("Passed");
+            }
+            else
+            {
+                System.out.println("Failed");
+            }
+        }
+        catch (Exception exception)
+        {
+            System.out.println("Failed");
+            System.err.print("Test06.main: ");
+            exception.printStackTrace(System.err);
+        }
+        catch (Error error)
+        {
+            System.out.println("Failed");
+            System.err.print("Test06.main: ");
+            error.printStackTrace(System.err);
+        }
 
-		try
-		{
-			if (orbClass != null)
-			{
-				orbClass.stop();
-			}
-		}
-		catch (Exception exception)
-		{
-			System.err.print("Test06.main: ");
-			exception.printStackTrace(System.err);
-		}
-		catch (Error error)
-		{
-			System.err.print("Test06.main: ");
-			error.printStackTrace(System.err);
-		}
-	}
+        try
+        {
+            if (orbClass != null)
+            {
+                orbClass.stop();
+            }
+        }
+        catch (Exception exception)
+        {
+            System.err.print("Test06.main: ");
+            exception.printStackTrace(System.err);
+        }
+        catch (Error error)
+        {
+            System.err.print("Test06.main: ");
+            error.printStackTrace(System.err);
+        }
+    }
 
 
-	private static class Worker extends Thread
-	{
-		public Worker(int numberOfTransactions, TransactionManager transactionManager)
-		{
-			_numberOfTransactions = numberOfTransactions;
-			_transactionManager = transactionManager;
-		}
+    private static class Worker extends Thread
+    {
+        public Worker(int numberOfTransactions, TransactionManager transactionManager)
+        {
+            _numberOfTransactions = numberOfTransactions;
+            _transactionManager = transactionManager;
+        }
 
-		public void run()
-		{
-			try
-			{
-				for (int index = 0; index < _numberOfTransactions; index++)
-				{
-					_correct = _correct && (_transactionManager.getTransaction() == null);
-					_correct = _correct && (_transactionManager.getStatus() == Status.STATUS_NO_TRANSACTION);
+        public void run()
+        {
+            try
+            {
+                for (int index = 0; index < _numberOfTransactions; index++)
+                {
+                    _correct = _correct && (_transactionManager.getTransaction() == null);
+                    _correct = _correct && (_transactionManager.getStatus() == Status.STATUS_NO_TRANSACTION);
 
-					_transactionManager.begin();
+                    _transactionManager.begin();
 
-					_correct = _correct && (_transactionManager.getTransaction() != null);
-					_correct = _correct && (_transactionManager.getStatus() == Status.STATUS_ACTIVE);
+                    _correct = _correct && (_transactionManager.getTransaction() != null);
+                    _correct = _correct && (_transactionManager.getStatus() == Status.STATUS_ACTIVE);
 
-					if ((index % 2) == 0)
-					{
-						_transactionManager.commit();
-					}
-					else
-					{
-						_transactionManager.rollback();
-					}
-				}
+                    if ((index % 2) == 0)
+                    {
+                        _transactionManager.commit();
+                    }
+                    else
+                    {
+                        _transactionManager.rollback();
+                    }
+                }
 
-				_correct = _correct && (_transactionManager.getTransaction() == null);
-				_correct = _correct && (_transactionManager.getStatus() == Status.STATUS_NO_TRANSACTION);
-			}
-			catch (Exception exception)
-			{
-				System.err.print("Test06.Worker.run: ");
-				exception.printStackTrace(System.err);
-				_correct = false;
-			}
-			catch (Error error)
-			{
-				System.err.print("Test06.Worker.run: ");
-				error.printStackTrace(System.err);
-				_correct = false;
-			}
-		}
+                _correct = _correct && (_transactionManager.getTransaction() == null);
+                _correct = _correct && (_transactionManager.getStatus() == Status.STATUS_NO_TRANSACTION);
+            }
+            catch (Exception exception)
+            {
+                System.err.print("Test06.Worker.run: ");
+                exception.printStackTrace(System.err);
+                _correct = false;
+            }
+            catch (Error error)
+            {
+                System.err.print("Test06.Worker.run: ");
+                error.printStackTrace(System.err);
+                _correct = false;
+            }
+        }
 
-		public boolean isCorrect()
-		{
-			return _correct;
-		}
+        public boolean isCorrect()
+        {
+            return _correct;
+        }
 
-		private boolean _correct = true;
-		private int _numberOfTransactions;
-		private TransactionManager _transactionManager;
-	}
+        private boolean _correct = true;
+        private int _numberOfTransactions;
+        private TransactionManager _transactionManager;
+    }
 }

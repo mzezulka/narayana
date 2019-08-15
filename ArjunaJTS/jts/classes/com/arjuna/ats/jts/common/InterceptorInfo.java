@@ -48,7 +48,7 @@ public class InterceptorInfo
      */
     public static boolean getNeedTranContext()
     {
-	return OTS_NEED_TRAN_CONTEXT ;
+    return OTS_NEED_TRAN_CONTEXT ;
     }
 
     /**
@@ -57,6 +57,6 @@ public class InterceptorInfo
      */
     public static boolean getAlwaysPropagate()
     {
-	return OTS_ALWAYS_PROPAGATE ;
+    return OTS_ALWAYS_PROPAGATE ;
     }
 }

@@ -48,7 +48,7 @@ public class ORBInitialisationTest implements TestAttributeCallback
     public final static int NONE = 0, PREINIT = 1, POSTINIT = 2, INVALID = 3;
     private final static String[] STATE_TEXT = { "NONE","PREINIT","POSTINIT","INVALID" };
 
-    private int 	_currentState;
+    private int     _currentState;
 
     public static String getStateText(int value)
     {
@@ -109,8 +109,8 @@ public class ORBInitialisationTest implements TestAttributeCallback
             orb.addAttribute( new PostTestAttribute( this ) );
 
             /*
-	         * Initialise the ORB and OA
-	         */
+             * Initialise the ORB and OA
+             */
             System.out.println("Initialising ORB and OA");
 
             orb.initORB(new String[] {}, null);

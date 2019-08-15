@@ -46,17 +46,17 @@ public class ActiveChildException extends WSASException
 
     public ActiveChildException ()
     {
-	super();
+    super();
     }
 
     public ActiveChildException (String s)
     {
-	super(s);
+    super(s);
     }
 
     public ActiveChildException (String s, int errorcode)
     {
-	super(s, errorcode);
+    super(s, errorcode);
     }
 
 }

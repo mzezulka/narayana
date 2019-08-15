@@ -45,13 +45,13 @@ import java.io.File;
 
 public class TestBase
 {
-	public void beforeSetupClass() {}
+    public void beforeSetupClass() {}
 
     @Before
     public void setUp () throws Exception
     {
-    	beforeSetupClass();
-    	emptyObjectStore();
+        beforeSetupClass();
+        emptyObjectStore();
 
         myORB = ORB.getInstance("test");
         myOA = OA.getRootOA(myORB);
@@ -68,12 +68,12 @@ public class TestBase
     {
         myOA.destroy();
         myORB.shutdown(true);
-		// JBTM-1829 as the orbportability version of shutdown does not wait for
-		// completion some jacorb tests will fail due to possible race conditions
+        // JBTM-1829 as the orbportability version of shutdown does not wait for
+        // completion some jacorb tests will fail due to possible race conditions
         try {
-        	myORB.orb().shutdown(true);
+            myORB.orb().shutdown(true);
         } catch (BAD_INV_ORDER bio) {
-        	// ignore - jacorb can tolerate the second call to shutdown, IDLJ will not
+            // ignore - jacorb can tolerate the second call to shutdown, IDLJ will not
         }
         emptyObjectStore();
     }

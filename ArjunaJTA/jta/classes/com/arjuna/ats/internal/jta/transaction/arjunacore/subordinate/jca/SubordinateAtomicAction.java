@@ -54,170 +54,170 @@ import com.arjuna.ats.jta.xa.XidImple;
  */
 
 public class SubordinateAtomicAction extends
-		com.arjuna.ats.internal.jta.transaction.arjunacore.subordinate.SubordinateAtomicAction
+        com.arjuna.ats.internal.jta.transaction.arjunacore.subordinate.SubordinateAtomicAction
 {
 
-	/**
-	 * @deprecated This is only used by test code
-	 */
-	public SubordinateAtomicAction ()
-	{
-		super();  // does start for us
-
-		_activated = true;
-		_theXid = new XidImple(Uid.nullUid());
-	}
-
-	public SubordinateAtomicAction (Uid actId)
-	{
-		super(actId);
-
-		_activated = activate(); // if this fails, we'll retry later.
-	}
-
-	/**
-	 * Recovery SAA. If the record is removed and peekXidOnly is true then the Xid will be null.
-	 *
-	 * @param actId
-	 * @param peekXidOnly
-	 * @throws ObjectStoreException
-	 * @throws IOException
+    /**
+     * @deprecated This is only used by test code
      */
-	public SubordinateAtomicAction(Uid actId, boolean peekXidOnly) throws ObjectStoreException, IOException {
-		super(actId);
-		if (peekXidOnly) {
-			InputObjectState os = StoreManager.getParticipantStore().read_committed(objectUid, type());
-			if (os == null) {
-				// This will have been logged by the ObjectStore during ShadowingStore::read_state as an INFO if there was no content
-				return;
-			}
-			unpackHeader(os, new Header());
-			boolean haveXid = os.unpackBoolean();
+    public SubordinateAtomicAction ()
+    {
+        super();  // does start for us
 
-			if (haveXid) {
-				_theXid = new XidImple();
+        _activated = true;
+        _theXid = new XidImple(Uid.nullUid());
+    }
 
-				((XidImple) _theXid).unpackFrom(os);
-				_parentNodeName = os.unpackString();
-			}
-		} else {
-			_activated = activate();
-		}
-	}
+    public SubordinateAtomicAction (Uid actId)
+    {
+        super(actId);
 
-	public SubordinateAtomicAction (int timeout, Xid xid)
-	{
-		super(timeout); // implicit start (done in base class)
+        _activated = activate(); // if this fails, we'll retry later.
+    }
 
-		if (xid != null && xid.getFormatId() == XATxConverter.FORMAT_ID) {
-			XidImple toImport = new XidImple(xid);
-			XID toCheck = toImport.getXID();
-			_parentNodeName = XATxConverter.getSubordinateNodeName(toCheck);
-			if (_parentNodeName == null) {
-				_parentNodeName = XATxConverter.getNodeName(toCheck);
-			}
-			XATxConverter.setSubordinateNodeName(toImport.getXID(), TxControl.getXANodeName());
-			_theXid = new XidImple(toImport);
-		} else {
-			_theXid = new XidImple(xid);
-		}
-
-		_activated = true;
-	}
-
-	/**
-	 * The type of the class is used to locate the state of the transaction log
-	 * in the object store.
-	 *
-	 * Overloads BasicAction.type()
-	 *
-	 * @return a string representation of the hierarchy of the class for storing
-	 *         logs in the transaction object store.
-	 */
-
-	public String type ()
-	{
-		return getType();
-	}
-
-	public static final String getType ()
-	{
-		return "/StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction/SubordinateAtomicAction/JCA";
-	}
-
-	/**
-	 * If the record was removed Xid will be null
-	 *
-	 * @return
+    /**
+     * Recovery SAA. If the record is removed and peekXidOnly is true then the Xid will be null.
+     *
+     * @param actId
+     * @param peekXidOnly
+     * @throws ObjectStoreException
+     * @throws IOException
      */
-	public final Xid getXid ()
-	{
-	    // could be null if activation failed.
+    public SubordinateAtomicAction(Uid actId, boolean peekXidOnly) throws ObjectStoreException, IOException {
+        super(actId);
+        if (peekXidOnly) {
+            InputObjectState os = StoreManager.getParticipantStore().read_committed(objectUid, type());
+            if (os == null) {
+                // This will have been logged by the ObjectStore during ShadowingStore::read_state as an INFO if there was no content
+                return;
+            }
+            unpackHeader(os, new Header());
+            boolean haveXid = os.unpackBoolean();
 
-		return _theXid;
-	}
+            if (haveXid) {
+                _theXid = new XidImple();
 
-	public String getParentNodeName() {
-		return _parentNodeName;
-	}
+                ((XidImple) _theXid).unpackFrom(os);
+                _parentNodeName = os.unpackString();
+            }
+        } else {
+            _activated = activate();
+        }
+    }
 
-	public boolean save_state (OutputObjectState os, int t)
-	{
-	    try
-	    {
-	        // pack the header first for the benefit of the tooling
-	        packHeader(os, new Header(get_uid(), Utility.getProcessUid()));
+    public SubordinateAtomicAction (int timeout, Xid xid)
+    {
+        super(timeout); // implicit start (done in base class)
 
-	        if (_theXid != null)
-	        {
-	            os.packBoolean(true);
+        if (xid != null && xid.getFormatId() == XATxConverter.FORMAT_ID) {
+            XidImple toImport = new XidImple(xid);
+            XID toCheck = toImport.getXID();
+            _parentNodeName = XATxConverter.getSubordinateNodeName(toCheck);
+            if (_parentNodeName == null) {
+                _parentNodeName = XATxConverter.getNodeName(toCheck);
+            }
+            XATxConverter.setSubordinateNodeName(toImport.getXID(), TxControl.getXANodeName());
+            _theXid = new XidImple(toImport);
+        } else {
+            _theXid = new XidImple(xid);
+        }
 
-	            ((XidImple) _theXid).packInto(os);
-	            os.packString(_parentNodeName);
-	        }
-	        else
-	            os.packBoolean(false);
-	    }
-	    catch (IOException ex)
-	    {
-	        return false;
-	    }
+        _activated = true;
+    }
 
-	    return super.save_state(os, t);
-	}
+    /**
+     * The type of the class is used to locate the state of the transaction log
+     * in the object store.
+     *
+     * Overloads BasicAction.type()
+     *
+     * @return a string representation of the hierarchy of the class for storing
+     *         logs in the transaction object store.
+     */
 
-	public boolean restore_state (InputObjectState os, int t)
-	{
-	    _theXid = null;
+    public String type ()
+    {
+        return getType();
+    }
 
-		try
-		{
-			unpackHeader(os, new Header());
+    public static final String getType ()
+    {
+        return "/StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction/SubordinateAtomicAction/JCA";
+    }
 
-			boolean haveXid = os.unpackBoolean();
+    /**
+     * If the record was removed Xid will be null
+     *
+     * @return
+     */
+    public final Xid getXid ()
+    {
+        // could be null if activation failed.
 
-			if (haveXid)
-			{
-				_theXid = new XidImple();
+        return _theXid;
+    }
 
-				((XidImple) _theXid).unpackFrom(os);
-				_parentNodeName = os.unpackString();
-			}
-		}
-		catch (IOException ex)
-		{
-			return false;
-		}
+    public String getParentNodeName() {
+        return _parentNodeName;
+    }
 
-		return super.restore_state(os, t);
-	}
+    public boolean save_state (OutputObjectState os, int t)
+    {
+        try
+        {
+            // pack the header first for the benefit of the tooling
+            packHeader(os, new Header(get_uid(), Utility.getProcessUid()));
+
+            if (_theXid != null)
+            {
+                os.packBoolean(true);
+
+                ((XidImple) _theXid).packInto(os);
+                os.packString(_parentNodeName);
+            }
+            else
+                os.packBoolean(false);
+        }
+        catch (IOException ex)
+        {
+            return false;
+        }
+
+        return super.save_state(os, t);
+    }
+
+    public boolean restore_state (InputObjectState os, int t)
+    {
+        _theXid = null;
+
+        try
+        {
+            unpackHeader(os, new Header());
+
+            boolean haveXid = os.unpackBoolean();
+
+            if (haveXid)
+            {
+                _theXid = new XidImple();
+
+                ((XidImple) _theXid).unpackFrom(os);
+                _parentNodeName = os.unpackString();
+            }
+        }
+        catch (IOException ex)
+        {
+            return false;
+        }
+
+        return super.restore_state(os, t);
+    }
 
     public boolean activated ()
     {
-    	return _activated;
+        return _activated;
     }
 
-	private Xid _theXid;
-	private String _parentNodeName;
+    private Xid _theXid;
+    private String _parentNodeName;
     private boolean _activated;
 }

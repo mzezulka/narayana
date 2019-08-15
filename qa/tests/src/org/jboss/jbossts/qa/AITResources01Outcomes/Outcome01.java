@@ -65,46 +65,46 @@ import org.omg.CORBA.IntHolder;
 
 public class Outcome01
 {
-	public static void main(String[] args)
-	{
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+    public static void main(String[] args)
+    {
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			int expectedValue = Integer.parseInt(args[args.length - 2]);
+            int expectedValue = Integer.parseInt(args[args.length - 2]);
 
-			String counterIOR = ServerIORStore.loadIOR(args[args.length - 1]);
-			Counter counter = CounterHelper.narrow(ORBInterface.orb().string_to_object(counterIOR));
+            String counterIOR = ServerIORStore.loadIOR(args[args.length - 1]);
+            Counter counter = CounterHelper.narrow(ORBInterface.orb().string_to_object(counterIOR));
 
-			IntHolder value = new IntHolder();
-			counter.get(value);
+            IntHolder value = new IntHolder();
+            counter.get(value);
 
-			if (value.value == expectedValue)
-			{
-				System.out.println("Passed");
-			}
-			else
-			{
-				System.out.println("Failed");
-			}
-		}
-		catch (Exception exception)
-		{
-			System.out.println("Failed");
-			System.err.println("Outcome01.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
+            if (value.value == expectedValue)
+            {
+                System.out.println("Passed");
+            }
+            else
+            {
+                System.out.println("Failed");
+            }
+        }
+        catch (Exception exception)
+        {
+            System.out.println("Failed");
+            System.err.println("Outcome01.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
 
-		try
-		{
-			OAInterface.shutdownOA();
-			ORBInterface.shutdownORB();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Outcome01.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
-	}
+        try
+        {
+            OAInterface.shutdownOA();
+            ORBInterface.shutdownORB();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Outcome01.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
+    }
 }

@@ -8,11 +8,11 @@ import java.util.logging.Logger;
  */
 public class JBossTSAS7ServerKillProcessorWin extends JBossTSBaseServerKillProcessor {
 
-	private static final Logger logger = Logger.getLogger(JBossTSAS7ServerKillProcessorWin.class.getName());
-	private static final String PS_AUX_CMD = JBossTSServerExtension.OSType.WINDOWS.getPSCommand();
-	private static final String CHECK_JBOSS_ALIVE_CMD = PS_AUX_CMD + " | findstr jboss-module | findstr /v findstr"; //skip "findstr" from output, windows workaround
-	private static final String CHECK_FOR_DEFUNCT_JAVA_CMD = PS_AUX_CMD + " | findstr defunct | findstr /v findstr"; //skip "findstr" from output, windows workaround
-	private static final String SHUTDOWN_JBOSS_CMD = "taskkill /F /T /PID %s";
+    private static final Logger logger = Logger.getLogger(JBossTSAS7ServerKillProcessorWin.class.getName());
+    private static final String PS_AUX_CMD = JBossTSServerExtension.OSType.WINDOWS.getPSCommand();
+    private static final String CHECK_JBOSS_ALIVE_CMD = PS_AUX_CMD + " | findstr jboss-module | findstr /v findstr"; //skip "findstr" from output, windows workaround
+    private static final String CHECK_FOR_DEFUNCT_JAVA_CMD = PS_AUX_CMD + " | findstr defunct | findstr /v findstr"; //skip "findstr" from output, windows workaround
+    private static final String SHUTDOWN_JBOSS_CMD = "taskkill /F /T /PID %s";
 
     @Override
     protected String runShellCommand(String cmd) throws Exception {
@@ -30,28 +30,28 @@ public class JBossTSAS7ServerKillProcessorWin extends JBossTSBaseServerKillProce
         return res;
     }
 
-	@Override
-	protected Logger getLogger() {
-		return logger;
-	}
+    @Override
+    protected Logger getLogger() {
+        return logger;
+    }
 
-	@Override
-	protected String getJBossAliveCmd() {
-		return CHECK_JBOSS_ALIVE_CMD;
-	}
+    @Override
+    protected String getJBossAliveCmd() {
+        return CHECK_JBOSS_ALIVE_CMD;
+    }
 
-	@Override
-	protected String getDefunctJavaCmd() {
-		return CHECK_FOR_DEFUNCT_JAVA_CMD;
-	}
+    @Override
+    protected String getDefunctJavaCmd() {
+        return CHECK_FOR_DEFUNCT_JAVA_CMD;
+    }
 
-	@Override
-	protected String getShutdownJBossCmd() {
-		return SHUTDOWN_JBOSS_CMD;
-	}
+    @Override
+    protected String getShutdownJBossCmd() {
+        return SHUTDOWN_JBOSS_CMD;
+    }
 
-	@Override
-	protected String getProcessesCmd() {
-		return PS_AUX_CMD;
-	}
+    @Override
+    protected String getProcessesCmd() {
+        return PS_AUX_CMD;
+    }
 }

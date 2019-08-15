@@ -46,39 +46,39 @@ import com.arjuna.ats.jta.recovery.XAResourceRecoveryHelper;
 
 @RunWith(BMUnitRunner.class)
 public class TestCommitMarkableResourceFailAfterCommitTwoXAResources extends
-		FailAfterCommitBase {
+        FailAfterCommitBase {
 
-	private JDBCConnectableResource nonXAResource;
-	private boolean failed = false;
-	private SimpleXAResource xaResource;
-	private SimpleXAResource2 xaResource2;
+    private JDBCConnectableResource nonXAResource;
+    private boolean failed = false;
+    private SimpleXAResource xaResource;
+    private SimpleXAResource2 xaResource2;
 
-	@Test
-	@BMScript("commitMarkableResourceFailAfterCommit")
-	public void testFailAfterCommitH2() throws Exception {
-		final JdbcDataSource dataSource = new JdbcDataSource();
-		dataSource.setURL("jdbc:h2:mem:JBTMDB;MVCC=TRUE");
-	}
+    @Test
+    @BMScript("commitMarkableResourceFailAfterCommit")
+    public void testFailAfterCommitH2() throws Exception {
+        final JdbcDataSource dataSource = new JdbcDataSource();
+        dataSource.setURL("jdbc:h2:mem:JBTMDB;MVCC=TRUE");
+    }
 
-	protected void doTest(final DataSource dataSource) throws Exception {
-		// Test code
-		Utils.createTables(dataSource.getConnection());
+    protected void doTest(final DataSource dataSource) throws Exception {
+        // Test code
+        Utils.createTables(dataSource.getConnection());
 
-		// We can't just instantiate one as we need to be using the
-		// same one as
-		// the transaction
-		// manager would have used to mark the transaction for GC
-		CommitMarkableResourceRecordRecoveryModule recoveryModule = null;
-		Vector recoveryModules = manager.getModules();
-		if (recoveryModules != null) {
-			Enumeration modules = recoveryModules.elements();
+        // We can't just instantiate one as we need to be using the
+        // same one as
+        // the transaction
+        // manager would have used to mark the transaction for GC
+        CommitMarkableResourceRecordRecoveryModule recoveryModule = null;
+        Vector recoveryModules = manager.getModules();
+        if (recoveryModules != null) {
+            Enumeration modules = recoveryModules.elements();
 
-			while (modules.hasMoreElements()) {
-				RecoveryModule m = (RecoveryModule) modules.nextElement();
+            while (modules.hasMoreElements()) {
+                RecoveryModule m = (RecoveryModule) modules.nextElement();
 
-				if (m instanceof CommitMarkableResourceRecordRecoveryModule) {
-					recoveryModule = (CommitMarkableResourceRecordRecoveryModule) m;
-				} else if (m instanceof XARecoveryModule) {
+                if (m instanceof CommitMarkableResourceRecordRecoveryModule) {
+                    recoveryModule = (CommitMarkableResourceRecordRecoveryModule) m;
+                } else if (m instanceof XARecoveryModule) {
                     XARecoveryModule  xarm = (XARecoveryModule) m;
                     xarm.addXAResourceRecoveryHelper(new XAResourceRecoveryHelper() {
                         public boolean initialise(String p) throws Exception {
@@ -90,79 +90,79 @@ public class TestCommitMarkableResourceFailAfterCommitTwoXAResources extends
                         }
                     });
                 }
-			}
-		}
-		// final Object o = new Object();
-		// synchronized (o) {
+            }
+        }
+        // final Object o = new Object();
+        // synchronized (o) {
 
-		Thread foo = new Thread(new Runnable() {
+        Thread foo = new Thread(new Runnable() {
 
-			public void run() {
+            public void run() {
 
-				try {
-					javax.transaction.TransactionManager tm = com.arjuna.ats.jta.TransactionManager
-							.transactionManager();
+                try {
+                    javax.transaction.TransactionManager tm = com.arjuna.ats.jta.TransactionManager
+                            .transactionManager();
 
-					tm.begin();
+                    tm.begin();
 
-					Connection localJDBCConnection = dataSource.getConnection();
-					localJDBCConnection.setAutoCommit(false);
-					nonXAResource = new JDBCConnectableResource(
-							localJDBCConnection);
-					tm.getTransaction().enlistResource(nonXAResource);
+                    Connection localJDBCConnection = dataSource.getConnection();
+                    localJDBCConnection.setAutoCommit(false);
+                    nonXAResource = new JDBCConnectableResource(
+                            localJDBCConnection);
+                    tm.getTransaction().enlistResource(nonXAResource);
 
-					xaResource = new SimpleXAResource();
-					tm.getTransaction().enlistResource(xaResource);
-					xaResource2 = new SimpleXAResource2();
-					tm.getTransaction().enlistResource(xaResource2);
+                    xaResource = new SimpleXAResource();
+                    tm.getTransaction().enlistResource(xaResource);
+                    xaResource2 = new SimpleXAResource2();
+                    tm.getTransaction().enlistResource(xaResource2);
 
-					localJDBCConnection.createStatement().execute(
-							"INSERT INTO foo (bar) VALUES (1)");
+                    localJDBCConnection.createStatement().execute(
+                            "INSERT INTO foo (bar) VALUES (1)");
 
-					tm.commit();
-				} catch (ExecuteException t) {
-				} catch (Exception e) {
-					e.printStackTrace();
-					failed = true;
-				} catch (Error e) {
+                    tm.commit();
+                } catch (ExecuteException t) {
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    failed = true;
+                } catch (Error e) {
 
-				}
-			}
-		});
-		foo.start();
-		foo.join();
+                }
+            }
+        });
+        foo.start();
+        foo.join();
 
-		assertFalse(failed);
+        assertFalse(failed);
 
-		Xid committed = ((JDBCConnectableResource) nonXAResource)
-				.getStartedXid();
-		assertNotNull(committed);
-		// The recovery module has to perform lookups
-		new InitialContext().rebind("commitmarkableresource", dataSource);
-		// Check if the item is still in the db
-		recoveryModule.periodicWorkFirstPass();
-		assertTrue(recoveryModule.wasCommitted("commitmarkableresource",
-				committed));
-		recoveryModule.periodicWorkSecondPass();
+        Xid committed = ((JDBCConnectableResource) nonXAResource)
+                .getStartedXid();
+        assertNotNull(committed);
+        // The recovery module has to perform lookups
+        new InitialContext().rebind("commitmarkableresource", dataSource);
+        // Check if the item is still in the db
+        recoveryModule.periodicWorkFirstPass();
+        assertTrue(recoveryModule.wasCommitted("commitmarkableresource",
+                committed));
+        recoveryModule.periodicWorkSecondPass();
 
-		// Now we need to correctly complete the transaction
-		manager.scan();
+        // Now we need to correctly complete the transaction
+        manager.scan();
 
-		// Make sure the item is no longer in the DB, it will need two scans as
-		// second phase of the CommitMarkableResourceRecoveryModule will have
-		// executed before the AtomicActionRecoveryModule has been able to GC
-		// it
-		assertTrue(recoveryModule.wasCommitted("commitmarkableresource",
-				committed));
-		recoveryModule.periodicWorkFirstPass();
-		recoveryModule.periodicWorkSecondPass();
-		assertFalse(recoveryModule.wasCommitted("commitmarkableresource",
-				committed));
+        // Make sure the item is no longer in the DB, it will need two scans as
+        // second phase of the CommitMarkableResourceRecoveryModule will have
+        // executed before the AtomicActionRecoveryModule has been able to GC
+        // it
+        assertTrue(recoveryModule.wasCommitted("commitmarkableresource",
+                committed));
+        recoveryModule.periodicWorkFirstPass();
+        recoveryModule.periodicWorkSecondPass();
+        assertFalse(recoveryModule.wasCommitted("commitmarkableresource",
+                committed));
 
-		assertTrue(xaResource.wasCommitted());
-		assertFalse(xaResource.wasRolledback());
+        assertTrue(xaResource.wasCommitted());
+        assertFalse(xaResource.wasRolledback());
 
-		assertTrue(xaResource2.commitCalled());
-		assertFalse(xaResource2.rollbackCalled());
-	}
+        assertTrue(xaResource2.commitCalled());
+        assertFalse(xaResource2.rollbackCalled());
+    }
 }

@@ -47,7 +47,7 @@ public abstract void work ();
 
 protected PostShutdown (String name)
     {
-	super(name);
+    super(name);
     };
 
 }

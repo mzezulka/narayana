@@ -26,66 +26,66 @@ import org.jboss.jbossts.qa.ArjunaCore.Utils.qautil;
 
 public class MemoryClient001 extends BaseTestClient
 {
-	public static void main(String[] args)
-	{
-		MemoryClient001 test = new MemoryClient001(args);
-	}
+    public static void main(String[] args)
+    {
+        MemoryClient001 test = new MemoryClient001(args);
+    }
 
-	private MemoryClient001(String[] args)
-	{
-		super(args);
-	}
+    private MemoryClient001(String[] args)
+    {
+        super(args);
+    }
 
-	public void Test()
-	{
-		try
-		{
-			setNumberOfCalls(3);
-			setNumberOfResources(2);
-			getClientThreshold(1);
+    public void Test()
+    {
+        try
+        {
+            setNumberOfCalls(3);
+            setNumberOfResources(2);
+            getClientThreshold(1);
 
-			BasicLockRecord[] mLockRecordList = new BasicLockRecord[mNumberOfResources];
-			//set up abstract records
-			for (int i = 0; i < mNumberOfResources; i++)
-			{
-				mLockRecordList[i] = new BasicLockRecord();
-			}
+            BasicLockRecord[] mLockRecordList = new BasicLockRecord[mNumberOfResources];
+            //set up abstract records
+            for (int i = 0; i < mNumberOfResources; i++)
+            {
+                mLockRecordList[i] = new BasicLockRecord();
+            }
 
-			startTx();
-			//add abstract record
-			for (int j = 0; j < mNumberOfResources; j++)
-			{
-				for (int i = 0; i < mMaxIteration; i++)
-				{
-					mLockRecordList[j].increase();
-				}
-			}
-			//comit transaction
-			commit();
+            startTx();
+            //add abstract record
+            for (int j = 0; j < mNumberOfResources; j++)
+            {
+                for (int i = 0; i < mMaxIteration; i++)
+                {
+                    mLockRecordList[j].increase();
+                }
+            }
+            //comit transaction
+            commit();
 
-			//get first memory reading.
-			getFirstReading();
+            //get first memory reading.
+            getFirstReading();
 
-			//start new AtomicAction
-			startTx();
-			for (int j = 0; j < mNumberOfResources; j++)
-			{
-				for (int i = 0; i < mMaxIteration; i++)
-				{
-					mLockRecordList[j].increase();
-				}
-			}
-			//abort transaction
-			abort();
+            //start new AtomicAction
+            startTx();
+            for (int j = 0; j < mNumberOfResources; j++)
+            {
+                for (int i = 0; i < mMaxIteration; i++)
+                {
+                    mLockRecordList[j].increase();
+                }
+            }
+            //abort transaction
+            abort();
 
-			getSecondReading();
+            getSecondReading();
 
-			qaMemoryAssert();
-		}
-		catch (Exception e)
-		{
-			Fail("Error in MemoryClient001.test() :", e);
-		}
-	}
+            qaMemoryAssert();
+        }
+        catch (Exception e)
+        {
+            Fail("Error in MemoryClient001.test() :", e);
+        }
+    }
 
 }

@@ -44,12 +44,12 @@ public class NoActivity implements Status
 
     public static NoActivity instance ()
     {
-	return _instance;
+    return _instance;
     }
 
     public String toString ()
     {
-	return "Status.NoActivity";
+    return "Status.NoActivity";
     }
 
     private NoActivity ()

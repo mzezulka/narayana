@@ -37,27 +37,27 @@ public class TestWrongStateExceptionBusinessAgreementWithCoordinatorCompletionPa
 
     public void close () throws WrongStateException, SystemException
     {
-	throw new WrongStateException();
+    throw new WrongStateException();
     }
 
     public void cancel () throws WrongStateException, SystemException
     {
-	throw new WrongStateException();
+    throw new WrongStateException();
     }
 
     public void compensate () throws FaultedException, WrongStateException, SystemException
     {
-	throw new WrongStateException();
+    throw new WrongStateException();
     }
 
     public String status () throws SystemException
     {
-	return Status.STATUS_ACTIVE;
+    return Status.STATUS_ACTIVE;
     }
 
     public void forget () throws WrongStateException, SystemException
     {
-	throw new WrongStateException();
+    throw new WrongStateException();
     }
 
     public void complete () throws WrongStateException, SystemException

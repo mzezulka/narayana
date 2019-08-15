@@ -55,217 +55,217 @@ import io.opentracing.util.GlobalTracer;
 
 public class BaseTransaction {
 
-	public void begin() throws javax.transaction.NotSupportedException, javax.transaction.SystemException {
+    public void begin() throws javax.transaction.NotSupportedException, javax.transaction.SystemException {
 
-		if (jtaLogger.logger.isTraceEnabled()) {
-			jtaLogger.logger.trace("BaseTransaction.begin");
-		}
+        if (jtaLogger.logger.isTraceEnabled()) {
+            jtaLogger.logger.trace("BaseTransaction.begin");
+        }
 
-		/*
-		 * We can supported subtransactions, so should have the option to let programmer
-		 * use them. Strict conformance will always say no.
-		 */
+        /*
+         * We can supported subtransactions, so should have the option to let programmer
+         * use them. Strict conformance will always say no.
+         */
 
-		if (!_supportSubtransactions) {
-			try {
-				checkTransactionState();
-			} catch (IllegalStateException e1) {
-				NotSupportedException notSupportedException = new NotSupportedException(e1.getMessage());
-				notSupportedException.initCause(e1);
-				throw notSupportedException;
-			} catch (Exception e2) {
-				javax.transaction.SystemException systemException = new javax.transaction.SystemException(
-						e2.toString());
-				systemException.initCause(e2);
-				throw systemException;
-			}
-		}
+        if (!_supportSubtransactions) {
+            try {
+                checkTransactionState();
+            } catch (IllegalStateException e1) {
+                NotSupportedException notSupportedException = new NotSupportedException(e1.getMessage());
+                notSupportedException.initCause(e1);
+                throw notSupportedException;
+            } catch (Exception e2) {
+                javax.transaction.SystemException systemException = new javax.transaction.SystemException(
+                        e2.toString());
+                systemException.initCause(e2);
+                throw systemException;
+            }
+        }
 
-		Integer value = _timeouts.get();
-		int v = 0; // if not set then assume 0. What else can we do?
+        Integer value = _timeouts.get();
+        int v = 0; // if not set then assume 0. What else can we do?
 
-		if (value != null) {
-			v = value.intValue();
-		} else
-			v = TxControl.getDefaultTimeout();
+        if (value != null) {
+            v = value.intValue();
+        } else
+            v = TxControl.getDefaultTimeout();
 
-		// TODO set default timeout
+        // TODO set default timeout
 
-		TransactionImple.putTransaction(new TransactionImple(v));
-	}
+        TransactionImple.putTransaction(new TransactionImple(v));
+    }
 
-	/**
-	 * We will never throw a HeuristicRollbackException because if we get a
-	 * HeuristicRollback from a resource, and can successfully rollback the other
-	 * resources, this is then the same as having simply been forced to rollback the
-	 * transaction during phase 1. The OTS interfaces do not allow a
-	 * differentiation.
-	 */
+    /**
+     * We will never throw a HeuristicRollbackException because if we get a
+     * HeuristicRollback from a resource, and can successfully rollback the other
+     * resources, this is then the same as having simply been forced to rollback the
+     * transaction during phase 1. The OTS interfaces do not allow a
+     * differentiation.
+     */
 
-	public void commit() throws javax.transaction.RollbackException, javax.transaction.HeuristicMixedException,
-			javax.transaction.HeuristicRollbackException, java.lang.SecurityException, java.lang.IllegalStateException,
-			javax.transaction.SystemException {
-		if (jtaLogger.logger.isTraceEnabled()) {
-			jtaLogger.logger.trace("BaseTransaction.commit");
-		}
+    public void commit() throws javax.transaction.RollbackException, javax.transaction.HeuristicMixedException,
+            javax.transaction.HeuristicRollbackException, java.lang.SecurityException, java.lang.IllegalStateException,
+            javax.transaction.SystemException {
+        if (jtaLogger.logger.isTraceEnabled()) {
+            jtaLogger.logger.trace("BaseTransaction.commit");
+        }
 
-		TransactionImple theTransaction = TransactionImple.getTransaction();
+        TransactionImple theTransaction = TransactionImple.getTransaction();
 
-		if (theTransaction == null)
-			throw new IllegalStateException(
-					"BaseTransaction.commit - " + jtaLogger.i18NLogger.get_transaction_arjunacore_notx());
-		theTransaction.commitAndDisassociate();
-	}
+        if (theTransaction == null)
+            throw new IllegalStateException(
+                    "BaseTransaction.commit - " + jtaLogger.i18NLogger.get_transaction_arjunacore_notx());
+        theTransaction.commitAndDisassociate();
+    }
 
-	public void rollback()
-			throws java.lang.IllegalStateException, java.lang.SecurityException, javax.transaction.SystemException {
-		if (jtaLogger.logger.isTraceEnabled()) {
-			jtaLogger.logger.trace("BaseTransaction.rollback");
-		}
+    public void rollback()
+            throws java.lang.IllegalStateException, java.lang.SecurityException, javax.transaction.SystemException {
+        if (jtaLogger.logger.isTraceEnabled()) {
+            jtaLogger.logger.trace("BaseTransaction.rollback");
+        }
 
-		TransactionImple theTransaction = TransactionImple.getTransaction();
+        TransactionImple theTransaction = TransactionImple.getTransaction();
 
-		if (theTransaction == null)
-			throw new IllegalStateException(
-					"BaseTransaction.rollback - " + jtaLogger.i18NLogger.get_transaction_arjunacore_notx());
-		theTransaction.rollbackAndDisassociate();
-	}
+        if (theTransaction == null)
+            throw new IllegalStateException(
+                    "BaseTransaction.rollback - " + jtaLogger.i18NLogger.get_transaction_arjunacore_notx());
+        theTransaction.rollbackAndDisassociate();
+    }
 
-	public void setRollbackOnly() throws java.lang.IllegalStateException, javax.transaction.SystemException {
-		if (jtaLogger.logger.isTraceEnabled()) {
-			jtaLogger.logger.trace("BaseTransaction.setRollbackOnly");
-		}
+    public void setRollbackOnly() throws java.lang.IllegalStateException, javax.transaction.SystemException {
+        if (jtaLogger.logger.isTraceEnabled()) {
+            jtaLogger.logger.trace("BaseTransaction.setRollbackOnly");
+        }
 
-		TransactionImple theTransaction = TransactionImple.getTransaction();
+        TransactionImple theTransaction = TransactionImple.getTransaction();
 
-		if (theTransaction == null)
-			throw new IllegalStateException(jtaLogger.i18NLogger.get_transaction_arjunacore_nosuchtx());
-		theTransaction.setRollbackOnly();
-	}
+        if (theTransaction == null)
+            throw new IllegalStateException(jtaLogger.i18NLogger.get_transaction_arjunacore_nosuchtx());
+        theTransaction.setRollbackOnly();
+    }
 
-	public int getStatus() throws javax.transaction.SystemException {
-		TransactionImple theTransaction = TransactionImple.getTransaction();
+    public int getStatus() throws javax.transaction.SystemException {
+        TransactionImple theTransaction = TransactionImple.getTransaction();
 
-		if (theTransaction == null)
-			return javax.transaction.Status.STATUS_NO_TRANSACTION;
-		else
-			return theTransaction.getStatus();
-	}
+        if (theTransaction == null)
+            return javax.transaction.Status.STATUS_NO_TRANSACTION;
+        else
+            return theTransaction.getStatus();
+    }
 
-	public void setTransactionTimeout(int seconds) throws javax.transaction.SystemException {
-		if (seconds >= 0) {
-			_timeouts.set(new Integer(seconds));
-		}
-	}
+    public void setTransactionTimeout(int seconds) throws javax.transaction.SystemException {
+        if (seconds >= 0) {
+            _timeouts.set(new Integer(seconds));
+        }
+    }
 
-	public int getTimeout() throws javax.transaction.SystemException {
-		Integer value = _timeouts.get();
+    public int getTimeout() throws javax.transaction.SystemException {
+        Integer value = _timeouts.get();
 
-		if (value != null) {
-			return value.intValue();
-		} else
-			return 0;
-	}
+        if (value != null) {
+            return value.intValue();
+        } else
+            return 0;
+    }
 
-	public String toString() {
-		TransactionImple theTransaction = TransactionImple.getTransaction();
+    public String toString() {
+        TransactionImple theTransaction = TransactionImple.getTransaction();
 
-		if (theTransaction == null)
-			return "Transaction: unknown";
-		else
-			return "Transaction: " + theTransaction;
-	}
+        if (theTransaction == null)
+            return "Transaction: unknown";
+        else
+            return "Transaction: " + theTransaction;
+    }
 
-	public TransactionImple createSubordinate()
-			throws javax.transaction.NotSupportedException, javax.transaction.SystemException {
-		if (jtaLogger.logger.isTraceEnabled()) {
-			jtaLogger.logger.trace("BaseTransaction.createSubordinate");
-		}
+    public TransactionImple createSubordinate()
+            throws javax.transaction.NotSupportedException, javax.transaction.SystemException {
+        if (jtaLogger.logger.isTraceEnabled()) {
+            jtaLogger.logger.trace("BaseTransaction.createSubordinate");
+        }
 
-		try {
-			checkTransactionState();
-		} catch (IllegalStateException e1) {
-			NotSupportedException notSupportedException = new NotSupportedException();
-			notSupportedException.initCause(e1);
-			throw notSupportedException;
-		} catch (Exception e2) {
-			javax.transaction.SystemException systemException = new javax.transaction.SystemException(e2.toString());
-			systemException.initCause(e2);
-			throw systemException;
-		}
+        try {
+            checkTransactionState();
+        } catch (IllegalStateException e1) {
+            NotSupportedException notSupportedException = new NotSupportedException();
+            notSupportedException.initCause(e1);
+            throw notSupportedException;
+        } catch (Exception e2) {
+            javax.transaction.SystemException systemException = new javax.transaction.SystemException(e2.toString());
+            systemException.initCause(e2);
+            throw systemException;
+        }
 
-		Integer value = _timeouts.get();
-		int v = 0; // if not set then assume 0. What else can we do?
+        Integer value = _timeouts.get();
+        int v = 0; // if not set then assume 0. What else can we do?
 
-		if (value != null) {
-			v = value.intValue();
-		}
+        if (value != null) {
+            v = value.intValue();
+        }
 
-		// TODO set default timeout
+        // TODO set default timeout
 
-		return new com.arjuna.ats.internal.jta.transaction.arjunacore.subordinate.TransactionImple(v);
-	}
+        return new com.arjuna.ats.internal.jta.transaction.arjunacore.subordinate.TransactionImple(v);
+    }
 
-	protected BaseTransaction() {
-	}
+    protected BaseTransaction() {
+    }
 
-	/**
-	 * Called when we want to make sure this thread does not already have a
-	 * transaction associated with it.
-	 */
+    /**
+     * Called when we want to make sure this thread does not already have a
+     * transaction associated with it.
+     */
 
-	final void checkTransactionState() throws IllegalStateException, javax.transaction.SystemException {
-		// ok, no transaction currently associated with thread.
+    final void checkTransactionState() throws IllegalStateException, javax.transaction.SystemException {
+        // ok, no transaction currently associated with thread.
 
-		TransactionImple theTransaction = TransactionImple.getTransaction();
+        TransactionImple theTransaction = TransactionImple.getTransaction();
 
-		if (theTransaction == null)
-			return;
-		else {
-			if ((theTransaction.getStatus() != javax.transaction.Status.STATUS_NO_TRANSACTION)
-					&& !_supportSubtransactions) {
-				throw new IllegalStateException("BaseTransaction.checkTransactionState - "
-						+ jtaLogger.i18NLogger.get_transaction_arjunacore_alreadyassociated());
-			}
-		}
-	}
+        if (theTransaction == null)
+            return;
+        else {
+            if ((theTransaction.getStatus() != javax.transaction.Status.STATUS_NO_TRANSACTION)
+                    && !_supportSubtransactions) {
+                throw new IllegalStateException("BaseTransaction.checkTransactionState - "
+                        + jtaLogger.i18NLogger.get_transaction_arjunacore_alreadyassociated());
+            }
+        }
+    }
 
-	public Future<Void> commitAsync() {
-		final TransactionImple theTransaction = TransactionImple.getTransaction();
-		if (theTransaction == null)
-			throw new IllegalStateException(
-					"BaseTransaction.commit - " + jtaLogger.i18NLogger.get_transaction_arjunacore_notx());
+    public Future<Void> commitAsync() {
+        final TransactionImple theTransaction = TransactionImple.getTransaction();
+        if (theTransaction == null)
+            throw new IllegalStateException(
+                    "BaseTransaction.commit - " + jtaLogger.i18NLogger.get_transaction_arjunacore_notx());
 
-		AtomicAction.suspend();
-		return wrap(new Callable<Void>() {
-			public Void call() throws InvalidTransactionException, javax.transaction.RollbackException,
-					javax.transaction.HeuristicMixedException, javax.transaction.HeuristicRollbackException,
-					java.lang.SecurityException, javax.transaction.SystemException, java.lang.IllegalStateException {
-				if (AtomicAction.suspend() != null) {
-					System.err.println("WARNING - A PREVIOUS TRANSACTION WAS ON THE THREAD UNSUSPENDED");
-				}
-				if (!AtomicAction.resume(theTransaction.getAtomicAction()))
-					throw new InvalidTransactionException();
-				theTransaction.commitAndDisassociate();
-				return null;
-			}
-		});
-	}
+        AtomicAction.suspend();
+        return wrap(new Callable<Void>() {
+            public Void call() throws InvalidTransactionException, javax.transaction.RollbackException,
+                    javax.transaction.HeuristicMixedException, javax.transaction.HeuristicRollbackException,
+                    java.lang.SecurityException, javax.transaction.SystemException, java.lang.IllegalStateException {
+                if (AtomicAction.suspend() != null) {
+                    System.err.println("WARNING - A PREVIOUS TRANSACTION WAS ON THE THREAD UNSUSPENDED");
+                }
+                if (!AtomicAction.resume(theTransaction.getAtomicAction()))
+                    throw new InvalidTransactionException();
+                theTransaction.commitAndDisassociate();
+                return null;
+            }
+        });
+    }
 
-	public static <T> Future<T> wrap(Callable<T> callable) {
-		final FutureTask<T> task = new FutureTask<T>(callable);
-		tpe.execute(task);
-		return task;
-	}
+    public static <T> Future<T> wrap(Callable<T> callable) {
+        final FutureTask<T> task = new FutureTask<T>(callable);
+        tpe.execute(task);
+        return task;
+    }
 
-	private static final boolean _supportSubtransactions = jtaPropertyManager.getJTAEnvironmentBean()
-			.isSupportSubtransactions();
+    private static final boolean _supportSubtransactions = jtaPropertyManager.getJTAEnvironmentBean()
+            .isSupportSubtransactions();
 
-	private static final ThreadLocal<Integer> _timeouts = new ThreadLocal<Integer>();
+    private static final ThreadLocal<Integer> _timeouts = new ThreadLocal<Integer>();
 
-	private static final int _asyncCommitPoolSize = jtaPropertyManager.getJTAEnvironmentBean().getAsyncCommitPoolSize();
+    private static final int _asyncCommitPoolSize = jtaPropertyManager.getJTAEnvironmentBean().getAsyncCommitPoolSize();
 
-	private static final ThreadPoolExecutor tpe = new ThreadPoolExecutor(1, _asyncCommitPoolSize, 10, TimeUnit.SECONDS,
-			new ArrayBlockingQueue<Runnable>(3));
+    private static final ThreadPoolExecutor tpe = new ThreadPoolExecutor(1, _asyncCommitPoolSize, 10, TimeUnit.SECONDS,
+            new ArrayBlockingQueue<Runnable>(3));
 
 }

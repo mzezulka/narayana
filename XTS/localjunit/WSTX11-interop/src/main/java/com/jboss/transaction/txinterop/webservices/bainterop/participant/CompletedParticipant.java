@@ -31,7 +31,7 @@ public class CompletedParticipant extends ParticipantCompletionParticipantAdapte
 
     public void setEngine(final ParticipantCompletionParticipantEngine engine)
     {
-	this.engine = engine ;
+    this.engine = engine ;
     }
 
     public void initialiseTimeout()

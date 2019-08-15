@@ -71,91 +71,91 @@ import java.util.Properties;
 
 public class Setup01
 {
-	public static void main(String[] args)
-	{
-		boolean success = false;
+    public static void main(String[] args)
+    {
+        boolean success = false;
 
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			String profileName = args[args.length - 1];
+            String profileName = args[args.length - 1];
 
-			int numberOfDrivers = JDBCProfileStore.numberOfDrivers(profileName);
-			for (int index = 0; index < numberOfDrivers; index++)
-			{
-				String driver = JDBCProfileStore.driver(profileName, index);
+            int numberOfDrivers = JDBCProfileStore.numberOfDrivers(profileName);
+            for (int index = 0; index < numberOfDrivers; index++)
+            {
+                String driver = JDBCProfileStore.driver(profileName, index);
 
-				Class.forName(driver);
-			}
+                Class.forName(driver);
+            }
 
-			String databaseURL = JDBCProfileStore.databaseURL(profileName);
-			String databaseUser = JDBCProfileStore.databaseUser(profileName);
-			String databasePassword = JDBCProfileStore.databasePassword(profileName);
-			String databaseDynamicClass = JDBCProfileStore.databaseDynamicClass(profileName);
+            String databaseURL = JDBCProfileStore.databaseURL(profileName);
+            String databaseUser = JDBCProfileStore.databaseUser(profileName);
+            String databasePassword = JDBCProfileStore.databasePassword(profileName);
+            String databaseDynamicClass = JDBCProfileStore.databaseDynamicClass(profileName);
 
-			Connection connection;
-			if (databaseDynamicClass != null)
-			{
-				Properties databaseProperties = new Properties();
+            Connection connection;
+            if (databaseDynamicClass != null)
+            {
+                Properties databaseProperties = new Properties();
 
-				databaseProperties.put(com.arjuna.ats.jdbc.TransactionalDriver.userName, databaseUser);
-				databaseProperties.put(com.arjuna.ats.jdbc.TransactionalDriver.password, databasePassword);
-				databaseProperties.put(com.arjuna.ats.jdbc.TransactionalDriver.dynamicClass, databaseDynamicClass);
+                databaseProperties.put(com.arjuna.ats.jdbc.TransactionalDriver.userName, databaseUser);
+                databaseProperties.put(com.arjuna.ats.jdbc.TransactionalDriver.password, databasePassword);
+                databaseProperties.put(com.arjuna.ats.jdbc.TransactionalDriver.dynamicClass, databaseDynamicClass);
 
-				connection = DriverManager.getConnection(databaseURL, databaseProperties);
-			}
-			else
-			{
-				connection = DriverManager.getConnection(databaseURL, databaseUser, databasePassword);
-			}
+                connection = DriverManager.getConnection(databaseURL, databaseProperties);
+            }
+            else
+            {
+                connection = DriverManager.getConnection(databaseURL, databaseUser, databasePassword);
+            }
 
-			Statement statement = connection.createStatement();
+            Statement statement = connection.createStatement();
 
-			statement.executeUpdate("CREATE TABLE " + databaseUser + "_Matrix (X INT, Y INT, Value INT)");
+            statement.executeUpdate("CREATE TABLE " + databaseUser + "_Matrix (X INT, Y INT, Value INT)");
 
-			int width = 16;
-			int height = 16;
+            int width = 16;
+            int height = 16;
 
-			for (int x = 0; x < width; x++)
-			{
-				for (int y = 0; y < height; y++)
-				{
-					if (y < (height / 2))
-					{
-						statement.executeUpdate("INSERT INTO " + databaseUser + "_Matrix VALUES(\'" + x + "\', \'" + y + "\', \'0\')");
-					}
-					else
-					{
-						statement.executeUpdate("INSERT INTO " + databaseUser + "_Matrix VALUES(\'" + x + "\', \'" + y + "\', \'1\')");
-					}
-				}
-			}
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    if (y < (height / 2))
+                    {
+                        statement.executeUpdate("INSERT INTO " + databaseUser + "_Matrix VALUES(\'" + x + "\', \'" + y + "\', \'0\')");
+                    }
+                    else
+                    {
+                        statement.executeUpdate("INSERT INTO " + databaseUser + "_Matrix VALUES(\'" + x + "\', \'" + y + "\', \'1\')");
+                    }
+                }
+            }
 
-			statement.close();
-			connection.close();
+            statement.close();
+            connection.close();
 
-			success = true;
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Setup01.main: " + exception);
-		}
+            success = true;
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Setup01.main: " + exception);
+        }
 
-		try
-		{
-			OAInterface.shutdownOA();
-			ORBInterface.shutdownORB();
+        try
+        {
+            OAInterface.shutdownOA();
+            ORBInterface.shutdownORB();
 
-			success = false;
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Setup01.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
+            success = false;
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Setup01.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
 
-		System.out.println(success ? "Passed" : "Failed");
-	}
+        System.out.println(success ? "Passed" : "Failed");
+    }
 }

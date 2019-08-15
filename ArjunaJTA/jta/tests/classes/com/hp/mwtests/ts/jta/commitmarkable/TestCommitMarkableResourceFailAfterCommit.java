@@ -27,14 +27,14 @@ import org.junit.runner.RunWith;
 
 @RunWith(BMUnitRunner.class)
 public class TestCommitMarkableResourceFailAfterCommit extends
-		FailAfterCommitBase {
+        FailAfterCommitBase {
 
-	@Test
-	@BMScript("commitMarkableResourceFailAfterCommit")
-	public void testFailAfterCommitH2() throws Exception {
-		final JdbcDataSource dataSource = new JdbcDataSource();
-		dataSource.setURL("jdbc:h2:mem:JBTMDB;MVCC=TRUE;DB_CLOSE_DELAY=-1");
+    @Test
+    @BMScript("commitMarkableResourceFailAfterCommit")
+    public void testFailAfterCommitH2() throws Exception {
+        final JdbcDataSource dataSource = new JdbcDataSource();
+        dataSource.setURL("jdbc:h2:mem:JBTMDB;MVCC=TRUE;DB_CLOSE_DELAY=-1");
 
-		doTest(dataSource);
-	}
+        doTest(dataSource);
+    }
 }

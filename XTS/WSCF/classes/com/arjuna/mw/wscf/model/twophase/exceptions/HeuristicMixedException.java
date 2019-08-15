@@ -46,17 +46,17 @@ public class HeuristicMixedException extends SystemException
 
     public HeuristicMixedException ()
     {
-	super();
+    super();
     }
 
     public HeuristicMixedException (String s)
     {
-	super(s);
+    super(s);
     }
 
     public HeuristicMixedException (String s, int errorcode)
     {
-	super(s, errorcode);
+    super(s, errorcode);
     }
 
 }

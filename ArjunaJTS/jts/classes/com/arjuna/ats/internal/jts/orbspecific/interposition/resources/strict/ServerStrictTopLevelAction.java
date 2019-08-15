@@ -47,46 +47,46 @@ public class ServerStrictTopLevelAction extends ServerTopLevelAction
 
 public ServerStrictTopLevelAction (ServerControl control, boolean doRegister)
     {
-	super(control);
+    super(control);
 
-	if (jtsLogger.logger.isTraceEnabled()) {
+    if (jtsLogger.logger.isTraceEnabled()) {
         jtsLogger.logger.trace("ServerStrictTopLevelAction::ServerStrictTopLevelAction (ServerControl, " + doRegister + " )");
     }
 
         _theResource = null;
 
-	if (_theControl != null)
-	{
-	    _theResource = new org.omg.CosTransactions.ResourcePOATie(this);
+    if (_theControl != null)
+    {
+        _theResource = new org.omg.CosTransactions.ResourcePOATie(this);
 
-	    ORBManager.getPOA().objectIsReady(_theResource);
+        ORBManager.getPOA().objectIsReady(_theResource);
 
-	    /*
-	     * Would like to be able to attach a thread filter
-	     * to this object if process-filters aren't supported.
-	     * However, currently this won't work as we can't have
-	     * two different filter types working at the same
-	     * time.
-	     *
-	     *		ATTACH_THREAD_FILTER_(_theResource);
-	     */
+        /*
+         * Would like to be able to attach a thread filter
+         * to this object if process-filters aren't supported.
+         * However, currently this won't work as we can't have
+         * two different filter types working at the same
+         * time.
+         *
+         *        ATTACH_THREAD_FILTER_(_theResource);
+         */
 
-	    if (doRegister)
-		interposeResource();
-	}
+        if (doRegister)
+        interposeResource();
+    }
     }
 
 public boolean interposeResource ()
     {
-	if (!_registered)
-	{
-	    _registered = true;
+    if (!_registered)
+    {
+        _registered = true;
 
-	    if ((_theResource != null) && (_theControl != null))
-	    {
-		Coordinator realCoordinator = _theControl.originalCoordinator();
+        if ((_theResource != null) && (_theControl != null))
+        {
+        Coordinator realCoordinator = _theControl.originalCoordinator();
 
-		if (!(_valid = registerResource(realCoordinator))) {
+        if (!(_valid = registerResource(realCoordinator))) {
 //            jtsLogger.i18NLogger.warn_orbspecific_interposition_resources_strict_iptlfailed("ServerStrictNestedAction");
 
             /*
@@ -95,18 +95,18 @@ public boolean interposeResource ()
                 */
         }
 
-		realCoordinator = null;
-	    }
-	    else
-		_valid = false;
-	}
+        realCoordinator = null;
+        }
+        else
+        _valid = false;
+    }
 
-	return _valid;
+    return _valid;
     }
 
 public String type ()
     {
-	return "/Resources/Arjuna/ServerTopLevelAction/ServerStrictTopLevelAction";
+    return "/Resources/Arjuna/ServerTopLevelAction/ServerStrictTopLevelAction";
     }
 
 }

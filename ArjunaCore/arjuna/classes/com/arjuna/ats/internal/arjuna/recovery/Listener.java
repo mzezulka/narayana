@@ -61,7 +61,7 @@ public class Listener extends Thread
       _listener_socket = new ServerSocket( _listener_port );
 
       if (Listener.setTimeout)
-	  _listener_socket.setSoTimeout( _listener_socket_timeout_in_msecs );
+      _listener_socket.setSoTimeout( _listener_socket_timeout_in_msecs );
 
        connections = new LinkedList<Socket>();
    }
@@ -82,7 +82,7 @@ public class Listener extends Thread
       _listener_socket = serverSocket;
 
       if (Listener.setTimeout)
-	  _listener_socket.setSoTimeout( _listener_socket_timeout_in_msecs );
+      _listener_socket.setSoTimeout( _listener_socket_timeout_in_msecs );
 
       connections = new LinkedList<Socket>();
    }
@@ -103,7 +103,7 @@ public class Listener extends Thread
       }
       catch ( IOException ex )
       {
-	  tsLogger.arjLoggerI18N.warn("com.arjuna.ats.internal.arjuna.recovery.Listener_1");
+      tsLogger.arjLoggerI18N.warn("com.arjuna.ats.internal.arjuna.recovery.Listener_1");
       }
    }
     */
@@ -132,7 +132,7 @@ public class Listener extends Thread
 
             Connection new_conn = new Connection( conn, _listener_service, callback );
 
-     	    if (tsLogger.logger.isDebugEnabled()) {
+             if (tsLogger.logger.isDebugEnabled()) {
                  tsLogger.logger.debug("Connected to " + conn.getInetAddress().getHostAddress() +
                          " on port " + conn.getPort() + " on listener port " +
                          conn.getLocalPort() + " for service " +
@@ -156,8 +156,8 @@ public class Listener extends Thread
          }
          catch ( final IOException ex )
          {
-	     if (tsLogger.logger.isDebugEnabled())
-		 tsLogger.logger.debug("Listener - IOException"+" "+ex);
+         if (tsLogger.logger.isDebugEnabled())
+         tsLogger.logger.debug("Listener - IOException"+" "+ex);
          }
          catch (final Exception ex)
          {

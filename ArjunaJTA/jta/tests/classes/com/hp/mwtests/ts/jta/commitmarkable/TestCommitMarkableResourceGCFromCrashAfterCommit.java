@@ -41,63 +41,63 @@ import com.arjuna.ats.internal.jta.recovery.arjunacore.CommitMarkableResourceRec
 
 @RunWith(BMUnitRunner.class)
 public class TestCommitMarkableResourceGCFromCrashAfterCommit extends
-		TestCommitMarkableResourceBase {
+        TestCommitMarkableResourceBase {
 
-	@Test
-	public void testFailAfterCommitH2() throws Exception {
-		final DataSource dataSource = new JdbcDataSource();
-		((JdbcDataSource) dataSource)
-				.setURL("jdbc:h2:mem:JBTMDB;MVCC=TRUE;DB_CLOSE_DELAY=-1");
+    @Test
+    public void testFailAfterCommitH2() throws Exception {
+        final DataSource dataSource = new JdbcDataSource();
+        ((JdbcDataSource) dataSource)
+                .setURL("jdbc:h2:mem:JBTMDB;MVCC=TRUE;DB_CLOSE_DELAY=-1");
 
-		// Test code
-		Utils.createTables(dataSource.getConnection());
+        // Test code
+        Utils.createTables(dataSource.getConnection());
 
-		// We can't just instantiate one as we need to be using the
-		// same one as
-		// the transaction
-		// manager would have used to mark the transaction for GC
-		CommitMarkableResourceRecordRecoveryModule recoveryModule = null;
-		Vector recoveryModules = manager.getModules();
-		if (recoveryModules != null) {
-			Enumeration modules = recoveryModules.elements();
+        // We can't just instantiate one as we need to be using the
+        // same one as
+        // the transaction
+        // manager would have used to mark the transaction for GC
+        CommitMarkableResourceRecordRecoveryModule recoveryModule = null;
+        Vector recoveryModules = manager.getModules();
+        if (recoveryModules != null) {
+            Enumeration modules = recoveryModules.elements();
 
-			while (modules.hasMoreElements()) {
-				RecoveryModule m = (RecoveryModule) modules.nextElement();
+            while (modules.hasMoreElements()) {
+                RecoveryModule m = (RecoveryModule) modules.nextElement();
 
-				if (m instanceof CommitMarkableResourceRecordRecoveryModule) {
-					recoveryModule = (CommitMarkableResourceRecordRecoveryModule) m;
-				}
-			}
-		}
+                if (m instanceof CommitMarkableResourceRecordRecoveryModule) {
+                    recoveryModule = (CommitMarkableResourceRecordRecoveryModule) m;
+                }
+            }
+        }
 
-		javax.transaction.TransactionManager tm = com.arjuna.ats.jta.TransactionManager
-				.transactionManager();
+        javax.transaction.TransactionManager tm = com.arjuna.ats.jta.TransactionManager
+                .transactionManager();
 
-		tm.begin();
+        tm.begin();
 
-		Connection localJDBCConnection = dataSource.getConnection();
-		localJDBCConnection.setAutoCommit(false);
-		XAResource nonXAResource = new JDBCConnectableResource(
-				localJDBCConnection);
-		tm.getTransaction().enlistResource(nonXAResource);
+        Connection localJDBCConnection = dataSource.getConnection();
+        localJDBCConnection.setAutoCommit(false);
+        XAResource nonXAResource = new JDBCConnectableResource(
+                localJDBCConnection);
+        tm.getTransaction().enlistResource(nonXAResource);
 
-		XAResource xaResource = new SimpleXAResource();
-		tm.getTransaction().enlistResource(xaResource);
+        XAResource xaResource = new SimpleXAResource();
+        tm.getTransaction().enlistResource(xaResource);
 
-		localJDBCConnection.createStatement().execute(
-				"INSERT INTO foo (bar) VALUES (1)");
+        localJDBCConnection.createStatement().execute(
+                "INSERT INTO foo (bar) VALUES (1)");
 
-		tm.commit();
+        tm.commit();
 
-		Xid committed = ((JDBCConnectableResource) nonXAResource)
-				.getStartedXid();
-		assertNotNull(committed);
-		// The recovery module has to perform lookups
-		new InitialContext().rebind("commitmarkableresource", dataSource);
-		// Check if the item is still in the db
-		recoveryModule.periodicWorkFirstPass();
-		recoveryModule.periodicWorkSecondPass();
-		assertFalse(recoveryModule.wasCommitted("commitmarkableresource",
-				committed));
-	}
+        Xid committed = ((JDBCConnectableResource) nonXAResource)
+                .getStartedXid();
+        assertNotNull(committed);
+        // The recovery module has to perform lookups
+        new InitialContext().rebind("commitmarkableresource", dataSource);
+        // Check if the item is still in the db
+        recoveryModule.periodicWorkFirstPass();
+        recoveryModule.periodicWorkSecondPass();
+        assertFalse(recoveryModule.wasCommitted("commitmarkableresource",
+                committed));
+    }
 }

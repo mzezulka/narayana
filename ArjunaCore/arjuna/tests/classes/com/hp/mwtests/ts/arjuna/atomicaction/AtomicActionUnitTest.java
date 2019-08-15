@@ -138,96 +138,96 @@ public class AtomicActionUnitTest
     @Test
     public void testCanCommitSuspendedTransaction() throws Exception
     {
-    	AtomicAction aa = new AtomicAction();
-    	aa.begin();
-    	assertTrue(aa.Current() != null);
-    	aa.suspend();
-    	assertTrue(aa.Current() == null);
-    	SimpleAbstractRecord simpleAbstractRecord = new SimpleAbstractRecord();
-    	aa.add(simpleAbstractRecord);
-    	aa.commit();
-    	assertTrue(simpleAbstractRecord.wasCommitted());
+        AtomicAction aa = new AtomicAction();
+        aa.begin();
+        assertTrue(aa.Current() != null);
+        aa.suspend();
+        assertTrue(aa.Current() == null);
+        SimpleAbstractRecord simpleAbstractRecord = new SimpleAbstractRecord();
+        aa.add(simpleAbstractRecord);
+        aa.commit();
+        assertTrue(simpleAbstractRecord.wasCommitted());
     }
 
     private class SimpleAbstractRecord extends AbstractRecord {
 
-		private boolean wasCommitted;
+        private boolean wasCommitted;
 
-		@Override
-		public int typeIs() {
-			return RecordType.USER_DEF_FIRST0;
-		}
+        @Override
+        public int typeIs() {
+            return RecordType.USER_DEF_FIRST0;
+        }
 
-		public boolean wasCommitted() {
-			return wasCommitted;
-		}
+        public boolean wasCommitted() {
+            return wasCommitted;
+        }
 
-		@Override
-		public Object value() {
-			return null;
-		}
+        @Override
+        public Object value() {
+            return null;
+        }
 
-		@Override
-		public void setValue(Object o) {
-		}
+        @Override
+        public void setValue(Object o) {
+        }
 
-		@Override
-		public int nestedAbort() {
-			return TwoPhaseOutcome.FINISH_OK;
-		}
+        @Override
+        public int nestedAbort() {
+            return TwoPhaseOutcome.FINISH_OK;
+        }
 
-		@Override
-		public int nestedCommit() {
-			return TwoPhaseOutcome.FINISH_OK;
-		}
+        @Override
+        public int nestedCommit() {
+            return TwoPhaseOutcome.FINISH_OK;
+        }
 
-		@Override
-		public int nestedPrepare() {
-			return TwoPhaseOutcome.PREPARE_OK;
-		}
+        @Override
+        public int nestedPrepare() {
+            return TwoPhaseOutcome.PREPARE_OK;
+        }
 
-		@Override
-		public int topLevelAbort() {
-			return TwoPhaseOutcome.FINISH_OK;
-		}
+        @Override
+        public int topLevelAbort() {
+            return TwoPhaseOutcome.FINISH_OK;
+        }
 
-		@Override
-		public int topLevelCommit() {
-			wasCommitted = true;
-			return TwoPhaseOutcome.FINISH_OK;
-		}
+        @Override
+        public int topLevelCommit() {
+            wasCommitted = true;
+            return TwoPhaseOutcome.FINISH_OK;
+        }
 
-		@Override
-		public int topLevelPrepare() {
-			return TwoPhaseOutcome.PREPARE_OK;
-		}
+        @Override
+        public int topLevelPrepare() {
+            return TwoPhaseOutcome.PREPARE_OK;
+        }
 
-		@Override
-		public void merge(AbstractRecord a) {
-		}
+        @Override
+        public void merge(AbstractRecord a) {
+        }
 
-		@Override
-		public void alter(AbstractRecord a) {
-		}
+        @Override
+        public void alter(AbstractRecord a) {
+        }
 
-		@Override
-		public boolean shouldAdd(AbstractRecord a) {
-			return false;
-		}
+        @Override
+        public boolean shouldAdd(AbstractRecord a) {
+            return false;
+        }
 
-		@Override
-		public boolean shouldAlter(AbstractRecord a) {
-			return false;
-		}
+        @Override
+        public boolean shouldAlter(AbstractRecord a) {
+            return false;
+        }
 
-		@Override
-		public boolean shouldMerge(AbstractRecord a) {
-			return false;
-		}
+        @Override
+        public boolean shouldMerge(AbstractRecord a) {
+            return false;
+        }
 
-		@Override
-		public boolean shouldReplace(AbstractRecord a) {
-			return false;
-		}
+        @Override
+        public boolean shouldReplace(AbstractRecord a) {
+            return false;
+        }
     }
 }

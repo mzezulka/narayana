@@ -46,17 +46,17 @@ public class HeuristicConfirmException extends SystemException
 
     public HeuristicConfirmException ()
     {
-	super();
+    super();
     }
 
     public HeuristicConfirmException (String s)
     {
-	super(s);
+    super(s);
     }
 
     public HeuristicConfirmException (String s, int errorcode)
     {
-	super(s, errorcode);
+    super(s, errorcode);
     }
 
 }

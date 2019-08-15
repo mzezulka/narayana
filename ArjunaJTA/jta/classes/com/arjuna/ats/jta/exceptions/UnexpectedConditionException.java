@@ -50,12 +50,12 @@ public class UnexpectedConditionException extends SystemException
 
     public UnexpectedConditionException ()
     {
-	super();
+    super();
     }
 
     public UnexpectedConditionException (String s)
     {
-	super(s);
+    super(s);
     }
 }
 

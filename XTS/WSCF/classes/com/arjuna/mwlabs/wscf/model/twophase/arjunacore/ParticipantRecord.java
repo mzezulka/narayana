@@ -57,617 +57,617 @@ import java.io.PrintWriter;
  */
 
 public class ParticipantRecord extends
-		com.arjuna.ats.arjuna.coordinator.AbstractRecord
+        com.arjuna.ats.arjuna.coordinator.AbstractRecord
 {
 
-	/**
-	 * Constructor.
-	 *
-	 * @param theResource
-	 *            is the proxy that allows us to call out to the object.
-	 *
-	 */
+    /**
+     * Constructor.
+     *
+     * @param theResource
+     *            is the proxy that allows us to call out to the object.
+     *
+     */
 
-	public ParticipantRecord (Participant theResource, Uid id)
-	{
-		super(id, null, ObjectType.ANDPERSISTENT);
+    public ParticipantRecord (Participant theResource, Uid id)
+    {
+        super(id, null, ObjectType.ANDPERSISTENT);
 
-		_resourceHandle = theResource;
-		_timeout = 0;
-		_coordId = new CoordinatorIdImple(id);
+        _resourceHandle = theResource;
+        _timeout = 0;
+        _coordId = new CoordinatorIdImple(id);
 
         if (theResource == null)
             wscfLogger.i18NLogger.warn_model_twophase_arjunacore_ParticipantRecord_1(order());
-	}
+    }
 
-	/**
-	 * Override AbstractRecord.propagateOnCommit
-	 */
+    /**
+     * Override AbstractRecord.propagateOnCommit
+     */
 
-	public boolean propagateOnCommit ()
-	{
-		return true;
-	}
+    public boolean propagateOnCommit ()
+    {
+        return true;
+    }
 
-	/**
-	 * The type of this abstract record.
-	 */
+    /**
+     * The type of this abstract record.
+     */
 
-	public int typeIs ()
-	{
-		// TODO add specific record type.
+    public int typeIs ()
+    {
+        // TODO add specific record type.
 
-		return RecordType.XTS_WSAT_RECORD;
-	}
+        return RecordType.XTS_WSAT_RECORD;
+    }
 
-	/**
-	 * The internal value.
-	 */
+    /**
+     * The internal value.
+     */
 
-	public Object value ()
-	{
-		return _resourceHandle;
-	}
+    public Object value ()
+    {
+        return _resourceHandle;
+    }
 
-	/**
-	 * Set the internal value. Not allowed for this class.
-	 *
-	 */
+    /**
+     * Set the internal value. Not allowed for this class.
+     *
+     */
 
-	public void setValue (Object o)
-	{
+    public void setValue (Object o)
+    {
         wscfLogger.i18NLogger.warn_model_twophase_arjunacore_ParticipantRecord_2();
-	}
+    }
 
-	/**
-	 * The record is being driven through nested rollback.
-	 *
-	 */
+    /**
+     * The record is being driven through nested rollback.
+     *
+     */
 
-	// TODO
-	public int nestedAbort ()
-	{
-		try
-		{
-			if (_resourceHandle != null)
-			{
-				return TwoPhaseOutcome.FINISH_ERROR;
-			}
-			else
-				return TwoPhaseOutcome.FINISH_ERROR;
-		}
-		catch (Exception ex6) {
+    // TODO
+    public int nestedAbort ()
+    {
+        try
+        {
+            if (_resourceHandle != null)
+            {
+                return TwoPhaseOutcome.FINISH_ERROR;
+            }
+            else
+                return TwoPhaseOutcome.FINISH_ERROR;
+        }
+        catch (Exception ex6) {
             wscfLogger.i18NLogger.warn_model_twophase_arjunacore_ParticipantRecord_3(order(), ex6);
 
             return TwoPhaseOutcome.FINISH_ERROR;
         }
-	}
+    }
 
-	/**
-	 * The record is being driven through nested commit.
-	 *
-	 */
+    /**
+     * The record is being driven through nested commit.
+     *
+     */
 
-	public int nestedCommit ()
-	{
-		try
-		{
-			if (_resourceHandle != null)
-			{
-				return TwoPhaseOutcome.FINISH_ERROR;
-			}
-			else
-				return TwoPhaseOutcome.FINISH_ERROR;
-		}
-		catch (Exception ex6) {
+    public int nestedCommit ()
+    {
+        try
+        {
+            if (_resourceHandle != null)
+            {
+                return TwoPhaseOutcome.FINISH_ERROR;
+            }
+            else
+                return TwoPhaseOutcome.FINISH_ERROR;
+        }
+        catch (Exception ex6) {
             wscfLogger.i18NLogger.warn_model_twophase_arjunacore_ParticipantRecord_4(order(), ex6);
 
             return TwoPhaseOutcome.FINISH_ERROR;
         }
-	}
+    }
 
-	/**
-	 * The record is being driven through nested prepare.
-	 *
-	 */
+    /**
+     * The record is being driven through nested prepare.
+     *
+     */
 
-	public int nestedPrepare ()
-	{
-		try
-		{
-			if (_resourceHandle != null)
-			{
-				return TwoPhaseOutcome.FINISH_ERROR;
-			}
-			else
-				return TwoPhaseOutcome.PREPARE_NOTOK;
-		}
-		catch (Exception e6) {
+    public int nestedPrepare ()
+    {
+        try
+        {
+            if (_resourceHandle != null)
+            {
+                return TwoPhaseOutcome.FINISH_ERROR;
+            }
+            else
+                return TwoPhaseOutcome.PREPARE_NOTOK;
+        }
+        catch (Exception e6) {
             wscfLogger.i18NLogger.warn_model_twophase_arjunacore_ParticipantRecord_5(order(), e6);
 
             return TwoPhaseOutcome.HEURISTIC_HAZARD;
         }
-	}
+    }
 
-	/**
-	 * The record is being driven through top-level rollback.
-	 *
-	 */
+    /**
+     * The record is being driven through top-level rollback.
+     *
+     */
 
-	public int topLevelAbort ()
-	{
-		try
-		{
-			if (_resourceHandle != null)
-			{
-				try
-				{
-					if (!_rolledback)
-						_resourceHandle.cancel();
-				}
-				catch (InvalidParticipantException ex)
-				{
-					return TwoPhaseOutcome.FINISH_ERROR;
-				}
-				catch (WrongStateException ex)
-				{
-					return TwoPhaseOutcome.FINISH_ERROR;
-				}
-				catch (HeuristicHazardException ex)
-				{
-					return TwoPhaseOutcome.HEURISTIC_HAZARD;
-				}
-				catch (HeuristicMixedException ex)
-				{
-					return TwoPhaseOutcome.HEURISTIC_MIXED;
-				}
-				catch (HeuristicConfirmException ex)
-				{
-					return TwoPhaseOutcome.HEURISTIC_COMMIT;
-				}
-				catch(SystemCommunicationException ex)
-				{
-					// if the participant is dead it will retry anyway
-					return TwoPhaseOutcome.FINISH_ERROR;
-				}
-				catch (SystemException ex)
-				{
-					return TwoPhaseOutcome.HEURISTIC_HAZARD;
-				}
+    public int topLevelAbort ()
+    {
+        try
+        {
+            if (_resourceHandle != null)
+            {
+                try
+                {
+                    if (!_rolledback)
+                        _resourceHandle.cancel();
+                }
+                catch (InvalidParticipantException ex)
+                {
+                    return TwoPhaseOutcome.FINISH_ERROR;
+                }
+                catch (WrongStateException ex)
+                {
+                    return TwoPhaseOutcome.FINISH_ERROR;
+                }
+                catch (HeuristicHazardException ex)
+                {
+                    return TwoPhaseOutcome.HEURISTIC_HAZARD;
+                }
+                catch (HeuristicMixedException ex)
+                {
+                    return TwoPhaseOutcome.HEURISTIC_MIXED;
+                }
+                catch (HeuristicConfirmException ex)
+                {
+                    return TwoPhaseOutcome.HEURISTIC_COMMIT;
+                }
+                catch(SystemCommunicationException ex)
+                {
+                    // if the participant is dead it will retry anyway
+                    return TwoPhaseOutcome.FINISH_ERROR;
+                }
+                catch (SystemException ex)
+                {
+                    return TwoPhaseOutcome.HEURISTIC_HAZARD;
+                }
 
-				return TwoPhaseOutcome.FINISH_OK;
-			}
-			else
-				return TwoPhaseOutcome.FINISH_ERROR;
-		}
-		catch (Exception ex6) {
+                return TwoPhaseOutcome.FINISH_OK;
+            }
+            else
+                return TwoPhaseOutcome.FINISH_ERROR;
+        }
+        catch (Exception ex6) {
             wscfLogger.i18NLogger.warn_model_twophase_arjunacore_ParticipantRecord_6(order(), ex6);
 
             return TwoPhaseOutcome.FINISH_ERROR;
         }
-	}
+    }
 
-	/**
-	 * The record is being driven through top-level commit.
-	 *
-	 */
+    /**
+     * The record is being driven through top-level commit.
+     *
+     */
 
-	public int topLevelCommit ()
-	{
-		try
-		{
-			if (_resourceHandle != null)
-			{
-				try
-				{
-					if (!_rolledback && !_readonly)
-						_resourceHandle.confirm();
+    public int topLevelCommit ()
+    {
+        try
+        {
+            if (_resourceHandle != null)
+            {
+                try
+                {
+                    if (!_rolledback && !_readonly)
+                        _resourceHandle.confirm();
 
-					if (_rolledback)
-						throw new HeuristicHazardException();
-				}
-				catch (InvalidParticipantException ex)
-				{
-					return TwoPhaseOutcome.FINISH_ERROR;
-				}
-				catch (WrongStateException ex)
-				{
-					return TwoPhaseOutcome.NOT_PREPARED; // should be HEURISTIC_HAZARD?
-				}
-				catch (HeuristicHazardException ex)
-				{
-					return TwoPhaseOutcome.HEURISTIC_HAZARD;
-				}
-				catch (HeuristicMixedException ex)
-				{
-					return TwoPhaseOutcome.HEURISTIC_MIXED;
-				}
-				catch (HeuristicCancelException ex)
-				{
-					return TwoPhaseOutcome.HEURISTIC_ROLLBACK;
-				}
+                    if (_rolledback)
+                        throw new HeuristicHazardException();
+                }
+                catch (InvalidParticipantException ex)
+                {
+                    return TwoPhaseOutcome.FINISH_ERROR;
+                }
+                catch (WrongStateException ex)
+                {
+                    return TwoPhaseOutcome.NOT_PREPARED; // should be HEURISTIC_HAZARD?
+                }
+                catch (HeuristicHazardException ex)
+                {
+                    return TwoPhaseOutcome.HEURISTIC_HAZARD;
+                }
+                catch (HeuristicMixedException ex)
+                {
+                    return TwoPhaseOutcome.HEURISTIC_MIXED;
+                }
+                catch (HeuristicCancelException ex)
+                {
+                    return TwoPhaseOutcome.HEURISTIC_ROLLBACK;
+                }
                 catch(SystemCommunicationException ex)
                 {
                     return TwoPhaseOutcome.FINISH_ERROR;
                 }
                 catch (SystemException ex)
-				{
-					return TwoPhaseOutcome.HEURISTIC_HAZARD;
-				}
+                {
+                    return TwoPhaseOutcome.HEURISTIC_HAZARD;
+                }
 
-				return TwoPhaseOutcome.FINISH_OK;
-			}
-			else
-				return TwoPhaseOutcome.FINISH_ERROR;
-		}
-		catch (Exception ex6) {
+                return TwoPhaseOutcome.FINISH_OK;
+            }
+            else
+                return TwoPhaseOutcome.FINISH_ERROR;
+        }
+        catch (Exception ex6) {
             wscfLogger.i18NLogger.warn_model_twophase_arjunacore_ParticipantRecord_7(order(), ex6);
 
             return TwoPhaseOutcome.FINISH_ERROR;
         }
-	}
+    }
 
-	/**
-	 * The record is being driven through top-level prepare.
-	 *
-	 */
+    /**
+     * The record is being driven through top-level prepare.
+     *
+     */
 
-	public int topLevelPrepare ()
-	{
-		try
-		{
-			if (_resourceHandle != null)
-			{
-				if (_rolledback)
-					return TwoPhaseOutcome.PREPARE_NOTOK;
+    public int topLevelPrepare ()
+    {
+        try
+        {
+            if (_resourceHandle != null)
+            {
+                if (_rolledback)
+                    return TwoPhaseOutcome.PREPARE_NOTOK;
 
-				if (_readonly)
-					return TwoPhaseOutcome.PREPARE_READONLY;
+                if (_readonly)
+                    return TwoPhaseOutcome.PREPARE_READONLY;
 
-				try
-				{
-					Vote res = _resourceHandle.prepare();
+                try
+                {
+                    Vote res = _resourceHandle.prepare();
 
-					if (res instanceof VoteConfirm)
-					{
-						return TwoPhaseOutcome.PREPARE_OK;
-					}
-					else
-					{
-						if (res instanceof VoteReadOnly)
-						{
-							_readonly = true;
+                    if (res instanceof VoteConfirm)
+                    {
+                        return TwoPhaseOutcome.PREPARE_OK;
+                    }
+                    else
+                    {
+                        if (res instanceof VoteReadOnly)
+                        {
+                            _readonly = true;
 
-							return TwoPhaseOutcome.PREPARE_READONLY;
-						}
-						else
-						{
-							_rolledback = true;
+                            return TwoPhaseOutcome.PREPARE_READONLY;
+                        }
+                        else
+                        {
+                            _rolledback = true;
 
-							return TwoPhaseOutcome.PREPARE_NOTOK;
-						}
-					}
-				}
-				catch (InvalidParticipantException ex)
-				{
-					return TwoPhaseOutcome.FINISH_ERROR;
-				}
-				catch (WrongStateException ex)
-				{
-					return TwoPhaseOutcome.FINISH_ERROR;
-				}
-				catch (HeuristicHazardException ex)
-				{
-					return TwoPhaseOutcome.HEURISTIC_HAZARD;
-				}
-				catch (HeuristicMixedException ex)
-				{
-					return TwoPhaseOutcome.HEURISTIC_MIXED;
-				}
+                            return TwoPhaseOutcome.PREPARE_NOTOK;
+                        }
+                    }
+                }
+                catch (InvalidParticipantException ex)
+                {
+                    return TwoPhaseOutcome.FINISH_ERROR;
+                }
+                catch (WrongStateException ex)
+                {
+                    return TwoPhaseOutcome.FINISH_ERROR;
+                }
+                catch (HeuristicHazardException ex)
+                {
+                    return TwoPhaseOutcome.HEURISTIC_HAZARD;
+                }
+                catch (HeuristicMixedException ex)
+                {
+                    return TwoPhaseOutcome.HEURISTIC_MIXED;
+                }
                 catch(SystemCommunicationException ex)
                 {
                     // if prepare timed out then we return error so it goes back on the
                     // prepare list and is rolled back
                     return TwoPhaseOutcome.PREPARE_NOTOK;
                 }
-				catch (SystemException ex)
-				{
-					return TwoPhaseOutcome.HEURISTIC_HAZARD;
-				}
-			}
-			else
-				return TwoPhaseOutcome.PREPARE_NOTOK;
-		}
-		catch (Exception e6) {
+                catch (SystemException ex)
+                {
+                    return TwoPhaseOutcome.HEURISTIC_HAZARD;
+                }
+            }
+            else
+                return TwoPhaseOutcome.PREPARE_NOTOK;
+        }
+        catch (Exception e6) {
             wscfLogger.i18NLogger.warn_model_twophase_arjunacore_ParticipantRecord_8(order(), e6);
 
             return TwoPhaseOutcome.PREPARE_NOTOK;
         }
-	}
+    }
 
-	/**
-	 * The record is being driven through nested commit and is the only
-	 * resource.
-	 *
-	 */
+    /**
+     * The record is being driven through nested commit and is the only
+     * resource.
+     *
+     */
 
-	public int nestedOnePhaseCommit ()
-	{
-		try
-		{
-			if (_resourceHandle != null)
-			{
-				return TwoPhaseOutcome.FINISH_ERROR;
-			}
-			else
-				return TwoPhaseOutcome.FINISH_ERROR;
-		}
-		catch (Exception ex6) {
+    public int nestedOnePhaseCommit ()
+    {
+        try
+        {
+            if (_resourceHandle != null)
+            {
+                return TwoPhaseOutcome.FINISH_ERROR;
+            }
+            else
+                return TwoPhaseOutcome.FINISH_ERROR;
+        }
+        catch (Exception ex6) {
             wscfLogger.i18NLogger.warn_model_twophase_arjunacore_ParticipantRecord_9(order(), ex6);
 
             return TwoPhaseOutcome.FINISH_ERROR;
         }
-	}
+    }
 
-	/**
-	 * The WSCF does not implement 1PC properly and it fails to run it safely
-	 * in data consistent manner. Returning false to disable 1PC optimization
-	 * for the WSCF records.
-	 * See JBTM-396 and JBTM-3138.
-	 */
+    /**
+     * The WSCF does not implement 1PC properly and it fails to run it safely
+     * in data consistent manner. Returning false to disable 1PC optimization
+     * for the WSCF records.
+     * See JBTM-396 and JBTM-3138.
+     */
 
-	public boolean isPermittedTopLevelOnePhaseCommit() {
-		return false;
-	}
+    public boolean isPermittedTopLevelOnePhaseCommit() {
+        return false;
+    }
 
-	/**
-	 * The record is being driven through top-level commit and is the only
-	 * resource.
-	 *
-	 */
+    /**
+     * The record is being driven through top-level commit and is the only
+     * resource.
+     *
+     */
 
-	public int topLevelOnePhaseCommit ()
-	{
-		try
-		{
-			if (_resourceHandle != null)
-			{
-				if (_rolledback)
-					return TwoPhaseOutcome.ONE_PHASE_ERROR;
+    public int topLevelOnePhaseCommit ()
+    {
+        try
+        {
+            if (_resourceHandle != null)
+            {
+                if (_rolledback)
+                    return TwoPhaseOutcome.ONE_PHASE_ERROR;
 
-				if (_readonly)
-					return TwoPhaseOutcome.FINISH_OK;
+                if (_readonly)
+                    return TwoPhaseOutcome.FINISH_OK;
 
-				try
-				{
-					_resourceHandle.confirmOnePhase();
-				}
-				catch (InvalidParticipantException ex)
-				{
-					return TwoPhaseOutcome.ONE_PHASE_ERROR;
-				}
-				catch (WrongStateException ex)
-				{
-					return TwoPhaseOutcome.ONE_PHASE_ERROR;
-				}
-				catch (HeuristicHazardException ex)
-				{
-					return TwoPhaseOutcome.HEURISTIC_HAZARD;
-				}
-				catch (HeuristicMixedException ex)
-				{
-					return TwoPhaseOutcome.HEURISTIC_MIXED;
-				}
-				catch (HeuristicCancelException ex)
-				{
-					return TwoPhaseOutcome.HEURISTIC_ROLLBACK;
-				}
-				// TODO explicit in the signature
-				catch (ParticipantCancelledException ex)  // a type of SystemException
-				{
-					return TwoPhaseOutcome.ONE_PHASE_ERROR;
-				}
-				catch (SystemException ex)
-				{
-					return TwoPhaseOutcome.HEURISTIC_HAZARD;
-				}
+                try
+                {
+                    _resourceHandle.confirmOnePhase();
+                }
+                catch (InvalidParticipantException ex)
+                {
+                    return TwoPhaseOutcome.ONE_PHASE_ERROR;
+                }
+                catch (WrongStateException ex)
+                {
+                    return TwoPhaseOutcome.ONE_PHASE_ERROR;
+                }
+                catch (HeuristicHazardException ex)
+                {
+                    return TwoPhaseOutcome.HEURISTIC_HAZARD;
+                }
+                catch (HeuristicMixedException ex)
+                {
+                    return TwoPhaseOutcome.HEURISTIC_MIXED;
+                }
+                catch (HeuristicCancelException ex)
+                {
+                    return TwoPhaseOutcome.HEURISTIC_ROLLBACK;
+                }
+                // TODO explicit in the signature
+                catch (ParticipantCancelledException ex)  // a type of SystemException
+                {
+                    return TwoPhaseOutcome.ONE_PHASE_ERROR;
+                }
+                catch (SystemException ex)
+                {
+                    return TwoPhaseOutcome.HEURISTIC_HAZARD;
+                }
 
-				return TwoPhaseOutcome.FINISH_OK;
-			}
-			else
-				return TwoPhaseOutcome.ONE_PHASE_ERROR;
-		}
-		catch (Exception ex6) {
+                return TwoPhaseOutcome.FINISH_OK;
+            }
+            else
+                return TwoPhaseOutcome.ONE_PHASE_ERROR;
+        }
+        catch (Exception ex6) {
             wscfLogger.i18NLogger.warn_model_twophase_arjunacore_ParticipantRecord_10(order(), ex6);
 
             return TwoPhaseOutcome.ONE_PHASE_ERROR;
         }
-	}
+    }
 
-	/**
-	 * The record generated a heuristic and can now forget about it.
-	 *
-	 */
+    /**
+     * The record generated a heuristic and can now forget about it.
+     *
+     */
 
-	public boolean forgetHeuristic ()
-	{
-		try
-		{
-			if (_resourceHandle != null)
-			{
-				try
-				{
-					_resourceHandle.forget();
-				}
-				catch (InvalidParticipantException ex)
-				{
-					return false;
-				}
-				catch (WrongStateException ex)
-				{
-					return false;
-				}
-				catch (SystemException ex)
-				{
-					return false;
-				}
+    public boolean forgetHeuristic ()
+    {
+        try
+        {
+            if (_resourceHandle != null)
+            {
+                try
+                {
+                    _resourceHandle.forget();
+                }
+                catch (InvalidParticipantException ex)
+                {
+                    return false;
+                }
+                catch (WrongStateException ex)
+                {
+                    return false;
+                }
+                catch (SystemException ex)
+                {
+                    return false;
+                }
 
-				return true;
-			}
-			else {
+                return true;
+            }
+            else {
                 wscfLogger.i18NLogger.warn_model_twophase_arjunacore_ParticipantRecord_11(order());
             }
-		}
-		catch (Exception e) {
+        }
+        catch (Exception e) {
             wscfLogger.i18NLogger.warn_model_twophase_arjunacore_ParticipantRecord_12(order(), e);
         }
 
-		return false;
-	}
+        return false;
+    }
 
-	public static AbstractRecord create ()
-	{
-		return new ParticipantRecord();
-	}
+    public static AbstractRecord create ()
+    {
+        return new ParticipantRecord();
+    }
 
-	public void print (PrintWriter strm)
-	{
-		super.print(strm);
+    public void print (PrintWriter strm)
+    {
+        super.print(strm);
 
-		strm.print("ParticipantRecord");
-		strm.print(_resourceHandle);
-	}
+        strm.print("ParticipantRecord");
+        strm.print(_resourceHandle);
+    }
 
 
-	public boolean restore_state (InputObjectState os, int t)
-	{
-		boolean result = super.restore_state(os, t);
+    public boolean restore_state (InputObjectState os, int t)
+    {
+        boolean result = super.restore_state(os, t);
 
-		if (result)
-		{
-			try
-			{
+        if (result)
+        {
+            try
+            {
                 String resourcehandleImplClassName = os.unpackString();
                 Class clazz = ClassLoaderHelper.forName(ParticipantRecord.class, resourcehandleImplClassName);
                 _resourceHandle = (Participant)clazz.newInstance();
 
                 result = _resourceHandle.restore_state(os);
 
-				if (result)
-					_timeout = os.unpackLong();
+                if (result)
+                    _timeout = os.unpackLong();
 
-				/*
-				 * TODO: unpack qualifiers and coord id.
-				 */
-			}
-			catch (Exception ex) {
+                /*
+                 * TODO: unpack qualifiers and coord id.
+                 */
+            }
+            catch (Exception ex) {
                 wscfLogger.i18NLogger.warn_model_twophase_arjunacore_ParticipantRecord_13(ex);
 
                 result = false;
             }
-		}
+        }
 
-		return result;
-	}
+        return result;
+    }
 
 
-	public boolean save_state (OutputObjectState os, int t)
-	{
-		boolean result = super.save_state(os, t);
+    public boolean save_state (OutputObjectState os, int t)
+    {
+        boolean result = super.save_state(os, t);
 
-		if (result)
-		{
-			try
-			{
+        if (result)
+        {
+            try
+            {
                 os.packString(_resourceHandle.getClass().getName()); // TODO: a shorter value whould be more efficient.
                 result = _resourceHandle.save_state(os);
 
-				if (result)
-					os.packLong(_timeout);
+                if (result)
+                    os.packLong(_timeout);
 
-				/*
-				 * TODO: pack qualifiers and coord id.
-				 */
-			}
-			catch (Exception ex) {
+                /*
+                 * TODO: pack qualifiers and coord id.
+                 */
+            }
+            catch (Exception ex) {
                 wscfLogger.i18NLogger.warn_model_twophase_arjunacore_ParticipantRecord_14(ex);
 
                 result = false;
             }
-		}
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	public String type ()
-	{
-		return "/StateManager/AbstractRecord/WSCF/ArjunaCore/ParticipantRecord";
-	}
+    public String type ()
+    {
+        return "/StateManager/AbstractRecord/WSCF/ArjunaCore/ParticipantRecord";
+    }
 
-	public boolean doSave ()
-	{
-		return true;
-	}
+    public boolean doSave ()
+    {
+        return true;
+    }
 
-	public void merge (AbstractRecord a)
-	{
-	}
+    public void merge (AbstractRecord a)
+    {
+    }
 
-	public void alter (AbstractRecord a)
-	{
-	}
+    public void alter (AbstractRecord a)
+    {
+    }
 
-	public boolean shouldAdd (AbstractRecord a)
-	{
-		return false;
-	}
+    public boolean shouldAdd (AbstractRecord a)
+    {
+        return false;
+    }
 
-	public boolean shouldAlter (AbstractRecord a)
-	{
-		return false;
-	}
+    public boolean shouldAlter (AbstractRecord a)
+    {
+        return false;
+    }
 
-	public boolean shouldMerge (AbstractRecord a)
-	{
-		return false;
-	}
+    public boolean shouldMerge (AbstractRecord a)
+    {
+        return false;
+    }
 
-	public boolean shouldReplace (AbstractRecord rec)
-	{
-		return false;
-	}
+    public boolean shouldReplace (AbstractRecord rec)
+    {
+        return false;
+    }
 
-	public final void rolledback ()
-	{
-		_rolledback = true;
-	}
+    public final void rolledback ()
+    {
+        _rolledback = true;
+    }
 
-	public final void readonly ()
-	{
-		_readonly = true;
-	}
+    public final void readonly ()
+    {
+        _readonly = true;
+    }
 
-	/*
-	 * Protected constructor used by crash recovery.
-	 */
+    /*
+     * Protected constructor used by crash recovery.
+     */
 
-	public ParticipantRecord ()
-	{
-		super();
+    public ParticipantRecord ()
+    {
+        super();
 
-		_resourceHandle = null;
-		_timeout = 0;
-		_coordId = null;
-	}
+        _resourceHandle = null;
+        _timeout = 0;
+        _coordId = null;
+    }
 
-	private Participant _resourceHandle;
+    private Participant _resourceHandle;
 
-	private long _timeout;
+    private long _timeout;
 
-	private CoordinatorIdImple _coordId;
+    private CoordinatorIdImple _coordId;
 
-	private boolean _rolledback = false;
+    private boolean _rolledback = false;
 
-	private boolean _readonly = false;
+    private boolean _readonly = false;
 
 }

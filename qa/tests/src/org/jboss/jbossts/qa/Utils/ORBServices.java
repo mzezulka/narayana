@@ -38,18 +38,18 @@ import java.io.IOException;
 
 public class ORBServices
 {
-	private static Services _services = null;
+    private static Services _services = null;
 
-	public final static String transactionService = Services.transactionService;
-	public final static String otsKind = com.arjuna.orbportability.Services.otsKind;
+    public final static String transactionService = Services.transactionService;
+    public final static String otsKind = com.arjuna.orbportability.Services.otsKind;
 
-	public synchronized static org.omg.CORBA.Object getService(String name, Object[] params) throws IOException, InvalidName
-	{
-		if (_services == null)
-		{
-			_services = new Services(ORBInterface.getORB());
-		}
+    public synchronized static org.omg.CORBA.Object getService(String name, Object[] params) throws IOException, InvalidName
+    {
+        if (_services == null)
+        {
+            _services = new Services(ORBInterface.getORB());
+        }
 
-		return _services.getService(name, params);
-	}
+        return _services.getService(name, params);
+    }
 }

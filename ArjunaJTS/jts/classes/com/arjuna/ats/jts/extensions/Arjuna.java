@@ -48,12 +48,12 @@ public class Arjuna
 
 public static final int XID ()
     {
-	return FormatConstants.JTS_FORMAT_ID;
+    return FormatConstants.JTS_FORMAT_ID;
     }
 
 public static final int strictXID ()
     {
-	return FormatConstants.JTS_STRICT_FORMAT_ID;
+    return FormatConstants.JTS_STRICT_FORMAT_ID;
     }
 
 public static final int restrictedXID ()
@@ -63,53 +63,53 @@ public static final int restrictedXID ()
 
 public static final String arjunaXID ()
     {
-	return "ArjunaXID";
+    return "ArjunaXID";
     }
 
 public static final String arjunaStrictXID ()
     {
-	return "ArjunaStrictXID";
+    return "ArjunaStrictXID";
     }
 
 public static final String arjunaRestrictedXID ()
     {
-	return "ArjunaRestrictedXID";
+    return "ArjunaRestrictedXID";
     }
 
 public static final String osiXID ()
     {
-	return "OSI";
+    return "OSI";
     }
 
 public static final int nameToXID (String name)
     {
-	if (name == null)
-	    return Arjuna.XID();
-	else
-	{
-	    if (name.compareTo(Arjuna.arjunaXID()) == 0)
-		return Arjuna.XID();
-	    else
-	    {
-		if (name.compareTo(Arjuna.arjunaStrictXID()) == 0)
-		    return Arjuna.strictXID();
-		else
-		{
-		    if (name.compareTo(Arjuna.arjunaRestrictedXID()) == 0)
-			return Arjuna.restrictedXID();
-		    else
-		    {
-			if (name.compareTo(Arjuna.osiXID()) == 0)
-			    return 0; // osi tp
-			else
+    if (name == null)
+        return Arjuna.XID();
+    else
+    {
+        if (name.compareTo(Arjuna.arjunaXID()) == 0)
+        return Arjuna.XID();
+        else
+        {
+        if (name.compareTo(Arjuna.arjunaStrictXID()) == 0)
+            return Arjuna.strictXID();
+        else
+        {
+            if (name.compareTo(Arjuna.arjunaRestrictedXID()) == 0)
+            return Arjuna.restrictedXID();
+            else
+            {
+            if (name.compareTo(Arjuna.osiXID()) == 0)
+                return 0; // osi tp
+            else
             {
                 jtsLogger.i18NLogger.warn_orbspecific_coordinator_ipunknown("Arjuna.nameToXID", name);
-			    return Arjuna.XID();
+                return Arjuna.XID();
             }
-		    }
-		}
-	    }
-	}
+            }
+        }
+        }
+    }
     }
 
 }

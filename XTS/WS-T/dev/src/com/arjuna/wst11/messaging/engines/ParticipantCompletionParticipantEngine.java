@@ -457,7 +457,7 @@ public class ParticipantCompletionParticipantEngine implements ParticipantComple
             current = state ;
             if (current == State.STATE_NOT_COMPLETING)
             {
-        	ended() ;
+            ended() ;
             }
         }
 
@@ -479,17 +479,17 @@ public class ParticipantCompletionParticipantEngine implements ParticipantComple
             WSTLogger.logger.trace(getClass().getSimpleName() + ".getStatus");
         }
 
-	final State current ;
-	synchronized(this)
-	{
-	    current = state ;
-	}
+    final State current ;
+    synchronized(this)
+    {
+        current = state ;
+    }
 
         if (WSTLogger.logger.isTraceEnabled()) {
             WSTLogger.logger.trace(getClass().getSimpleName() + ".getStatus. State: " + current);
         }
 
-	sendStatus(current) ;
+    sendStatus(current) ;
     }
 
     /**
@@ -739,7 +739,7 @@ public class ParticipantCompletionParticipantEngine implements ParticipantComple
             }
             else if (current == State.STATE_CANCELING)
             {
-        	changeState(State.STATE_FAILING_CANCELING) ;
+            changeState(State.STATE_FAILING_CANCELING) ;
             }
             else if (current == State.STATE_COMPENSATING)
             {
@@ -1380,7 +1380,7 @@ public class ParticipantCompletionParticipantEngine implements ParticipantComple
      */
     private void ended()
     {
-	changeState(State.STATE_ENDED) ;
+    changeState(State.STATE_ENDED) ;
         ParticipantCompletionParticipantProcessor.getProcessor().deactivateParticipant(this) ;
     }
 

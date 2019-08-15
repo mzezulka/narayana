@@ -62,35 +62,35 @@ public class TwoPhaseResult
 
     public static String stringForm (int res)
     {
-	switch (res)
-	{
-	case PREPARE_OK:
-	    return "TwoPhaseResult.PREPARE_OK";
-	case PREPARE_NOTOK:
-	    return "TwoPhaseResult.PREPARE_NOTOK";
-	case PREPARE_READONLY:
-	    return "TwoPhaseResult.PREPARE_READONLY";
-	case HEURISTIC_CANCEL:
-	    return "TwoPhaseResult.HEURISTIC_CANCEL";
-	case HEURISTIC_CONFIRM:
-	    return "TwoPhaseResult.HEURISTIC_CONFIRM";
-	case HEURISTIC_MIXED:
-	    return "TwoPhaseResult.HEURISTIC_MIXED";
-	case HEURISTIC_HAZARD:
-	    return "TwoPhaseResult.HEURISTIC_HAZARD";
-	case FINISH_OK:
-	    return "TwoPhaseResult.FINISH_OK";
-	case FINISH_ERROR:
-	    return "TwoPhaseResult.FINISH_ERROR";
-	case NOT_PREPARED:
-	    return "TwoPhaseResult.NOT_PREPARED";
-	case CANCELLED:
-	    return "TwoPhaseResult.CANCELLED";
-	case CONFIRMED:
-	    return "TwoPhaseResult.CONFIRMED";
-	default:
-	    return "Unknown - "+res;
-	}
+    switch (res)
+    {
+    case PREPARE_OK:
+        return "TwoPhaseResult.PREPARE_OK";
+    case PREPARE_NOTOK:
+        return "TwoPhaseResult.PREPARE_NOTOK";
+    case PREPARE_READONLY:
+        return "TwoPhaseResult.PREPARE_READONLY";
+    case HEURISTIC_CANCEL:
+        return "TwoPhaseResult.HEURISTIC_CANCEL";
+    case HEURISTIC_CONFIRM:
+        return "TwoPhaseResult.HEURISTIC_CONFIRM";
+    case HEURISTIC_MIXED:
+        return "TwoPhaseResult.HEURISTIC_MIXED";
+    case HEURISTIC_HAZARD:
+        return "TwoPhaseResult.HEURISTIC_HAZARD";
+    case FINISH_OK:
+        return "TwoPhaseResult.FINISH_OK";
+    case FINISH_ERROR:
+        return "TwoPhaseResult.FINISH_ERROR";
+    case NOT_PREPARED:
+        return "TwoPhaseResult.NOT_PREPARED";
+    case CANCELLED:
+        return "TwoPhaseResult.CANCELLED";
+    case CONFIRMED:
+        return "TwoPhaseResult.CONFIRMED";
+    default:
+        return "Unknown - "+res;
+    }
     }
 
 }

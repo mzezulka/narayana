@@ -258,7 +258,7 @@ public class CoordinatorCompletionCoordinatorEngine implements CoordinatorComple
             }
             else if (current == State.STATE_ACTIVE)
             {
-        	ended() ;
+            ended() ;
             }
         }
 
@@ -303,7 +303,7 @@ public class CoordinatorCompletionCoordinatorEngine implements CoordinatorComple
         {
             current = state ;
             if ((current == State.STATE_ACTIVE) || (current == State.STATE_CANCELING_ACTIVE) ||
-        	(current == State.STATE_CANCELING_COMPLETING) || (current == State.STATE_COMPLETING))
+            (current == State.STATE_CANCELING_COMPLETING) || (current == State.STATE_COMPLETING))
             {
                 changeState(State.STATE_EXITING) ;
             }

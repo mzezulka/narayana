@@ -49,17 +49,17 @@ public class NoPermissionException extends WSASException
 
     public NoPermissionException ()
     {
-	super();
+    super();
     }
 
     public NoPermissionException (String s)
     {
-	super(s);
+    super(s);
     }
 
     public NoPermissionException (String s, int errorcode)
     {
-	super(s, errorcode);
+    super(s, errorcode);
     }
 
 }

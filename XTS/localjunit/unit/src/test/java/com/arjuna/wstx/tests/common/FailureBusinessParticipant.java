@@ -41,13 +41,13 @@ public class FailureBusinessParticipant implements BusinessAgreementWithParticip
 
     public FailureBusinessParticipant (int failurePoint, String id)
     {
-	_failurePoint = failurePoint;
-	_id = id;
+    _failurePoint = failurePoint;
+    _id = id;
     }
 
     public final boolean passed ()
     {
-	return _passed;
+    return _passed;
     }
 
     /**
@@ -65,38 +65,38 @@ public class FailureBusinessParticipant implements BusinessAgreementWithParticip
 
     public void close () throws WrongStateException, SystemException
     {
-	System.out.println("FailureBusinessParticipant.close for "+this);
+    System.out.println("FailureBusinessParticipant.close for "+this);
     if (closeFirstCalledTime == 0) {
         closeFirstCalledTime = System.currentTimeMillis();
     }
-	if (_failurePoint == FAIL_IN_CLOSE) {
+    if (_failurePoint == FAIL_IN_CLOSE) {
         long timeNow = System.currentTimeMillis();
         if ((timeNow - closeFirstCalledTime) < CLOSE_FAIL_TIMEOUT) {
         throw new WrongStateException();
         }
     }
 
-	_passed = true;
+    _passed = true;
     }
 
     public void cancel () throws WrongStateException, SystemException, FaultedException
     {
-	System.out.println("FailureBusinessParticipant.cancel for "+this);
+    System.out.println("FailureBusinessParticipant.cancel for "+this);
 
-	if (_failurePoint == FAIL_IN_CANCEL)
-	    throw new FaultedException();
+    if (_failurePoint == FAIL_IN_CANCEL)
+        throw new FaultedException();
 
-	_passed = true;
+    _passed = true;
     }
 
     public void compensate () throws WrongStateException, SystemException, FaultedException
     {
-	System.out.println("FailureBusinessParticipant.compensate for "+this);
+    System.out.println("FailureBusinessParticipant.compensate for "+this);
 
-	if (_failurePoint == FAIL_IN_COMPENSATE)
-	    throw new FaultedException();
+    if (_failurePoint == FAIL_IN_COMPENSATE)
+        throw new FaultedException();
 
-	_passed = true;
+    _passed = true;
     }
 
     public void forget () throws WrongStateException, SystemException
@@ -113,25 +113,25 @@ public class FailureBusinessParticipant implements BusinessAgreementWithParticip
 
     public String status () throws SystemException
     {
-	return "Unknown";
+    return "Unknown";
     }
 
     public String toString ()
     {
-	try
-	{
-	    return identifier();
-	}
-	catch (SystemException ex)
-	{
-	    return "Unknown";
+    try
+    {
+        return identifier();
+    }
+    catch (SystemException ex)
+    {
+        return "Unknown";
 
-	}
+    }
     }
 
     public String identifier () throws SystemException
     {
-	return _id;
+    return _id;
     }
 
     private boolean _passed = false;

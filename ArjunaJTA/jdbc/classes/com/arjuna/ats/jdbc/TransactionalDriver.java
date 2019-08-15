@@ -64,84 +64,84 @@ public class TransactionalDriver implements java.sql.Driver
     public static final String dynamicClass = "DYNAMIC_CLASS";
     public static final String createDb = "CREATE_DB";
     public static final String poolConnections = "POOL_CONNECTIONS";
-	public static final Object XADataSource = "XADATASOURCE";
+    public static final Object XADataSource = "XADATASOURCE";
     public static final String maxConnections = "MAXCONNECTIONS";
 
     public TransactionalDriver ()
     {
-	if (jdbcLogger.logger.isTraceEnabled()) {
+    if (jdbcLogger.logger.isTraceEnabled()) {
         jdbcLogger.logger.trace("TransactionalDriver.TransactionalDriver ()");
     }
     }
 
     public Connection connect (String url, Properties info) throws SQLException
     {
-	if (jdbcLogger.logger.isTraceEnabled()) {
+    if (jdbcLogger.logger.isTraceEnabled()) {
         jdbcLogger.logger.trace("TransactionalDriver.connect ( " + url + " )");
     }
 
-	if (!url.startsWith(TransactionalDriver.arjunaDriver))
-	{
-	    return null;
-	}
-	else
-	{
-	    return ConnectionManager.create(url.substring(TransactionalDriver.arjunaDriver.length()), info);
-	}
+    if (!url.startsWith(TransactionalDriver.arjunaDriver))
+    {
+        return null;
+    }
+    else
+    {
+        return ConnectionManager.create(url.substring(TransactionalDriver.arjunaDriver.length()), info);
+    }
     }
 
     public boolean acceptsURL (String url) throws SQLException
     {
-	if (jdbcLogger.logger.isTraceEnabled()) {
+    if (jdbcLogger.logger.isTraceEnabled()) {
         jdbcLogger.logger.trace("TransactionalDriver.acceptsURL ( " + url + " )");
     }
 
-	if (url != null)
-	{
-	    if (url.indexOf(TransactionalDriver.arjunaDriver) == -1)
-		return false;
-	    else
-		return true;
-	}
-	else
-	    return false;
+    if (url != null)
+    {
+        if (url.indexOf(TransactionalDriver.arjunaDriver) == -1)
+        return false;
+        else
+        return true;
+    }
+    else
+        return false;
     }
 
     public int getMajorVersion ()
     {
-	return 2;
+    return 2;
     }
 
     public int getMinorVersion ()
     {
-	return 0;
+    return 0;
     }
 
     public boolean jdbcCompliant ()
     {
-	return true;
+    return true;
     }
 
     public DriverPropertyInfo[] getPropertyInfo (String url, Properties info) throws SQLException
     {
-	if (jdbcLogger.logger.isTraceEnabled()) {
+    if (jdbcLogger.logger.isTraceEnabled()) {
         jdbcLogger.logger.trace("TransactionalDriver.getPropertyInfo ( " + url + " )");
     }
 
-	int index = url.indexOf(TransactionalDriver.arjunaDriver);
+    int index = url.indexOf(TransactionalDriver.arjunaDriver);
 
-	if (index == -1)
-	    return null;
-	else
-	{
-	    String theUrl = url.substring(index+TransactionalDriver.arjunaDriver.length());
-	    Driver d = DriverManager.getDriver(theUrl);
+    if (index == -1)
+        return null;
+    else
+    {
+        String theUrl = url.substring(index+TransactionalDriver.arjunaDriver.length());
+        Driver d = DriverManager.getDriver(theUrl);
 
-	    if (d != null)
-		return d.getPropertyInfo(theUrl, info);
-	    else
-		return null;
-	}
+        if (d != null)
+        return d.getPropertyInfo(theUrl, info);
+        else
+        return null;
+    }
     }
 
     //@Override
@@ -155,13 +155,13 @@ public class TransactionalDriver implements java.sql.Driver
      */
     static
     {
-	try
-	{
-	    DriverManager.registerDriver(new TransactionalDriver());
-	}
-	catch (Exception e)
-	{
-	    throw new ExceptionInInitializerError(e);
-	}
+    try
+    {
+        DriverManager.registerDriver(new TransactionalDriver());
+    }
+    catch (Exception e)
+    {
+        throw new ExceptionInInitializerError(e);
+    }
     }
 }

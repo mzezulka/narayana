@@ -46,12 +46,12 @@ public class Compensated implements Status
 
     public static Compensated instance ()
     {
-	return _instance;
+    return _instance;
     }
 
     public String toString ()
     {
-	return "org.w3c.wscf.sagas.status.Compensated";
+    return "org.w3c.wscf.sagas.status.Compensated";
     }
 
     private Compensated ()

@@ -50,7 +50,7 @@ public class RecoveryXids
 
     public RecoveryXids (XAResource xares)
     {
-    	_xares = xares;
+        _xares = xares;
         _lastValidated = System.currentTimeMillis();
         if (tsLogger.logger.isTraceEnabled())
             tsLogger.logger.trace("RecoveryXids new recoveryXids " + xares + " " + _lastValidated);
@@ -58,18 +58,18 @@ public class RecoveryXids
 
     public boolean equals (Object obj)
     {
-	if (obj instanceof RecoveryXids)
-	{
-	    try
-	    {
-		return ((RecoveryXids) obj)._xares.isSameRM(_xares);
-	    }
-	    catch (Exception ex)
-	    {
-	    }
-	}
+    if (obj instanceof RecoveryXids)
+    {
+        try
+        {
+        return ((RecoveryXids) obj)._xares.isSameRM(_xares);
+        }
+        catch (Exception ex)
+        {
+        }
+    }
 
-	return false;
+    return false;
     }
 
     /**
@@ -135,17 +135,17 @@ public class RecoveryXids
 
     public final boolean isSameRM (XAResource xares)
     {
-	try
-	{
-	    if (xares == null)
-		return false;
-	    else
-		return xares.isSameRM(_xares);
-	}
-	catch (Exception ex)
-	{
-	    return false;
-	}
+    try
+    {
+        if (xares == null)
+        return false;
+        else
+        return xares.isSameRM(_xares);
+    }
+    catch (Exception ex)
+    {
+        return false;
+    }
     }
 
     public boolean contains (Xid xid)
@@ -174,19 +174,19 @@ public class RecoveryXids
         XidImple xidImple = new XidImple(xid);
 
         if (_whenFirstSeen.containsKey(xidImple)) {
-        	_whenFirstSeen.remove(xidImple);
-        	if (tsLogger.logger.isTraceEnabled())
+            _whenFirstSeen.remove(xidImple);
+            if (tsLogger.logger.isTraceEnabled())
                 tsLogger.logger.trace("RecoveryXids _whenFirstSeen remove remove " + _xares + " " + _lastValidated + " " + xidImple);
-        	_whenLastSeen.remove(xidImple);
-        	return true;
+            _whenLastSeen.remove(xidImple);
+            return true;
         } else {
-        	return false;
+            return false;
         }
     }
 
-	public boolean isEmpty() {
-		return _whenFirstSeen.isEmpty();
-	}
+    public boolean isEmpty() {
+        return _whenFirstSeen.isEmpty();
+    }
 
     /**
      * If supplied xids contains any values seen on prev scans, replace the existing
@@ -241,7 +241,7 @@ public class RecoveryXids
     private static final int staleSafetyIntervalMillis; // The advice is that this (if made configurable is twice the safety interval)
 
     // JBTM-916 removed final so 10000 is not inlined into source code until we make this configurable
-	// https://issues.jboss.org/browse/JBTM-842
+    // https://issues.jboss.org/browse/JBTM-842
     private static int safetyIntervalMillis; // may eventually want to make this configurable?
 
     static {

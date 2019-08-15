@@ -49,11 +49,11 @@ public class ServerOSINestedAction extends ServerStrictNestedAction
      */
 
 public ServerOSINestedAction (ServerControl control,
-				   boolean doRegister)
+                   boolean doRegister)
     {
-	super(control, doRegister);
+    super(control, doRegister);
 
-	if (jtsLogger.logger.isTraceEnabled()) {
+    if (jtsLogger.logger.isTraceEnabled()) {
         jtsLogger.logger.trace("ServerOSINestedAction::ServerOSINestedAction ( " + _theUid + " )");
     }
     }
@@ -65,30 +65,30 @@ public ServerOSINestedAction (ServerControl control,
 
 public void commit_subtransaction (Coordinator parent) throws SystemException
     {
-	if (jtsLogger.logger.isTraceEnabled()) {
+    if (jtsLogger.logger.isTraceEnabled()) {
         jtsLogger.logger.trace("ServerOSINestedAction::commit_subtransaction :" + _theUid);
     }
 
-	/*
-	 * First remove entry for this transaction otid
-	 * from map. Have to do it here as we are going
-	 * to be deleted by the base class!
-	 */
+    /*
+     * First remove entry for this transaction otid
+     * from map. Have to do it here as we are going
+     * to be deleted by the base class!
+     */
 
-	OTIDMap.remove(get_uid());
+    OTIDMap.remove(get_uid());
 
-	super.commit_subtransaction(parent);
+    super.commit_subtransaction(parent);
     }
 
 public void rollback_subtransaction () throws SystemException
     {
-	if (jtsLogger.logger.isTraceEnabled()) {
+    if (jtsLogger.logger.isTraceEnabled()) {
         jtsLogger.logger.trace("ServerOSINestedAction::rollback_subtransaction :" + _theUid);
     }
 
-	OTIDMap.remove(get_uid());
+    OTIDMap.remove(get_uid());
 
-	super.rollback_subtransaction();
+    super.rollback_subtransaction();
     }
 
 }

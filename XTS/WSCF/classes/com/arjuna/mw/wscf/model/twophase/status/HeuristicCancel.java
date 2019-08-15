@@ -47,12 +47,12 @@ public class HeuristicCancel implements Status
 
     public static HeuristicCancel instance ()
     {
-	return _instance;
+    return _instance;
     }
 
     public String toString ()
     {
-	return "org.w3c.wscf.twophase.status.HeuristicCancel";
+    return "org.w3c.wscf.twophase.status.HeuristicCancel";
     }
 
     private HeuristicCancel ()

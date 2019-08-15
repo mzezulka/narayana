@@ -54,26 +54,26 @@ class AsyncCommit implements Runnable
 {
  public void run() {
     {
-	if (_theAction != null)
-	{
-	    /*
-	     * This is a transient thread so we don't
-	     * want to register it with the action it is
-	     * committing/aborting, only change its notion of the
-	     * current transaction so that any abstract
-	     * records that need that information can still
-	     * have it.
-	     */
+    if (_theAction != null)
+    {
+        /*
+         * This is a transient thread so we don't
+         * want to register it with the action it is
+         * committing/aborting, only change its notion of the
+         * current transaction so that any abstract
+         * records that need that information can still
+         * have it.
+         */
 
-	    ThreadActionData.pushAction(_theAction, false);
+        ThreadActionData.pushAction(_theAction, false);
 
-	    if (_commit)
-		doPhase2Commit();
-	    else
-		doPhase2Abort();
+        if (_commit)
+        doPhase2Commit();
+        else
+        doPhase2Abort();
 
-	    ThreadActionData.popAction(false);
-	}
+        ThreadActionData.popAction(false);
+    }
     }
  }
 
@@ -85,8 +85,8 @@ class AsyncCommit implements Runnable
      */
  AsyncCommit (BasicAction toControl, boolean commit)
     {
-	_theAction = toControl;
-	_commit = commit;
+    _theAction = toControl;
+    _commit = commit;
     }
 
     /**
@@ -95,19 +95,19 @@ class AsyncCommit implements Runnable
 
 protected synchronized boolean doPhase2Commit ()
     {
-	if (_theAction != null)
-	{
-	    /*
-	     * Don't want heuristic information, otherwise would
-	     * not be asynchronous.
-	     */
+    if (_theAction != null)
+    {
+        /*
+         * Don't want heuristic information, otherwise would
+         * not be asynchronous.
+         */
 
-	    _theAction.phase2Commit(false);
+        _theAction.phase2Commit(false);
 
-	    return true;
-	}
-	else
-	    return false;
+        return true;
+    }
+    else
+        return false;
     }
 
     /**
@@ -116,14 +116,14 @@ protected synchronized boolean doPhase2Commit ()
 
 protected boolean doPhase2Abort ()
     {
-	if (_theAction != null)
-	{
-	    _theAction.phase2Abort(false);
+    if (_theAction != null)
+    {
+        _theAction.phase2Abort(false);
 
-	    return true;
-	}
-	else
-	    return false;
+        return true;
+    }
+    else
+        return false;
     }
 
 private BasicAction _theAction;

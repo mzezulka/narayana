@@ -72,45 +72,45 @@ public class TxControl
      * this value will be used. A value of 0 means that the transaction will
      * never time out.
      */
-	public static final int getDefaultTimeout()
-	{
-		return _defaultTimeout;
-	}
+    public static final int getDefaultTimeout()
+    {
+        return _defaultTimeout;
+    }
 
-	/**
-	 * Set the timeout to be associated with a newly created transaction if there is no
-	 * other timeout to be used.
-	 *
-	 * @param timeout
-	 */
-	public static final void setDefaultTimeout(int timeout)
-	{
-		_defaultTimeout = timeout;
-	}
+    /**
+     * Set the timeout to be associated with a newly created transaction if there is no
+     * other timeout to be used.
+     *
+     * @param timeout
+     */
+    public static final void setDefaultTimeout(int timeout)
+    {
+        _defaultTimeout = timeout;
+    }
 
-	/**
-	 * Start the transaction system. This allows new transactions to be created
-	 * and for recovery to execute.
-	 */
+    /**
+     * Start the transaction system. This allows new transactions to be created
+     * and for recovery to execute.
+     */
 
-	public static final synchronized void enable()
-	{
-	    createTransactionStatusManager();
+    public static final synchronized void enable()
+    {
+        createTransactionStatusManager();
 
-	    TxControl.enable = true;
-	}
+        TxControl.enable = true;
+    }
 
-	/**
-	 * Stop the transaction system. New transactions will be prevented but
-	 * recovery will be allowed to continue.
-	 */
+    /**
+     * Stop the transaction system. New transactions will be prevented but
+     * recovery will be allowed to continue.
+     */
 
-	public static final synchronized void disable()
-	{
-	    disable(false);
-	}
+    public static final synchronized void disable()
+    {
+        disable(false);
+    }
 
-	/**
+    /**
          * Stop the transaction system. New transactions will be prevented and
          * recovery will cease.
          *
@@ -118,7 +118,7 @@ public class TxControl
          * routine!
          */
 
-	public static final synchronized void disable (boolean disableRecovery)
+    public static final synchronized void disable (boolean disableRecovery)
         {
             /*
              * We could have an implementation that did not return until all
@@ -127,33 +127,33 @@ public class TxControl
              * is available anyway to the application, let it handle it.
              */
 
-	    if (disableRecovery)
-	        removeTransactionStatusManager();
+        if (disableRecovery)
+            removeTransactionStatusManager();
 
             TxControl.enable = false;
         }
 
 
-	public static final boolean isEnabled()
-	{
-		return TxControl.enable;
-	}
+    public static final boolean isEnabled()
+    {
+        return TxControl.enable;
+    }
 
-	/**
-	 * @return the <code>ObjectStore</code> implementation which the
-	 *         transaction coordinator will use.
-	 * @see com.arjuna.ats.arjuna.objectstore.ObjectStore
-	 */
+    /**
+     * @return the <code>ObjectStore</code> implementation which the
+     *         transaction coordinator will use.
+     * @see com.arjuna.ats.arjuna.objectstore.ObjectStore
+     */
 
-	public static final boolean getAsyncPrepare()
-	{
-		return asyncPrepare;
-	}
+    public static final boolean getAsyncPrepare()
+    {
+        return asyncPrepare;
+    }
 
-	public static final boolean getMaintainHeuristics()
-	{
-		return maintainHeuristics;
-	}
+    public static final boolean getMaintainHeuristics()
+    {
+        return maintainHeuristics;
+    }
 
     public static boolean isReadonlyOptimisation()
     {
@@ -161,20 +161,20 @@ public class TxControl
     }
 
     public static final String getXANodeName()
-	{
-		return xaNodeName;
-	}
+    {
+        return xaNodeName;
+    }
 
-	public static void setXANodeName(String name)
-	{
-	    if (name.getBytes(StandardCharsets.UTF_8).length > NODE_NAME_SIZE) {
+    public static void setXANodeName(String name)
+    {
+        if (name.getBytes(StandardCharsets.UTF_8).length > NODE_NAME_SIZE) {
             tsLogger.i18NLogger.warn_coordinator_toolong(NODE_NAME_SIZE);
 
             throw new IllegalArgumentException();
         }
 
-		xaNodeName = name;
-	}
+        xaNodeName = name;
+    }
 
     public static boolean isBeforeCompletionWhenRollbackOnly()
     {
@@ -182,62 +182,62 @@ public class TxControl
     }
 
     private final static synchronized void createTransactionStatusManager ()
-	{
-	    if (transactionStatusManager == null && _enableTSM)
-	    {
-	        transactionStatusManager = new TransactionStatusManager();
+    {
+        if (transactionStatusManager == null && _enableTSM)
+        {
+            transactionStatusManager = new TransactionStatusManager();
 
-	        _shutdownHook = new Shutdown();
+            _shutdownHook = new Shutdown();
 
-	        // add hook to ensure finalize gets called.
-	        Runtime.getRuntime().addShutdownHook(_shutdownHook);
-	    }
-	}
+            // add hook to ensure finalize gets called.
+            Runtime.getRuntime().addShutdownHook(_shutdownHook);
+        }
+    }
 
-	private final static synchronized void removeTransactionStatusManager ()
-	{
-	    if (_shutdownHook != null)
-	    {
-	        Runtime.getRuntime().removeShutdownHook(_shutdownHook);
+    private final static synchronized void removeTransactionStatusManager ()
+    {
+        if (_shutdownHook != null)
+        {
+            Runtime.getRuntime().removeShutdownHook(_shutdownHook);
 
             _shutdownHook = null;
 
-	        if (transactionStatusManager != null)
-	        {
-	            transactionStatusManager.shutdown();
-	            transactionStatusManager = null;
-	        }
-	    }
-	}
+            if (transactionStatusManager != null)
+            {
+                transactionStatusManager.shutdown();
+                transactionStatusManager = null;
+            }
+        }
+    }
 
-	static final boolean maintainHeuristics = arjPropertyManager.getCoordinatorEnvironmentBean().isMaintainHeuristics();
+    static final boolean maintainHeuristics = arjPropertyManager.getCoordinatorEnvironmentBean().isMaintainHeuristics();
 
-	static final boolean asyncCommit = arjPropertyManager.getCoordinatorEnvironmentBean().isAsyncCommit();
+    static final boolean asyncCommit = arjPropertyManager.getCoordinatorEnvironmentBean().isAsyncCommit();
 
-	static final boolean asyncPrepare = arjPropertyManager.getCoordinatorEnvironmentBean().isAsyncPrepare();
+    static final boolean asyncPrepare = arjPropertyManager.getCoordinatorEnvironmentBean().isAsyncPrepare();
 
-	static final boolean asyncRollback = arjPropertyManager.getCoordinatorEnvironmentBean().isAsyncRollback();
+    static final boolean asyncRollback = arjPropertyManager.getCoordinatorEnvironmentBean().isAsyncRollback();
 
     static final boolean asyncBeforeSynch = arjPropertyManager.getCoordinatorEnvironmentBean().isAsyncBeforeSynchronization();
 
     static final boolean asyncAfterSynch = arjPropertyManager.getCoordinatorEnvironmentBean().isAsyncAfterSynchronization();
 
-	static final boolean onePhase = arjPropertyManager.getCoordinatorEnvironmentBean().isCommitOnePhase();
+    static final boolean onePhase = arjPropertyManager.getCoordinatorEnvironmentBean().isCommitOnePhase();
 
-	static final boolean readonlyOptimisation = arjPropertyManager.getCoordinatorEnvironmentBean().isReadonlyOptimisation();
+    static final boolean readonlyOptimisation = arjPropertyManager.getCoordinatorEnvironmentBean().isReadonlyOptimisation();
 
-	static final boolean dynamic1PC = arjPropertyManager.getCoordinatorEnvironmentBean().getDynamic1PC();
+    static final boolean dynamic1PC = arjPropertyManager.getCoordinatorEnvironmentBean().getDynamic1PC();
 
     /**
      * flag which is true if transaction service is enabled and false if it is disabled
      */
-	static volatile boolean enable = !arjPropertyManager.getCoordinatorEnvironmentBean().isStartDisabled();
+    static volatile boolean enable = !arjPropertyManager.getCoordinatorEnvironmentBean().isStartDisabled();
 
-	private static TransactionStatusManager transactionStatusManager = null;
+    private static TransactionStatusManager transactionStatusManager = null;
 
-	static String xaNodeName = arjPropertyManager.getCoreEnvironmentBean().getNodeIdentifier();
+    static String xaNodeName = arjPropertyManager.getCoreEnvironmentBean().getNodeIdentifier();
 
-	static int _defaultTimeout = arjPropertyManager.getCoordinatorEnvironmentBean().getDefaultTimeout();
+    static int _defaultTimeout = arjPropertyManager.getCoordinatorEnvironmentBean().getDefaultTimeout();
 
     /**
      * flag which is true if enable and disable operations, respectively, start and stop the transaction status
@@ -245,24 +245,24 @@ public class TxControl
      * set to false by setting property @see#com.arjuna.ats.arjuna.common.TRANSACTION_STATUS_MANAGER_ENABLE
      * to value "NO"
      */
-	static final boolean _enableTSM = arjPropertyManager.getCoordinatorEnvironmentBean().isTransactionStatusManagerEnable();
+    static final boolean _enableTSM = arjPropertyManager.getCoordinatorEnvironmentBean().isTransactionStatusManagerEnable();
 
     static final boolean beforeCompletionWhenRollbackOnly = arjPropertyManager.getCoordinatorEnvironmentBean().isBeforeCompletionWhenRollbackOnly();
 
-	static Thread _shutdownHook = null;
+    static Thread _shutdownHook = null;
 
-	static Object _lock = new Object();
+    static Object _lock = new Object();
 
     /**
      * Creates transaction status manager.
      */
-	static
-	{
+    static
+    {
         // TODO -- add this check to respect the environment setting for Environment.START_DISABLED?
         // TODO -- is this feature actually needed (it appears not to be used internally)
         // if (enable) {
-		createTransactionStatusManager();
+        createTransactionStatusManager();
         // }
-	}
+    }
 
 }

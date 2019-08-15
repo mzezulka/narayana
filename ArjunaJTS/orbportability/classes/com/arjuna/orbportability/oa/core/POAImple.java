@@ -82,7 +82,7 @@ public interface POAImple
      */
 
     public void createPOA (String adapterName,
-			   Policy[] policies) throws AdapterAlreadyExists, InvalidPolicy, AdapterInactive, SystemException;
+               Policy[] policies) throws AdapterAlreadyExists, InvalidPolicy, AdapterInactive, SystemException;
 
     /**
      * Destroy the root POA.

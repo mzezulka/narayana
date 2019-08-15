@@ -62,17 +62,17 @@ public class ActivityManagerImple implements ActivityManager
 
     public void addHLS (HLS service) throws InvalidHLSException, SystemException
     {
-	HLSManager.addHLS(service);
+    HLSManager.addHLS(service);
     }
 
     public void removeHLS (HLS service) throws InvalidHLSException, SystemException
     {
-	HLSManager.removeHLS(service);
+    HLSManager.removeHLS(service);
     }
 
     public HLS[] allHighLevelServices () throws SystemException
     {
-	return HLSManager.allHighLevelServices();
+    return HLSManager.allHighLevelServices();
     }
 
     public HLS getHighLevelService (String serviceType) throws SystemException

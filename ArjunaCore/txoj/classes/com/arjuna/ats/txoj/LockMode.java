@@ -52,7 +52,7 @@ public class LockMode
 
     public static String stringForm (int l)
     {
-	return printString(l);
+    return printString(l);
     }
 
     /**
@@ -61,26 +61,26 @@ public class LockMode
 
     private static String printString (int l)
     {
-	switch (l)
-	{
-	case LockMode.READ:
-	    return "LockMode.READ";
-	case LockMode.WRITE:
-	    return "LockMode.WRITE";
-	case LockMode.UPGRADE:
-	    return "LockMode.UPGRADE";
-	case LockMode.INTENTION_READ:
-	    return "LockMode.INTENTION_READ";
-	case LockMode.INTENTION_WRITE:
-	    return "LockMode.INTENTION_WRITE";
-	default:
-	    return "Unknown";
-	}
+    switch (l)
+    {
+    case LockMode.READ:
+        return "LockMode.READ";
+    case LockMode.WRITE:
+        return "LockMode.WRITE";
+    case LockMode.UPGRADE:
+        return "LockMode.UPGRADE";
+    case LockMode.INTENTION_READ:
+        return "LockMode.INTENTION_READ";
+    case LockMode.INTENTION_WRITE:
+        return "LockMode.INTENTION_WRITE";
+    default:
+        return "Unknown";
+    }
     }
 
     public static void print (PrintWriter strm, int l)
     {
-	strm.print(LockMode.printString(l));
+    strm.print(LockMode.printString(l));
     }
 
 }

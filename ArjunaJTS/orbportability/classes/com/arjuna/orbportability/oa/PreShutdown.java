@@ -48,7 +48,7 @@ public abstract void work ();
 
 protected PreShutdown (String name)
     {
-	super(name);
+    super(name);
     };
 
 }

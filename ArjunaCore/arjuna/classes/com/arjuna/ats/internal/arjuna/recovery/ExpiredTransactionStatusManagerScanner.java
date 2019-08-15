@@ -105,9 +105,9 @@ public class ExpiredTransactionStatusManagerScanner implements ExpiryScanner
 
                      if ( timeOfDeath != null && timeOfDeath.before(oldestSurviving) )
                      {
-			 tsLogger.logger.debugf("Removing old transaction status manager item %s", newUid);
+             tsLogger.logger.debugf("Removing old transaction status manager item %s", newUid);
 
-			 _recoveryStore.remove_committed( newUid, _itemTypeName ) ;
+             _recoveryStore.remove_committed( newUid, _itemTypeName ) ;
                      }
                      else
                      {
@@ -137,14 +137,14 @@ public class ExpiredTransactionStatusManagerScanner implements ExpiryScanner
          }
       }
       catch ( Exception e )
-	  {
-	      // end of uids!
-	  }
+      {
+          // end of uids!
+      }
    }
 
     public boolean toBeUsed()
     {
-	return _expiryTime != 0 ;
+    return _expiryTime != 0 ;
     }
 
     private String      _itemTypeName ;

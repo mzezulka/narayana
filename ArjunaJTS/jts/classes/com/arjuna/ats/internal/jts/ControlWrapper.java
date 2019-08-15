@@ -91,367 +91,367 @@ import com.arjuna.ats.jts.logging.jtsLogger;
 public class ControlWrapper implements Reapable
 {
 
-	public ControlWrapper (Control c)
-	{
-		this(c, (Uid) null);
+    public ControlWrapper (Control c)
+    {
+        this(c, (Uid) null);
 
-		/*
-		 * Now get the Uid for this control or generate one if it isn't a
-		 * JBoss transaction.
-		 */
+        /*
+         * Now get the Uid for this control or generate one if it isn't a
+         * JBoss transaction.
+         */
 
-		try
-		{
-			UidCoordinator uidCoord = Helper.getUidCoordinator(c);
+        try
+        {
+            UidCoordinator uidCoord = Helper.getUidCoordinator(c);
 
-			_theUid = Helper.getUid(uidCoord);
-		}
-		catch (Exception e)
-		{
-			_theUid = new Uid();
-		}
-	}
+            _theUid = Helper.getUid(uidCoord);
+        }
+        catch (Exception e)
+        {
+            _theUid = new Uid();
+        }
+    }
 
-	public ControlWrapper (ControlImple impl)
-	{
-		_control = null;
-		_controlImpl = impl;
-		_checkedLocality = true;
-		_theUid = impl.get_uid();
-	}
+    public ControlWrapper (ControlImple impl)
+    {
+        _control = null;
+        _controlImpl = impl;
+        _checkedLocality = true;
+        _theUid = impl.get_uid();
+    }
 
-	public ControlWrapper (Control c, ControlImple impl)
-	{
-		_control = c;
-		_controlImpl = impl;
-		_checkedLocality = (impl != null);
-		_theUid = ((impl == null) ? Uid.nullUid() : impl.get_uid());
-	}
+    public ControlWrapper (Control c, ControlImple impl)
+    {
+        _control = c;
+        _controlImpl = impl;
+        _checkedLocality = (impl != null);
+        _theUid = ((impl == null) ? Uid.nullUid() : impl.get_uid());
+    }
 
-	public ControlWrapper (Control c, Uid u)
-	{
-		_control = c;
-		_controlImpl = null;
-		_checkedLocality = false;
-		_theUid = u;
-	}
+    public ControlWrapper (Control c, Uid u)
+    {
+        _control = c;
+        _controlImpl = null;
+        _checkedLocality = false;
+        _theUid = u;
+    }
 
-	/*
-	 * The Reapable methods.
-	 */
+    /*
+     * The Reapable methods.
+     */
 
-	public boolean running ()
-	{
-		try
-		{
-			org.omg.CosTransactions.Status status = get_status();
+    public boolean running ()
+    {
+        try
+        {
+            org.omg.CosTransactions.Status status = get_status();
 
-			switch (status.value())
-			{
-			case Status._StatusActive:
-			case Status._StatusMarkedRollback:
-				return true;
-			default:
-				return false;
-			}
-		}
-		catch (Exception ex)
-		{
-			return true;
-		}
-	}
+            switch (status.value())
+            {
+            case Status._StatusActive:
+            case Status._StatusMarkedRollback:
+                return true;
+            default:
+                return false;
+            }
+        }
+        catch (Exception ex)
+        {
+            return true;
+        }
+    }
 
-	public boolean preventCommit ()
-	{
-		try
-		{
-			rollback_only();
+    public boolean preventCommit ()
+    {
+        try
+        {
+            rollback_only();
 
-			return true;
-		}
-		catch (Exception ex) {
+            return true;
+        }
+        catch (Exception ex) {
             jtsLogger.i18NLogger.warn_cwcommit(ex);
 
             return false;
         }
-	}
+    }
 
-	public int cancel ()
-	{
-		try
-		{
-			rollback();
+    public int cancel ()
+    {
+        try
+        {
+            rollback();
 
-			return ActionStatus.ABORTED;
-		}
-		catch (Unavailable ex)
-		{
-			return ActionStatus.INVALID;
-		}
-		catch (NoTransaction ex)
-		{
-			return ActionStatus.NO_ACTION;
-		}
-		catch (Exception ex) {
+            return ActionStatus.ABORTED;
+        }
+        catch (Unavailable ex)
+        {
+            return ActionStatus.INVALID;
+        }
+        catch (NoTransaction ex)
+        {
+            return ActionStatus.NO_ACTION;
+        }
+        catch (Exception ex) {
             jtsLogger.i18NLogger.warn_cwabort(ex);
 
             return ActionStatus.INVALID;
         }
-	}
+    }
 
-	public Uid get_uid ()
-	{
-		return _theUid;
-	}
+    public Uid get_uid ()
+    {
+        return _theUid;
+    }
 
-	public ControlWrapper create_subtransaction () throws Unavailable,
-			Inactive, SubtransactionsUnavailable, SystemException
-	{
-		Coordinator coord = null;
+    public ControlWrapper create_subtransaction () throws Unavailable,
+            Inactive, SubtransactionsUnavailable, SystemException
+    {
+        Coordinator coord = null;
 
-		try
-		{
-			coord = ((_control != null) ? _control.get_coordinator()
-					: _controlImpl.get_coordinator());
-		}
-		catch (SystemException e)
-		{
-			coord = null;
-		}
+        try
+        {
+            coord = ((_control != null) ? _control.get_coordinator()
+                    : _controlImpl.get_coordinator());
+        }
+        catch (SystemException e)
+        {
+            coord = null;
+        }
 
-		if (coord != null)
-		{
-			return new ControlWrapper(coord.create_subtransaction());
-		}
-		else
-		{
-			if (jtsLogger.logger.isTraceEnabled()) {
+        if (coord != null)
+        {
+            return new ControlWrapper(coord.create_subtransaction());
+        }
+        else
+        {
+            if (jtsLogger.logger.isTraceEnabled()) {
                 jtsLogger.logger.trace("ControlWrapper::create_subtransaction - subtransaction parent is inactive.");
             }
 
-			throw new INVALID_TRANSACTION(
-					ExceptionCodes.UNAVAILABLE_COORDINATOR,
-					CompletionStatus.COMPLETED_NO);
-		}
-	}
+            throw new INVALID_TRANSACTION(
+                    ExceptionCodes.UNAVAILABLE_COORDINATOR,
+                    CompletionStatus.COMPLETED_NO);
+        }
+    }
 
-	public final void commit (boolean report_heuristics) throws Unavailable,
-			HeuristicMixed, HeuristicHazard, SystemException
-	{
-		try
-		{
-			if (_controlImpl != null)
-				_controlImpl.getImplHandle().commit(report_heuristics);
-			else
-			{
-				Terminator t = null;
+    public final void commit (boolean report_heuristics) throws Unavailable,
+            HeuristicMixed, HeuristicHazard, SystemException
+    {
+        try
+        {
+            if (_controlImpl != null)
+                _controlImpl.getImplHandle().commit(report_heuristics);
+            else
+            {
+                Terminator t = null;
 
-				try
-				{
-					t = _control.get_terminator();
-				}
-				catch (SystemException e)
-				{
-					throw new Unavailable();
-				}
-				catch (final NullPointerException ex)
-				{
-				    throw new Unavailable();
-				}
+                try
+                {
+                    t = _control.get_terminator();
+                }
+                catch (SystemException e)
+                {
+                    throw new Unavailable();
+                }
+                catch (final NullPointerException ex)
+                {
+                    throw new Unavailable();
+                }
 
-				if (t != null)
-					t.commit(report_heuristics);
-				else
-					throw new Unavailable();
-			}
-		}
-		catch (NullPointerException ex)  // if local handle is null then it was terminated (probably by reaper)
-		{
-		    // check termination status
+                if (t != null)
+                    t.commit(report_heuristics);
+                else
+                    throw new Unavailable();
+            }
+        }
+        catch (NullPointerException ex)  // if local handle is null then it was terminated (probably by reaper)
+        {
+            // check termination status
 
-		    if (_controlImpl.getFinalStatus() != org.omg.CosTransactions.Status.StatusCommitted)
+            if (_controlImpl.getFinalStatus() != org.omg.CosTransactions.Status.StatusCommitted)
                         throw new TRANSACTION_ROLLEDBACK();
-		}
-	}
+        }
+    }
 
-	public final void rollback () throws Unavailable, NoTransaction,
-			SystemException
-	{
-		try
-		{
-			if (_controlImpl != null)
-				_controlImpl.getImplHandle().rollback();
-			else
-			{
-				Terminator t = null;
+    public final void rollback () throws Unavailable, NoTransaction,
+            SystemException
+    {
+        try
+        {
+            if (_controlImpl != null)
+                _controlImpl.getImplHandle().rollback();
+            else
+            {
+                Terminator t = null;
 
-				try
-				{
-					t = _control.get_terminator();
-				}
-				catch (SystemException e)
-				{
-					throw new Unavailable();
-				}
-				catch (final NullPointerException ex)
+                try
+                {
+                    t = _control.get_terminator();
+                }
+                catch (SystemException e)
+                {
+                    throw new Unavailable();
+                }
+                catch (final NullPointerException ex)
                                 {
                                     throw new Unavailable();
                                 }
 
-				if (t != null)
-					t.rollback();
-				else
-					throw new Unavailable();
-			}
-		}
-		catch (NullPointerException ex)
-		{
-			return;
-		}
-	}
+                if (t != null)
+                    t.rollback();
+                else
+                    throw new Unavailable();
+            }
+        }
+        catch (NullPointerException ex)
+        {
+            return;
+        }
+    }
 
-	public final void rollback_only () throws Unavailable, NoTransaction,
-			Inactive, SystemException
-	{
-		try
-		{
-			if (_controlImpl != null)
-				_controlImpl.getImplHandle().rollback_only();
-			else
-			{
-				Coordinator c = null;
+    public final void rollback_only () throws Unavailable, NoTransaction,
+            Inactive, SystemException
+    {
+        try
+        {
+            if (_controlImpl != null)
+                _controlImpl.getImplHandle().rollback_only();
+            else
+            {
+                Coordinator c = null;
 
-				try
-				{
-					c = _control.get_coordinator();
-				}
-				catch (SystemException e)
-				{
-					throw new Unavailable();
-				}
-				catch (final NullPointerException ex)
+                try
+                {
+                    c = _control.get_coordinator();
+                }
+                catch (SystemException e)
+                {
+                    throw new Unavailable();
+                }
+                catch (final NullPointerException ex)
                                 {
                                     throw new Unavailable();
                                 }
 
-				if (c != null)
-					c.rollback_only();
-				else
-					throw new Unavailable();
-			}
-		}
-		catch (NullPointerException ex)
-		{
-			throw new Inactive();
-		}
-	}
+                if (c != null)
+                    c.rollback_only();
+                else
+                    throw new Unavailable();
+            }
+        }
+        catch (NullPointerException ex)
+        {
+            throw new Inactive();
+        }
+    }
 
-	public final org.omg.CosTransactions.RecoveryCoordinator register_resource (Resource r)
-			throws Inactive, SystemException
-	{
-		try
-		{
-			if (_controlImpl != null)
-				return _controlImpl.getImplHandle().register_resource(r);
-			else
-			{
-				try
-				{
-					Coordinator coord = _control.get_coordinator();
+    public final org.omg.CosTransactions.RecoveryCoordinator register_resource (Resource r)
+            throws Inactive, SystemException
+    {
+        try
+        {
+            if (_controlImpl != null)
+                return _controlImpl.getImplHandle().register_resource(r);
+            else
+            {
+                try
+                {
+                    Coordinator coord = _control.get_coordinator();
 
-					return coord.register_resource(r);
-				}
-				catch (Unavailable e2)
-				{
-					throw new Inactive();
-				}
-				catch (SystemException e3)
-				{
-					throw new UNKNOWN();
-				}
-				catch (final NullPointerException ex)
+                    return coord.register_resource(r);
+                }
+                catch (Unavailable e2)
+                {
+                    throw new Inactive();
+                }
+                catch (SystemException e3)
+                {
+                    throw new UNKNOWN();
+                }
+                catch (final NullPointerException ex)
                                 {
                                     throw new UNKNOWN();
                                 }
-			}
-		}
-		catch (NullPointerException e1)
-		{
-			// no transaction
+            }
+        }
+        catch (NullPointerException e1)
+        {
+            // no transaction
 
-			throw new Inactive();
-		}
-	}
+            throw new Inactive();
+        }
+    }
 
-	public final void register_subtran_aware (SubtransactionAwareResource sr)
-			throws Inactive, NotSubtransaction, SystemException
-	{
-		try
-		{
-			if (_controlImpl != null)
-				_controlImpl.getImplHandle().register_subtran_aware(sr);
-			else
-			{
-				try
-				{
-					Coordinator coord = _control.get_coordinator();
+    public final void register_subtran_aware (SubtransactionAwareResource sr)
+            throws Inactive, NotSubtransaction, SystemException
+    {
+        try
+        {
+            if (_controlImpl != null)
+                _controlImpl.getImplHandle().register_subtran_aware(sr);
+            else
+            {
+                try
+                {
+                    Coordinator coord = _control.get_coordinator();
 
-					coord.register_subtran_aware(sr);
-				}
-				catch (Unavailable e2)
-				{
-					throw new Inactive();
-				}
-				catch (SystemException e3)
-				{
-					throw new UNKNOWN();
-				}
-				catch (final NullPointerException ex)
+                    coord.register_subtran_aware(sr);
+                }
+                catch (Unavailable e2)
+                {
+                    throw new Inactive();
+                }
+                catch (SystemException e3)
+                {
+                    throw new UNKNOWN();
+                }
+                catch (final NullPointerException ex)
                                 {
                                     throw new UNKNOWN();
                                 }
-			}
-		}
-		catch (NullPointerException e1)
-		{
-			// no transaction
+            }
+        }
+        catch (NullPointerException e1)
+        {
+            // no transaction
 
-			throw new Inactive();
-		}
-	}
+            throw new Inactive();
+        }
+    }
 
-	public final void register_synchronization (Synchronization sync)
-			throws Inactive, SynchronizationUnavailable, SystemException
-	{
-		try
-		{
-			if (_controlImpl != null)
-				_controlImpl.getImplHandle().register_synchronization(sync);
-			else
-			{
-				try
-				{
-					Coordinator coord = _control.get_coordinator();
+    public final void register_synchronization (Synchronization sync)
+            throws Inactive, SynchronizationUnavailable, SystemException
+    {
+        try
+        {
+            if (_controlImpl != null)
+                _controlImpl.getImplHandle().register_synchronization(sync);
+            else
+            {
+                try
+                {
+                    Coordinator coord = _control.get_coordinator();
 
-					coord.register_synchronization(sync);
-				}
-				catch (final Unavailable e2)
-				{
-					throw new Inactive();
-				}
-				catch (final Exception e3)
-				{
-					throw new UNKNOWN();
-				}
-			}
-		}
-		catch (final NullPointerException e1)
-		{
-			// not available
+                    coord.register_synchronization(sync);
+                }
+                catch (final Unavailable e2)
+                {
+                    throw new Inactive();
+                }
+                catch (final Exception e3)
+                {
+                    throw new UNKNOWN();
+                }
+            }
+        }
+        catch (final NullPointerException e1)
+        {
+            // not available
 
-			throw new Inactive();
-		}
-	}
+            throw new Inactive();
+        }
+    }
 
     public java.util.Map<Uid, String> getSynchronizations()
     {
@@ -525,255 +525,255 @@ public class ControlWrapper implements Reapable
         }
     }
 
-	public final String get_transaction_name () throws SystemException
-	{
-		try
-		{
-			if (_controlImpl != null)
-				return _controlImpl.getImplHandle().get_transaction_name();
-			else
-			{
-				try
-				{
-					return _control.get_coordinator().get_transaction_name();
-				}
-				catch (Unavailable e1)
-				{
-					return null;
-				}
-				catch (SystemException e2)
-				{
-					throw e2;
-				}
-				catch (final NullPointerException ex)
+    public final String get_transaction_name () throws SystemException
+    {
+        try
+        {
+            if (_controlImpl != null)
+                return _controlImpl.getImplHandle().get_transaction_name();
+            else
+            {
+                try
+                {
+                    return _control.get_coordinator().get_transaction_name();
+                }
+                catch (Unavailable e1)
+                {
+                    return null;
+                }
+                catch (SystemException e2)
+                {
+                    throw e2;
+                }
+                catch (final NullPointerException ex)
                                 {
                                     throw new UNKNOWN();
                                 }
-			}
-		}
-		catch (NullPointerException e3)
-		{
-			throw new UNKNOWN();
-		}
-	}
+            }
+        }
+        catch (NullPointerException e3)
+        {
+            throw new UNKNOWN();
+        }
+    }
 
-	public final Control get_control ()
-			throws org.omg.CosTransactions.Unavailable, SystemException
-	{
-		try
-		{
-			if (_controlImpl != null)
-				return _controlImpl.getControl();
-			else
-				return _control;
-		}
-		catch (NullPointerException e)
-		{
-			throw new Unavailable();
-		}
-	}
+    public final Control get_control ()
+            throws org.omg.CosTransactions.Unavailable, SystemException
+    {
+        try
+        {
+            if (_controlImpl != null)
+                return _controlImpl.getControl();
+            else
+                return _control;
+        }
+        catch (NullPointerException e)
+        {
+            throw new Unavailable();
+        }
+    }
 
-	public final Coordinator get_coordinator () throws SystemException,
-			org.omg.CosTransactions.Unavailable
-	{
-		try
-		{
-			if (_controlImpl != null)
-				return _controlImpl.get_coordinator();
-			else
-				return _control.get_coordinator();
-		}
-		catch (NullPointerException e)
-		{
-			throw new org.omg.CosTransactions.Unavailable();
-		}
-	}
+    public final Coordinator get_coordinator () throws SystemException,
+            org.omg.CosTransactions.Unavailable
+    {
+        try
+        {
+            if (_controlImpl != null)
+                return _controlImpl.get_coordinator();
+            else
+                return _control.get_coordinator();
+        }
+        catch (NullPointerException e)
+        {
+            throw new org.omg.CosTransactions.Unavailable();
+        }
+    }
 
-	public final Terminator get_terminator () throws SystemException,
-			org.omg.CosTransactions.Unavailable
-	{
-		try
-		{
-			if (_controlImpl != null)
-				return _controlImpl.get_terminator();
-			else
-				return _control.get_terminator();
-		}
-		catch (NullPointerException e)
-		{
-			throw new org.omg.CosTransactions.Unavailable();
-		}
-	}
+    public final Terminator get_terminator () throws SystemException,
+            org.omg.CosTransactions.Unavailable
+    {
+        try
+        {
+            if (_controlImpl != null)
+                return _controlImpl.get_terminator();
+            else
+                return _control.get_terminator();
+        }
+        catch (NullPointerException e)
+        {
+            throw new org.omg.CosTransactions.Unavailable();
+        }
+    }
 
-	public final int hash_transaction () throws SystemException
-	{
-		try
-		{
-			if (_controlImpl != null)
-				return _controlImpl.getImplHandle().hash_transaction();
-			else
-			{
-				try
-				{
-					Coordinator coord = _control.get_coordinator();
+    public final int hash_transaction () throws SystemException
+    {
+        try
+        {
+            if (_controlImpl != null)
+                return _controlImpl.getImplHandle().hash_transaction();
+            else
+            {
+                try
+                {
+                    Coordinator coord = _control.get_coordinator();
 
-					return coord.hash_transaction();
-				}
-				catch (SystemException ex)
-				{
-					throw ex;
-				}
-			}
-		}
-		catch (Exception e)
-		{
-			return -1;
-		}
-	}
+                    return coord.hash_transaction();
+                }
+                catch (SystemException ex)
+                {
+                    throw ex;
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            return -1;
+        }
+    }
 
-	/**
-	 * Overrides Object.equals
-	 *
-	 * Does not compare Uids because a foreign transaction may have been
-	 * imported more than once and given different local ids.
-	 */
+    /**
+     * Overrides Object.equals
+     *
+     * Does not compare Uids because a foreign transaction may have been
+     * imported more than once and given different local ids.
+     */
 
-	public boolean equals (Object e)
-	{
-		if (e instanceof Uid)
-		{
-			return _theUid.equals(e);
-		}
+    public boolean equals (Object e)
+    {
+        if (e instanceof Uid)
+        {
+            return _theUid.equals(e);
+        }
 
-		if (e instanceof ControlWrapper)
-		{
-			ControlWrapper c = (ControlWrapper) e;
+        if (e instanceof ControlWrapper)
+        {
+            ControlWrapper c = (ControlWrapper) e;
 
-			if (c.isLocal() && isLocal())
-			{
-				return c.getImple().equals(_controlImpl);
-			}
-			else
-			{
-				/*
-				 * One of them is not local, so we have to revert to indirect
-				 * comparison.
-				 */
+            if (c.isLocal() && isLocal())
+            {
+                return c.getImple().equals(_controlImpl);
+            }
+            else
+            {
+                /*
+                 * One of them is not local, so we have to revert to indirect
+                 * comparison.
+                 */
 
-				Coordinator coord = null;
+                Coordinator coord = null;
 
-				try
-				{
-					coord = _control.get_coordinator();
-				}
-				catch (Exception e1)
-				{
-					return false;
-				}
+                try
+                {
+                    coord = _control.get_coordinator();
+                }
+                catch (Exception e1)
+                {
+                    return false;
+                }
 
-				Coordinator myCoord = null;
+                Coordinator myCoord = null;
 
-				try
-				{
-					myCoord = get_coordinator();
-				}
-				catch (Exception e2)
-				{
-					return false;
-				}
+                try
+                {
+                    myCoord = get_coordinator();
+                }
+                catch (Exception e2)
+                {
+                    return false;
+                }
 
-				try
-				{
-					return coord.is_same_transaction(myCoord);
-				}
-				catch (Exception e3)
-				{
-				}
-			}
-		}
+                try
+                {
+                    return coord.is_same_transaction(myCoord);
+                }
+                catch (Exception e3)
+                {
+                }
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * Override Object.toString.
-	 *
-	 * @since JTS 2.1.1.
-	 */
+    /**
+     * Override Object.toString.
+     *
+     * @since JTS 2.1.1.
+     */
 
-	public String toString ()
-	{
-		try
-		{
-			return get_transaction_name() + " : " + super.toString();
-		}
-		catch (Exception e)
-		{
-			return "Invalid";
-		}
-	}
+    public String toString ()
+    {
+        try
+        {
+            return get_transaction_name() + " : " + super.toString();
+        }
+        catch (Exception e)
+        {
+            return "Invalid";
+        }
+    }
 
-	/**
-	 * Override Object.hashCode. We always return a positive value.
-	 */
+    /**
+     * Override Object.hashCode. We always return a positive value.
+     */
 
-	public int hashCode ()
-	{
-		try
-		{
-			return hash_transaction();
-		}
-		catch (Exception e)
-		{
-			return -1;
-		}
-	}
+    public int hashCode ()
+    {
+        try
+        {
+            return hash_transaction();
+        }
+        catch (Exception e)
+        {
+            return -1;
+        }
+    }
 
-	public final Control getControl ()
-	{
-		return _control;
-	}
+    public final Control getControl ()
+    {
+        return _control;
+    }
 
-	public final ControlImple getImple ()
-	{
-		return _controlImpl;
-	}
+    public final ControlImple getImple ()
+    {
+        return _controlImpl;
+    }
 
-	public final boolean isLocal ()
-	{
-		return ((_controlImpl == null) ? false : true);
-	}
+    public final boolean isLocal ()
+    {
+        return ((_controlImpl == null) ? false : true);
+    }
 
-	/**
-	 * Determine whether or not we are a local control. Only do this once since
-	 * locality is not likely to change!
-	 */
+    /**
+     * Determine whether or not we are a local control. Only do this once since
+     * locality is not likely to change!
+     */
 
-	public final void determineLocality ()
-	{
-		if (!_checkedLocality)
-		{
-			_controlImpl = Helper.localControl(_control);
+    public final void determineLocality ()
+    {
+        if (!_checkedLocality)
+        {
+            _controlImpl = Helper.localControl(_control);
 
-			/*
-			 * Could be a proxy for a remote control, in which case we say we
-			 * are remote.
-			 */
+            /*
+             * Could be a proxy for a remote control, in which case we say we
+             * are remote.
+             */
 
-			if ((_controlImpl != null)
-					&& (_controlImpl.getImplHandle() == null))
-			{
-				_theUid = _controlImpl.get_uid();
-				_controlImpl = null;
-			}
+            if ((_controlImpl != null)
+                    && (_controlImpl.getImplHandle() == null))
+            {
+                _theUid = _controlImpl.get_uid();
+                _controlImpl = null;
+            }
 
-			_checkedLocality = true;
-		}
-	}
+            _checkedLocality = true;
+        }
+    }
 
-	private Control _control;
-	private ControlImple _controlImpl;
-	private boolean _checkedLocality;
-	private Uid _theUid;
+    private Control _control;
+    private ControlImple _controlImpl;
+    private boolean _checkedLocality;
+    private Uid _theUid;
 
 }

@@ -69,22 +69,22 @@ public class EventManager
 
 public void connected (org.omg.CORBA.Object obj)
     {
-	Enumeration e = _handlers.elements();
+    Enumeration e = _handlers.elements();
 
-	while (e.hasMoreElements())
-	{
-	    EventHandler h = (EventHandler) e.nextElement();
+    while (e.hasMoreElements())
+    {
+        EventHandler h = (EventHandler) e.nextElement();
 
-	    try
-	    {
-		h.connected(obj);
-	    }
-	    catch (Throwable ex)
-	    {
+        try
+        {
+        h.connected(obj);
+        }
+        catch (Throwable ex)
+        {
             opLogger.i18NLogger.warn_event_EventManager_forhandlethrewexception(
                     "com.arjuna.orbportability.event.EventManager.connected()", h.name(), ex);
-	    }
-	}
+        }
+    }
     }
 
     /**
@@ -93,22 +93,22 @@ public void connected (org.omg.CORBA.Object obj)
 
 public void disconnected (org.omg.CORBA.Object obj)
     {
-	Enumeration e = _handlers.elements();
+    Enumeration e = _handlers.elements();
 
-	while (e.hasMoreElements())
-	{
-	    EventHandler h = (EventHandler) e.nextElement();
+    while (e.hasMoreElements())
+    {
+        EventHandler h = (EventHandler) e.nextElement();
 
-	    try
-	    {
-		h.disconnected(obj);
-	    }
-	    catch (Throwable ex)
-	    {
+        try
+        {
+        h.disconnected(obj);
+        }
+        catch (Throwable ex)
+        {
             opLogger.i18NLogger.warn_event_EventManager_forhandlethrewexception(
                      "com.arjuna.orbportability.event.EventManager.disconnected(Object)", h.name(), ex);
-	    }
-	}
+        }
+    }
     }
 
     /**
@@ -118,14 +118,14 @@ public void disconnected (org.omg.CORBA.Object obj)
 
 public boolean addHandler (EventHandler h)
     {
-	if (_handlers.get(h) == null)
-	{
-	    _handlers.put(h, h);
+    if (_handlers.get(h) == null)
+    {
+        _handlers.put(h, h);
 
-	    return true;
-	}
-	else
-	    return false;
+        return true;
+    }
+    else
+        return false;
     }
 
     /**
@@ -135,10 +135,10 @@ public boolean addHandler (EventHandler h)
 
 public boolean removeHandler (EventHandler h)
     {
-	if (_handlers.remove(h) != null)
-	    return true;
-	else
-	    return false;
+    if (_handlers.remove(h) != null)
+        return true;
+    else
+        return false;
     }
 
     /**
@@ -147,10 +147,10 @@ public boolean removeHandler (EventHandler h)
 
 public static synchronized EventManager getManager ()
     {
-	if (_theManager == null)
-	    _theManager = new EventManager();
+    if (_theManager == null)
+        _theManager = new EventManager();
 
-	return _theManager;
+    return _theManager;
     }
 
     protected EventManager ()

@@ -50,29 +50,29 @@ public class AppendLogTransaction extends TopLevelAction
 
     public final boolean setLoggedTransaction (AppendLogTransaction previous)
     {
-	if (_previous == null)
-	{
-	    _previous = previous;
+    if (_previous == null)
+    {
+        _previous = previous;
 
-	    super.add(new com.arjuna.ats.internal.arjuna.abstractrecords.DisposeRecord(previous.getStore(), previous));
+        super.add(new com.arjuna.ats.internal.arjuna.abstractrecords.DisposeRecord(previous.getStore(), previous));
 
-	    return true;
-	}
-	else
-	    return false;
+        return true;
+    }
+    else
+        return false;
     }
 
     public String type ()
     {
-	return "/StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction/AppendLogTransaction";
+    return "/StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction/AppendLogTransaction";
     }
 
     protected void updateState ()
     {
-	if (_previous == null)
-	    super.savedIntentionList = false;
+    if (_previous == null)
+        super.savedIntentionList = false;
 
-	super.updateState();
+    super.updateState();
     }
 
     private AppendLogTransaction _previous;

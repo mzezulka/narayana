@@ -169,7 +169,7 @@ public class RecoveryEnablement implements RecoveryActivator
         // see if there is a property defining the recoverymanager
         // servicename
 
-        //	_RecoveryManagerTag = System.getProperty(RecoveryEnvironment.RECOVERY_MANAGER_TAG);
+        //    _RecoveryManagerTag = System.getProperty(RecoveryEnvironment.RECOVERY_MANAGER_TAG);
 
         if (_RecoveryManagerTag == null)
         {

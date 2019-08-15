@@ -28,23 +28,23 @@ import java.net.URL;
  */
 public class PropertyFileLoader
 {
-	public static String getFileLocation()
-	{
-		//we hard code this from the class location
-		String key = "propertyfiles" + File.separator + "etc";
-		String key1 = "propertyfiles/etc";
-		URL test = sPropertyFileLoader.getClass().getResource(key);
+    public static String getFileLocation()
+    {
+        //we hard code this from the class location
+        String key = "propertyfiles" + File.separator + "etc";
+        String key1 = "propertyfiles/etc";
+        URL test = sPropertyFileLoader.getClass().getResource(key);
 
-		if (test == null)
-		{
-			test = sPropertyFileLoader.getClass().getResource(key1);
-		}
+        if (test == null)
+        {
+            test = sPropertyFileLoader.getClass().getResource(key1);
+        }
 
-		String filelocation = test.toExternalForm();
-		// now remove the file: from the url
-		filelocation = filelocation.substring(5, filelocation.length());
-		return filelocation;
-	}
+        String filelocation = test.toExternalForm();
+        // now remove the file: from the url
+        filelocation = filelocation.substring(5, filelocation.length());
+        return filelocation;
+    }
 
-	private static final PropertyFileLoader sPropertyFileLoader = new PropertyFileLoader();
+    private static final PropertyFileLoader sPropertyFileLoader = new PropertyFileLoader();
 }

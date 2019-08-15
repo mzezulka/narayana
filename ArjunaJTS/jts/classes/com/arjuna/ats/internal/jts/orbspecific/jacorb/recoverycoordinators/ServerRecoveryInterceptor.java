@@ -63,8 +63,8 @@ public class ServerRecoveryInterceptor
 
     public ServerRecoveryInterceptor(org.omg.CORBA.ORB orb)
     {
-	org.omg.CORBA.Object obj = null ;
-	_ourOrb = orb;
+    org.omg.CORBA.Object obj = null ;
+    _ourOrb = orb;
     }
 
   public void receive_request_service_contexts (ServerRequestInfo ri)
@@ -76,8 +76,8 @@ public class ServerRecoveryInterceptor
         try
         {
             context = ri.get_request_service_context (RecoveryContextId);
-	    String objectIdString = new String(context.context_data, StandardCharsets.UTF_8);
-	    JacOrbRCDefaultServant.RCObjectId = context.context_data;
+        String objectIdString = new String(context.context_data, StandardCharsets.UTF_8);
+        JacOrbRCDefaultServant.RCObjectId = context.context_data;
         }
         catch (Exception ex) {
             jtsLogger.i18NLogger.warn_orbspecific_jacorb_recoverycoordinators_ServerInitializer_1(ex);
@@ -86,7 +86,7 @@ public class ServerRecoveryInterceptor
 
     public String name ()
     {
-     	return "arjuna.ServerRecoveryInterceptor";
+         return "arjuna.ServerRecoveryInterceptor";
     }
 
     public void destroy ()

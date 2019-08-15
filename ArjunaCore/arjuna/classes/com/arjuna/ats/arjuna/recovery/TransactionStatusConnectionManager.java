@@ -53,12 +53,12 @@ public class TransactionStatusConnectionManager
      */
     public TransactionStatusConnectionManager()
     {
-	if ( _recoveryStore == null )
-	{
-	    _recoveryStore = StoreManager.getRecoveryStore();
-	}
+    if ( _recoveryStore == null )
+    {
+        _recoveryStore = StoreManager.getRecoveryStore();
+    }
 
-	updateTSMI() ;
+    updateTSMI() ;
     }
 
     /**
@@ -73,11 +73,11 @@ public class TransactionStatusConnectionManager
 
     public int getTransactionStatus( Uid tranUid )
     {
-	String transactionType = "" ;
+    String transactionType = "" ;
 
-	int status = getTransactionStatus( transactionType, tranUid );
+    int status = getTransactionStatus( transactionType, tranUid );
 
-	return status ;
+    return status ;
     }
 
     /**
@@ -175,84 +175,84 @@ public class TransactionStatusConnectionManager
 
     public void updateTSMI()
     {
-	boolean tsmis = false ;
+    boolean tsmis = false ;
 
-	InputObjectState uids = new InputObjectState() ;
-	Vector tsmiVector = new Vector() ;
+    InputObjectState uids = new InputObjectState() ;
+    Vector tsmiVector = new Vector() ;
 
-	try
-	{
-	    tsmis = _recoveryStore.allObjUids( _typeName, uids ) ;
-	}
-	catch ( ObjectStoreException ex ) {
+    try
+    {
+        tsmis = _recoveryStore.allObjUids( _typeName, uids ) ;
+    }
+    catch ( ObjectStoreException ex ) {
         tsLogger.i18NLogger.warn_recovery_TransactionStatusConnectionManager_2(ex);
     }
 
-	// cycle through each item, and update tsmTable with any
-	// new TransactionStatusManagerItems
+    // cycle through each item, and update tsmTable with any
+    // new TransactionStatusManagerItems
 
-	if ( tsmis )
-	{
-	    Uid theUid = null;
+    if ( tsmis )
+    {
+        Uid theUid = null;
 
-	    boolean moreUids = true ;
+        boolean moreUids = true ;
 
-	    while (moreUids)
-	    {
-		try
-		{
-		    theUid = UidHelper.unpackFrom(uids);
+        while (moreUids)
+        {
+        try
+        {
+            theUid = UidHelper.unpackFrom(uids);
 
-		    if ( theUid.equals( Uid.nullUid() ) )
-		    {
-			moreUids = false ;
-		    }
-		    else
-		    {
-			Uid newUid = new Uid (theUid) ;
+            if ( theUid.equals( Uid.nullUid() ) )
+            {
+            moreUids = false ;
+            }
+            else
+            {
+            Uid newUid = new Uid (theUid) ;
 
-			if (tsLogger.logger.isDebugEnabled()) {
+            if (tsLogger.logger.isDebugEnabled()) {
                 tsLogger.logger.debug("found process uid "+newUid);
             }
-			tsmiVector.addElement(newUid) ;
-		    }
-		}
-		catch (Exception ex )
-		{
-		    moreUids = false;
-		}
-	    }
-	}
+            tsmiVector.addElement(newUid) ;
+            }
+        }
+        catch (Exception ex )
+        {
+            moreUids = false;
+        }
+        }
+    }
 
-	// for each TransactionStatusManager found, if their is
-	// not an entry in the local hash table for it then add it.
-	Enumeration tsmiEnum = tsmiVector.elements() ;
+    // for each TransactionStatusManager found, if their is
+    // not an entry in the local hash table for it then add it.
+    Enumeration tsmiEnum = tsmiVector.elements() ;
 
-	while ( tsmiEnum.hasMoreElements() )
-	{
-	    Uid currentUid = (Uid) tsmiEnum.nextElement() ;
+    while ( tsmiEnum.hasMoreElements() )
+    {
+        Uid currentUid = (Uid) tsmiEnum.nextElement() ;
 
-	    String process_id = currentUid.getHexPid();
+        String process_id = currentUid.getHexPid();
 
-	    if ( ! _tscTable.containsKey( process_id ) )
-	    {
-		TransactionStatusConnector tsc = new TransactionStatusConnector ( process_id, currentUid ) ;
+        if ( ! _tscTable.containsKey( process_id ) )
+        {
+        TransactionStatusConnector tsc = new TransactionStatusConnector ( process_id, currentUid ) ;
 
-		if ( tsc.isDead() )
-		{
-		    tsc.delete() ;
-		    tsc = null ;
-		}
-		else
-		{
-		    _tscTable.put ( process_id, tsc ) ;
-		}
+        if ( tsc.isDead() )
+        {
+            tsc.delete() ;
+            tsc = null ;
+        }
+        else
+        {
+            _tscTable.put ( process_id, tsc ) ;
+        }
 
-		if (tsLogger.logger.isDebugEnabled()) {
+        if (tsLogger.logger.isDebugEnabled()) {
             tsLogger.logger.debug("added TransactionStatusConnector to table for process uid "+process_id);
         }
-	    }
-	}
+        }
+    }
     }
 
     // Type within ObjectStore.

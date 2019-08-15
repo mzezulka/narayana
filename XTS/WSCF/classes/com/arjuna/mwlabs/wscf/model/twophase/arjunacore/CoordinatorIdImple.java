@@ -50,28 +50,28 @@ public class CoordinatorIdImple extends Uid implements CoordinatorId
 
     public CoordinatorIdImple ()
     {
-	super();
+    super();
 
-	_value = stringForm().getBytes();
+    _value = stringForm().getBytes();
     }
 
     public CoordinatorIdImple (String id)
     {
-	super(id);
+    super(id);
 
-	_value = stringForm().getBytes(StandardCharsets.UTF_8);
+    _value = stringForm().getBytes(StandardCharsets.UTF_8);
     }
 
     public CoordinatorIdImple (Uid id)
     {
-	super(id);
+    super(id);
 
-	_value = stringForm().getBytes(StandardCharsets.UTF_8);
+    _value = stringForm().getBytes(StandardCharsets.UTF_8);
     }
 
     public byte[] value ()
     {
-	return _value;
+    return _value;
     }
 
     private byte[] _value;

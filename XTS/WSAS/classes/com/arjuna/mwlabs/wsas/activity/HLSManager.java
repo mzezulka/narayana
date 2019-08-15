@@ -59,8 +59,8 @@ public class HLSManager
 
     public static final void addHLS (HLS service) throws InvalidHLSException, SystemException
     {
-	if (service == null) {
-	    throw new InvalidHLSException();
+    if (service == null) {
+        throw new InvalidHLSException();
     } else {
         String key = service.identity();
         synchronized(_hlsMap) {
@@ -71,14 +71,14 @@ public class HLSManager
 
     public static final void removeHLS (HLS service) throws InvalidHLSException, SystemException
     {
-	if (service == null)
-	    throw new InvalidHLSException();
-	else
-	{
+    if (service == null)
+        throw new InvalidHLSException();
+    else
+    {
         String key = service.identity();
         HLS oldValue;
-	    synchronized (_hlsMap)
-	    {
+        synchronized (_hlsMap)
+        {
             oldValue = _hlsMap.remove(key);
         }
         if (oldValue == null) {
@@ -91,12 +91,12 @@ public class HLSManager
      */
     public static final HLS[] allHighLevelServices () throws SystemException
     {
-	synchronized (_hlsMap)
-	{
-	    HLS[] toReturn = new HLS[(int) _hlsMap.size()];
+    synchronized (_hlsMap)
+    {
+        HLS[] toReturn = new HLS[(int) _hlsMap.size()];
         Collection<HLS> services = _hlsMap.values();
         return services.toArray(toReturn);
-	}
+    }
     }
 
     public static final HLS getHighLevelService (String serviceType) throws SystemException

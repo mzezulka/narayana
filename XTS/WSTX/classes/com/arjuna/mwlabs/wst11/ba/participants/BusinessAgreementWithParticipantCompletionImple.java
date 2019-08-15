@@ -59,7 +59,7 @@ import java.io.IOException;
  */
 
 public class BusinessAgreementWithParticipantCompletionImple implements
-		com.arjuna.mw.wscf.model.sagas.participants.Participant
+        com.arjuna.mw.wscf.model.sagas.participants.Participant
 {
     /**
      * this constructor installs a participant manager which routes messages via the current activity
@@ -100,44 +100,44 @@ public class BusinessAgreementWithParticipantCompletionImple implements
         _baParticipantManager = null;
     }
 
-	public void close () throws InvalidParticipantException,
-			WrongStateException, SystemException
-	{
-		try
-		{
-			if (_resource != null)
-			{
-				_resource.close();
-			}
-			else
-				throw new InvalidParticipantException();
-		}
-		catch (com.arjuna.wst.WrongStateException ex)
-		{
-			throw new WrongStateException(ex.toString());
-		}
-		catch (com.arjuna.wst.SystemException ex)
-		{
-			throw new SystemException(ex.toString());
-		}
-	}
+    public void close () throws InvalidParticipantException,
+            WrongStateException, SystemException
+    {
+        try
+        {
+            if (_resource != null)
+            {
+                _resource.close();
+            }
+            else
+                throw new InvalidParticipantException();
+        }
+        catch (com.arjuna.wst.WrongStateException ex)
+        {
+            throw new WrongStateException(ex.toString());
+        }
+        catch (com.arjuna.wst.SystemException ex)
+        {
+            throw new SystemException(ex.toString());
+        }
+    }
 
-	public void cancel () throws CancelFailedException, InvalidParticipantException,
-			WrongStateException, SystemException
-	{
-		try
-		{
-			if (_resource != null)
-			{
-				_resource.cancel();
-			}
-			else
-				throw new InvalidParticipantException();
-		}
-		catch (com.arjuna.wst.WrongStateException ex)
-		{
-			throw new WrongStateException(ex.toString());
-		}
+    public void cancel () throws CancelFailedException, InvalidParticipantException,
+            WrongStateException, SystemException
+    {
+        try
+        {
+            if (_resource != null)
+            {
+                _resource.cancel();
+            }
+            else
+                throw new InvalidParticipantException();
+        }
+        catch (com.arjuna.wst.WrongStateException ex)
+        {
+            throw new WrongStateException(ex.toString());
+        }
         catch (com.arjuna.wst.FaultedException ex)
         {
             // we can see this in 1.1
@@ -147,110 +147,110 @@ public class BusinessAgreementWithParticipantCompletionImple implements
         {
             throw new SystemException(ex.toString());
         }
-	}
+    }
 
-	public void compensate () throws CompensateFailedException,
-			InvalidParticipantException, WrongStateException, SystemException
-	{
-		try
-		{
-			if (_resource != null)
-			{
-				_resource.compensate();
-			}
-			else
-				throw new InvalidParticipantException();
-		}
-		catch (com.arjuna.wst.FaultedException ex)
-		{
-			throw new CompensateFailedException();
-		}
-		catch (com.arjuna.wst.WrongStateException ex)
-		{
-			throw new WrongStateException(ex.toString());
-		}
-		catch (com.arjuna.wst.SystemException ex)
-		{
-			throw new SystemException(ex.toString());
-		}
-	}
+    public void compensate () throws CompensateFailedException,
+            InvalidParticipantException, WrongStateException, SystemException
+    {
+        try
+        {
+            if (_resource != null)
+            {
+                _resource.compensate();
+            }
+            else
+                throw new InvalidParticipantException();
+        }
+        catch (com.arjuna.wst.FaultedException ex)
+        {
+            throw new CompensateFailedException();
+        }
+        catch (com.arjuna.wst.WrongStateException ex)
+        {
+            throw new WrongStateException(ex.toString());
+        }
+        catch (com.arjuna.wst.SystemException ex)
+        {
+            throw new SystemException(ex.toString());
+        }
+    }
 
-	/**
-	 * @return the status value.
-	 */
+    /**
+     * @return the status value.
+     */
 
-	public String status () throws SystemException
-	{
-		try
-		{
-			if (_resource != null)
-			{
-				return _resource.status();
-			}
-			else
-				throw new SystemException("InvalidParticipant");
-		}
-		catch (com.arjuna.wst.SystemException ex)
-		{
-			throw new SystemException(ex.toString());
-		}
-	}
+    public String status () throws SystemException
+    {
+        try
+        {
+            if (_resource != null)
+            {
+                return _resource.status();
+            }
+            else
+                throw new SystemException("InvalidParticipant");
+        }
+        catch (com.arjuna.wst.SystemException ex)
+        {
+            throw new SystemException(ex.toString());
+        }
+    }
 
-	/**
-	 * Inform the participant that is can forget the heuristic result.
-	 *
-	 * @exception com.arjuna.mw.wscf.exceptions.InvalidParticipantException
-	 *                Thrown if the participant identity is invalid.
-	 * @exception com.arjuna.mw.wsas.exceptions.WrongStateException
-	 *                Thrown if the participant is in an invalid state.
-	 * @exception com.arjuna.mw.wsas.exceptions.SystemException
-	 *                Thrown in the event of a general fault.
-	 */
+    /**
+     * Inform the participant that is can forget the heuristic result.
+     *
+     * @exception com.arjuna.mw.wscf.exceptions.InvalidParticipantException
+     *                Thrown if the participant identity is invalid.
+     * @exception com.arjuna.mw.wsas.exceptions.WrongStateException
+     *                Thrown if the participant is in an invalid state.
+     * @exception com.arjuna.mw.wsas.exceptions.SystemException
+     *                Thrown in the event of a general fault.
+     */
 
-	public void forget () throws InvalidParticipantException,
-			WrongStateException, SystemException
-	{
-		// not supported by the IBM protocol.
-	}
+    public void forget () throws InvalidParticipantException,
+            WrongStateException, SystemException
+    {
+        // not supported by the IBM protocol.
+    }
 
-	public void unknown () throws SystemException
-	{
-		/*
-		 * If the transaction is unknown, then we assume it cancelled.
-		 */
+    public void unknown () throws SystemException
+    {
+        /*
+         * If the transaction is unknown, then we assume it cancelled.
+         */
 
-		try
-		{
-			cancel();
-		}
-		catch (Exception ex)
-		{
-			// TODO
-		}
-	}
+        try
+        {
+            cancel();
+        }
+        catch (Exception ex)
+        {
+            // TODO
+        }
+    }
 
-	public String id () throws SystemException
-	{
-		return _identifier;
-	}
+    public String id () throws SystemException
+    {
+        return _identifier;
+    }
 
-	public final BAParticipantManager participantManager ()
-	{
-		return _baParticipantManager;
-	}
+    public final BAParticipantManager participantManager ()
+    {
+        return _baParticipantManager;
+    }
 
-	public boolean save_state (OutputObjectState os)
-	{
+    public boolean save_state (OutputObjectState os)
+    {
         try {
             os.packString(_identifier);
         } catch (IOException e) {
             return false;
         }
         return PersistableParticipantHelper.save_state(os, _resource) ;
-	}
+    }
 
-	public boolean restore_state (InputObjectState is)
-	{
+    public boolean restore_state (InputObjectState is)
+    {
         try {
             _identifier = is.unpackString();
         } catch (IOException e) {
@@ -266,12 +266,12 @@ public class BusinessAgreementWithParticipantCompletionImple implements
         {
             return false ;
         }
-	}
+    }
 
-	protected BusinessAgreementWithParticipantCompletionParticipant _resource;
+    protected BusinessAgreementWithParticipantCompletionParticipant _resource;
 
-	private String _identifier = null;
+    private String _identifier = null;
 
-	private BAParticipantManager _baParticipantManager = null;
+    private BAParticipantManager _baParticipantManager = null;
 
 }

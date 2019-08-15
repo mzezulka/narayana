@@ -47,17 +47,17 @@ public class ConflictType
 
     public static String stringForm (int c)
     {
-	switch (c)
-	{
-	case CONFLICT:
-	    return "ConflictType.CONFLICT";
-	case COMPATIBLE:
-	    return "ConflictType.COMPATIBLE";
-	case PRESENT:
-	    return "ConflictType.PRESENT";
-	default:
-	    return "Unknown";
-	}
+    switch (c)
+    {
+    case CONFLICT:
+        return "ConflictType.CONFLICT";
+    case COMPATIBLE:
+        return "ConflictType.COMPATIBLE";
+    case PRESENT:
+        return "ConflictType.PRESENT";
+    default:
+        return "Unknown";
+    }
     }
 
     /**
@@ -66,7 +66,7 @@ public class ConflictType
 
     public static void print (PrintWriter strm, int c)
     {
-	strm.print(c);
+    strm.print(c);
     }
 
 }

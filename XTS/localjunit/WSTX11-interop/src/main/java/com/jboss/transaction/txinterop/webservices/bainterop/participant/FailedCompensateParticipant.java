@@ -27,8 +27,8 @@ import com.arjuna.wst.WrongStateException;
 public class FailedCompensateParticipant extends CompletedParticipant
 {
     public void compensate()
-    	throws FaultedException, WrongStateException, SystemException
+        throws FaultedException, WrongStateException, SystemException
     {
-	throw new FaultedException() ;
+    throw new FaultedException() ;
     }
 }

@@ -49,12 +49,12 @@ public class InvalidTerminationStateException extends IllegalStateException
 
     public InvalidTerminationStateException ()
     {
-	super();
+    super();
     }
 
     public InvalidTerminationStateException (String s)
     {
-	super(s);
+    super(s);
     }
 }
 

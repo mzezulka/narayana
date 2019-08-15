@@ -63,242 +63,242 @@ import com.arjuna.orbportability.common.opPropertyManager;
 public class OTSImpleManager
 {
 
-	/**
-	 * @return the Current object implementation. This has the advantage of not
-	 *         needing to register the object with the ORB, which can affect
-	 *         performance.
-	 */
+    /**
+     * @return the Current object implementation. This has the advantage of not
+     *         needing to register the object with the ORB, which can affect
+     *         performance.
+     */
 
-	public static CurrentImple current () throws org.omg.CORBA.SystemException
-	{
-		init();
+    public static CurrentImple current () throws org.omg.CORBA.SystemException
+    {
+        init();
 
-		_current.contextManager().associate();
+        _current.contextManager().associate();
 
-		return OTSImpleManager._current;
-	}
+        return OTSImpleManager._current;
+    }
 
-	/**
-	 * @return the Current object implementation. This has the advantage of not
-	 *         needing to register the object with the ORB, which can affect
-	 *         performance.
-	 */
+    /**
+     * @return the Current object implementation. This has the advantage of not
+     *         needing to register the object with the ORB, which can affect
+     *         performance.
+     */
 
-	public static CurrentImple systemCurrent ()
-			throws org.omg.CORBA.SystemException
-	{
-		init();
+    public static CurrentImple systemCurrent ()
+            throws org.omg.CORBA.SystemException
+    {
+        init();
 
-		return OTSImpleManager._current;
-	}
+        return OTSImpleManager._current;
+    }
 
-	/**
-	 * @return the Current object.
-	 */
+    /**
+     * @return the Current object.
+     */
 
-	public static org.omg.CosTransactions.Current get_current ()
-			throws org.omg.CORBA.SystemException
-	{
-		init();
+    public static org.omg.CosTransactions.Current get_current ()
+            throws org.omg.CORBA.SystemException
+    {
+        init();
 
-		_current.contextManager().associate();
+        _current.contextManager().associate();
 
-		return OTSImpleManager._currentRef;
-	}
+        return OTSImpleManager._currentRef;
+    }
 
-	/**
-	 * @return the TransactionFactory object implementation. This has the
-	 *         advantage of not needing to register the object withm the ORB,
-	 *         which can affect performance.
-	 */
+    /**
+     * @return the TransactionFactory object implementation. This has the
+     *         advantage of not needing to register the object withm the ORB,
+     *         which can affect performance.
+     */
 
-	public static TransactionFactoryImple factory ()
-			throws org.omg.CORBA.SystemException
-	{
-		init();
+    public static TransactionFactoryImple factory ()
+            throws org.omg.CORBA.SystemException
+    {
+        init();
 
-		return _theFactory;
-	}
+        return _theFactory;
+    }
 
-	/**
-	 * @return the TransactionFactory object.
-	 */
+    /**
+     * @return the TransactionFactory object.
+     */
 
-	public static TransactionFactory get_factory ()
-			throws org.omg.CORBA.SystemException
-	{
-		init();
+    public static TransactionFactory get_factory ()
+            throws org.omg.CORBA.SystemException
+    {
+        init();
 
-		if (_theFactoryRef == null)
-		{
-			try
-			{
-				_theFactoryRef = _theFactory.getReference();
-			}
-			catch (Exception e)
-			{
-				throw new UNKNOWN();
-			}
-		}
+        if (_theFactoryRef == null)
+        {
+            try
+            {
+                _theFactoryRef = _theFactory.getReference();
+            }
+            catch (Exception e)
+            {
+                throw new UNKNOWN();
+            }
+        }
 
-		return _theFactoryRef;
-	}
+        return _theFactoryRef;
+    }
 
-	/**
-	 * Is a co-located TransactionFactory required?
-	 */
+    /**
+     * Is a co-located TransactionFactory required?
+     */
 
-	public static boolean localFactory ()
-	{
-		init();
+    public static boolean localFactory ()
+    {
+        init();
 
-		return (_theFactory != null);
-	}
+        return (_theFactory != null);
+    }
 
-	/**
-	 * Tidy-up the system prior to exiting.
-	 */
+    /**
+     * Tidy-up the system prior to exiting.
+     */
 
-	public static void purge ()
-	{
-		if (OTSImpleManager._currentRef != null)
-		{
-			OTSImpleManager._currentRef = null;
-			OTSImpleManager._current = null;
-		}
+    public static void purge ()
+    {
+        if (OTSImpleManager._currentRef != null)
+        {
+            OTSImpleManager._currentRef = null;
+            OTSImpleManager._current = null;
+        }
 
-		if (OTSImpleManager._theFactoryRef != null)
-		{
-			ORBManager.getPOA().shutdownObject(OTSImpleManager._theFactory);
-			OTSImpleManager._theFactoryRef = null;
-			OTSImpleManager._theFactory = null;
-		}
-	}
+        if (OTSImpleManager._theFactoryRef != null)
+        {
+            ORBManager.getPOA().shutdownObject(OTSImpleManager._theFactory);
+            OTSImpleManager._theFactoryRef = null;
+            OTSImpleManager._theFactory = null;
+        }
+    }
 
-	private static final synchronized void init ()
-	{
-		if (_current == null)
-		{
-			if (OTSImpleManager._theFactory == null)
-			{
-				/*
-				 * Only check once, when the factory is first created.
-				 */
+    private static final synchronized void init ()
+    {
+        if (_current == null)
+        {
+            if (OTSImpleManager._theFactory == null)
+            {
+                /*
+                 * Only check once, when the factory is first created.
+                 */
 
-				int resolver = Services.CONFIGURATION_FILE;
+                int resolver = Services.CONFIGURATION_FILE;
 
-				boolean requireTransactionManager = false;
+                boolean requireTransactionManager = false;
 
-				if (jtsPropertyManager.getJTSEnvironmentBean().isTransactionManager())
-				{
-					requireTransactionManager = true;
+                if (jtsPropertyManager.getJTSEnvironmentBean().isTransactionManager())
+                {
+                    requireTransactionManager = true;
 
-					String resolveMechanism = opPropertyManager.getOrbPortabilityEnvironmentBean().getResolveService();
+                    String resolveMechanism = opPropertyManager.getOrbPortabilityEnvironmentBean().getResolveService();
 
-					if (resolveMechanism.compareTo("NAME_SERVICE") == 0)
-						resolver = Services.NAME_SERVICE;
-					else
-					{
-						if (resolveMechanism.compareTo("BIND_CONNECT") == 0)
-							resolver = Services.BIND_CONNECT;
-					}
-				}
+                    if (resolveMechanism.compareTo("NAME_SERVICE") == 0)
+                        resolver = Services.NAME_SERVICE;
+                    else
+                    {
+                        if (resolveMechanism.compareTo("BIND_CONNECT") == 0)
+                            resolver = Services.BIND_CONNECT;
+                    }
+                }
 
-				if (requireTransactionManager)
-				{
-					try
-					{
-						if (resolver != Services.BIND_CONNECT)
-						{
-							String[] params = new String[1];
+                if (requireTransactionManager)
+                {
+                    try
+                    {
+                        if (resolver != Services.BIND_CONNECT)
+                        {
+                            String[] params = new String[1];
 
-							params[0] = Services.otsKind;
+                            params[0] = Services.otsKind;
 
-							org.omg.CORBA.Object obj = ORBManager.getServices().getService(Services.transactionService, params, resolver);
+                            org.omg.CORBA.Object obj = ORBManager.getServices().getService(Services.transactionService, params, resolver);
 
-							params = null;
+                            params = null;
 
-							OTSImpleManager._theFactoryRef = org.omg.CosTransactions.TransactionFactoryHelper.narrow(obj);
-						}
-						else
-						{
-						}
+                            OTSImpleManager._theFactoryRef = org.omg.CosTransactions.TransactionFactoryHelper.narrow(obj);
+                        }
+                        else
+                        {
+                        }
 
-						if (OTSImpleManager._theFactoryRef == null)
-							throw new BAD_PARAM();
-					}
-					catch (InvalidName e1) {
+                        if (OTSImpleManager._theFactoryRef == null)
+                            throw new BAD_PARAM();
+                    }
+                    catch (InvalidName e1) {
                         jtsLogger.i18NLogger.warn_otsserverfailed(e1);
 
                         throw new FatalError(
                                 e1.toString(), e1);
                     }
-					catch (BAD_PARAM ex1) {
+                    catch (BAD_PARAM ex1) {
                         jtsLogger.i18NLogger.warn_otsserverfailed(ex1);
 
                         throw new FatalError(
                                 ex1.toString(), ex1);
                     }
-					catch (IOException e2) {
+                    catch (IOException e2) {
                         jtsLogger.i18NLogger.warn_otsservererror(e2);
 
                         throw new FatalError(
                                 e2.toString(), e2);
                     }
-					catch (SystemException e3) {
+                    catch (SystemException e3) {
                         jtsLogger.i18NLogger.warn_otsservererror(e3);
 
                         throw new FatalError(
                                 e3.toString(), e3);
                     }
-					catch (UserException e4) {
+                    catch (UserException e4) {
                         jtsLogger.i18NLogger.warn_otsservererror(e4);
 
                         throw new FatalError(
                                 e4.toString(), e4);
                     }
-				}
-				else
-				{
-					/* force to be local */
+                }
+                else
+                {
+                    /* force to be local */
 
-					OTSImpleManager._theFactory = new TransactionFactoryImple();
-				}
-			}
+                    OTSImpleManager._theFactory = new TransactionFactoryImple();
+                }
+            }
 
-			if (OTSImpleManager._current == null)
-			{
-				try
-				{
-					OTSImpleManager._current = new CurrentImple();
-					OTSImpleManager._currentRef = OTSImpleManager._current;
-				}
-				catch (Exception e)
-				{
-					OTSImpleManager._current = null;
+            if (OTSImpleManager._current == null)
+            {
+                try
+                {
+                    OTSImpleManager._current = new CurrentImple();
+                    OTSImpleManager._currentRef = OTSImpleManager._current;
+                }
+                catch (Exception e)
+                {
+                    OTSImpleManager._current = null;
 
-					throw new com.arjuna.ats.arjuna.exceptions.FatalError(
-							"OTSImpleManager.current: " + e.toString(), e);
-				}
-			}
-		}
-	}
+                    throw new com.arjuna.ats.arjuna.exceptions.FatalError(
+                            "OTSImpleManager.current: " + e.toString(), e);
+                }
+            }
+        }
+    }
 
-	private static TransactionFactoryImple _theFactory = null;
+    private static TransactionFactoryImple _theFactory = null;
 
-	private static TransactionFactory _theFactoryRef = null;
+    private static TransactionFactory _theFactoryRef = null;
 
-	private static CurrentImple _current = null;
+    private static CurrentImple _current = null;
 
-	private static org.omg.CosTransactions.Current _currentRef = null;
+    private static org.omg.CosTransactions.Current _currentRef = null;
 
     /**
      * Static block adds new instance of ShutdownOTS to the portable object adapter.
      * Also, triggers initialization of com.arjuna.ats.internal.jts.Implementation if it was not initialized before.
      */
-	static
-	{
-		if (!com.arjuna.ats.internal.jts.Implementations.added())
-			com.arjuna.ats.internal.jts.Implementations.initialise();
-	}
+    static
+    {
+        if (!com.arjuna.ats.internal.jts.Implementations.added())
+            com.arjuna.ats.internal.jts.Implementations.initialise();
+    }
 }

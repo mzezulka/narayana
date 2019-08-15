@@ -69,51 +69,51 @@ import java.util.Properties;
 
 public class Setup01
 {
-	public static void main(String[] args)
-	{
-		try
-		{
-			String profileName = args[args.length - 1];
+    public static void main(String[] args)
+    {
+        try
+        {
+            String profileName = args[args.length - 1];
 
-			int numberOfDrivers = JDBCProfileStore.numberOfDrivers(profileName);
-			for (int index = 0; index < numberOfDrivers; index++)
-			{
-				String driver = JDBCProfileStore.driver(profileName, index);
+            int numberOfDrivers = JDBCProfileStore.numberOfDrivers(profileName);
+            for (int index = 0; index < numberOfDrivers; index++)
+            {
+                String driver = JDBCProfileStore.driver(profileName, index);
 
-				Class.forName(driver);
-			}
+                Class.forName(driver);
+            }
 
-			String databaseURL = JDBCProfileStore.databaseURL(profileName);
-			String databaseUser = JDBCProfileStore.databaseUser(profileName);
-			String databasePassword = JDBCProfileStore.databasePassword(profileName);
-			String databaseDynamicClass = JDBCProfileStore.databaseDynamicClass(profileName);
+            String databaseURL = JDBCProfileStore.databaseURL(profileName);
+            String databaseUser = JDBCProfileStore.databaseUser(profileName);
+            String databasePassword = JDBCProfileStore.databasePassword(profileName);
+            String databaseDynamicClass = JDBCProfileStore.databaseDynamicClass(profileName);
 
-			Connection connection;
-			if (databaseDynamicClass != null)
-			{
-				Properties databaseProperties = new Properties();
+            Connection connection;
+            if (databaseDynamicClass != null)
+            {
+                Properties databaseProperties = new Properties();
 
-				databaseProperties.put(com.arjuna.ats.jdbc.TransactionalDriver.userName, databaseUser);
-				databaseProperties.put(com.arjuna.ats.jdbc.TransactionalDriver.password, databasePassword);
-				databaseProperties.put(com.arjuna.ats.jdbc.TransactionalDriver.dynamicClass, databaseDynamicClass);
+                databaseProperties.put(com.arjuna.ats.jdbc.TransactionalDriver.userName, databaseUser);
+                databaseProperties.put(com.arjuna.ats.jdbc.TransactionalDriver.password, databasePassword);
+                databaseProperties.put(com.arjuna.ats.jdbc.TransactionalDriver.dynamicClass, databaseDynamicClass);
 
-				connection = DriverManager.getConnection(databaseURL, databaseProperties);
-			}
-			else
-			{
-				connection = DriverManager.getConnection(databaseURL, databaseUser, databasePassword);
-			}
+                connection = DriverManager.getConnection(databaseURL, databaseProperties);
+            }
+            else
+            {
+                connection = DriverManager.getConnection(databaseURL, databaseUser, databasePassword);
+            }
 
-			Statement statement = connection.createStatement();
+            Statement statement = connection.createStatement();
 
-			statement.executeUpdate("CREATE TABLE Service (Name VARCHAR(64), Value NUMBER)");
+            statement.executeUpdate("CREATE TABLE Service (Name VARCHAR(64), Value NUMBER)");
 
-			statement.close();
-			connection.close();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Setup01.main: " + exception);
-		}
-	}
+            statement.close();
+            connection.close();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Setup01.main: " + exception);
+        }
+    }
 }

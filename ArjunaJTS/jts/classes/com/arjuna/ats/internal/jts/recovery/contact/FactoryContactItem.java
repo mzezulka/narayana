@@ -61,12 +61,12 @@ public class FactoryContactItem
 
     private static FactoryContactItem _theSingularItem = null;
 
-    private Date	    _creationTime = null;
-    private Date	    _aliveTime = null;
-    private Date	    _deadTime = null;
+    private Date        _creationTime = null;
+    private Date        _aliveTime = null;
+    private Date        _deadTime = null;
     // if this is null, the parent process is known to be deceased
     private ArjunaFactory    _factory = null;
-    private Uid		_uid = null;
+    private Uid        _uid = null;
 
     /**
      * create the contact item for the factory in this address space
@@ -137,7 +137,7 @@ public class FactoryContactItem
 
     /**
      * accessor - returns null if contact has not be successfully used
-     *	 this run of RecoveryManager
+     *     this run of RecoveryManager
      */
     Date getAliveTime()
     {
@@ -263,11 +263,11 @@ public class FactoryContactItem
             {
                 org.omg.CORBA.Object corbject = ORBManager.getORB().orb().string_to_object(iorAsString);
                 /****
-	    org.omg.CORBA.Object corbject;
-	    if ( ORBManager.isInitialised() )
-		corbject = ORBManager.getORB().orb().string_to_object(iorAsString);
-	    else
-		corbject = RecoveryORBManager.getORB().orb().string_to_object(iorAsString);
+        org.omg.CORBA.Object corbject;
+        if ( ORBManager.isInitialised() )
+        corbject = ORBManager.getORB().orb().string_to_object(iorAsString);
+        else
+        corbject = RecoveryORBManager.getORB().orb().string_to_object(iorAsString);
                  ***/
 
                 _factory = ArjunaFactoryHelper.narrow(corbject);

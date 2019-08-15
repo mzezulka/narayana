@@ -37,37 +37,37 @@ public class TestSystemExceptionBusinessAgreementWithParticipantCompletionPartic
 
     public void close () throws WrongStateException, SystemException
     {
-	throw new SystemException();
+    throw new SystemException();
     }
 
     public void cancel () throws WrongStateException, SystemException
     {
-	throw new SystemException();
+    throw new SystemException();
     }
 
     public void compensate () throws FaultedException, WrongStateException, SystemException
     {
-	throw new SystemException();
+    throw new SystemException();
     }
 
     public String status () throws SystemException
     {
-	return Status.STATUS_ACTIVE;
+    return Status.STATUS_ACTIVE;
     }
 
     public void forget () throws WrongStateException, SystemException
     {
-	throw new SystemException();
+    throw new SystemException();
     }
 
     public void unknown () throws SystemException
     {
-	throw new SystemException();
+    throw new SystemException();
     }
 
     public void error () throws SystemException
     {
-	throw new SystemException();
+    throw new SystemException();
     }
 
 }

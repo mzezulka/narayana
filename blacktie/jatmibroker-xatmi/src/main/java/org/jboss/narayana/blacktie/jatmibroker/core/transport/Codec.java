@@ -22,8 +22,8 @@ import org.jboss.narayana.blacktie.jatmibroker.xatmi.ConnectionException;
 import org.jboss.narayana.blacktie.jatmibroker.xatmi.impl.BufferImpl;
 
 public interface Codec {
-	public byte[] encode(BufferImpl buf) throws ConnectionException;
+    public byte[] encode(BufferImpl buf) throws ConnectionException;
 
-	public BufferImpl decode(String type, String subtype, byte[] data, int len)
-			throws ConnectionException, ConfigurationException;
+    public BufferImpl decode(String type, String subtype, byte[] data, int len)
+            throws ConnectionException, ConfigurationException;
 }

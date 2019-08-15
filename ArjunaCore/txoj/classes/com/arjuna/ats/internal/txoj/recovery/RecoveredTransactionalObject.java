@@ -110,25 +110,25 @@ public class RecoveredTransactionalObject extends StateManager
              * otherwise the transaction should recover and do the committment
              * eventually.
              */
-			if ((tranStatus == ActionStatus.PREPARED) ||
-				(tranStatus == ActionStatus.COMMITTING) ||
-				(tranStatus == ActionStatus.COMMITTED) ||
-				(tranStatus == ActionStatus.H_COMMIT) ||
-				(tranStatus == ActionStatus.H_MIXED) ||
-				(tranStatus == ActionStatus.H_HAZARD))
-			{
-				commit();
-			}
-			else if ((tranStatus == ActionStatus.ABORTED) ||
-				(tranStatus == ActionStatus.H_ROLLBACK) ||
-				(tranStatus == ActionStatus.ABORTING) ||
-				(tranStatus == ActionStatus.ABORT_ONLY))
-			{
-				rollback();
-			}
-			else {
-				txojLogger.logger.debug("RecoveredTransactionalObject.replayPhase2 - cannot find state to complete");
-			}
+            if ((tranStatus == ActionStatus.PREPARED) ||
+                (tranStatus == ActionStatus.COMMITTING) ||
+                (tranStatus == ActionStatus.COMMITTED) ||
+                (tranStatus == ActionStatus.H_COMMIT) ||
+                (tranStatus == ActionStatus.H_MIXED) ||
+                (tranStatus == ActionStatus.H_HAZARD))
+            {
+                commit();
+            }
+            else if ((tranStatus == ActionStatus.ABORTED) ||
+                (tranStatus == ActionStatus.H_ROLLBACK) ||
+                (tranStatus == ActionStatus.ABORTING) ||
+                (tranStatus == ActionStatus.ABORT_ONLY))
+            {
+                rollback();
+            }
+            else {
+                txojLogger.logger.debug("RecoveredTransactionalObject.replayPhase2 - cannot find state to complete");
+            }
         }
         else
         {

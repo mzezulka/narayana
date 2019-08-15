@@ -46,12 +46,12 @@ public class Cancelled implements Status
 
     public static Cancelled instance ()
     {
-	return _instance;
+    return _instance;
     }
 
     public String toString ()
     {
-	return "org.w3c.wscf.twophase.status.Cancelled";
+    return "org.w3c.wscf.twophase.status.Cancelled";
     }
 
     private Cancelled ()

@@ -31,19 +31,19 @@ import com.arjuna.ats.internal.arjuna.objectstore.jdbc.JDBCImple_driver;
  */
 public class h2_driver extends JDBCImple_driver {
 
-	@Override
-	protected void checkCreateTableError(SQLException ex) throws SQLException {
-		if (!ex.getSQLState().equals("42S01")) {
-			throw ex;
-		}
-	}
+    @Override
+    protected void checkCreateTableError(SQLException ex) throws SQLException {
+        if (!ex.getSQLState().equals("42S01")) {
+            throw ex;
+        }
+    }
 
-	@Override
-	protected void checkDropTableException(Connection connection,
-			SQLException ex) throws SQLException {
-		if (!ex.getSQLState().equals("42S02")) {
-			throw ex;
-		}
+    @Override
+    protected void checkDropTableException(Connection connection,
+            SQLException ex) throws SQLException {
+        if (!ex.getSQLState().equals("42S02")) {
+            throw ex;
+        }
 
-	}
+    }
 }

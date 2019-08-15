@@ -70,22 +70,22 @@ public class Implementations
 
     public static synchronized boolean added ()
     {
-	return _added;
+    return _added;
     }
 
     public static synchronized void initialise ()
     {
-	if (!_added)
-	{
-	    /*
-	     * Now add various abstract records which crash recovery needs.
-	     */
+    if (!_added)
+    {
+        /*
+         * Now add various abstract records which crash recovery needs.
+         */
 
-	    RecordTypeManager.manager().add(new ResourceRecordMap());
-	    RecordTypeManager.manager().add(new ExtendedResourceRecordMap());
+        RecordTypeManager.manager().add(new ResourceRecordMap());
+        RecordTypeManager.manager().add(new ExtendedResourceRecordMap());
 
-	    _added = true;
-	}
+        _added = true;
+    }
     }
 
     private Implementations ()
@@ -99,7 +99,7 @@ public class Implementations
      */
     static
     {
-	initialise();
+    initialise();
     }
 
 }

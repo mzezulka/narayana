@@ -49,7 +49,7 @@ public class TestNoExceptionBusinessAgreementWithParticipantCompletionParticipan
 
     public String status () throws SystemException
     {
-	return Status.STATUS_ACTIVE;
+    return Status.STATUS_ACTIVE;
     }
 
     public void forget () throws WrongStateException, SystemException

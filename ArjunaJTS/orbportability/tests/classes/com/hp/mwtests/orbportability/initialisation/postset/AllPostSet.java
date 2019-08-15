@@ -33,12 +33,12 @@ package com.hp.mwtests.orbportability.initialisation.postset;
 
 public class AllPostSet
 {
-	public AllPostSet()
-	{
-		System.out.println(this.getClass().getName()+": called");
+    public AllPostSet()
+    {
+        System.out.println(this.getClass().getName()+": called");
 
-		_called = true;
-	}
+        _called = true;
+    }
 
-	public static boolean _called = false;
+    public static boolean _called = false;
 }

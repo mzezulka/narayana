@@ -50,32 +50,32 @@ public class SynchronizationRecord implements Comparable
 
     public SynchronizationRecord (Synchronization ptr)
     {
-	if (jtsLogger.logger.isTraceEnabled()) {
+    if (jtsLogger.logger.isTraceEnabled()) {
         jtsLogger.logger.trace("SynchronizationRecord::SynchronizationRecord ( " + ptr + " )");
     }
 
-	_ptr = ptr;
-	_uid = new Uid();
+    _ptr = ptr;
+    _uid = new Uid();
     _isJTAInterposed = false;
     }
 
     public SynchronizationRecord (Synchronization ptr, boolean isJTAInterposed) {
         this(ptr);
         _isJTAInterposed = isJTAInterposed;
-	}
+    }
 
     public final Synchronization contents ()
     {
-	if (jtsLogger.logger.isTraceEnabled()) {
+    if (jtsLogger.logger.isTraceEnabled()) {
         jtsLogger.logger.trace("SynchronizationRecord::contents - for " + _ptr);
     }
 
-	return _ptr;
+    return _ptr;
     }
 
     public final Uid get_uid ()
     {
-	return _uid;
+    return _uid;
     }
 
     /*

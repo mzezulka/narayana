@@ -38,12 +38,12 @@ public class Synchronization implements javax.transaction.Synchronization
 
     public void beforeCompletion ()
     {
-	System.out.println("beforeCompletion called");
+    System.out.println("beforeCompletion called");
     }
 
     public void afterCompletion (int status)
     {
-	System.out.println("afterCompletion called: "+JTAHelper.stringForm(status));
+    System.out.println("afterCompletion called: "+JTAHelper.stringForm(status));
     }
 
 }

@@ -43,9 +43,9 @@ public class DummyXARecoveryResource implements XAResourceRecovery
 
     public XAResource getXAResource () throws SQLException
     {
-	count++;
+    count++;
 
-	return new RecoveryXAResource();
+    return new RecoveryXAResource();
     }
 
     /**
@@ -60,7 +60,7 @@ public class DummyXARecoveryResource implements XAResourceRecovery
 
     public boolean initialise (String p) throws SQLException
     {
-	return true;
+    return true;
     }
 
     /**
@@ -73,10 +73,10 @@ public class DummyXARecoveryResource implements XAResourceRecovery
 
     public boolean hasMoreResources ()
     {
-	if (count <= 1)
-	    return true;
-	else
-	    return false;
+    if (count <= 1)
+        return true;
+    else
+        return false;
     }
 
     private int count = 0;

@@ -36,13 +36,13 @@ import java.sql.SQLException;
 import java.util.StringTokenizer;
 
 public class MyAccess implements
-		com.arjuna.ats.arjuna.objectstore.jdbc.JDBCAccess {
+        com.arjuna.ats.arjuna.objectstore.jdbc.JDBCAccess {
 
-	public Connection getConnection() throws SQLException {
-		return null;
-	}
+    public Connection getConnection() throws SQLException {
+        return null;
+    }
 
-	public void initialise(StringTokenizer objName) {
-	}
+    public void initialise(StringTokenizer objName) {
+    }
 
 }

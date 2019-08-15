@@ -65,29 +65,29 @@ import org.jboss.jbossts.qa.Utils.ServerIORStore;
 
 public class Server07
 {
-	public static void main(String args[])
-	{
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+    public static void main(String args[])
+    {
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			AITPingPongImpl01 aitPingPongImpl = new AITPingPongImpl01();
-			PingPongPOATie servant = new PingPongPOATie(aitPingPongImpl);
+            AITPingPongImpl01 aitPingPongImpl = new AITPingPongImpl01();
+            PingPongPOATie servant = new PingPongPOATie(aitPingPongImpl);
 
-			OAInterface.objectIsReady(servant);
-			PingPong aitPingPong = PingPongHelper.narrow(OAInterface.corbaReference(servant));
+            OAInterface.objectIsReady(servant);
+            PingPong aitPingPong = PingPongHelper.narrow(OAInterface.corbaReference(servant));
 
-			ServerIORStore.storeIOR(args[args.length - 1], ORBInterface.orb().object_to_string(aitPingPong));
+            ServerIORStore.storeIOR(args[args.length - 1], ORBInterface.orb().object_to_string(aitPingPong));
 
-			System.out.println("Ready");
+            System.out.println("Ready");
 
-			ORBInterface.run();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Server07.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
-	}
+            ORBInterface.run();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Server07.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
+    }
 }

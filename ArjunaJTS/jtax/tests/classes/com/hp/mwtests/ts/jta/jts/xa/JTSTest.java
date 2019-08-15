@@ -267,91 +267,91 @@ public class JTSTest {
         }
     }
 
-	@Test
-	public void test() throws Exception {
+    @Test
+    public void test() throws Exception {
 
-		javax.transaction.TransactionManager tm = com.arjuna.ats.jta.TransactionManager.transactionManager();
+        javax.transaction.TransactionManager tm = com.arjuna.ats.jta.TransactionManager.transactionManager();
 
-		tm.begin();
+        tm.begin();
 
-		javax.transaction.Transaction theTransaction = tm.getTransaction();
+        javax.transaction.Transaction theTransaction = tm.getTransaction();
 
-		assertTrue(theTransaction.enlistResource(new XARMERRXAResource(false)));
-		assertTrue(theTransaction.enlistResource(new XARMERRXAResource(true)));
+        assertTrue(theTransaction.enlistResource(new XARMERRXAResource(false)));
+        assertTrue(theTransaction.enlistResource(new XARMERRXAResource(true)));
 
-		tm.rollback();
-	}
+        tm.rollback();
+    }
 
-	private class XARMERRXAResource implements XAResource {
+    private class XARMERRXAResource implements XAResource {
 
-		private boolean returnRMERROutOfEnd;
+        private boolean returnRMERROutOfEnd;
 
-		public XARMERRXAResource(boolean returnRMERROutOfEnd) {
-			this.returnRMERROutOfEnd = returnRMERROutOfEnd;
-		}
+        public XARMERRXAResource(boolean returnRMERROutOfEnd) {
+            this.returnRMERROutOfEnd = returnRMERROutOfEnd;
+        }
 
-		@Override
-		public void commit(Xid xid, boolean onePhase) throws XAException {
-			// TODO Auto-generated method stub
+        @Override
+        public void commit(Xid xid, boolean onePhase) throws XAException {
+            // TODO Auto-generated method stub
 
-		}
+        }
 
-		@Override
-		public void end(Xid xid, int flags) throws XAException {
-			if (returnRMERROutOfEnd) {
-				throw new XAException(XAException.XAER_RMERR);
-			}
-		}
+        @Override
+        public void end(Xid xid, int flags) throws XAException {
+            if (returnRMERROutOfEnd) {
+                throw new XAException(XAException.XAER_RMERR);
+            }
+        }
 
-		@Override
-		public void forget(Xid xid) throws XAException {
-			// TODO Auto-generated method stub
+        @Override
+        public void forget(Xid xid) throws XAException {
+            // TODO Auto-generated method stub
 
-		}
+        }
 
-		@Override
-		public int getTransactionTimeout() throws XAException {
-			// TODO Auto-generated method stub
-			return 0;
-		}
+        @Override
+        public int getTransactionTimeout() throws XAException {
+            // TODO Auto-generated method stub
+            return 0;
+        }
 
-		@Override
-		public boolean isSameRM(XAResource xares) throws XAException {
-			// TODO Auto-generated method stub
-			return false;
-		}
+        @Override
+        public boolean isSameRM(XAResource xares) throws XAException {
+            // TODO Auto-generated method stub
+            return false;
+        }
 
-		@Override
-		public int prepare(Xid xid) throws XAException {
-			// TODO Auto-generated method stub
-			return 0;
-		}
+        @Override
+        public int prepare(Xid xid) throws XAException {
+            // TODO Auto-generated method stub
+            return 0;
+        }
 
-		@Override
-		public Xid[] recover(int flag) throws XAException {
-			// TODO Auto-generated method stub
-			return null;
-		}
+        @Override
+        public Xid[] recover(int flag) throws XAException {
+            // TODO Auto-generated method stub
+            return null;
+        }
 
-		@Override
-		public void rollback(Xid xid) throws XAException {
-			// TODO Auto-generated method stub
+        @Override
+        public void rollback(Xid xid) throws XAException {
+            // TODO Auto-generated method stub
 
-		}
+        }
 
-		@Override
-		public boolean setTransactionTimeout(int seconds) throws XAException {
-			// TODO Auto-generated method stub
-			return false;
-		}
+        @Override
+        public boolean setTransactionTimeout(int seconds) throws XAException {
+            // TODO Auto-generated method stub
+            return false;
+        }
 
-		@Override
-		public void start(Xid xid, int flags) throws XAException {
-			// TODO Auto-generated method stub
+        @Override
+        public void start(Xid xid, int flags) throws XAException {
+            // TODO Auto-generated method stub
 
-		}
+        }
 
-	}
+    }
 
     private abstract class SimpleXAResource implements XAResource {
 

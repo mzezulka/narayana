@@ -46,17 +46,17 @@ public class HeuristicCancelException extends SystemException
 
     public HeuristicCancelException ()
     {
-	super();
+    super();
     }
 
     public HeuristicCancelException (String s)
     {
-	super(s);
+    super(s);
     }
 
     public HeuristicCancelException (String s, int errorcode)
     {
-	super(s, errorcode);
+    super(s, errorcode);
     }
 
 }

@@ -66,7 +66,7 @@ public class TransactionImpl {
         terminator = null;
 
         try {
-        	AtmiBrokerEnvXML client = new AtmiBrokerEnvXML();
+            AtmiBrokerEnvXML client = new AtmiBrokerEnvXML();
             Properties properties = client.getProperties();
             orbManagement = OrbManagement.getInstance(properties);
             String toLookup = (String) properties.get("blacktie.trans.factoryid");
@@ -90,7 +90,7 @@ public class TransactionImpl {
         timeout = -1;
 
         try {
-        	AtmiBrokerEnvXML client = new AtmiBrokerEnvXML();
+            AtmiBrokerEnvXML client = new AtmiBrokerEnvXML();
             Properties properties = client.getProperties();
             orbManagement = OrbManagement.getInstance(properties);
         } catch (org.omg.CORBA.UserException cue) {

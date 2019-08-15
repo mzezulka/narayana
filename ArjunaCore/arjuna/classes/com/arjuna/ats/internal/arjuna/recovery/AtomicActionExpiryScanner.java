@@ -32,12 +32,12 @@ import com.arjuna.ats.arjuna.AtomicAction;
 public class AtomicActionExpiryScanner extends ExpiredTransactionScanner
 {
 
-	public AtomicActionExpiryScanner()
-	{
-		super(_transactionType, _transactionType + "/Expired");
-	}
+    public AtomicActionExpiryScanner()
+    {
+        super(_transactionType, _transactionType + "/Expired");
+    }
 
-	// 'type' within the Object Store for AtomicActions.
-	private static final String _transactionType = new AtomicAction().type();
+    // 'type' within the Object Store for AtomicActions.
+    private static final String _transactionType = new AtomicAction().type();
 
 }

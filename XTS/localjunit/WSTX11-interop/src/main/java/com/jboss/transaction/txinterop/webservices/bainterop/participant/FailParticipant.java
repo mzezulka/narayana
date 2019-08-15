@@ -32,7 +32,7 @@ public class FailParticipant extends ParticipantCompletionParticipantAdapter
 
     public void setEngine(final ParticipantCompletionParticipantEngine engine)
     {
-	this.engine = engine ;
+    this.engine = engine ;
     }
 
     public void initialiseTimeout()

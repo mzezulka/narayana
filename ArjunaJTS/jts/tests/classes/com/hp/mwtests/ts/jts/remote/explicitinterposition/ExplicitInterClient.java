@@ -88,7 +88,7 @@ public class ExplicitInterClient
             theControl = current.get_control();
 
             SetGetVar.set((short) 2, theControl);
-            //	    SetGetVar.set((short) 2, theControl);
+            //        SetGetVar.set((short) 2, theControl);
 
             theControl = null;
 
@@ -106,7 +106,7 @@ public class ExplicitInterClient
 
             current.commit(true);
 
-            //	    SetGetVar.set((short) 4, current.get_control());
+            //        SetGetVar.set((short) 4, current.get_control());
 
             System.out.println("committing second nested action");
 

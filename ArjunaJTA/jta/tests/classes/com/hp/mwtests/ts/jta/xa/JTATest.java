@@ -254,23 +254,23 @@ public class JTATest {
         }
     }
 
-	@Test
-	public void test() throws Exception {
+    @Test
+    public void test() throws Exception {
 
-		javax.transaction.TransactionManager tm = com.arjuna.ats.jta.TransactionManager
-				.transactionManager();
+        javax.transaction.TransactionManager tm = com.arjuna.ats.jta.TransactionManager
+                .transactionManager();
 
-		tm.begin();
+        tm.begin();
 
-		javax.transaction.Transaction theTransaction = tm.getTransaction();
+        javax.transaction.Transaction theTransaction = tm.getTransaction();
 
-		assertTrue(theTransaction.enlistResource(new XARMERRXAResource(false)));
-		XARMERRXAResource rollbackCalled = new XARMERRXAResource(true);
-		assertTrue(theTransaction.enlistResource(rollbackCalled));
+        assertTrue(theTransaction.enlistResource(new XARMERRXAResource(false)));
+        XARMERRXAResource rollbackCalled = new XARMERRXAResource(true);
+        assertTrue(theTransaction.enlistResource(rollbackCalled));
 
-		tm.rollback();
-		assertTrue(rollbackCalled.getRollbackCalled());
-	}
+        tm.rollback();
+        assertTrue(rollbackCalled.getRollbackCalled());
+    }
 
     /**
      * This is none-spec behaviour that some resource managers perform where they throw a RTE instead of return an XAException
@@ -284,7 +284,7 @@ public class JTATest {
      * @throws NotSupportedException
      * @throws RollbackException
      */
-	@Test
+    @Test
     public void testRollbackRTE() throws SecurityException, IllegalStateException, HeuristicMixedException, HeuristicRollbackException, SystemException, NotSupportedException, RollbackException {
 
         javax.transaction.TransactionManager tm = com.arjuna.ats.jta.TransactionManager
@@ -324,8 +324,8 @@ public class JTATest {
     }
 
 
-	@Test
-	public void testHeuristicRollbackSuppressedException() throws NotSupportedException, SystemException, IllegalStateException, RollbackException, SecurityException, HeuristicMixedException, HeuristicRollbackException {
+    @Test
+    public void testHeuristicRollbackSuppressedException() throws NotSupportedException, SystemException, IllegalStateException, RollbackException, SecurityException, HeuristicMixedException, HeuristicRollbackException {
 
         javax.transaction.TransactionManager tm = com.arjuna.ats.jta.TransactionManager
                 .transactionManager();
@@ -465,84 +465,84 @@ public class JTATest {
             assertTrue(e.getSuppressed()[0] == exception);
         }
 
-	}
+    }
 
-	private class XARMERRXAResource implements XAResource {
+    private class XARMERRXAResource implements XAResource {
 
-		private boolean returnRMERROutOfEnd;
-		private boolean rollbackCalled;
+        private boolean returnRMERROutOfEnd;
+        private boolean rollbackCalled;
 
-		public XARMERRXAResource(boolean returnRMERROutOfEnd) {
-			this.returnRMERROutOfEnd = returnRMERROutOfEnd;
-		}
+        public XARMERRXAResource(boolean returnRMERROutOfEnd) {
+            this.returnRMERROutOfEnd = returnRMERROutOfEnd;
+        }
 
-		public boolean getRollbackCalled() {
-			return rollbackCalled;
-		}
+        public boolean getRollbackCalled() {
+            return rollbackCalled;
+        }
 
-		@Override
-		public void commit(Xid xid, boolean onePhase) throws XAException {
-			// TODO Auto-generated method stub
+        @Override
+        public void commit(Xid xid, boolean onePhase) throws XAException {
+            // TODO Auto-generated method stub
 
-		}
+        }
 
-		@Override
-		public void end(Xid xid, int flags) throws XAException {
-			if (returnRMERROutOfEnd) {
-				throw new XAException(XAException.XAER_RMERR);
-			}
-		}
+        @Override
+        public void end(Xid xid, int flags) throws XAException {
+            if (returnRMERROutOfEnd) {
+                throw new XAException(XAException.XAER_RMERR);
+            }
+        }
 
-		@Override
-		public void forget(Xid xid) throws XAException {
-			// TODO Auto-generated method stub
+        @Override
+        public void forget(Xid xid) throws XAException {
+            // TODO Auto-generated method stub
 
-		}
+        }
 
-		@Override
-		public int getTransactionTimeout() throws XAException {
-			// TODO Auto-generated method stub
-			return 0;
-		}
+        @Override
+        public int getTransactionTimeout() throws XAException {
+            // TODO Auto-generated method stub
+            return 0;
+        }
 
-		@Override
-		public boolean isSameRM(XAResource xares) throws XAException {
-			// TODO Auto-generated method stub
-			return false;
-		}
+        @Override
+        public boolean isSameRM(XAResource xares) throws XAException {
+            // TODO Auto-generated method stub
+            return false;
+        }
 
-		@Override
-		public int prepare(Xid xid) throws XAException {
-			// TODO Auto-generated method stub
-			return 0;
-		}
+        @Override
+        public int prepare(Xid xid) throws XAException {
+            // TODO Auto-generated method stub
+            return 0;
+        }
 
-		@Override
-		public Xid[] recover(int flag) throws XAException {
-			// TODO Auto-generated method stub
-			return null;
-		}
+        @Override
+        public Xid[] recover(int flag) throws XAException {
+            // TODO Auto-generated method stub
+            return null;
+        }
 
-		@Override
-		public void rollback(Xid xid) throws XAException {
-			rollbackCalled = true;
-		}
+        @Override
+        public void rollback(Xid xid) throws XAException {
+            rollbackCalled = true;
+        }
 
-		@Override
-		public boolean setTransactionTimeout(int seconds) throws XAException {
-			// TODO Auto-generated method stub
-			return false;
-		}
+        @Override
+        public boolean setTransactionTimeout(int seconds) throws XAException {
+            // TODO Auto-generated method stub
+            return false;
+        }
 
-		@Override
-		public void start(Xid xid, int flags) throws XAException {
-			// TODO Auto-generated method stub
+        @Override
+        public void start(Xid xid, int flags) throws XAException {
+            // TODO Auto-generated method stub
 
-		}
+        }
 
-	}
+    }
 
-	private abstract class SimpleXAResource implements XAResource {
+    private abstract class SimpleXAResource implements XAResource {
 
         @Override
         public void start(Xid xid, int flags) throws XAException {

@@ -63,61 +63,61 @@ import static org.junit.Assert.*;
  */
 @Deprecated // in order to provide a better separation between public and internal classes.
 public class JTSOSBTestBase extends TestBase {
-	@BeforeClass
-	public static void beforeClass() {
-		RecordTypeManager.manager().add(new RecordTypeMap() {
-			public Class<? extends AbstractRecord> getRecordClass() {
-				return ExtendedCrashRecord.class;
-			}
+    @BeforeClass
+    public static void beforeClass() {
+        RecordTypeManager.manager().add(new RecordTypeMap() {
+            public Class<? extends AbstractRecord> getRecordClass() {
+                return ExtendedCrashRecord.class;
+            }
 
-			public int getType() {
-				return RecordType.USER_DEF_FIRST0;
-			}
-		});
-	}
+            public int getType() {
+                return RecordType.USER_DEF_FIRST0;
+            }
+        });
+    }
 
-	@BeforeClass
-	public static void initOrb() throws InvalidName {
-		int recoveryOrbPort = jtsPropertyManager.getJTSEnvironmentBean().getRecoveryManagerPort();
-		final Properties p = new Properties();
-		p.setProperty("OAPort", ""+recoveryOrbPort);
-		p.setProperty("com.sun.CORBA.POA.ORBPersistentServerPort", ""+recoveryOrbPort);
-		p.setProperty("com.sun.CORBA.POA.ORBServerId", ""+recoveryOrbPort);
+    @BeforeClass
+    public static void initOrb() throws InvalidName {
+        int recoveryOrbPort = jtsPropertyManager.getJTSEnvironmentBean().getRecoveryManagerPort();
+        final Properties p = new Properties();
+        p.setProperty("OAPort", ""+recoveryOrbPort);
+        p.setProperty("com.sun.CORBA.POA.ORBPersistentServerPort", ""+recoveryOrbPort);
+        p.setProperty("com.sun.CORBA.POA.ORBServerId", ""+recoveryOrbPort);
 
-		ORB orb = ORB.getInstance("test");
-		OA oa = OA.getRootOA(orb);
-		orb.initORB(new String[] {}, p);
-		oa.initOA();
+        ORB orb = ORB.getInstance("test");
+        OA oa = OA.getRootOA(orb);
+        orb.initORB(new String[] {}, p);
+        oa.initOA();
 
-		ORBManager.setORB(orb);
-		ORBManager.setPOA(oa);
-	}
+        ORBManager.setORB(orb);
+        ORBManager.setPOA(oa);
+    }
 
-	@AfterClass
-	public static void shutdownOrb() {
-		ORBManager.getPOA().destroy();
-		ORBManager.getORB().shutdown();
-		ORBManager.reset();
-	}
+    @AfterClass
+    public static void shutdownOrb() {
+        ORBManager.getPOA().destroy();
+        ORBManager.getORB().shutdown();
+        ORBManager.reset();
+    }
 
-	@Before
-	public void beforeTest()
-	{
-		emptyObjectStore();
-	}
+    @Before
+    public void beforeTest()
+    {
+        emptyObjectStore();
+    }
 
-	public ObjStoreBrowser createObjStoreBrowser(boolean probe) throws MBeanException {
-		ObjStoreBrowser osb = new ObjStoreBrowser();
+    public ObjStoreBrowser createObjStoreBrowser(boolean probe) throws MBeanException {
+        ObjStoreBrowser osb = new ObjStoreBrowser();
 
-		osb.viewSubordinateAtomicActions(true);
+        osb.viewSubordinateAtomicActions(true);
 
-		if (probe) {
-			osb.start();
-			osb.probe();
-		}
+        if (probe) {
+            osb.start();
+            osb.probe();
+        }
 
-		return osb;
-	}
+        return osb;
+    }
 
     private void showAllMBeans(MBeanServer mbs) {
         try {
@@ -139,73 +139,73 @@ public class JTSOSBTestBase extends TestBase {
 
         showAllMBeans(mbs);
 
-		try {
-			String type = ObjStoreBrowser.canonicalType(txn.type());
+        try {
+            String type = ObjStoreBrowser.canonicalType(txn.type());
 
-			StringBuilder beanName = new StringBuilder("jboss.jta:type=ObjectStore,itype=").
-					append(type).append(",uid=").append(txn.get_uid().fileStringForm());
+            StringBuilder beanName = new StringBuilder("jboss.jta:type=ObjectStore,itype=").
+                    append(type).append(",uid=").append(txn.get_uid().fileStringForm());
 
-			System.out.printf("assertBeanWasCreated: bean name = %s%n", beanName);
+            System.out.printf("assertBeanWasCreated: bean name = %s%n", beanName);
 
-			Set<ObjectInstance> transactions = mbs.queryMBeans(new ObjectName(beanName.toString()), null);
-			Set<ObjectInstance> participants = mbs.queryMBeans(new ObjectName(beanName.append(",puid=*").toString()), null);
-			Map<String, String> attributes;
+            Set<ObjectInstance> transactions = mbs.queryMBeans(new ObjectName(beanName.toString()), null);
+            Set<ObjectInstance> participants = mbs.queryMBeans(new ObjectName(beanName.append(",puid=*").toString()), null);
+            Map<String, String> attributes;
 
-			assertEquals(1, transactions.size());
+            assertEquals(1, transactions.size());
 
-			assertEquals(heuristicParticipantCount, participants.size());
+            assertEquals(heuristicParticipantCount, participants.size());
 
-			ObjectInstance participant = participants.iterator().next();
+            ObjectInstance participant = participants.iterator().next();
 
-			attributes = getMBeanValues(mbs, participant.getObjectName());
+            attributes = getMBeanValues(mbs, participant.getObjectName());
 
-			assertEquals("HEURISTIC", attributes.get("Status"));
+            assertEquals("HEURISTIC", attributes.get("Status"));
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail("bean was not created: " + e.getMessage());
-		} finally {
-			osb.stop();
-		}
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("bean was not created: " + e.getMessage());
+        } finally {
+            osb.stop();
+        }
     }
 
-	private Map<String, String> getMBeanValues(MBeanServerConnection cnx, ObjectName on, String ... attributeNames)
-			throws InstanceNotFoundException, IOException, ReflectionException, IntrospectionException {
+    private Map<String, String> getMBeanValues(MBeanServerConnection cnx, ObjectName on, String ... attributeNames)
+            throws InstanceNotFoundException, IOException, ReflectionException, IntrospectionException {
 
-		if (attributeNames.length == 0) {
-			MBeanInfo info = cnx.getMBeanInfo( on );
-			MBeanAttributeInfo[] attributeArray = info.getAttributes();
-			int i = 0;
-			attributeNames = new String[attributeArray.length];
+        if (attributeNames.length == 0) {
+            MBeanInfo info = cnx.getMBeanInfo( on );
+            MBeanAttributeInfo[] attributeArray = info.getAttributes();
+            int i = 0;
+            attributeNames = new String[attributeArray.length];
 
-			for (MBeanAttributeInfo ai : attributeArray)
-				attributeNames[i++] = ai.getName();
-		}
+            for (MBeanAttributeInfo ai : attributeArray)
+                attributeNames[i++] = ai.getName();
+        }
 
-		AttributeList attributes = cnx.getAttributes(on, attributeNames);
-		Map<String, String> values = new HashMap<String, String>();
+        AttributeList attributes = cnx.getAttributes(on, attributeNames);
+        Map<String, String> values = new HashMap<String, String>();
 
-		for (javax.management.Attribute attribute : attributes.asList()) {
-			Object value = attribute.getValue();
+        for (javax.management.Attribute attribute : attributes.asList()) {
+            Object value = attribute.getValue();
 
-			values.put(attribute.getName(), value == null ? "" : value.toString());
-		}
+            values.put(attribute.getName(), value == null ? "" : value.toString());
+        }
 
-		return values;
-	}
+        return values;
+    }
 
-	/**
-	 * Generate a transaction log that contains a heuristic hazard
-	 * @param txn a transaction of the desired type
-	 * @return the number of participants that that will have generated a heuristic hazard
-	 */
+    /**
+     * Generate a transaction log that contains a heuristic hazard
+     * @param txn a transaction of the desired type
+     * @return the number of participants that that will have generated a heuristic hazard
+     */
     protected int generatedHeuristicHazard(ArjunaTransactionImple txn) {
-		ThreadActionData.purgeActions();
+        ThreadActionData.purgeActions();
 
-		ExtendedCrashRecord recs[] = {
-				new ExtendedCrashRecord(ExtendedCrashRecord.CrashLocation.NoCrash, ExtendedCrashRecord.CrashType.Normal),
-				new ExtendedCrashRecord(ExtendedCrashRecord.CrashLocation.CrashInCommit, ExtendedCrashRecord.CrashType.HeuristicHazard)
-		};
+        ExtendedCrashRecord recs[] = {
+                new ExtendedCrashRecord(ExtendedCrashRecord.CrashLocation.NoCrash, ExtendedCrashRecord.CrashType.Normal),
+                new ExtendedCrashRecord(ExtendedCrashRecord.CrashLocation.CrashInCommit, ExtendedCrashRecord.CrashType.HeuristicHazard)
+        };
 
         txn.start();
 

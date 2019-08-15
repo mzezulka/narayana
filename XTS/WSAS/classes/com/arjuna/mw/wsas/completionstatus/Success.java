@@ -45,7 +45,7 @@ public class Success implements CompletionStatus
 
     public static Success instance ()
     {
-	return _instance;
+    return _instance;
     }
 
     /**
@@ -54,20 +54,20 @@ public class Success implements CompletionStatus
 
     public boolean equals (Object param)
     {
-	if (this == param)
-	    return true;
-	else
-	{
-	    if (param instanceof Success)
-		return true;
-	    else
-		return false;
-	}
+    if (this == param)
+        return true;
+    else
+    {
+        if (param instanceof Success)
+        return true;
+        else
+        return false;
+    }
     }
 
     public String toString ()
     {
-	return "CompletionStatus.Success";
+    return "CompletionStatus.Success";
     }
 
     private Success ()

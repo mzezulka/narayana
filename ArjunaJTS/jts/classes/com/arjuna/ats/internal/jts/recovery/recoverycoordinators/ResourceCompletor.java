@@ -53,32 +53,32 @@ public class ResourceCompletor extends Thread
 
     public ResourceCompletor( Resource res, int action )
     {
-	_res = res;
-	_action = action;
+    _res = res;
+    _action = action;
     }
 
     public final void run ()
     {
-	if (_action == ROLLBACK)
-	    rollback();
+    if (_action == ROLLBACK)
+        rollback();
     }
 
     private final void rollback ()
     {
-	try
-	{
-	    if (jtsLogger.logger.isDebugEnabled()) {
+    try
+    {
+        if (jtsLogger.logger.isDebugEnabled()) {
             jtsLogger.logger.debug("ResourceCompletor.rollback()");
         }
 
-	    _res.rollback();
-	}
-	catch (Exception e)
-	{
-	    if (jtsLogger.logger.isDebugEnabled()) {
+        _res.rollback();
+    }
+    catch (Exception e)
+    {
+        if (jtsLogger.logger.isDebugEnabled()) {
             jtsLogger.logger.debug("ResourceCompletor.rollback() - rollback failed: "+e);
         }
-	}
+    }
     }
 
     private Resource _res = null;

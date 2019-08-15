@@ -89,8 +89,8 @@ public class BAInteropClient {
         /*
          * we no longer have to add the JaxWS WSAddressingClientHandler because we can specify the WSAddressing feature
         List<Handler> customHandlerChain = new ArrayList<Handler>();
-		customHandlerChain.add(new WSAddressingClientHandler());
-		bindingProvider.getBinding().setHandlerChain(customHandlerChain);
+        customHandlerChain.add(new WSAddressingClientHandler());
+        bindingProvider.getBinding().setHandlerChain(customHandlerChain);
          */
         Map<String, Object> requestContext = bindingProvider.getRequestContext();
 
@@ -111,14 +111,14 @@ public class BAInteropClient {
         List<Handler> customHandlerChain = new ArrayList<Handler>();
         /*
          * we no longer have to add the JaxWS WSAddressingClientHandler because we can specify the WSAddressing feature
-		customHandlerChain.add(new WSAddressingClientHandler());
+        customHandlerChain.add(new WSAddressingClientHandler());
          */
         /*
          * we need to add the coordination context handler in the case where we are passing a
          * coordination context via a header element
          */
         customHandlerChain.add(new CoordinationContextHandler());
-		bindingProvider.getBinding().setHandlerChain(customHandlerChain);
+        bindingProvider.getBinding().setHandlerChain(customHandlerChain);
         Map<String, Object> requestContext = bindingProvider.getRequestContext();
 
         map.setAction(action);

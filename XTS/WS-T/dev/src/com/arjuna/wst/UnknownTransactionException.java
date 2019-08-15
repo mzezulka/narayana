@@ -44,12 +44,12 @@ public class UnknownTransactionException extends Exception
 
     public UnknownTransactionException ()
     {
-	super();
+    super();
     }
 
     public UnknownTransactionException (String s)
     {
-	super(s);
+    super(s);
     }
 
 }

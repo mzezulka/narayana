@@ -51,27 +51,27 @@ public class WorkerService implements Service
 {
     public WorkerService (PeriodicRecovery pr)
     {
-	_periodicRecovery = pr;
+    _periodicRecovery = pr;
     }
 
     public void doWork (InputStream is, OutputStream os) throws IOException
     {
-	BufferedReader in  = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
-	PrintWriter out = new PrintWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8));
+    BufferedReader in  = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+    PrintWriter out = new PrintWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8));
 
-	try
-	{
-	    String request = in.readLine();
+    try
+    {
+        String request = in.readLine();
 
         if (request.equals("PING"))
         {
             out.println("PONG");
         }
         else
-	    if (RecoveryDriver.isScan(request))
-	    {
-	    	boolean isAsync = RecoveryDriver.isAsyncScan(request);
-	    	boolean anyProblems = false;
+        if (RecoveryDriver.isScan(request))
+        {
+            boolean isAsync = RecoveryDriver.isAsyncScan(request);
+            boolean anyProblems = false;
 
             // hmm, we need to synchronize on the periodic recovery object in order to wake it up via notify.
             // but the periodic recovery object has to synchronize on this object and then call notify
@@ -85,65 +85,65 @@ public class WorkerService implements Service
                 }
             }
             // now we only need to hold one lock
-		_periodicRecovery.wakeUp();
+        _periodicRecovery.wakeUp();
 
             tsLogger.i18NLogger.info_recovery_WorkerService_3();
 
-		if (!isAsync)
-		{
+        if (!isAsync)
+        {
             synchronized (this) {
                 if (doWait) {
                     // ok, the periodic recovery thread cannot have finished responding to the last scan request
                     // so it is safe to wait. if we delivered the request while the last scan was still going
                     // then it will have been ignored but that is ok.
-		    try
-		    {
-			wait();
-		    }
-		    catch (Exception ex)
-		    {
+            try
+            {
+            wait();
+            }
+            catch (Exception ex)
+            {
                 tsLogger.i18NLogger.info_recovery_WorkerService_4();
-		    }
+            }
                 }
             }
-		}
+        }
 
-		if (RecoveryDriver.isVerboseScan(request)) {
-			for (final RecoveryModule recoveryModule : RecoveryManager.manager().getModules()) {
-				if (recoveryModule instanceof ExtendedRecoveryModule) {
-					if (!((ExtendedRecoveryModule) recoveryModule).isPeriodicWorkSuccessful()) {
-						anyProblems = true;
-					}
-					break;
-				}
-			}
-		}
+        if (RecoveryDriver.isVerboseScan(request)) {
+            for (final RecoveryModule recoveryModule : RecoveryManager.manager().getModules()) {
+                if (recoveryModule instanceof ExtendedRecoveryModule) {
+                    if (!((ExtendedRecoveryModule) recoveryModule).isPeriodicWorkSuccessful()) {
+                        anyProblems = true;
+                    }
+                    break;
+                }
+            }
+        }
 
-		out.println(anyProblems ? "ERROR" : "DONE");
-	    }
-	    else
-		out.println("ERROR");
+        out.println(anyProblems ? "ERROR" : "DONE");
+        }
+        else
+        out.println("ERROR");
 
         out.flush();
-	}
-	catch (IOException ex) {
+    }
+    catch (IOException ex) {
         tsLogger.i18NLogger.warn_recovery_WorkerService_2();
     }
-	catch ( Exception ex ) {
+    catch ( Exception ex ) {
         tsLogger.i18NLogger.warn_recovery_WorkerService_1(ex);
     }
     }
 
     public synchronized void notifyDone()
     {
-	try
-	{
-	    notifyAll();
+    try
+    {
+        notifyAll();
         doWait = false;
-	}
-	catch (Exception ex)
-	{
-	}
+    }
+    catch (Exception ex)
+    {
+    }
     }
 
     private PeriodicRecovery _periodicRecovery = null;

@@ -70,15 +70,15 @@ public class CadaverRecord extends PersistenceRecord
      */
 
     public CadaverRecord (OutputObjectState os, ParticipantStore participantStore,
-			  StateManager sm)
+              StateManager sm)
     {
-	super(os, participantStore, sm);
+    super(os, participantStore, sm);
 
-	newStateIsValid = ((os != null) ? true : false);
-	oldState = null;
-	oType = RecordType.NONE_RECORD;
+    newStateIsValid = ((os != null) ? true : false);
+    oldState = null;
+    oType = RecordType.NONE_RECORD;
 
-	if (tsLogger.logger.isTraceEnabled()) {
+    if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("CadaverRecord::CadaverRecord(" + os + ", " + sm.get_uid() + ")");
     }
     }
@@ -92,7 +92,7 @@ public class CadaverRecord extends PersistenceRecord
 
     public boolean propagateOnAbort ()
     {
-	return true;
+    return true;
     }
 
     /**
@@ -104,7 +104,7 @@ public class CadaverRecord extends PersistenceRecord
 
     public int typeIs ()
     {
-	return RecordType.PERSISTENCE;
+    return RecordType.PERSISTENCE;
     }
 
     /**
@@ -114,26 +114,26 @@ public class CadaverRecord extends PersistenceRecord
 
     public int nestedAbort ()
     {
-	if (tsLogger.logger.isTraceEnabled()) {
+    if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("CadaverRecord::nestedAbort() for " + order());
     }
 
-	if (oldState != null)
-	    newStateIsValid = false;
+    if (oldState != null)
+        newStateIsValid = false;
 
-	if (oType == RecordType.RECOVERY) {
+    if (oType == RecordType.RECOVERY) {
         tsLogger.i18NLogger.warn_CadaverRecord_1(order(), getTypeOfObject());
     }
 
-	/*
-	 * No need to forget the action since this object is
-	 * being deleted so it is unlikely to have modified called
-	 * on it!
-	 */
+    /*
+     * No need to forget the action since this object is
+     * being deleted so it is unlikely to have modified called
+     * on it!
+     */
 
-	//	super.forgetAction(false);
+    //    super.forgetAction(false);
 
-	return TwoPhaseOutcome.FINISH_OK;
+    return TwoPhaseOutcome.FINISH_OK;
     }
 
     /**
@@ -147,14 +147,14 @@ public class CadaverRecord extends PersistenceRecord
 
     public int nestedPrepare ()
     {
-	if (tsLogger.logger.isTraceEnabled()) {
+    if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("CadaverRecord::nestedPrepare() for " + order());
     }
 
-	if (newStateIsValid)
-	    return super.nestedPrepare();
-	else
-	    return TwoPhaseOutcome.PREPARE_NOTOK;
+    if (newStateIsValid)
+        return super.nestedPrepare();
+    else
+        return TwoPhaseOutcome.PREPARE_NOTOK;
     }
 
     /**
@@ -163,19 +163,19 @@ public class CadaverRecord extends PersistenceRecord
 
     public int topLevelAbort ()
     {
-	if (tsLogger.logger.isTraceEnabled()) {
+    if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("CadaverRecord::topLevelAbort() for " + order());
     }
 
-	newStateIsValid = false;
+    newStateIsValid = false;
 
-	if (oType == RecordType.RECOVERY) {
+    if (oType == RecordType.RECOVERY) {
         tsLogger.i18NLogger.warn_CadaverRecord_1(order(), getTypeOfObject());
     }
 
-	// super.forgetAction(false);
+    // super.forgetAction(false);
 
-	return TwoPhaseOutcome.FINISH_OK;
+    return TwoPhaseOutcome.FINISH_OK;
     }
 
     /**
@@ -187,31 +187,31 @@ public class CadaverRecord extends PersistenceRecord
 
     public int topLevelCommit ()
     {
-	if (tsLogger.logger.isTraceEnabled()) {
+    if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("CadaverRecord::topLevelCommit() for " + order());
     }
 
-	boolean res = true;
-	OutputObjectState oState = super.state;
+    boolean res = true;
+    OutputObjectState oState = super.state;
 
-	if ((oState != null) && (oType == RecordType.PERSISTENCE))
-	{
-	    if (targetParticipantStore == null)
-		return TwoPhaseOutcome.FINISH_ERROR;
+    if ((oState != null) && (oType == RecordType.PERSISTENCE))
+    {
+        if (targetParticipantStore == null)
+        return TwoPhaseOutcome.FINISH_ERROR;
 
-	    try
-	    {
-		res = targetParticipantStore.commit_state(oState.stateUid(), oState.type());
-	    }
-	    catch (ObjectStoreException e)
-	    {
-		res = false;
-	    }
-	}
+        try
+        {
+        res = targetParticipantStore.commit_state(oState.stateUid(), oState.type());
+        }
+        catch (ObjectStoreException e)
+        {
+        res = false;
+        }
+    }
 
-	// super.forgetAction(false);
+    // super.forgetAction(false);
 
-	return ((res) ? TwoPhaseOutcome.FINISH_OK : TwoPhaseOutcome.FINISH_ERROR);
+    return ((res) ? TwoPhaseOutcome.FINISH_OK : TwoPhaseOutcome.FINISH_ERROR);
     }
 
     /**
@@ -222,38 +222,38 @@ public class CadaverRecord extends PersistenceRecord
 
     public int topLevelPrepare ()
     {
-	if (tsLogger.logger.isTraceEnabled()) {
+    if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("CadaverRecord::topLevelPrepare() for " + order());
     }
 
-	int tlpOk = TwoPhaseOutcome.PREPARE_NOTOK;
-	OutputObjectState oState = (newStateIsValid ? super.state : oldState);
+    int tlpOk = TwoPhaseOutcome.PREPARE_NOTOK;
+    OutputObjectState oState = (newStateIsValid ? super.state : oldState);
 
-	if (oState != null)
-	{
-	    if (oType == RecordType.PERSISTENCE)
-	    {
-		if (targetParticipantStore == null)
-		    return TwoPhaseOutcome.PREPARE_NOTOK;
+    if (oState != null)
+    {
+        if (oType == RecordType.PERSISTENCE)
+        {
+        if (targetParticipantStore == null)
+            return TwoPhaseOutcome.PREPARE_NOTOK;
 
-		try
-		{
-		    if (targetParticipantStore.write_uncommitted(oState.stateUid(), oState.type(), oState))
-		    {
-			if (shadowForced())
-			    tlpOk = TwoPhaseOutcome.PREPARE_OK;
-		    }
-		}
-		catch (final ObjectStoreException e)
-		{
-		    e.printStackTrace();
-		}
-	    }
-	    else
-		tlpOk = TwoPhaseOutcome.PREPARE_OK;
-	}
+        try
+        {
+            if (targetParticipantStore.write_uncommitted(oState.stateUid(), oState.type(), oState))
+            {
+            if (shadowForced())
+                tlpOk = TwoPhaseOutcome.PREPARE_OK;
+            }
+        }
+        catch (final ObjectStoreException e)
+        {
+            e.printStackTrace();
+        }
+        }
+        else
+        tlpOk = TwoPhaseOutcome.PREPARE_OK;
+    }
 
-	return tlpOk;
+    return tlpOk;
     }
 
     /**
@@ -265,8 +265,8 @@ public class CadaverRecord extends PersistenceRecord
 
     public void print (PrintWriter strm)
     {
-	strm.println("Cadaver for:");
-	super.print(strm);
+    strm.println("Cadaver for:");
+    super.print(strm);
     }
 
     /**
@@ -276,7 +276,7 @@ public class CadaverRecord extends PersistenceRecord
 
     public String type()
     {
-	return "/StateManager/AbstractRecord/RecoveryRecord/PersistenceRecord/CadaverRecord";
+    return "/StateManager/AbstractRecord/RecoveryRecord/PersistenceRecord/CadaverRecord";
     }
 
     /**
@@ -289,10 +289,10 @@ public class CadaverRecord extends PersistenceRecord
 
     public boolean doSave ()
     {
-	if (oType == RecordType.PERSISTENCE)
-	    return true;
-	else
-	    return false;
+    if (oType == RecordType.PERSISTENCE)
+        return true;
+    else
+        return false;
     }
 
     /**
@@ -307,29 +307,29 @@ public class CadaverRecord extends PersistenceRecord
 
     public void merge (AbstractRecord mergewith)
     {
-	/*
-	 *  Following assumes that value returns a pointer to the
-	 *  old state maintained in the PersistenceRecord (as an ObjectState).
-	 *  Here we create a copy of that state allowing the original
-	 *  to be deleted
-	 */
+    /*
+     *  Following assumes that value returns a pointer to the
+     *  old state maintained in the PersistenceRecord (as an ObjectState).
+     *  Here we create a copy of that state allowing the original
+     *  to be deleted
+     */
 
-	oType = mergewith.typeIs();
+    oType = mergewith.typeIs();
 
-	if (oldState != null)
-	{
-	    if (newStateIsValid)
-	    {
-		oldState = null;
-	    }
-	    else
-	    {
-		setValue(oldState);
-		newStateIsValid = true;
-	    }
-	}
+    if (oldState != null)
+    {
+        if (newStateIsValid)
+        {
+        oldState = null;
+        }
+        else
+        {
+        setValue(oldState);
+        newStateIsValid = true;
+        }
+    }
 
-	oldState = new OutputObjectState((OutputObjectState)(mergewith.value()));
+    oldState = new OutputObjectState((OutputObjectState)(mergewith.value()));
     }
 
     /**
@@ -345,10 +345,10 @@ public class CadaverRecord extends PersistenceRecord
 
     public boolean shouldMerge (AbstractRecord ar)
     {
-	return (((order().equals(ar.order())) &&
-		 ((ar.typeIs() == RecordType.PERSISTENCE) ||
-		  (ar.typeIs() == RecordType.RECOVERY)))
-		? true : false);
+    return (((order().equals(ar.order())) &&
+         ((ar.typeIs() == RecordType.PERSISTENCE) ||
+          (ar.typeIs() == RecordType.RECOVERY)))
+        ? true : false);
     }
 
     /**
@@ -365,10 +365,10 @@ public class CadaverRecord extends PersistenceRecord
 
     public boolean shouldReplace (AbstractRecord ar)
     {
-	return (((order().equals(ar.order())) &&
-		 ((ar.typeIs() == RecordType.PERSISTENCE) ||
-		  (ar.typeIs() == RecordType.RECOVERY)))
-		? true : false);
+    return (((order().equals(ar.order())) &&
+         ((ar.typeIs() == RecordType.PERSISTENCE) ||
+          (ar.typeIs() == RecordType.RECOVERY)))
+        ? true : false);
     }
 
     /**
@@ -378,14 +378,14 @@ public class CadaverRecord extends PersistenceRecord
 
     public CadaverRecord ()
     {
-	super();
+    super();
 
-	newStateIsValid = false;
-	oldState = null;
-	oType = RecordType.NONE_RECORD;
-	targetParticipantStore = null;
+    newStateIsValid = false;
+    oldState = null;
+    oType = RecordType.NONE_RECORD;
+    targetParticipantStore = null;
 
-	if (tsLogger.logger.isTraceEnabled()) {
+    if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("CadaverRecord::CadaverRecord ()");
     }
     }

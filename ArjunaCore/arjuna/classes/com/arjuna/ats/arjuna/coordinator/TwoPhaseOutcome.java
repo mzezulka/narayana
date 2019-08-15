@@ -74,17 +74,17 @@ public class TwoPhaseOutcome
 
     public TwoPhaseOutcome (int outcome)
     {
-	_outcome = outcome;
+    _outcome = outcome;
     }
 
     public void setOutcome (int outcome)
     {
-	_outcome = outcome;
+    _outcome = outcome;
     }
 
     public int getOutcome ()
     {
-	return _outcome;
+    return _outcome;
     }
 
     /**
@@ -93,43 +93,43 @@ public class TwoPhaseOutcome
 
     public static String stringForm (int res)
     {
-	switch (res)
-	{
-	case PREPARE_OK:
-	    return "TwoPhaseOutcome.PREPARE_OK";
-	case PREPARE_NOTOK:
-	    return "TwoPhaseOutcome.PREPARE_NOTOK";
-	case PREPARE_READONLY:
-	    return "TwoPhaseOutcome.PREPARE_READONLY";
-	case HEURISTIC_ROLLBACK:
-	    return "TwoPhaseOutcome.HEURISTIC_ROLLBACK";
-	case HEURISTIC_COMMIT:
-	    return "TwoPhaseOutcome.HEURISTIC_COMMIT";
-	case HEURISTIC_MIXED:
-	    return "TwoPhaseOutcome.HEURISTIC_MIXED";
-	case HEURISTIC_HAZARD:
-	    return "TwoPhaseOutcome.HEURISTIC_HAZARD";
-	case FINISH_OK:
-	    return "TwoPhaseOutcome.FINISH_OK";
-	case FINISH_ERROR:
-	    return "TwoPhaseOutcome.FINISH_ERROR";
-	case NOT_PREPARED:
-	    return "TwoPhaseOutcome.NOT_PREPARED";
-	case ONE_PHASE_ERROR:
-	    return "TwoPhaseOutcome.ONE_PHASE_ERROR";
-	case INVALID_TRANSACTION:
-	    return "TwoPhaseOutcome.INVALID_TRANSACTION";
-	case PREPARE_ONE_PHASE_COMMITTED:
-	    return "TwoPhaseOutcome.PREPARE_ONE_PHASE_COMMITTED";
-	default:
-	    return "Unknown";
-	}
+    switch (res)
+    {
+    case PREPARE_OK:
+        return "TwoPhaseOutcome.PREPARE_OK";
+    case PREPARE_NOTOK:
+        return "TwoPhaseOutcome.PREPARE_NOTOK";
+    case PREPARE_READONLY:
+        return "TwoPhaseOutcome.PREPARE_READONLY";
+    case HEURISTIC_ROLLBACK:
+        return "TwoPhaseOutcome.HEURISTIC_ROLLBACK";
+    case HEURISTIC_COMMIT:
+        return "TwoPhaseOutcome.HEURISTIC_COMMIT";
+    case HEURISTIC_MIXED:
+        return "TwoPhaseOutcome.HEURISTIC_MIXED";
+    case HEURISTIC_HAZARD:
+        return "TwoPhaseOutcome.HEURISTIC_HAZARD";
+    case FINISH_OK:
+        return "TwoPhaseOutcome.FINISH_OK";
+    case FINISH_ERROR:
+        return "TwoPhaseOutcome.FINISH_ERROR";
+    case NOT_PREPARED:
+        return "TwoPhaseOutcome.NOT_PREPARED";
+    case ONE_PHASE_ERROR:
+        return "TwoPhaseOutcome.ONE_PHASE_ERROR";
+    case INVALID_TRANSACTION:
+        return "TwoPhaseOutcome.INVALID_TRANSACTION";
+    case PREPARE_ONE_PHASE_COMMITTED:
+        return "TwoPhaseOutcome.PREPARE_ONE_PHASE_COMMITTED";
+    default:
+        return "Unknown";
+    }
     }
 
     public static void print (PrintWriter strm, int res)
     {
-	strm.print(TwoPhaseOutcome.stringForm(res));
-	strm.flush();
+    strm.print(TwoPhaseOutcome.stringForm(res));
+    strm.flush();
     }
 
     private int _outcome;

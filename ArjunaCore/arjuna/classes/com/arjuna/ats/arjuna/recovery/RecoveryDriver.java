@@ -60,19 +60,19 @@ public class RecoveryDriver
 
     public RecoveryDriver (int port)
     {
-	this(port, null, DEFAULT_SO_TIMEOUT);
+    this(port, null, DEFAULT_SO_TIMEOUT);
     }
 
     public RecoveryDriver (int port, String hostName)
     {
-	this(port, hostName, DEFAULT_SO_TIMEOUT);
+    this(port, hostName, DEFAULT_SO_TIMEOUT);
     }
 
     public RecoveryDriver (int port, String hostName, int timeout)
     {
-	_port = port;
-	_hostName = hostName;
-	_timeout = timeout;
+    _port = port;
+    _hostName = hostName;
+    _timeout = timeout;
     }
 
     public static boolean isScan(String request) {
@@ -89,7 +89,7 @@ public class RecoveryDriver
 
     public final boolean synchronousScan () throws java.net.UnknownHostException, java.net.SocketException, java.io.IOException
     {
-	return synchronousScan(DEFAULT_SYNC_TIMEOUT, DEFAULT_SYNC_RETRY);
+    return synchronousScan(DEFAULT_SYNC_TIMEOUT, DEFAULT_SYNC_RETRY);
     }
 
     public final boolean synchronousScan (int timeout, int retry) throws java.net.UnknownHostException, java.net.SocketException, java.io.IOException
@@ -103,7 +103,7 @@ public class RecoveryDriver
          * For async the timeout is the socket timeout and number of attempts on call is 1.
          */
 
-	return scan(ASYNC_SCAN, _timeout, 1);
+    return scan(ASYNC_SCAN, _timeout, 1);
     }
 
     /*
@@ -112,46 +112,46 @@ public class RecoveryDriver
 
     private final boolean scan (String scanType, int timeout, int retry) throws java.net.UnknownHostException, java.net.SocketException, java.io.IOException
     {
-	if (_hostName == null)
-	    _hostName = InetAddress.getLocalHost().getHostName();
+    if (_hostName == null)
+        _hostName = InetAddress.getLocalHost().getHostName();
 
         boolean success = false;
         Socket connectorSocket = null;
 
-	for (int i = 0; i < retry && !success; i++)
-	{
-	    connectorSocket = new Socket(_hostName, _port);
+    for (int i = 0; i < retry && !success; i++)
+    {
+        connectorSocket = new Socket(_hostName, _port);
 
             connectorSocket.setSoTimeout(timeout);
 
-	    try
-	    {
-	        // streams to and from the RecoveryManager
+        try
+        {
+            // streams to and from the RecoveryManager
 
-	        BufferedReader fromServer = new BufferedReader(new InputStreamReader(connectorSocket.getInputStream(), StandardCharsets.UTF_8)) ;
+            BufferedReader fromServer = new BufferedReader(new InputStreamReader(connectorSocket.getInputStream(), StandardCharsets.UTF_8)) ;
 
-	        PrintWriter toServer = new PrintWriter(new OutputStreamWriter(connectorSocket.getOutputStream(), StandardCharsets.UTF_8));
+            PrintWriter toServer = new PrintWriter(new OutputStreamWriter(connectorSocket.getOutputStream(), StandardCharsets.UTF_8));
 
-	        toServer.println(scanType);
+            toServer.println(scanType);
 
-	        toServer.flush() ;
+            toServer.flush() ;
 
-	        String response = fromServer.readLine();
+            String response = fromServer.readLine();
 
-	        if (response.equals("DONE"))
-	            success = true;
-	    }
-	    catch (final SocketTimeoutException ex)
-	    {
-	    }
-	    finally
-	    {
-	        if (connectorSocket != null)
-	            connectorSocket.close() ;
-	    }
-	}
+            if (response.equals("DONE"))
+                success = true;
+        }
+        catch (final SocketTimeoutException ex)
+        {
+        }
+        finally
+        {
+            if (connectorSocket != null)
+                connectorSocket.close() ;
+        }
+    }
 
-	return success;
+    return success;
     }
 
     private String _hostName = null;

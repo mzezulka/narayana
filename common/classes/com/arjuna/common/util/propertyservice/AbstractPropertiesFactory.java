@@ -85,7 +85,7 @@ public abstract class AbstractPropertiesFactory {
             // in cases where the .jar comes before the etc dir on the classpath.
             URL url = AbstractPropertiesFactory.class.getResource("/default-"+propertyFileName);
             if(url == null) {
-            	commonLogger.i18NLogger.warn_could_not_find_config_file(url);
+                commonLogger.i18NLogger.warn_could_not_find_config_file(url);
             } else {
                 propertiesSourceUri = url.toString();
             }
@@ -98,9 +98,9 @@ public abstract class AbstractPropertiesFactory {
         Properties properties = null;
 
         try {
-        	if (propertiesSourceUri != null) {
-        		properties = loadFromFile(propertiesSourceUri);
-        	}
+            if (propertiesSourceUri != null) {
+                properties = loadFromFile(propertiesSourceUri);
+            }
             properties = applySystemProperties(properties);
 
         } catch(Exception e) {

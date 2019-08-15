@@ -611,18 +611,18 @@ public class CoordinatorEnvironmentBean implements CoordinatorEnvironmentBeanMBe
     {
         synchronized(this)
         {
-        	if (checkedActionFactoryClassName == null || allowCheckedActionFactoryOverride)
-        	{
-	            if(checkedActionFactoryClassName == null)
-	            {
-	                this.checkedActionFactory = null;
-	            }
-	            else if(!checkedActionFactoryClassName.equals(this.checkedActionFactoryClassName))
-	            {
-	            	this.checkedActionFactory = null;
-	            }
-	            this.checkedActionFactoryClassName = checkedActionFactoryClassName;
-        	}
+            if (checkedActionFactoryClassName == null || allowCheckedActionFactoryOverride)
+            {
+                if(checkedActionFactoryClassName == null)
+                {
+                    this.checkedActionFactory = null;
+                }
+                else if(!checkedActionFactoryClassName.equals(this.checkedActionFactoryClassName))
+                {
+                    this.checkedActionFactory = null;
+                }
+                this.checkedActionFactoryClassName = checkedActionFactoryClassName;
+            }
         }
     }
 
@@ -658,21 +658,21 @@ public class CoordinatorEnvironmentBean implements CoordinatorEnvironmentBeanMBe
     {
         synchronized(this)
         {
-        	if (checkedActionFactoryClassName == null || allowCheckedActionFactoryOverride)
-        	{
-	            CheckedActionFactory oldInstance = this.checkedActionFactory;
-	            checkedActionFactory = instance;
+            if (checkedActionFactoryClassName == null || allowCheckedActionFactoryOverride)
+            {
+                CheckedActionFactory oldInstance = this.checkedActionFactory;
+                checkedActionFactory = instance;
 
-	            if(instance == null)
-	            {
-	                this.checkedActionFactoryClassName = null;
-	            }
-	            else if(instance != oldInstance)
-	            {
-	                String name = ClassloadingUtility.getNameForClass(instance);
-	                this.checkedActionFactoryClassName = name;
-	            }
-        	}
+                if(instance == null)
+                {
+                    this.checkedActionFactoryClassName = null;
+                }
+                else if(instance != oldInstance)
+                {
+                    String name = ClassloadingUtility.getNameForClass(instance);
+                    this.checkedActionFactoryClassName = name;
+                }
+            }
         }
     }
 
@@ -814,8 +814,8 @@ public class CoordinatorEnvironmentBean implements CoordinatorEnvironmentBeanMBe
      * @return true if checked action factory can be overriden, false otherwise.
      */
     public boolean isAllowCheckedActionFactoryOverride() {
-		return allowCheckedActionFactoryOverride;
-	}
+        return allowCheckedActionFactoryOverride;
+    }
 
     /**
      * Can be enabled to allow the checked action factory to be overridden at runtime
@@ -823,8 +823,8 @@ public class CoordinatorEnvironmentBean implements CoordinatorEnvironmentBeanMBe
      * @param allowCheckedActionFactoryOverride Allow the checked action factory to be overriden
      */
     public void setAllowCheckedActionFactoryOverride(
-			boolean allowCheckedActionFactoryOverride) {
-		this.allowCheckedActionFactoryOverride = allowCheckedActionFactoryOverride;
-	}
+            boolean allowCheckedActionFactoryOverride) {
+        this.allowCheckedActionFactoryOverride = allowCheckedActionFactoryOverride;
+    }
 
 }

@@ -51,78 +51,78 @@ public class DummyXA implements XAResource, Serializable
 
     public DummyXA (boolean print)
     {
-	_timeout = 0;  // no timeout
-	_print = print;
+    _timeout = 0;  // no timeout
+    _print = print;
     }
 
     public void commit (Xid xid, boolean onePhase) throws XAException
     {
-	if (_print)
-	    System.out.println("DummyXA.commit called");
+    if (_print)
+        System.out.println("DummyXA.commit called");
     }
 
     public void end (Xid xid, int flags) throws XAException
     {
-	if (_print)
-	    System.out.println("DummyXA.end called");
+    if (_print)
+        System.out.println("DummyXA.end called");
     }
 
     public void forget (Xid xid) throws XAException
     {
-	if (_print)
-	    System.out.println("DummyXA.forget called");
+    if (_print)
+        System.out.println("DummyXA.forget called");
     }
 
     public int getTransactionTimeout () throws XAException
     {
-	if (_print)
-	    System.out.println("DummyXA.getTransactionTimeout called");
+    if (_print)
+        System.out.println("DummyXA.getTransactionTimeout called");
 
-	return _timeout;
+    return _timeout;
     }
 
     public int prepare (Xid xid) throws XAException
     {
-	if (_print)
-	    System.out.println("DummyXA.prepare called");
+    if (_print)
+        System.out.println("DummyXA.prepare called");
 
-	return XAResource.XA_OK;
+    return XAResource.XA_OK;
     }
 
     public Xid[] recover (int flag) throws XAException
     {
-	if (_print)
-	    System.out.println("DummyXA.recover called");
+    if (_print)
+        System.out.println("DummyXA.recover called");
 
-	return null;
+    return null;
     }
 
     public void rollback (Xid xid) throws XAException
     {
-	if (_print)
-	    System.out.println("DummyXA.rollback called");
+    if (_print)
+        System.out.println("DummyXA.rollback called");
     }
 
     public boolean setTransactionTimeout (int seconds) throws XAException
     {
-	if (_print)
-	    System.out.println("DummyXA.setTransactionTimeout called");
+    if (_print)
+        System.out.println("DummyXA.setTransactionTimeout called");
 
-	_timeout = seconds;
+    _timeout = seconds;
 
-	return true;
+    return true;
     }
 
     public void start (Xid xid, int flags) throws XAException
     {
-	if (_print)
-	    System.out.println("DummyXA.start called");
+    if (_print)
+        System.out.println("DummyXA.start called");
     }
 
     public boolean isSameRM (XAResource xares) throws XAException
    {
        if (_print)
-	   System.out.println("DummyXA.isSameRM called");
+       System.out.println("DummyXA.isSameRM called");
 
        return (xares == this);
    }

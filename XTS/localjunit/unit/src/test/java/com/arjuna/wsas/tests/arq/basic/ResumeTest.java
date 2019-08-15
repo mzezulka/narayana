@@ -18,58 +18,58 @@ import com.arjuna.wsas.tests.arq.WarDeployment;
 @RunWith(Arquillian.class)
 public class ResumeTest {
 
-	@Deployment
-	public static WebArchive createDeployment() {
-		return WarDeployment.getDeployment(
-				WSASTestUtils.class);
-	}
+    @Deployment
+    public static WebArchive createDeployment() {
+        return WarDeployment.getDeployment(
+                WSASTestUtils.class);
+    }
 
-	@Test
-	 public void testResume()
-	            throws Exception
-	    {
-	        UserActivity ua = UserActivityFactory.userActivity();
+    @Test
+     public void testResume()
+                throws Exception
+        {
+            UserActivity ua = UserActivityFactory.userActivity();
 
-	    try
-	    {
-	        GlobalId ac1 = null;
-	        GlobalId ac2 = null;
+        try
+        {
+            GlobalId ac1 = null;
+            GlobalId ac2 = null;
 
-	        ua.start("dummy");
+            ua.start("dummy");
 
-	        ac1 = ua.activityId();
+            ac1 = ua.activityId();
 
-	        System.out.println("Started: "+ac1);
+            System.out.println("Started: "+ac1);
 
-	        ua.start("dummy");
+            ua.start("dummy");
 
-	        ac2 = ua.activityId();
+            ac2 = ua.activityId();
 
-	        System.out.println("\nStarted: "+ac2);
+            System.out.println("\nStarted: "+ac2);
 
-	        ActivityHierarchy ctx = ua.suspend();
+            ActivityHierarchy ctx = ua.suspend();
 
-	        System.out.println("\nSuspended: "+ctx);
+            System.out.println("\nSuspended: "+ctx);
 
-	        if (ua.currentActivity() != null) {
-	            fail("Current activity shoudl be null " + ua.currentActivity());
-	        }
+            if (ua.currentActivity() != null) {
+                fail("Current activity shoudl be null " + ua.currentActivity());
+            }
 
-	        ua.resume(ctx);
+            ua.resume(ctx);
 
-	        if (!ac2.equals(ua.activityId()))
-	        {
-	            fail("Current activity id " + ua.activityId() + " should equal " + ac2);
-	        }
+            if (!ac2.equals(ua.activityId()))
+            {
+                fail("Current activity id " + ua.activityId() + " should equal " + ac2);
+            }
 
-	        ua.end();
+            ua.end();
 
-	        if (!ac1.equals(ua.activityId())) {
-	            fail("Current activity id " + ua.activityId() + " should equal " + ac1);
-	        }
-	    } finally {
-	        WSASTestUtils.cleanup(ua);
-	    }
-	    }
+            if (!ac1.equals(ua.activityId())) {
+                fail("Current activity id " + ua.activityId() + " should equal " + ac1);
+            }
+        } finally {
+            WSASTestUtils.cleanup(ua);
+        }
+        }
 
 }

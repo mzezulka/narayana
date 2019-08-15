@@ -17,12 +17,12 @@ import com.arjuna.wscf.tests.WarDeployment;
 @RunWith(Arquillian.class)
 public class SuspendResumeTest {
 
-	@Deployment
-	public static WebArchive createDeployment() {
-		return WarDeployment.getDeployment();
-	}
+    @Deployment
+    public static WebArchive createDeployment() {
+        return WarDeployment.getDeployment();
+    }
 
-	@Test
+    @Test
     public void testSuspendResume()
             throws Exception
     {

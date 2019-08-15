@@ -94,33 +94,33 @@ public class JTAEnvironmentBean implements JTAEnvironmentBeanMBean
     private volatile String xaResourceRecordWrappingPluginClassName;
     private volatile XAResourceRecordWrappingPlugin xaResourceRecordWrappingPlugin;
 
-	private int asyncCommitPoolSize = 10;
+    private int asyncCommitPoolSize = 10;
 
     private int orphanSafetyInterval = 20000;
 
     private String commitMarkableResourceTableName = "xids";
 
-	private Map<String, String> commitMarkableResourceTableNameMap = new HashMap<String, String>();
+    private Map<String, String> commitMarkableResourceTableNameMap = new HashMap<String, String>();
 
-	private List<String> commitMarkableResourceJNDINames = new ArrayList<String>();
+    private List<String> commitMarkableResourceJNDINames = new ArrayList<String>();
 
-	private boolean performImmediateCleanupOfCommitMarkableResourceBranches = false;
+    private boolean performImmediateCleanupOfCommitMarkableResourceBranches = false;
 
-	private boolean notifyCommitMarkableResourceRecoveryModuleOfCompleteBranches = true;
+    private boolean notifyCommitMarkableResourceRecoveryModuleOfCompleteBranches = true;
 
-	private int commitMarkableResourceRecordDeleteBatchSize = 30000;
+    private int commitMarkableResourceRecordDeleteBatchSize = 30000;
 
-	private Map<String, Boolean> performImmediateCleanupOfCommitMarkableResourceBranchesMap = new HashMap<String, Boolean>();
+    private Map<String, Boolean> performImmediateCleanupOfCommitMarkableResourceBranchesMap = new HashMap<String, Boolean>();
 
-	private Map<String, Integer> commitMarkableResourceRecordDeleteBatchSizeMap = new HashMap<String, Integer>();
+    private Map<String, Integer> commitMarkableResourceRecordDeleteBatchSizeMap = new HashMap<String, Integer>();
 
-	private static final String defaultTransactionOperationsProviderClassName = ServerVMClientUserTransactionOperationsProvider.class.getName();
-	private volatile String userTransactionOperationsProviderClassName = defaultTransactionOperationsProviderClassName;
-	private volatile UserTransactionOperationsProvider userTransactionOperationsProvider = null;
+    private static final String defaultTransactionOperationsProviderClassName = ServerVMClientUserTransactionOperationsProvider.class.getName();
+    private volatile String userTransactionOperationsProviderClassName = defaultTransactionOperationsProviderClassName;
+    private volatile UserTransactionOperationsProvider userTransactionOperationsProvider = null;
 
-	private boolean strictJTA12DuplicateXAENDPROTOErr = false;
+    private boolean strictJTA12DuplicateXAENDPROTOErr = false;
 
-	/**
+    /**
      * Returns true if subtransactions are allowed.
      * Warning: subtransactions are not JTA spec compliant and most XA resource managers don't understand them.
      *
@@ -989,9 +989,9 @@ public class JTAEnvironmentBean implements JTAEnvironmentBeanMBean
      *
      * @return maximum size of a thread pool, used to execute asynchronous commits.
      */
-	public int getAsyncCommitPoolSize() {
-		return asyncCommitPoolSize;
-	}
+    public int getAsyncCommitPoolSize() {
+        return asyncCommitPoolSize;
+    }
 
     /**
      * Sets maximum size of a thread pool, used to execute asynchronous commits.
@@ -999,8 +999,8 @@ public class JTAEnvironmentBean implements JTAEnvironmentBeanMBean
      * @param asyncCommitPoolSize maximum size of a thread pool, used to execute asynchronous commits.
      */
     public void setAsyncCommitPoolSize(int asyncCommitPoolSize) {
-		this.asyncCommitPoolSize = asyncCommitPoolSize;
-	}
+        this.asyncCommitPoolSize = asyncCommitPoolSize;
+    }
 
     public int getOrphanSafetyInterval() {
         return orphanSafetyInterval;
@@ -1020,226 +1020,226 @@ public class JTAEnvironmentBean implements JTAEnvironmentBeanMBean
         this.orphanSafetyInterval = orphanSafetyInterval;
     }
 
-	/**
-	 * Get the name of the table to use for storing commit markable resources
-	 * commit state notifiers in.
-	 *
-	 * @return the default table name
-	 */
-	public String getDefaultCommitMarkableTableName() {
-		return commitMarkableResourceTableName;
-	}
+    /**
+     * Get the name of the table to use for storing commit markable resources
+     * commit state notifiers in.
+     *
+     * @return the default table name
+     */
+    public String getDefaultCommitMarkableTableName() {
+        return commitMarkableResourceTableName;
+    }
 
-	/**
-	 * Set the name of the table to use for storing commit markable resources
-	 * commit state notifiers in.
-	 *
-	 * @param commitMarkableResourceTableName
-	 *            The name of the table.
-	 *
-	 */
-	public void setDefaultCommitMarkableResourceTableName(
-			String commitMarkableResourceTableName) {
-		this.commitMarkableResourceTableName = commitMarkableResourceTableName;
-	}
+    /**
+     * Set the name of the table to use for storing commit markable resources
+     * commit state notifiers in.
+     *
+     * @param commitMarkableResourceTableName
+     *            The name of the table.
+     *
+     */
+    public void setDefaultCommitMarkableResourceTableName(
+            String commitMarkableResourceTableName) {
+        this.commitMarkableResourceTableName = commitMarkableResourceTableName;
+    }
 
-	/**
-	 * Get the name of the table to use for storing commit markable resources
-	 * commit state notifiers in.
-	 *
-	 * @return the table name map
-	 */
-	public Map<String, String> getCommitMarkableResourceTableNameMap() {
-		synchronized (this) {
-			return commitMarkableResourceTableNameMap;
-		}
-	}
+    /**
+     * Get the name of the table to use for storing commit markable resources
+     * commit state notifiers in.
+     *
+     * @return the table name map
+     */
+    public Map<String, String> getCommitMarkableResourceTableNameMap() {
+        synchronized (this) {
+            return commitMarkableResourceTableNameMap;
+        }
+    }
 
-	/**
-	 * Set the name of the table to use for storing commit markable resources
-	 * commit state notifiers in.
-	 *
-	 * @param commitMarkableResourceTableNameMap
-	 *            The name of the table.
-	 *
-	 */
-	public void setCommitMarkableResourceTableNameMap(
-			Map<String, String> commitMarkableResourceTableNameMap) {
-		synchronized (this) {
-			if (commitMarkableResourceTableNameMap == null) {
-				this.commitMarkableResourceTableNameMap = new HashMap<String, String>();
-			} else if (!commitMarkableResourceTableNameMap
-					.equals(this.commitMarkableResourceTableNameMap)) {
-				this.commitMarkableResourceTableNameMap = new HashMap<String, String>(
-						commitMarkableResourceTableNameMap);
-			}
-		}
-	}
+    /**
+     * Set the name of the table to use for storing commit markable resources
+     * commit state notifiers in.
+     *
+     * @param commitMarkableResourceTableNameMap
+     *            The name of the table.
+     *
+     */
+    public void setCommitMarkableResourceTableNameMap(
+            Map<String, String> commitMarkableResourceTableNameMap) {
+        synchronized (this) {
+            if (commitMarkableResourceTableNameMap == null) {
+                this.commitMarkableResourceTableNameMap = new HashMap<String, String>();
+            } else if (!commitMarkableResourceTableNameMap
+                    .equals(this.commitMarkableResourceTableNameMap)) {
+                this.commitMarkableResourceTableNameMap = new HashMap<String, String>(
+                        commitMarkableResourceTableNameMap);
+            }
+        }
+    }
 
-	/**
-	 * Retrieve the list of JNDI names that will be queried for committed 1PC
-	 * resources that were enlisted in 2PC transactions.
-	 *
-	 * @return The list of JNDI names
-	 */
-	public List<String> getCommitMarkableResourceJNDINames() {
-		synchronized (this) {
-			return new ArrayList<String>(commitMarkableResourceJNDINames);
-		}
-	}
+    /**
+     * Retrieve the list of JNDI names that will be queried for committed 1PC
+     * resources that were enlisted in 2PC transactions.
+     *
+     * @return The list of JNDI names
+     */
+    public List<String> getCommitMarkableResourceJNDINames() {
+        synchronized (this) {
+            return new ArrayList<String>(commitMarkableResourceJNDINames);
+        }
+    }
 
-	/**
-	 * Set the list of JNDI names to apply a special LastResource algorithm that
-	 * allows us to store data about the transaction in the resource manager to
-	 * determine the outcome of the resource after crash/
-	 *
-	 * If you change the list of jndinames you _can't_ change the JNDI name of
-	 * the connections until they have been recovered.
-	 *
-	 * @param commitMarkableResourceJNDINames
-	 *            The list of JNDI names
-	 */
-	public void setCommitMarkableResourceJNDINames(
-			List<String> commitMarkableResourceJNDINames) {
-		synchronized (this) {
-			if (commitMarkableResourceJNDINames == null) {
-				this.commitMarkableResourceJNDINames = new ArrayList<String>();
-			} else if (!commitMarkableResourceJNDINames
-					.equals(this.commitMarkableResourceJNDINames)) {
-				this.commitMarkableResourceJNDINames = new ArrayList<String>(
-						commitMarkableResourceJNDINames);
-			}
-		}
-	}
+    /**
+     * Set the list of JNDI names to apply a special LastResource algorithm that
+     * allows us to store data about the transaction in the resource manager to
+     * determine the outcome of the resource after crash/
+     *
+     * If you change the list of jndinames you _can't_ change the JNDI name of
+     * the connections until they have been recovered.
+     *
+     * @param commitMarkableResourceJNDINames
+     *            The list of JNDI names
+     */
+    public void setCommitMarkableResourceJNDINames(
+            List<String> commitMarkableResourceJNDINames) {
+        synchronized (this) {
+            if (commitMarkableResourceJNDINames == null) {
+                this.commitMarkableResourceJNDINames = new ArrayList<String>();
+            } else if (!commitMarkableResourceJNDINames
+                    .equals(this.commitMarkableResourceJNDINames)) {
+                this.commitMarkableResourceJNDINames = new ArrayList<String>(
+                        commitMarkableResourceJNDINames);
+            }
+        }
+    }
 
-	/**
-	 * If this returns true, a synchronization is registered by the
-	 * CommitMarkableResourceRecord to delete records as soon as the transaction
-	 * completes.
-	 *
-	 * @return Whether to perform immediate cleanup of CRRs
-	 */
-	public boolean isPerformImmediateCleanupOfCommitMarkableResourceBranches() {
-		return performImmediateCleanupOfCommitMarkableResourceBranches;
-	}
+    /**
+     * If this returns true, a synchronization is registered by the
+     * CommitMarkableResourceRecord to delete records as soon as the transaction
+     * completes.
+     *
+     * @return Whether to perform immediate cleanup of CRRs
+     */
+    public boolean isPerformImmediateCleanupOfCommitMarkableResourceBranches() {
+        return performImmediateCleanupOfCommitMarkableResourceBranches;
+    }
 
-	/**
-	 * Notify the transaction manager to delete resource records immediately
-	 * after a transaction commits.
-	 *
-	 * @param performImmediateCleanupOfCommitMarkableResourceBranches
-	 */
-	public void setPerformImmediateCleanupOfCommitMarkableResourceBranches(
-			boolean performImmediateCleanupOfCommitMarkableResourceBranches) {
-		this.performImmediateCleanupOfCommitMarkableResourceBranches = performImmediateCleanupOfCommitMarkableResourceBranches;
-	}
+    /**
+     * Notify the transaction manager to delete resource records immediately
+     * after a transaction commits.
+     *
+     * @param performImmediateCleanupOfCommitMarkableResourceBranches
+     */
+    public void setPerformImmediateCleanupOfCommitMarkableResourceBranches(
+            boolean performImmediateCleanupOfCommitMarkableResourceBranches) {
+        this.performImmediateCleanupOfCommitMarkableResourceBranches = performImmediateCleanupOfCommitMarkableResourceBranches;
+    }
 
-	/**
-	 * Allow the default policy of whether to use a synchronization to remove
-	 * the branch should be overriden.
-	 *
-	 * @return whether to perform immediate cleanup of branches or batch them
-	 */
-	public Map<String, Boolean> getPerformImmediateCleanupOfCommitMarkableResourceBranchesMap() {
-		synchronized (this) {
-			return performImmediateCleanupOfCommitMarkableResourceBranchesMap;
-		}
-	}
+    /**
+     * Allow the default policy of whether to use a synchronization to remove
+     * the branch should be overriden.
+     *
+     * @return whether to perform immediate cleanup of branches or batch them
+     */
+    public Map<String, Boolean> getPerformImmediateCleanupOfCommitMarkableResourceBranchesMap() {
+        synchronized (this) {
+            return performImmediateCleanupOfCommitMarkableResourceBranchesMap;
+        }
+    }
 
-	/**
-	 * Allow the default policy of whether to use a synchronization to remove
-	 * the branch should be overriden.
-	 *
-	 * @param performImmediateCleanupOfCommitMarkableResourceBranchesMap
-	 *            The name of the table.
-	 *
-	 */
-	public void setPerformImmediateCleanupOfCommitMarkableResourceBranchesMap(
-			Map<String, Boolean> performImmediateCleanupOfCommitMarkableResourceBranchesMap) {
-		synchronized (this) {
-			if (performImmediateCleanupOfCommitMarkableResourceBranchesMap == null) {
-				this.performImmediateCleanupOfCommitMarkableResourceBranchesMap = new HashMap<String, Boolean>();
-			} else if (!performImmediateCleanupOfCommitMarkableResourceBranchesMap
-					.equals(this.performImmediateCleanupOfCommitMarkableResourceBranchesMap)) {
-				this.performImmediateCleanupOfCommitMarkableResourceBranchesMap = new HashMap<String, Boolean>(
-						performImmediateCleanupOfCommitMarkableResourceBranchesMap);
-			}
-		}
-	}
+    /**
+     * Allow the default policy of whether to use a synchronization to remove
+     * the branch should be overriden.
+     *
+     * @param performImmediateCleanupOfCommitMarkableResourceBranchesMap
+     *            The name of the table.
+     *
+     */
+    public void setPerformImmediateCleanupOfCommitMarkableResourceBranchesMap(
+            Map<String, Boolean> performImmediateCleanupOfCommitMarkableResourceBranchesMap) {
+        synchronized (this) {
+            if (performImmediateCleanupOfCommitMarkableResourceBranchesMap == null) {
+                this.performImmediateCleanupOfCommitMarkableResourceBranchesMap = new HashMap<String, Boolean>();
+            } else if (!performImmediateCleanupOfCommitMarkableResourceBranchesMap
+                    .equals(this.performImmediateCleanupOfCommitMarkableResourceBranchesMap)) {
+                this.performImmediateCleanupOfCommitMarkableResourceBranchesMap = new HashMap<String, Boolean>(
+                        performImmediateCleanupOfCommitMarkableResourceBranchesMap);
+            }
+        }
+    }
 
-	/**
-	 * If this is a positive number, use a batch to delete
-	 * CommitMarkableResourceRecord from the database.
-	 *
-	 * @return -1 to prevent batching.
-	 */
-	public int getCommitMarkableResourceRecordDeleteBatchSize() {
-		return commitMarkableResourceRecordDeleteBatchSize;
-	}
+    /**
+     * If this is a positive number, use a batch to delete
+     * CommitMarkableResourceRecord from the database.
+     *
+     * @return -1 to prevent batching.
+     */
+    public int getCommitMarkableResourceRecordDeleteBatchSize() {
+        return commitMarkableResourceRecordDeleteBatchSize;
+    }
 
-	/**
-	 * Alter the default batch size or set to -1 to disable batch deletion of
-	 * CommitMarkableResourceRecord from the database.
-	 *
-	 * @param batchSize
-	 *            -1 to prevent batching.
-	 */
-	public void setCommitMarkableResourceRecordDeleteBatchSize(int batchSize) {
-		this.commitMarkableResourceRecordDeleteBatchSize = batchSize;
-	}
+    /**
+     * Alter the default batch size or set to -1 to disable batch deletion of
+     * CommitMarkableResourceRecord from the database.
+     *
+     * @param batchSize
+     *            -1 to prevent batching.
+     */
+    public void setCommitMarkableResourceRecordDeleteBatchSize(int batchSize) {
+        this.commitMarkableResourceRecordDeleteBatchSize = batchSize;
+    }
 
-	/**
-	 * Allow the default policy of a batch size to delete
-	 * CommitMarkableResourceRecord from the database.
-	 *
-	 * @return the maximum batch size to clean up
-	 */
-	public Map<String, Integer> getCommitMarkableResourceRecordDeleteBatchSizeMap() {
-		synchronized (this) {
-			return commitMarkableResourceRecordDeleteBatchSizeMap;
-		}
-	}
+    /**
+     * Allow the default policy of a batch size to delete
+     * CommitMarkableResourceRecord from the database.
+     *
+     * @return the maximum batch size to clean up
+     */
+    public Map<String, Integer> getCommitMarkableResourceRecordDeleteBatchSizeMap() {
+        synchronized (this) {
+            return commitMarkableResourceRecordDeleteBatchSizeMap;
+        }
+    }
 
-	/**
-	 * Allow the default policy of a batch size to delete
-	 * CommitMarkableResourceRecord from the database.
-	 *
-	 * @param commitMarkableResourceRecordDeleteBatchSizeMap
-	 *            size
-	 *
-	 */
-	public void setCommitMarkableResourceRecordDeleteBatchSizeMap(
-			Map<String, Integer> commitMarkableResourceRecordDeleteBatchSizeMap) {
-		synchronized (this) {
-			if (commitMarkableResourceRecordDeleteBatchSizeMap == null) {
-				this.commitMarkableResourceRecordDeleteBatchSizeMap = new HashMap<String, Integer>();
-			} else if (!commitMarkableResourceRecordDeleteBatchSizeMap
-					.equals(this.commitMarkableResourceRecordDeleteBatchSizeMap)) {
-				this.commitMarkableResourceRecordDeleteBatchSizeMap = new HashMap<String, Integer>(
-						commitMarkableResourceRecordDeleteBatchSizeMap);
-			}
-		}
-	}
+    /**
+     * Allow the default policy of a batch size to delete
+     * CommitMarkableResourceRecord from the database.
+     *
+     * @param commitMarkableResourceRecordDeleteBatchSizeMap
+     *            size
+     *
+     */
+    public void setCommitMarkableResourceRecordDeleteBatchSizeMap(
+            Map<String, Integer> commitMarkableResourceRecordDeleteBatchSizeMap) {
+        synchronized (this) {
+            if (commitMarkableResourceRecordDeleteBatchSizeMap == null) {
+                this.commitMarkableResourceRecordDeleteBatchSizeMap = new HashMap<String, Integer>();
+            } else if (!commitMarkableResourceRecordDeleteBatchSizeMap
+                    .equals(this.commitMarkableResourceRecordDeleteBatchSizeMap)) {
+                this.commitMarkableResourceRecordDeleteBatchSizeMap = new HashMap<String, Integer>(
+                        commitMarkableResourceRecordDeleteBatchSizeMap);
+            }
+        }
+    }
 
-	/**
-	 * If this is enabled we will tell the recovery module when we complete
-	 * branches. This means they will not in normal mode need fetching from the
-	 * database before we can delete them.
-	 *
-	 * @return whether to notify CMR module
-	 */
-	public boolean isNotifyCommitMarkableResourceRecoveryModuleOfCompleteBranches() {
-		return notifyCommitMarkableResourceRecoveryModuleOfCompleteBranches;
-	}
+    /**
+     * If this is enabled we will tell the recovery module when we complete
+     * branches. This means they will not in normal mode need fetching from the
+     * database before we can delete them.
+     *
+     * @return whether to notify CMR module
+     */
+    public boolean isNotifyCommitMarkableResourceRecoveryModuleOfCompleteBranches() {
+        return notifyCommitMarkableResourceRecoveryModuleOfCompleteBranches;
+    }
 
-	/**
-	 * Allow the default policy of whether to use a synchronization to remove
-	 * the branch should be overriden.
-	 */
-	public void setNotifyCommitMarkableResourceRecoveryModuleOfCompleteBranches(
-			boolean notifyCommitMarkableResourceRecoveryModuleOfCompleteBranches) {
-		this.notifyCommitMarkableResourceRecoveryModuleOfCompleteBranches = notifyCommitMarkableResourceRecoveryModuleOfCompleteBranches;
-	}
+    /**
+     * Allow the default policy of whether to use a synchronization to remove
+     * the branch should be overriden.
+     */
+    public void setNotifyCommitMarkableResourceRecoveryModuleOfCompleteBranches(
+            boolean notifyCommitMarkableResourceRecoveryModuleOfCompleteBranches) {
+        this.notifyCommitMarkableResourceRecoveryModuleOfCompleteBranches = notifyCommitMarkableResourceRecoveryModuleOfCompleteBranches;
+    }
 
     /**
      * <p>

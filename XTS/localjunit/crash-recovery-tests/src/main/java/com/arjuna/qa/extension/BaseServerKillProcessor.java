@@ -39,7 +39,7 @@ public abstract class BaseServerKillProcessor implements ServerKillProcessor {
 
     @Override
     public void kill(Container container) throws Exception {
-    	getLogger().info("waiting for byteman to kill the server");
+        getLogger().info("waiting for byteman to kill the server");
 
         for (int i = 0; i < numChecks; i++) {
 
@@ -47,10 +47,10 @@ public abstract class BaseServerKillProcessor implements ServerKillProcessor {
                 Thread.sleep(checkPeriodMillis);
                 getLogger().info("jboss-as is still alive, sleeping for a further " + checkPeriodMillis + "ms");
             } else if (isDefunctJavaProcess()) {
-            	getLogger().info("Found a defunct java process, sleeping for a further " + checkPeriodMillis + "ms");
+                getLogger().info("Found a defunct java process, sleeping for a further " + checkPeriodMillis + "ms");
                 dumpProcesses(container);
             } else {
-            	getLogger().info("jboss-as killed by byteman scirpt");
+                getLogger().info("jboss-as killed by byteman scirpt");
                 dumpProcesses(container);
                 return;
             }
@@ -69,18 +69,18 @@ public abstract class BaseServerKillProcessor implements ServerKillProcessor {
 
     protected boolean isDefunctJavaProcess() throws Exception {
         //Command will 'res != null' if a defunct java process is not running and 'res == null' if there is
-    	return !isEmpty(runShellCommand(getDefunctJavaCmd()));
+        return !isEmpty(runShellCommand(getDefunctJavaCmd()));
     }
 
     protected void shutdownJBoss() throws Exception {
-    	String res = runShellCommand(getJBossAliveCmd());
-    	if (res != null && !res.isEmpty()) {
-    		String[] splitLine = res.split("\\s+");
-    		if (splitLine.length != 1) {
+        String res = runShellCommand(getJBossAliveCmd());
+        if (res != null && !res.isEmpty()) {
+            String[] splitLine = res.split("\\s+");
+            if (splitLine.length != 1) {
                 String pid = splitLine[(splitLine.length) - 1];
                 runShellCommand(String.format(getShutdownJBossCmd(), pid));
             }
-    	}
+        }
 
         // wait 5 * 60 second for jboss-as shutdown complete
         for (int i = 0; i < numChecks; i++) {
@@ -88,7 +88,7 @@ public abstract class BaseServerKillProcessor implements ServerKillProcessor {
             if (jbossIsAlive()) {
                 Thread.sleep(5000);
             } else {
-            	getLogger().info("jboss-as shutdown after sending shutdown command");
+                getLogger().info("jboss-as shutdown after sending shutdown command");
                 return;
             }
         }
@@ -100,18 +100,18 @@ public abstract class BaseServerKillProcessor implements ServerKillProcessor {
             List<String> lines = new LinkedList<String>();
             String line;
             while ( (line = ein.readLine()) != null) {
-            	lines.add(line);
+                lines.add(line);
             }
 
             is.close();
             if (!lines.isEmpty()) {
-            	String res = lines.get(0);
+                String res = lines.get(0);
                 System.out.printf("%s %s\n", msg, res);
                 getLogger().info("Execution result: '" + res + "'");
                 return res;
             }
         } catch (IOException e) {
-        	getLogger().info("Exception dumping stream: " + e.getMessage());
+            getLogger().info("Exception dumping stream: " + e.getMessage());
         }
         return null;
     }
@@ -132,6 +132,6 @@ public abstract class BaseServerKillProcessor implements ServerKillProcessor {
     }
 
     public boolean isEmpty(String res) {
-    	return res == null || res.isEmpty();
+        return res == null || res.isEmpty();
     }
 }

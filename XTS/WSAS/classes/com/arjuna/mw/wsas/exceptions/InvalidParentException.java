@@ -45,17 +45,17 @@ public class InvalidParentException extends WSASException
 
     public InvalidParentException ()
     {
-	super();
+    super();
     }
 
     public InvalidParentException (String s)
     {
-	super(s);
+    super(s);
     }
 
     public InvalidParentException (String s, int errorcode)
     {
-	super(s, errorcode);
+    super(s, errorcode);
     }
 
 }

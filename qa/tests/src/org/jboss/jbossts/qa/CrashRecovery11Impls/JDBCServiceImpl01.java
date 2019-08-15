@@ -70,218 +70,218 @@ import java.util.Properties;
 
 public class JDBCServiceImpl01 implements BeforeCrashServiceOperations
 {
-	public JDBCServiceImpl01(String rowName, String databaseURL, String databaseUser, String databasePassword, String databaseDynamicClass)
-			throws InvocationException
-	{
-		_dbUser = databaseUser;
-		try
-		{
-			_rowName = rowName;
+    public JDBCServiceImpl01(String rowName, String databaseURL, String databaseUser, String databasePassword, String databaseDynamicClass)
+            throws InvocationException
+    {
+        _dbUser = databaseUser;
+        try
+        {
+            _rowName = rowName;
 
-			if (databaseDynamicClass != null)
-			{
-				Properties databaseProperties = new Properties();
+            if (databaseDynamicClass != null)
+            {
+                Properties databaseProperties = new Properties();
 
-				databaseProperties.put(com.arjuna.ats.jdbc.TransactionalDriver.userName, databaseUser);
-				databaseProperties.put(com.arjuna.ats.jdbc.TransactionalDriver.password, databasePassword);
-				databaseProperties.put(com.arjuna.ats.jdbc.TransactionalDriver.dynamicClass, databaseDynamicClass);
+                databaseProperties.put(com.arjuna.ats.jdbc.TransactionalDriver.userName, databaseUser);
+                databaseProperties.put(com.arjuna.ats.jdbc.TransactionalDriver.password, databasePassword);
+                databaseProperties.put(com.arjuna.ats.jdbc.TransactionalDriver.dynamicClass, databaseDynamicClass);
 
-				_connection = DriverManager.getConnection(databaseURL, databaseProperties);
-			}
-			else
-			{
-				_connection = DriverManager.getConnection(databaseURL, databaseUser, databasePassword);
-			}
+                _connection = DriverManager.getConnection(databaseURL, databaseProperties);
+            }
+            else
+            {
+                _connection = DriverManager.getConnection(databaseURL, databaseUser, databasePassword);
+            }
 
-			Statement statement = _connection.createStatement();
+            Statement statement = _connection.createStatement();
 
             String tableName = JDBCProfileStore.getTableName(databaseUser, "Service");
 
-			statement.executeUpdate("INSERT INTO " + tableName + " VALUES ('" + _rowName + "', 0)");
+            statement.executeUpdate("INSERT INTO " + tableName + " VALUES ('" + _rowName + "', 0)");
 
-			statement.close();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("JDBCServiceImpl01.JDBCServiceImpl01: " + exception);
-			throw new InvocationException();
-		}
-	}
+            statement.close();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("JDBCServiceImpl01.JDBCServiceImpl01: " + exception);
+            throw new InvocationException();
+        }
+    }
 
-	public void finalize()
-			throws Throwable
-	{
-		try
-		{
-			if (_connection != null)
-			{
-				_connection.close();
-			}
-		}
-		catch (Exception exception)
-		{
-			System.err.println("JDBCServiceImpl01.finalize: " + exception);
-			throw exception;
-		}
-	}
+    public void finalize()
+            throws Throwable
+    {
+        try
+        {
+            if (_connection != null)
+            {
+                _connection.close();
+            }
+        }
+        catch (Exception exception)
+        {
+            System.err.println("JDBCServiceImpl01.finalize: " + exception);
+            throw exception;
+        }
+    }
 
-	public void set(int value)
-			throws InvocationException
-	{
-		try
-		{
-			try
-			{
-				Statement statement = _connection.createStatement();
+    public void set(int value)
+            throws InvocationException
+    {
+        try
+        {
+            try
+            {
+                Statement statement = _connection.createStatement();
 
                 String tableName = JDBCProfileStore.getTableName(_dbUser, "Service");
 
                 statement.executeUpdate("UPDATE " + tableName + " SET VALUE="+value+" WHERE Name='"+_rowName+"'");
 
-				statement.close();
-			}
-			catch (SQLException sqlException)
-			{
-				System.err.println("JDBCServiceImpl01.set: " + sqlException);
+                statement.close();
+            }
+            catch (SQLException sqlException)
+            {
+                System.err.println("JDBCServiceImpl01.set: " + sqlException);
 
-				throw new InvocationException();
-			}
-		}
-		catch (InvocationException invocationException)
-		{
-			_isCorrect = false;
-			throw invocationException;
-		}
-		catch (Exception exception)
-		{
-			_isCorrect = false;
-			System.err.println("JDBCServiceImpl01.set: " + exception);
-			throw new InvocationException();
-		}
-	}
+                throw new InvocationException();
+            }
+        }
+        catch (InvocationException invocationException)
+        {
+            _isCorrect = false;
+            throw invocationException;
+        }
+        catch (Exception exception)
+        {
+            _isCorrect = false;
+            System.err.println("JDBCServiceImpl01.set: " + exception);
+            throw new InvocationException();
+        }
+    }
 
-	public void get(IntHolder value)
-			throws InvocationException
-	{
-		try
-		{
-			try
-			{
-				Statement statement = _connection.createStatement();
+    public void get(IntHolder value)
+            throws InvocationException
+    {
+        try
+        {
+            try
+            {
+                Statement statement = _connection.createStatement();
 
                 String tableName = JDBCProfileStore.getTableName(_dbUser, "Service");
 
-				ResultSet resultSet = statement.executeQuery("SELECT Value FROM " + tableName +" WHERE Name = '" + _rowName + "'");
-				resultSet.next();
-				value.value = resultSet.getInt("Value");
-				if (resultSet.next())
-				{
-					throw new Exception();
-				}
+                ResultSet resultSet = statement.executeQuery("SELECT Value FROM " + tableName +" WHERE Name = '" + _rowName + "'");
+                resultSet.next();
+                value.value = resultSet.getInt("Value");
+                if (resultSet.next())
+                {
+                    throw new Exception();
+                }
 
-				resultSet.close();
-				statement.close();
-			}
-			catch (SQLException sqlException)
-			{
-				System.err.println("JDBCServiceImpl01.get: " + sqlException);
+                resultSet.close();
+                statement.close();
+            }
+            catch (SQLException sqlException)
+            {
+                System.err.println("JDBCServiceImpl01.get: " + sqlException);
 
-				throw new InvocationException();
-			}
-		}
-		catch (InvocationException invocationException)
-		{
-			_isCorrect = false;
-			throw invocationException;
-		}
-		catch (Exception exception)
-		{
-			_isCorrect = false;
-			System.err.println("JDBCServiceImpl01.select: " + exception);
-			throw new InvocationException();
-		}
-	}
+                throw new InvocationException();
+            }
+        }
+        catch (InvocationException invocationException)
+        {
+            _isCorrect = false;
+            throw invocationException;
+        }
+        catch (Exception exception)
+        {
+            _isCorrect = false;
+            System.err.println("JDBCServiceImpl01.select: " + exception);
+            throw new InvocationException();
+        }
+    }
 
 
-	public void setStartCrashAbstractRecordAction(CrashBehavior action)
-			throws InvocationException
-	{
-		try
-		{
-			try
-			{
-				if (action == CrashBehavior.CrashBehaviorCrashInCommit)
-				{
-					_isCorrect = _isCorrect && (BasicAction.Current().add(new StartCrashAbstractRecordImpl(StartCrashAbstractRecordImpl.CRASH_IN_COMMIT)) == AddOutcome.AR_ADDED);
-				}
-				else if (action == CrashBehavior.CrashBehaviorCrashInPrepare)
-				{
-					_isCorrect = _isCorrect && (BasicAction.Current().add(new StartCrashAbstractRecordImpl(StartCrashAbstractRecordImpl.CRASH_IN_PREPARE)) == AddOutcome.AR_ADDED);
-				}
-			}
-			catch (Exception exception)
-			{
-				System.err.println("JDBCServiceImpl01.setStartCrashAbstractRecordAction: " + exception);
+    public void setStartCrashAbstractRecordAction(CrashBehavior action)
+            throws InvocationException
+    {
+        try
+        {
+            try
+            {
+                if (action == CrashBehavior.CrashBehaviorCrashInCommit)
+                {
+                    _isCorrect = _isCorrect && (BasicAction.Current().add(new StartCrashAbstractRecordImpl(StartCrashAbstractRecordImpl.CRASH_IN_COMMIT)) == AddOutcome.AR_ADDED);
+                }
+                else if (action == CrashBehavior.CrashBehaviorCrashInPrepare)
+                {
+                    _isCorrect = _isCorrect && (BasicAction.Current().add(new StartCrashAbstractRecordImpl(StartCrashAbstractRecordImpl.CRASH_IN_PREPARE)) == AddOutcome.AR_ADDED);
+                }
+            }
+            catch (Exception exception)
+            {
+                System.err.println("JDBCServiceImpl01.setStartCrashAbstractRecordAction: " + exception);
 
-				throw new InvocationException();
-			}
-		}
-		catch (InvocationException invocationException)
-		{
-			_isCorrect = false;
-			throw invocationException;
-		}
-		catch (Exception exception)
-		{
-			_isCorrect = false;
-			System.err.println("JDBCServiceImpl01.setStartCrashAbstractRecordAction: " + exception);
-			throw new InvocationException();
-		}
-	}
+                throw new InvocationException();
+            }
+        }
+        catch (InvocationException invocationException)
+        {
+            _isCorrect = false;
+            throw invocationException;
+        }
+        catch (Exception exception)
+        {
+            _isCorrect = false;
+            System.err.println("JDBCServiceImpl01.setStartCrashAbstractRecordAction: " + exception);
+            throw new InvocationException();
+        }
+    }
 
-	public void setEndCrashAbstractRecordAction(CrashBehavior action)
-			throws InvocationException
-	{
-		try
-		{
-			try
-			{
-				if (action == CrashBehavior.CrashBehaviorCrashInCommit)
-				{
-					_isCorrect = _isCorrect && (BasicAction.Current().add(new EndCrashAbstractRecordImpl(EndCrashAbstractRecordImpl.CRASH_IN_COMMIT)) == AddOutcome.AR_ADDED);
-				}
-				else if (action == CrashBehavior.CrashBehaviorCrashInPrepare)
-				{
-					_isCorrect = _isCorrect && (BasicAction.Current().add(new EndCrashAbstractRecordImpl(EndCrashAbstractRecordImpl.CRASH_IN_PREPARE)) == AddOutcome.AR_ADDED);
-				}
-			}
-			catch (Exception exception)
-			{
-				System.err.println("JDBCServiceImpl01.setEndCrashAbstractRecordAction: " + exception);
+    public void setEndCrashAbstractRecordAction(CrashBehavior action)
+            throws InvocationException
+    {
+        try
+        {
+            try
+            {
+                if (action == CrashBehavior.CrashBehaviorCrashInCommit)
+                {
+                    _isCorrect = _isCorrect && (BasicAction.Current().add(new EndCrashAbstractRecordImpl(EndCrashAbstractRecordImpl.CRASH_IN_COMMIT)) == AddOutcome.AR_ADDED);
+                }
+                else if (action == CrashBehavior.CrashBehaviorCrashInPrepare)
+                {
+                    _isCorrect = _isCorrect && (BasicAction.Current().add(new EndCrashAbstractRecordImpl(EndCrashAbstractRecordImpl.CRASH_IN_PREPARE)) == AddOutcome.AR_ADDED);
+                }
+            }
+            catch (Exception exception)
+            {
+                System.err.println("JDBCServiceImpl01.setEndCrashAbstractRecordAction: " + exception);
 
-				throw new InvocationException();
-			}
-		}
-		catch (InvocationException invocationException)
-		{
-			_isCorrect = false;
-			throw invocationException;
-		}
-		catch (Exception exception)
-		{
-			_isCorrect = false;
-			System.err.println("JDBCServiceImpl01.setEndCrashAbstractRecordAction: " + exception);
-			throw new InvocationException();
-		}
-	}
+                throw new InvocationException();
+            }
+        }
+        catch (InvocationException invocationException)
+        {
+            _isCorrect = false;
+            throw invocationException;
+        }
+        catch (Exception exception)
+        {
+            _isCorrect = false;
+            System.err.println("JDBCServiceImpl01.setEndCrashAbstractRecordAction: " + exception);
+            throw new InvocationException();
+        }
+    }
 
-	public boolean is_correct()
-	{
-		return _isCorrect;
-	}
+    public boolean is_correct()
+    {
+        return _isCorrect;
+    }
 
-	private String _rowName;
-	private Connection _connection;
-	private boolean _isCorrect = true;
-	private String _dbUser;
+    private String _rowName;
+    private Connection _connection;
+    private boolean _isCorrect = true;
+    private String _dbUser;
 }

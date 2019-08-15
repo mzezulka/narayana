@@ -99,51 +99,51 @@ public class BusinessActivityTerminatorImple
 
     public void cancel () throws UnknownTransactionException, SystemException
     {
-	try
-	{
-	    if (_hier == null)
-		throw new UnknownTransactionException();
+    try
+    {
+        if (_hier == null)
+        throw new UnknownTransactionException();
 
-	    _coordManager.resume(_hier);
+        _coordManager.resume(_hier);
 
-	    _coordManager.cancel();
-	}
-	catch (com.arjuna.mw.wsas.exceptions.InvalidActivityException ex)
-	{
-	    throw new UnknownTransactionException();
-	}
-	catch (com.arjuna.mw.wsas.exceptions.WrongStateException ex)
-	{
-	    throw new SystemException(ex.toString());
-	}
-	catch (com.arjuna.mw.wsas.exceptions.NoPermissionException ex)
-	{
-	    throw new SystemException(ex.toString());
-	}
-	catch (com.arjuna.mw.wsas.exceptions.ProtocolViolationException ex)
-	{
-	    throw new SystemException(ex.toString());
-	}
-	catch (com.arjuna.mw.wscf.model.sagas.exceptions.CoordinatorConfirmedException ex)
-	{
-	    throw new SystemException(ex.toString());
-	}
-	catch (com.arjuna.mw.wscf.exceptions.NoCoordinatorException ex)
-	{
-	    throw new UnknownTransactionException();
-	}
-	catch (com.arjuna.mw.wsas.exceptions.SystemException ex)
-	{
-	    throw new SystemException();
-	}
-	catch (UnknownTransactionException ex)
-	{
-	    throw ex;
-	}
-	finally
-	{
+        _coordManager.cancel();
+    }
+    catch (com.arjuna.mw.wsas.exceptions.InvalidActivityException ex)
+    {
+        throw new UnknownTransactionException();
+    }
+    catch (com.arjuna.mw.wsas.exceptions.WrongStateException ex)
+    {
+        throw new SystemException(ex.toString());
+    }
+    catch (com.arjuna.mw.wsas.exceptions.NoPermissionException ex)
+    {
+        throw new SystemException(ex.toString());
+    }
+    catch (com.arjuna.mw.wsas.exceptions.ProtocolViolationException ex)
+    {
+        throw new SystemException(ex.toString());
+    }
+    catch (com.arjuna.mw.wscf.model.sagas.exceptions.CoordinatorConfirmedException ex)
+    {
+        throw new SystemException(ex.toString());
+    }
+    catch (com.arjuna.mw.wscf.exceptions.NoCoordinatorException ex)
+    {
+        throw new UnknownTransactionException();
+    }
+    catch (com.arjuna.mw.wsas.exceptions.SystemException ex)
+    {
+        throw new SystemException();
+    }
+    catch (UnknownTransactionException ex)
+    {
+        throw ex;
+    }
+    finally
+    {
         TerminationCoordinatorProcessor.getProcessor().deactivateParticipant(this) ;
-	}
+    }
     }
 
     /**
@@ -153,43 +153,43 @@ public class BusinessActivityTerminatorImple
 
     public void complete () throws UnknownTransactionException, SystemException
     {
-	try
-	{
-	    if (_hier == null)
-		throw new UnknownTransactionException();
+    try
+    {
+        if (_hier == null)
+        throw new UnknownTransactionException();
 
-	    _coordManager.resume(_hier);
+        _coordManager.resume(_hier);
 
-	    _coordManager.complete();
-	}
-	catch (com.arjuna.mw.wsas.exceptions.InvalidActivityException ex)
-	{
-	    throw new UnknownTransactionException();
-	}
-	catch (com.arjuna.mw.wsas.exceptions.WrongStateException ex)
-	{
-	    throw new SystemException(ex.toString());
-	}
-	catch (com.arjuna.mw.wsas.exceptions.NoPermissionException ex)
-	{
-	    throw new SystemException(ex.toString());
-	}
-	catch (com.arjuna.mw.wsas.exceptions.ProtocolViolationException ex)
-	{
-	    throw new SystemException(ex.toString());
-	}
-	catch (com.arjuna.mw.wscf.exceptions.NoCoordinatorException ex)
-	{
-	    throw new UnknownTransactionException();
-	}
-	catch (com.arjuna.mw.wsas.exceptions.SystemException ex)
-	{
-	    throw new SystemException();
-	}
-	catch (UnknownTransactionException ex)
-	{
-	    throw ex;
-	}
+        _coordManager.complete();
+    }
+    catch (com.arjuna.mw.wsas.exceptions.InvalidActivityException ex)
+    {
+        throw new UnknownTransactionException();
+    }
+    catch (com.arjuna.mw.wsas.exceptions.WrongStateException ex)
+    {
+        throw new SystemException(ex.toString());
+    }
+    catch (com.arjuna.mw.wsas.exceptions.NoPermissionException ex)
+    {
+        throw new SystemException(ex.toString());
+    }
+    catch (com.arjuna.mw.wsas.exceptions.ProtocolViolationException ex)
+    {
+        throw new SystemException(ex.toString());
+    }
+    catch (com.arjuna.mw.wscf.exceptions.NoCoordinatorException ex)
+    {
+        throw new UnknownTransactionException();
+    }
+    catch (com.arjuna.mw.wsas.exceptions.SystemException ex)
+    {
+        throw new SystemException();
+    }
+    catch (UnknownTransactionException ex)
+    {
+        throw ex;
+    }
     }
 
     /**

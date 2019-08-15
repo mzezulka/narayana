@@ -65,9 +65,9 @@ public abstract class BaseTransactionalDriverXAConnection implements ConnectionC
             }
         }
 
-	/*
+    /*
      * In case we have already set it for this transaction.
-	 */
+     */
 
         return validTransaction(tx);
     }

@@ -47,17 +47,17 @@ public class InvalidSynchronizationException extends SystemException
 
     public InvalidSynchronizationException()
     {
-	super();
+    super();
     }
 
     public InvalidSynchronizationException(String s)
     {
-	super(s);
+    super(s);
     }
 
     public InvalidSynchronizationException(String s, int errorcode)
     {
-	super(s, errorcode);
+    super(s, errorcode);
     }
 
 }

@@ -120,7 +120,7 @@ public class CoreEnvironmentBean implements CoreEnvironmentBeanMBean
             throw new CoreEnvironmentBeanException(tsLogger.i18NLogger.get_fatal_nodename_too_long(nodeIdentifier, NODE_NAME_SIZE));
         }
 
-    	this.nodeIdentifier = nodeIdentifier;
+        this.nodeIdentifier = nodeIdentifier;
     }
 
     /**

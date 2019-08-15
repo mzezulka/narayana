@@ -43,15 +43,15 @@ public class ReaperElement implements Comparable<ReaperElement>
 
     public ReaperElement (ActivityImple act, int timeout)
     {
-	_activity = act;
-	_timeout = timeout;
+    _activity = act;
+    _timeout = timeout;
 
-	/*
-	 * Given a timeout period in seconds, calculate its absolute value
-	 * from the current time of day in milliseconds.
-	 */
+    /*
+     * Given a timeout period in seconds, calculate its absolute value
+     * from the current time of day in milliseconds.
+     */
 
-	_absoluteTimeout = timeout*1000 + System.currentTimeMillis();
+    _absoluteTimeout = timeout*1000 + System.currentTimeMillis();
     }
 
     public ActivityImple _activity;

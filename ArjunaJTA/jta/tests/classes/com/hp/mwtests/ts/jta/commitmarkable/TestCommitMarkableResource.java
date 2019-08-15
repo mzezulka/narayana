@@ -41,87 +41,87 @@ import com.arjuna.ats.arjuna.recovery.RecoveryModule;
 import com.arjuna.ats.internal.jta.recovery.arjunacore.CommitMarkableResourceRecordRecoveryModule;
 
 public class TestCommitMarkableResource extends TestCommitMarkableResourceBase {
-	// @Ignore
-	@Test
-	public void testH2() throws Exception {
-		JdbcDataSource dataSource = new JdbcDataSource();
-		dataSource.setURL("jdbc:h2:mem:JBTMDB;MVCC=TRUE;DB_CLOSE_DELAY=-1");
+    // @Ignore
+    @Test
+    public void testH2() throws Exception {
+        JdbcDataSource dataSource = new JdbcDataSource();
+        dataSource.setURL("jdbc:h2:mem:JBTMDB;MVCC=TRUE;DB_CLOSE_DELAY=-1");
 
-		doTest(dataSource);
-	}
+        doTest(dataSource);
+    }
 
-	@Ignore
-	@Test
-	public void testPostgres() throws Exception {
+    @Ignore
+    @Test
+    public void testPostgres() throws Exception {
 
-		PGSimpleDataSource dataSource = new PGSimpleDataSource();
-		dataSource.setPortNumber(5432);
-		dataSource.setUser("sa");
-		dataSource.setPassword("sa");
-		dataSource.setServerName("localhost");
-		dataSource.setDatabaseName("commitmarkableresource");
+        PGSimpleDataSource dataSource = new PGSimpleDataSource();
+        dataSource.setPortNumber(5432);
+        dataSource.setUser("sa");
+        dataSource.setPassword("sa");
+        dataSource.setServerName("localhost");
+        dataSource.setDatabaseName("commitmarkableresource");
 
-		doTest(dataSource);
-	}
+        doTest(dataSource);
+    }
 
-	private void doTest(DataSource dataSource) throws Exception {
+    private void doTest(DataSource dataSource) throws Exception {
 
-		// Test code
-		Utils.createTables(dataSource.getConnection());
+        // Test code
+        Utils.createTables(dataSource.getConnection());
 
-		javax.transaction.TransactionManager tm = com.arjuna.ats.jta.TransactionManager
-				.transactionManager();
+        javax.transaction.TransactionManager tm = com.arjuna.ats.jta.TransactionManager
+                .transactionManager();
 
-		tm.begin();
+        tm.begin();
 
-		Connection localJDBCConnection = dataSource.getConnection();
-		localJDBCConnection.setAutoCommit(false);
-		XAResource nonXAResource = new JDBCConnectableResource(
-				localJDBCConnection);
-		tm.getTransaction().enlistResource(nonXAResource);
+        Connection localJDBCConnection = dataSource.getConnection();
+        localJDBCConnection.setAutoCommit(false);
+        XAResource nonXAResource = new JDBCConnectableResource(
+                localJDBCConnection);
+        tm.getTransaction().enlistResource(nonXAResource);
 
-		tm.getTransaction().enlistResource(new DummyXAResource());
+        tm.getTransaction().enlistResource(new DummyXAResource());
 
-		localJDBCConnection.createStatement().execute(
-				"INSERT INTO foo (bar) VALUES (1)");
+        localJDBCConnection.createStatement().execute(
+                "INSERT INTO foo (bar) VALUES (1)");
 
-		tm.commit();
+        tm.commit();
 
-		// This is test code, it allows us to verify that the correct XID was
-		// removed
-		Xid committed = ((JDBCConnectableResource) nonXAResource)
-				.getStartedXid();
-		assertNotNull(committed);
+        // This is test code, it allows us to verify that the correct XID was
+        // removed
+        Xid committed = ((JDBCConnectableResource) nonXAResource)
+                .getStartedXid();
+        assertNotNull(committed);
 
-		// We can't just instantiate one as we need to be using the same one as
-		// the transaction
-		// manager would have used to mark the transaction for GC
-		CommitMarkableResourceRecordRecoveryModule recoveryModule = null;
-		Vector recoveryModules = manager.getModules();
-		if (recoveryModules != null) {
-			Enumeration modules = recoveryModules.elements();
+        // We can't just instantiate one as we need to be using the same one as
+        // the transaction
+        // manager would have used to mark the transaction for GC
+        CommitMarkableResourceRecordRecoveryModule recoveryModule = null;
+        Vector recoveryModules = manager.getModules();
+        if (recoveryModules != null) {
+            Enumeration modules = recoveryModules.elements();
 
-			while (modules.hasMoreElements()) {
-				RecoveryModule m = (RecoveryModule) modules.nextElement();
+            while (modules.hasMoreElements()) {
+                RecoveryModule m = (RecoveryModule) modules.nextElement();
 
-				if (m instanceof CommitMarkableResourceRecordRecoveryModule) {
-					recoveryModule = (CommitMarkableResourceRecordRecoveryModule) m;
-				}
-			}
-		}
+                if (m instanceof CommitMarkableResourceRecordRecoveryModule) {
+                    recoveryModule = (CommitMarkableResourceRecordRecoveryModule) m;
+                }
+            }
+        }
 
-		recoveryModule = new CommitMarkableResourceRecordRecoveryModule();
-		// The recovery module has to perform lookups
-		new InitialContext().rebind("commitmarkableresource", dataSource);
-		// Run the first pass it will load the committed Xids into memory
-		recoveryModule.periodicWorkFirstPass();
-		assertTrue(recoveryModule.wasCommitted("commitmarkableresource",
-				committed));
-		recoveryModule.periodicWorkSecondPass();
+        recoveryModule = new CommitMarkableResourceRecordRecoveryModule();
+        // The recovery module has to perform lookups
+        new InitialContext().rebind("commitmarkableresource", dataSource);
+        // Run the first pass it will load the committed Xids into memory
+        recoveryModule.periodicWorkFirstPass();
+        assertTrue(recoveryModule.wasCommitted("commitmarkableresource",
+                committed));
+        recoveryModule.periodicWorkSecondPass();
 
-		// Make sure that the resource was GC'd by the CRRRM
-		assertFalse(recoveryModule.wasCommitted("commitmarkableresource",
-				committed));
-	}
+        // Make sure that the resource was GC'd by the CRRRM
+        assertFalse(recoveryModule.wasCommitted("commitmarkableresource",
+                committed));
+    }
 
 }

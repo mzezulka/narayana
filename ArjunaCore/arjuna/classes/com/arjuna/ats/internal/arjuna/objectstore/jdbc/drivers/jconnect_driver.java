@@ -31,23 +31,23 @@ import com.arjuna.ats.internal.arjuna.objectstore.jdbc.JDBCImple_driver;
  */
 public class jconnect_driver extends JDBCImple_driver {
 
-	@Override
-	protected String getObjectStateSQLType() {
-		return "IMAGE";
-	}
+    @Override
+    protected String getObjectStateSQLType() {
+        return "IMAGE";
+    }
 
-	@Override
-	protected void checkCreateTableError(SQLException ex) throws SQLException {
-		if (ex.getErrorCode() != 2714) {
-			throw ex;
-		}
-	}
+    @Override
+    protected void checkCreateTableError(SQLException ex) throws SQLException {
+        if (ex.getErrorCode() != 2714) {
+            throw ex;
+        }
+    }
 
-	@Override
-	protected void checkDropTableException(Connection connection,
-			SQLException ex) throws SQLException {
-		if (ex.getErrorCode() != 3701) {
-			throw ex;
-		}
-	}
+    @Override
+    protected void checkDropTableException(Connection connection,
+            SQLException ex) throws SQLException {
+        if (ex.getErrorCode() != 3701) {
+            throw ex;
+        }
+    }
 }

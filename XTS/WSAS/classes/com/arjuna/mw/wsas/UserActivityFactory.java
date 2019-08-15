@@ -50,29 +50,29 @@ public class UserActivityFactory
 
     public static UserActivity userActivity ()
     {
-	return _imple;
+    return _imple;
     }
 
     /*
     public static UserActivity userActivity (String name)
     {
-	UserActivity imple = (UserActivity) _instances.get(name);
+    UserActivity imple = (UserActivity) _instances.get(name);
 
-	if (imple == null)
-	{
-	    imple = new UserActivityImple();
+    if (imple == null)
+    {
+        imple = new UserActivityImple();
 
-	    _instances.put(name, imple);
-	}
+        _instances.put(name, imple);
+    }
 
-	_currentActivity.put(Thread.currentThread(), imple);
+    _currentActivity.put(Thread.currentThread(), imple);
 
-	return imple;
+    return imple;
     }
 
     public static UserActivity currentActivityService ()
     {
-	return (UserActivity) _currentActivity.get(Thread.currentThread());
+    return (UserActivity) _currentActivity.get(Thread.currentThread());
     }
 
     private static Hashtable   _instances = new Hashtable();

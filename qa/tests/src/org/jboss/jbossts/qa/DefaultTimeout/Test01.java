@@ -40,59 +40,59 @@ import javax.transaction.RollbackException;
  */
 public class Test01
 {
-	public static void main(String[] args)
-	{
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+    public static void main(String[] args)
+    {
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			boolean correct = true;
+            boolean correct = true;
 
             TransactionManager transactionManager = com.arjuna.ats.jta.TransactionManager.transactionManager();
 
             transactionManager.begin();
 
-			try
-			{
+            try
+            {
                 Thread.sleep( (1000*arjPropertyManager.getCoordinatorEnvironmentBean().getDefaultTimeout()) + 1000 );
 
 //                correct = (transactionManager.getStatus() == Status.STATUS_ROLLEDBACK);
 
-				transactionManager.commit();
-				correct = false;
-			}
-			catch (RollbackException rollbackException)
-			{
-				// Commit attempt after timeout should fail with RollbackException
-				correct = true;
-			}
+                transactionManager.commit();
+                correct = false;
+            }
+            catch (RollbackException rollbackException)
+            {
+                // Commit attempt after timeout should fail with RollbackException
+                correct = true;
+            }
 
-			if (correct)
-			{
-				System.out.println("Passed");
-			}
-			else
-			{
-				System.out.println("Failed");
-			}
-		}
-		catch (Exception exception)
-		{
-			System.out.println("Failed");
-			System.err.println("Test01.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
+            if (correct)
+            {
+                System.out.println("Passed");
+            }
+            else
+            {
+                System.out.println("Failed");
+            }
+        }
+        catch (Exception exception)
+        {
+            System.out.println("Failed");
+            System.err.println("Test01.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
 
-		try
-		{
-			OAInterface.shutdownOA();
-			ORBInterface.shutdownORB();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Test01.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
-	}
+        try
+        {
+            OAInterface.shutdownOA();
+            ORBInterface.shutdownORB();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Test01.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
+    }
 }

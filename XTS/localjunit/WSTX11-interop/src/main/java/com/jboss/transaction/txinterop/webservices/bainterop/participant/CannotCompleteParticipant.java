@@ -31,7 +31,7 @@ public class CannotCompleteParticipant extends CoordinatorCompletionParticipantA
 
     public void setEngine(final CoordinatorCompletionParticipantEngine engine)
     {
-	this.engine = engine ;
+    this.engine = engine ;
     }
 
     public void initialiseTimeout()

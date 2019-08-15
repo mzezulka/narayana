@@ -55,82 +55,82 @@ public class DemoResource extends org.omg.CosTransactions.ResourcePOA
 
     public DemoResource ()
     {
-	ORBManager.getPOA().objectIsReady(this);
+    ORBManager.getPOA().objectIsReady(this);
 
-	ref = ResourceHelper.narrow(ORBManager.getPOA().corbaReference(this));
+    ref = ResourceHelper.narrow(ORBManager.getPOA().corbaReference(this));
 
         trace = new ResourceTrace();
     }
 
     public Resource getResource ()
     {
-	return ref;
+    return ref;
     }
 
     public void registerResource () throws Unavailable, Inactive, SystemException
     {
-	CurrentImple current = OTSImpleManager.current();
-	Control myControl = current.get_control();
-	Coordinator coord = myControl.get_coordinator();
+    CurrentImple current = OTSImpleManager.current();
+    Control myControl = current.get_control();
+    Coordinator coord = myControl.get_coordinator();
 
-	coord.register_resource(ref);
+    coord.register_resource(ref);
 
-	if (!printThread)
-	    System.out.println("Registered DemoResource");
+    if (!printThread)
+        System.out.println("Registered DemoResource");
     }
 
     public org.omg.CosTransactions.Vote prepare () throws SystemException
     {
-	if (printThread)
-	    System.out.println(Thread.currentThread());
+    if (printThread)
+        System.out.println(Thread.currentThread());
 
-	System.out.println("DEMORESOURCE : PREPARE");
+    System.out.println("DEMORESOURCE : PREPARE");
 
         if (trace.getTrace() == ResourceTrace.ResourceTraceNone)
-	    trace.setTrace(ResourceTrace.ResourceTracePrepare);
-	else
-	    trace.setTrace(ResourceTrace.ResourceTraceUnknown);
+        trace.setTrace(ResourceTrace.ResourceTracePrepare);
+    else
+        trace.setTrace(ResourceTrace.ResourceTraceUnknown);
 
-	return Vote.VoteCommit;
+    return Vote.VoteCommit;
     }
 
     public void rollback () throws SystemException, HeuristicCommit, HeuristicMixed, HeuristicHazard
     {
-	if (printThread)
-	    System.out.println(Thread.currentThread());
+    if (printThread)
+        System.out.println(Thread.currentThread());
 
-	System.out.println("DEMORESOURCE : ROLLBACK");
+    System.out.println("DEMORESOURCE : ROLLBACK");
 
         if (trace.getTrace() == ResourceTrace.ResourceTraceNone)
-	    trace.setTrace(ResourceTrace.ResourceTraceRollback);
-	else
-	{
-	    if (trace.getTrace() == ResourceTrace.ResourceTracePrepare)
-		trace.setTrace(ResourceTrace.ResourceTracePrepareRollback);
-	    else
-		trace.setTrace(ResourceTrace.ResourceTraceUnknown);
-	}
+        trace.setTrace(ResourceTrace.ResourceTraceRollback);
+    else
+    {
+        if (trace.getTrace() == ResourceTrace.ResourceTracePrepare)
+        trace.setTrace(ResourceTrace.ResourceTracePrepareRollback);
+        else
+        trace.setTrace(ResourceTrace.ResourceTraceUnknown);
+    }
     }
 
     public void commit () throws SystemException, NotPrepared, HeuristicRollback, HeuristicMixed, HeuristicHazard
     {
-	if (printThread)
-	    System.out.println(Thread.currentThread());
+    if (printThread)
+        System.out.println(Thread.currentThread());
 
-	System.out.println("DEMORESOURCE : COMMIT");
+    System.out.println("DEMORESOURCE : COMMIT");
 
         if (trace.getTrace() == ResourceTrace.ResourceTracePrepare)
-	    trace.setTrace(ResourceTrace.ResourceTracePrepareCommit);
-	else
-	    trace.setTrace(ResourceTrace.ResourceTraceUnknown);
+        trace.setTrace(ResourceTrace.ResourceTracePrepareCommit);
+    else
+        trace.setTrace(ResourceTrace.ResourceTraceUnknown);
     }
 
     public void forget () throws SystemException
     {
-	if (printThread)
-	    System.out.println(Thread.currentThread());
+    if (printThread)
+        System.out.println(Thread.currentThread());
 
-	System.out.println("DEMORESOURCE : FORGET");
+    System.out.println("DEMORESOURCE : FORGET");
 
         if (trace.getTrace() == ResourceTrace.ResourceTracePrepare)
             trace.setTrace(ResourceTrace.ResourceTracePrepareForget);
@@ -150,10 +150,10 @@ public class DemoResource extends org.omg.CosTransactions.ResourcePOA
 
     public void commit_one_phase () throws HeuristicHazard, SystemException
     {
-	if (printThread)
-	    System.out.println(Thread.currentThread());
+    if (printThread)
+        System.out.println(Thread.currentThread());
 
-	System.out.println("DEMORESOURCE : COMMIT_ONE_PHASE");
+    System.out.println("DEMORESOURCE : COMMIT_ONE_PHASE");
 
         if (trace.getTrace() == ResourceTrace.ResourceTraceNone)
             trace.setTrace(ResourceTrace.ResourceTraceCommitOnePhase);

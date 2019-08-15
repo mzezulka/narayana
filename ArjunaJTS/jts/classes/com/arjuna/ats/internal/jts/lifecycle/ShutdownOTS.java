@@ -36,12 +36,12 @@ public class ShutdownOTS extends com.arjuna.orbportability.oa.PreShutdown
 
     public ShutdownOTS ()
     {
-	super("ShutdownOTS");
+    super("ShutdownOTS");
     }
 
     public void work ()
     {
-	com.arjuna.ats.internal.jts.OTSImpleManager.purge();
+    com.arjuna.ats.internal.jts.OTSImpleManager.purge();
     }
 
 }

@@ -58,46 +58,46 @@ public class TopLevelTransaction extends AtomicTransaction
 
     public TopLevelTransaction ()
     {
-	if (jtsLogger.logger.isTraceEnabled()) {
+    if (jtsLogger.logger.isTraceEnabled()) {
         jtsLogger.logger.trace("TopLevelTransaction::TopLevelTransaction ()");
     }
 
-	_originalTransaction = null;
+    _originalTransaction = null;
     }
 
     public void finalize ()
     {
-	if (jtsLogger.logger.isTraceEnabled()) {
+    if (jtsLogger.logger.isTraceEnabled()) {
         jtsLogger.logger.trace("TopLevelTransaction.finalize ()");
     }
 
-	if (_originalTransaction != null)
-	{
-	    String name = null;
-	    Coordinator coord = null;
+    if (_originalTransaction != null)
+    {
+        String name = null;
+        Coordinator coord = null;
 
-	    try
-	    {
-		coord = _originalTransaction.get_coordinator();
+        try
+        {
+        coord = _originalTransaction.get_coordinator();
 
-		if (coord != null)
-		{
-		    name = coord.get_transaction_name();
-		}
-	    }
-	    catch (Exception e)
-	    {
-	    }
+        if (coord != null)
+        {
+            name = coord.get_transaction_name();
+        }
+        }
+        catch (Exception e)
+        {
+        }
 
-	    coord = null;
+        coord = null;
 
         jtsLogger.i18NLogger.warn_extensions_tltnestedscope(((name != null) ? name : "UNKNOWN"));
 
-	    name = null;
-	    _originalTransaction = null;
-	}
+        name = null;
+        _originalTransaction = null;
+    }
 
-	super.finalize();
+    super.finalize();
     }
 
     /**
@@ -107,110 +107,110 @@ public class TopLevelTransaction extends AtomicTransaction
 
     public synchronized void begin () throws SystemException, SubtransactionsUnavailable
     {
-	if (jtsLogger.logger.isTraceEnabled()) {
+    if (jtsLogger.logger.isTraceEnabled()) {
         jtsLogger.logger.trace("TopLevelTransaction::begin ()");
     }
 
-	// already begun?
+    // already begun?
 
-	if (_originalTransaction != null)
-	{
-	    throw new INVALID_TRANSACTION();
-	}
+    if (_originalTransaction != null)
+    {
+        throw new INVALID_TRANSACTION();
+    }
 
-	CurrentImple current = OTSImpleManager.current();
+    CurrentImple current = OTSImpleManager.current();
 
-	_originalTransaction = current.suspend();
+    _originalTransaction = current.suspend();
 
-	if (jtsLogger.logger.isTraceEnabled()) {
+    if (jtsLogger.logger.isTraceEnabled()) {
         jtsLogger.logger.trace("TopLevelTransaction::begin - suspend transaction " + _originalTransaction);
     }
 
-	super.begin();
+    super.begin();
     }
 
     public synchronized void commit (boolean report_heuristics) throws SystemException, NoTransaction, HeuristicMixed, HeuristicHazard, WrongTransaction
     {
-	if (jtsLogger.logger.isTraceEnabled()) {
+    if (jtsLogger.logger.isTraceEnabled()) {
         jtsLogger.logger.trace("TopLevelTransaction::commit ( " + report_heuristics + " ) called for " + _originalTransaction);
     }
 
-	if (validTransaction())
-	{
-	    try
-	    {
-		super.commit(report_heuristics);
-	    }
-	    catch (WrongTransaction e1)
-	    {
-		resumeTransaction();
+    if (validTransaction())
+    {
+        try
+        {
+        super.commit(report_heuristics);
+        }
+        catch (WrongTransaction e1)
+        {
+        resumeTransaction();
 
-		throw e1;
-	    }
-	    catch (SystemException e2)
-	    {
-		resumeTransaction();
+        throw e1;
+        }
+        catch (SystemException e2)
+        {
+        resumeTransaction();
 
-		throw e2;
-	    }
+        throw e2;
+        }
 
-	    resumeTransaction();
-	}
-	else
-	    throw new WrongTransaction();
+        resumeTransaction();
+    }
+    else
+        throw new WrongTransaction();
     }
 
     public synchronized void rollback () throws SystemException, NoTransaction, WrongTransaction
     {
-	if (jtsLogger.logger.isTraceEnabled()) {
+    if (jtsLogger.logger.isTraceEnabled()) {
         jtsLogger.logger.trace("TopLevelTransaction::rollback () called for " + _originalTransaction);
     }
 
-	if (validTransaction())
-	{
-	    try
-	    {
-		super.rollback();
-	    }
-	    catch (WrongTransaction e1)
-	    {
-		resumeTransaction();
+    if (validTransaction())
+    {
+        try
+        {
+        super.rollback();
+        }
+        catch (WrongTransaction e1)
+        {
+        resumeTransaction();
 
-		throw e1;
-	    }
-	    catch (SystemException e2)
-	    {
-		resumeTransaction();
+        throw e1;
+        }
+        catch (SystemException e2)
+        {
+        resumeTransaction();
 
-		throw e2;
-	    }
+        throw e2;
+        }
 
-	    resumeTransaction();
-	}
-	else
-	    throw new WrongTransaction();
+        resumeTransaction();
+    }
+    else
+        throw new WrongTransaction();
     }
 
     private final void resumeTransaction ()
     {
-	if (jtsLogger.logger.isTraceEnabled()) {
+    if (jtsLogger.logger.isTraceEnabled()) {
         jtsLogger.logger.trace("TopLevelTransaction::resumeTransaction for " + _originalTransaction);
     }
 
-	try
-	{
-	    if (_originalTransaction != null)
-	    {
-		CurrentImple current = OTSImpleManager.current();
+    try
+    {
+        if (_originalTransaction != null)
+        {
+        CurrentImple current = OTSImpleManager.current();
 
-		current.resume(_originalTransaction);
+        current.resume(_originalTransaction);
 
-		_originalTransaction = null;
-	    }
-	}
-	catch (Exception e)
-	{
-	}
+        _originalTransaction = null;
+        }
+    }
+    catch (Exception e)
+    {
+    }
     }
 
     private Control _originalTransaction;

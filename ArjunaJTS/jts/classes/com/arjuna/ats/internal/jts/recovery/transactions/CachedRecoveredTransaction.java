@@ -57,21 +57,21 @@ public class CachedRecoveredTransaction
 {
     public CachedRecoveredTransaction ( Uid actionUid, String theType )
     {
-	_theTransactionUid = new Uid (actionUid);
-	_theTransactionType = theType;
+    _theTransactionUid = new Uid (actionUid);
+    _theTransactionType = theType;
 
-	if (jtsLogger.logger.isDebugEnabled()) {
+    if (jtsLogger.logger.isDebugEnabled()) {
         jtsLogger.logger.debug("CachedRecoveredTransaction created ["+_theTransactionUid+", "+_theTransactionType+"]");
     }
     }
 
     public Uid getTransactionUid()
     {
-	if (jtsLogger.logger.isDebugEnabled()) {
+    if (jtsLogger.logger.isDebugEnabled()) {
         jtsLogger.logger.debug("CachedRecoveredTransaction.getTransactionUid() ="
                 + _theTransactionUid);
     }
-	return _theTransactionUid;
+    return _theTransactionUid;
     }
 
     /**
@@ -80,50 +80,50 @@ public class CachedRecoveredTransaction
     public synchronized Status get_status () throws SystemException
     {
 
-	Status theStatus = TransactionCache.get_status(_theTransactionUid, _theTransactionType);
+    Status theStatus = TransactionCache.get_status(_theTransactionUid, _theTransactionType);
 
-	if (jtsLogger.logger.isDebugEnabled()) {
+    if (jtsLogger.logger.isDebugEnabled()) {
         jtsLogger.logger.debug("CachedRecoveredTransaction.get_status ["
                 + _theTransactionUid + ", " + _theTransactionType + "] = "
                 + Utility.stringStatus(theStatus));
     }
-	return theStatus;
+    return theStatus;
     }
 
     /* THIS LOGIC IS MISPLACED - it needs a javatmpl */
     boolean /* sync ? */ originalBusy()
     {
-	Status originalStatus = getOriginalStatus();
+    Status originalStatus = getOriginalStatus();
 
-	if (jtsLogger.logger.isDebugEnabled()) {
+    if (jtsLogger.logger.isDebugEnabled()) {
         jtsLogger.logger.debug("CachedRecoveredTransaction.originalBusy - told status is "+Utility.stringStatus(originalStatus));
     }
 
-	switch (originalStatus.value()) {
-	    // original process dead or finished with tran
-	    case Status._StatusNoTransaction:
-		return false;
+    switch (originalStatus.value()) {
+        // original process dead or finished with tran
+        case Status._StatusNoTransaction:
+        return false;
 
-	    // these states can only come from a process that is still alive
-	    case Status._StatusActive:
-	    case Status._StatusMarkedRollback:
-	    case Status._StatusPreparing:
-	    case Status._StatusCommitting:
-	    case Status._StatusRollingBack:
-	    case Status._StatusPrepared:
-		return true;
+        // these states can only come from a process that is still alive
+        case Status._StatusActive:
+        case Status._StatusMarkedRollback:
+        case Status._StatusPreparing:
+        case Status._StatusCommitting:
+        case Status._StatusRollingBack:
+        case Status._StatusPrepared:
+        return true;
 
-	    // the transaction is apparently still there, but has completed its
-	    // phase2. should be safe to redo it (this argument is a bit shaky)
-	    case Status._StatusCommitted:
-	    case Status._StatusRolledBack:
-		return false;
+        // the transaction is apparently still there, but has completed its
+        // phase2. should be safe to redo it (this argument is a bit shaky)
+        case Status._StatusCommitted:
+        case Status._StatusRolledBack:
+        return false;
 
-	    // this shouldn't happen - assume busy
-	    case Status._StatusUnknown:
-	    default:
-		return true;
-	}
+        // this shouldn't happen - assume busy
+        case Status._StatusUnknown:
+        default:
+        return true;
+    }
     }
 
     /**
@@ -131,7 +131,7 @@ public class CachedRecoveredTransaction
      */
     Status /* sync ? */ getOriginalStatus ()
     {
-	return TransactionCache.getOriginalStatus(_theTransactionUid,_theTransactionType);
+    return TransactionCache.getOriginalStatus(_theTransactionUid,_theTransactionType);
     }
 
     /**
@@ -139,7 +139,7 @@ public class CachedRecoveredTransaction
      */
     public int getRecoveryStatus ()
     {
-	return TransactionCache.getRecoveryStatus(_theTransactionUid, _theTransactionType);
+    return TransactionCache.getRecoveryStatus(_theTransactionUid, _theTransactionType);
     }
 
     /**
@@ -151,12 +151,12 @@ public class CachedRecoveredTransaction
      */
     public void addResourceRecord (Uid rcUid, Resource r)
     {
-	if (jtsLogger.logger.isDebugEnabled()) {
+    if (jtsLogger.logger.isDebugEnabled()) {
         jtsLogger.logger.debug("CachedRecoveredTransaction.addResourceRecord ["
                 + _theTransactionUid + ", " + _theTransactionType + "]"
                 + "(" + rcUid + ")");
     }
-	TransactionCache.addResourceRecord(_theTransactionUid, _theTransactionType, rcUid, r);
+    TransactionCache.addResourceRecord(_theTransactionUid, _theTransactionType, rcUid, r);
     }
 
     /**
@@ -165,12 +165,12 @@ public class CachedRecoveredTransaction
     public void replayPhase2()
     {
 
-	if (jtsLogger.logger.isDebugEnabled()) {
+    if (jtsLogger.logger.isDebugEnabled()) {
         jtsLogger.logger.debug("CachedRecoveredTransaction.replayPhase2 ["
                 + _theTransactionUid + ", " + _theTransactionType + "]");
     }
 
-	TransactionCache.replayPhase2(_theTransactionUid, _theTransactionType);
+    TransactionCache.replayPhase2(_theTransactionUid, _theTransactionType);
     }
 
     private Uid    _theTransactionUid = null;

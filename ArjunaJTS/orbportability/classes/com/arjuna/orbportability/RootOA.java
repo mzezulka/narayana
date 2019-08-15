@@ -85,7 +85,7 @@ public class RootOA extends OA
                     }
                 }
 
-                //		_preOAShutdown.clear();
+                //        _preOAShutdown.clear();
             }
 
             _oa.destroyRootPOA();
@@ -105,7 +105,7 @@ public class RootOA extends OA
                     }
                 }
 
-                //		_postOAShutdown.clear();
+                //        _postOAShutdown.clear();
             }
         }
     }
@@ -172,7 +172,7 @@ public boolean objectIsReady (Servant obj) throws SystemException
                 result = false;
             }
 
-	    //??
+        //??
 
             EventManager.getManager().connected(corbaReference(obj));
         }
@@ -246,13 +246,13 @@ public boolean shutdownObject (Servant obj)
                 result = false;
             }
         }
-	catch (NullPointerException ex)
-	{
-	    /*
-	     * Ignore this as it means some other thread/process was sharing
-	     * the POA and shut it down itself.
-	     */
-	}
+    catch (NullPointerException ex)
+    {
+        /*
+         * Ignore this as it means some other thread/process was sharing
+         * the POA and shut it down itself.
+         */
+    }
         catch (Exception e)
         {
             if(e instanceof OBJECT_NOT_EXIST) {

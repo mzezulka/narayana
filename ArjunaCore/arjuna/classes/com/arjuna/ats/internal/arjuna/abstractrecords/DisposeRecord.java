@@ -56,73 +56,73 @@ public class DisposeRecord extends CadaverRecord
 
     public DisposeRecord (ParticipantStore participantStore, StateManager sm)
     {
-	super(null, participantStore, sm);
+    super(null, participantStore, sm);
 
-	this.targetParticipantStore = participantStore;
+    this.targetParticipantStore = participantStore;
 
-	if (sm != null)
-	{
-	    objectUid = sm.get_uid();
-	    typeName = sm.type();
-	}
-	else
-	{
-	    objectUid = Uid.nullUid();
-	    typeName = null;
-	}
+    if (sm != null)
+    {
+        objectUid = sm.get_uid();
+        typeName = sm.type();
+    }
+    else
+    {
+        objectUid = Uid.nullUid();
+        typeName = null;
+    }
 
-	if (tsLogger.logger.isTraceEnabled()) {
+    if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("DisposeRecord::DisposeRecord(" + participantStore + ", " + objectUid + ")");
     }
     }
 
     public boolean propagateOnAbort ()
     {
-	return false;
+    return false;
     }
 
     public int typeIs ()
     {
-	return RecordType.DISPOSE;
+    return RecordType.DISPOSE;
     }
 
     public int nestedAbort ()
     {
-	if (tsLogger.logger.isTraceEnabled()) {
+    if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("DisposeRecord::nestedAbort() for " + order());
     }
 
-	return TwoPhaseOutcome.FINISH_OK;
+    return TwoPhaseOutcome.FINISH_OK;
     }
 
     public int nestedCommit ()
     {
-	if (tsLogger.logger.isTraceEnabled()) {
+    if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("DisposeRecord::nestedCommit() for " + order());
     }
 
-	return TwoPhaseOutcome.FINISH_OK;
+    return TwoPhaseOutcome.FINISH_OK;
     }
 
     public int nestedPrepare ()
     {
-	if (tsLogger.logger.isTraceEnabled()) {
+    if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("DisposeRecord::nestedPrepare() for " + order());
     }
 
-	if ((targetParticipantStore != null) && (objectUid.notEquals(Uid.nullUid())))
-	    return TwoPhaseOutcome.PREPARE_OK;
-	else
-	    return TwoPhaseOutcome.PREPARE_NOTOK;
+    if ((targetParticipantStore != null) && (objectUid.notEquals(Uid.nullUid())))
+        return TwoPhaseOutcome.PREPARE_OK;
+    else
+        return TwoPhaseOutcome.PREPARE_NOTOK;
     }
 
     public int topLevelAbort ()
     {
-	if (tsLogger.logger.isTraceEnabled()) {
+    if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("DisposeRecord::topLevelAbort() for " + order());
     }
 
-	return TwoPhaseOutcome.FINISH_OK;
+    return TwoPhaseOutcome.FINISH_OK;
     }
 
     /**
@@ -131,33 +131,33 @@ public class DisposeRecord extends CadaverRecord
 
     public int topLevelCommit ()
     {
-	if (tsLogger.logger.isTraceEnabled()) {
+    if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("DisposeRecord::topLevelCommit() for " + order());
     }
 
-	if ((targetParticipantStore != null) && (objectUid.notEquals(Uid.nullUid())))
-	{
-	    try
-	    {
-		if (targetParticipantStore.remove_committed(objectUid, typeName))
-		{
-		    // only valid if not doing recovery
+    if ((targetParticipantStore != null) && (objectUid.notEquals(Uid.nullUid())))
+    {
+        try
+        {
+        if (targetParticipantStore.remove_committed(objectUid, typeName))
+        {
+            // only valid if not doing recovery
 
-		    if (super.objectAddr != null)
-		    {
-		        StateManagerFriend.destroyed(super.objectAddr);
-			//super.objectAddr.destroyed();
-		    }
+            if (super.objectAddr != null)
+            {
+                StateManagerFriend.destroyed(super.objectAddr);
+            //super.objectAddr.destroyed();
+            }
 
-		    return TwoPhaseOutcome.FINISH_OK;
-		}
-	    }
-	    catch (final Throwable e) {
+            return TwoPhaseOutcome.FINISH_OK;
+        }
+        }
+        catch (final Throwable e) {
             tsLogger.i18NLogger.warn_DisposeRecord_5(e);
         }
-	}
+    }
 
-	return TwoPhaseOutcome.FINISH_ERROR;
+    return TwoPhaseOutcome.FINISH_ERROR;
     }
 
     public int topLevelPrepare ()
@@ -178,13 +178,13 @@ public class DisposeRecord extends CadaverRecord
 
     public void print (PrintWriter strm)
     {
-	strm.println("Dispose for:");
-	super.print(strm);
+    strm.println("Dispose for:");
+    super.print(strm);
     }
 
     public boolean doSave ()
     {
-	return true;
+    return true;
     }
 
     public boolean save_state (OutputObjectState os, int ot)
@@ -236,36 +236,36 @@ public class DisposeRecord extends CadaverRecord
 
     public String type ()
     {
-	return "/StateManager/AbstractRecord/RecoveryRecord/PersistenceRecord/CadaverRecord/DisposeRecord";
+    return "/StateManager/AbstractRecord/RecoveryRecord/PersistenceRecord/CadaverRecord/DisposeRecord";
     }
 
     public boolean shouldAdd (AbstractRecord a)
     {
-	return false;
+    return false;
     }
 
     public boolean shouldMerge (AbstractRecord a)
     {
-	return false;
+    return false;
     }
 
     public boolean shouldReplace (AbstractRecord a)
     {
-	return false;
+    return false;
     }
 
     public boolean shouldAlter (AbstractRecord a)
     {
-	return false;
+    return false;
     }
 
     public DisposeRecord ()
     {
-	super();
+    super();
 
-	objectUid = new Uid(Uid.nullUid());
-	typeName = null;
-	targetParticipantStore = null;
+    objectUid = new Uid(Uid.nullUid());
+    typeName = null;
+    targetParticipantStore = null;
     }
 
     private Uid         objectUid;

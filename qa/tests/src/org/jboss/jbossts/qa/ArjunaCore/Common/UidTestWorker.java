@@ -29,28 +29,28 @@ import org.jboss.jbossts.qa.ArjunaCore.Utils.qautil;
  */
 public class UidTestWorker
 {
-	/**
-	 * This is a sub processso it may be difficult to return our results.
-	 */
-	public static void main(String[] args)
-	{
-		int mNumberOfUids = 0;
-		try
-		{
-			mNumberOfUids = Integer.parseInt(args[0]);
-		}
-		catch (NumberFormatException mfe)
-		{
-			qautil.debug("error in uid worker using default value of 1000");
-			mNumberOfUids = 1000;
-		}
+    /**
+     * This is a sub processso it may be difficult to return our results.
+     */
+    public static void main(String[] args)
+    {
+        int mNumberOfUids = 0;
+        try
+        {
+            mNumberOfUids = Integer.parseInt(args[0]);
+        }
+        catch (NumberFormatException mfe)
+        {
+            qautil.debug("error in uid worker using default value of 1000");
+            mNumberOfUids = 1000;
+        }
 
         System.err.println("start ms/pid: "+System.currentTimeMillis()+"/"+ Utility.getpid());
 
-		for (int i = 0; i < mNumberOfUids; i++)
-		{
-			System.out.println(new Uid().toString());
-		}
+        for (int i = 0; i < mNumberOfUids; i++)
+        {
+            System.out.println(new Uid().toString());
+        }
 
         // hold ownership of the pid socket for at least one second,
         // as that's the uniqness scope of the process init timestamp
@@ -63,5 +63,5 @@ public class UidTestWorker
         }
 
         System.err.println("end pid "+Utility.getpid());
-	}
+    }
 }

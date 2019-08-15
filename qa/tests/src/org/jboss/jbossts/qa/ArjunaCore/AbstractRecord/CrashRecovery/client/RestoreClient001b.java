@@ -25,40 +25,40 @@ import org.jboss.jbossts.qa.ArjunaCore.Utils.BaseTestClient;
 
 public class RestoreClient001b extends BaseTestClient
 {
-	public static void main(String[] args)
-	{
-		RestoreClient001b test = new RestoreClient001b(args);
-	}
+    public static void main(String[] args)
+    {
+        RestoreClient001b test = new RestoreClient001b(args);
+    }
 
-	private RestoreClient001b(String[] args)
-	{
-		super(args);
-	}
+    private RestoreClient001b(String[] args)
+    {
+        super(args);
+    }
 
-	public void Test()
-	{
-		try
-		{
-			setNumberOfCalls(3);
-			setNumberOfResources(2);
-			setUniquePrefix(1);
+    public void Test()
+    {
+        try
+        {
+            setNumberOfCalls(3);
+            setNumberOfResources(2);
+            setUniquePrefix(1);
 
-			Service01 mService = new Service01(mNumberOfResources);
+            Service01 mService = new Service01(mNumberOfResources);
 
-			startTx();
-			mService.setupOper();
-			mService.doWork(mMaxIteration);
-			//comit transaction
-			commit();
+            startTx();
+            mService.setupOper();
+            mService.doWork(mMaxIteration);
+            //comit transaction
+            commit();
 
-			mService.storeUIDs(getUniquePrefix());
+            mService.storeUIDs(getUniquePrefix());
 
-			qaAssert(mCorrect);
-		}
-		catch (Exception e)
-		{
-			Fail("Error in RestoreClient001b.test() :", e);
-		}
-	}
+            qaAssert(mCorrect);
+        }
+        catch (Exception e)
+        {
+            Fail("Error in RestoreClient001b.test() :", e);
+        }
+    }
 
 }

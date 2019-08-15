@@ -63,33 +63,33 @@ import org.omg.CosTransactions.HeuristicHazard;
 
 public class Client01b
 {
-	public static void main(String[] args)
-	{
+    public static void main(String[] args)
+    {
         ClientBeforeCrash beforeCrash = new ClientBeforeCrash(Client01b.class.getSimpleName());
 
-		try
-		{
+        try
+        {
             beforeCrash.initOrb(args);
             beforeCrash.initCrashBehaviour(CrashBehavior.CrashBehaviorCrashInCommitOnePhase);
             beforeCrash.serviceSetup();
 
-			try
-			{
-				OTS.current().commit(true);
-				beforeCrash.setCorrect(false);  // should have got a heuristic
-			}
-			catch (HeuristicHazard heuristicHazard)
-			{
-			}
+            try
+            {
+                OTS.current().commit(true);
+                beforeCrash.setCorrect(false);  // should have got a heuristic
+            }
+            catch (HeuristicHazard heuristicHazard)
+            {
+            }
 
             beforeCrash.reportStatus();
-		}
-		catch (Exception exception)
-		{
+        }
+        catch (Exception exception)
+        {
             beforeCrash.reportException(exception);
-		}
+        }
         finally {
             beforeCrash.shutdownOrb();
         }
-	}
+    }
 }

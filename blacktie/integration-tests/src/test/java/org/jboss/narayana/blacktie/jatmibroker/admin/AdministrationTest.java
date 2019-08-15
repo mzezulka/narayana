@@ -62,7 +62,7 @@ public class AdministrationTest extends TestCase {
 
     public void tearDown() throws Exception {
         runServer.serverdone();
-		connection.close();
+        connection.close();
     }
 
     public void testShutdown() throws Exception {

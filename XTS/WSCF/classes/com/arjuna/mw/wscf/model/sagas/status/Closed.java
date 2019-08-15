@@ -46,12 +46,12 @@ public class Closed implements Status
 
     public static Closed instance ()
     {
-	return _instance;
+    return _instance;
     }
 
     public String toString ()
     {
-	return "org.w3c.wscf.sagas.status.Closed";
+    return "org.w3c.wscf.sagas.status.Closed";
     }
 
     private Closed ()

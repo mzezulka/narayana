@@ -125,96 +125,96 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
      */
 
     public ResourceRecord (boolean propagate, Resource theResource,
-			   Coordinator myParent, Uid recCoordUid,
-			   ArjunaTransactionImple current)
+               Coordinator myParent, Uid recCoordUid,
+               ArjunaTransactionImple current)
     {
-	super(new Uid(), null, ObjectType.ANDPERSISTENT);
+    super(new Uid(), null, ObjectType.ANDPERSISTENT);
 
-	_parentCoordHandle = myParent;
-	_resourceHandle = theResource;
-	_stringifiedResourceHandle = null;
-	_recCoordUid = (recCoordUid != null) ? (new Uid(recCoordUid)) : Uid.nullUid();
-	_propagateRecord = propagate;
-	_committed = false;
-	_rolledback = false;
+    _parentCoordHandle = myParent;
+    _resourceHandle = theResource;
+    _stringifiedResourceHandle = null;
+    _recCoordUid = (recCoordUid != null) ? (new Uid(recCoordUid)) : Uid.nullUid();
+    _propagateRecord = propagate;
+    _committed = false;
+    _rolledback = false;
     }
 
     public final Resource resourceHandle ()
     {
-	/*
-	 * After recovery we may have not been able to recreate the
-	 * _resourceHandle due to the fact that the Resource itself
-	 * may not be alive resulting in a failure to narrow the
-	 * reference returned from string_to_object. In such cases we
-	 * cache the stringied reference and retry the narrow when we
-	 * need to use the _resourceHandle as at this point the
-	 * Resource may have recovered.
-	 */
+    /*
+     * After recovery we may have not been able to recreate the
+     * _resourceHandle due to the fact that the Resource itself
+     * may not be alive resulting in a failure to narrow the
+     * reference returned from string_to_object. In such cases we
+     * cache the stringied reference and retry the narrow when we
+     * need to use the _resourceHandle as at this point the
+     * Resource may have recovered.
+     */
 
-	if ( (_resourceHandle == null) && (_stringifiedResourceHandle != null) )
-	{
-	    try
-	    {
-		org.omg.CORBA.ORB theOrb = ORBManager.getORB().orb();
+    if ( (_resourceHandle == null) && (_stringifiedResourceHandle != null) )
+    {
+        try
+        {
+        org.omg.CORBA.ORB theOrb = ORBManager.getORB().orb();
 
-		if (theOrb == null)
-		    throw new UNKNOWN();
+        if (theOrb == null)
+            throw new UNKNOWN();
 
-		if (jtsLogger.logger.isTraceEnabled())
-		{
-		    jtsLogger.logger.trace("ResourceRecord: About to string_to_object on "+_stringifiedResourceHandle);
-		}
+        if (jtsLogger.logger.isTraceEnabled())
+        {
+            jtsLogger.logger.trace("ResourceRecord: About to string_to_object on "+_stringifiedResourceHandle);
+        }
 
-		org.omg.CORBA.Object optr = theOrb.string_to_object(_stringifiedResourceHandle);
+        org.omg.CORBA.Object optr = theOrb.string_to_object(_stringifiedResourceHandle);
 
-		if (jtsLogger.logger.isTraceEnabled())
-		{
-		    jtsLogger.logger.trace("ResourceRecord: Successfully stringed to object, next try to narrow");
-		}
+        if (jtsLogger.logger.isTraceEnabled())
+        {
+            jtsLogger.logger.trace("ResourceRecord: Successfully stringed to object, next try to narrow");
+        }
 
-		theOrb = null;
+        theOrb = null;
 
-		_resourceHandle = org.omg.CosTransactions.ResourceHelper.narrow(optr);
+        _resourceHandle = org.omg.CosTransactions.ResourceHelper.narrow(optr);
 
-		if (jtsLogger.logger.isTraceEnabled())
-		{
-		    jtsLogger.logger.trace("ResourceRecord: Successfully narrowed");
-		}
+        if (jtsLogger.logger.isTraceEnabled())
+        {
+            jtsLogger.logger.trace("ResourceRecord: Successfully narrowed");
+        }
 
-		if (_resourceHandle == null)
-		    throw new BAD_PARAM();
-		else
-		{
-		    optr = null;
-		}
-	    }
-	    catch (SystemException e)
-	    {
-		// Failed to narrow to a Resource
+        if (_resourceHandle == null)
+            throw new BAD_PARAM();
+        else
+        {
+            optr = null;
+        }
+        }
+        catch (SystemException e)
+        {
+        // Failed to narrow to a Resource
 
-		if (jtsLogger.logger.isTraceEnabled())
-		{
-		    jtsLogger.logger.trace("ResourceRecord: Failed to narrow to Resource");
-		}
-	    }
-	}
+        if (jtsLogger.logger.isTraceEnabled())
+        {
+            jtsLogger.logger.trace("ResourceRecord: Failed to narrow to Resource");
+        }
+        }
+    }
 
-	return _resourceHandle;
+    return _resourceHandle;
     }
 
     public boolean propagateOnCommit ()
     {
-	return _propagateRecord;
+    return _propagateRecord;
     }
 
     public int typeIs ()
     {
-	return RecordType.OTS_RECORD;
+    return RecordType.OTS_RECORD;
     }
 
     public Object value ()
     {
-	return _resourceHandle;
+    return _resourceHandle;
     }
 
     public void setValue (Object o)
@@ -236,63 +236,63 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
 
     public int nestedAbort ()
     {
-	if (jtsLogger.logger.isTraceEnabled())
-	{
-	    jtsLogger.logger.trace("ResourceRecord::nestedAbort() for "+order());
-	}
+    if (jtsLogger.logger.isTraceEnabled())
+    {
+        jtsLogger.logger.trace("ResourceRecord::nestedAbort() for "+order());
+    }
 
-	/*
-	 * We shouldn't need to check committed since aborted nested actions
-	 * will drop these resources.
-	 */
+    /*
+     * We shouldn't need to check committed since aborted nested actions
+     * will drop these resources.
+     */
 
-	SubtransactionAwareResource staResource = null;
-	int o = TwoPhaseOutcome.FINISH_ERROR;
+    SubtransactionAwareResource staResource = null;
+    int o = TwoPhaseOutcome.FINISH_ERROR;
 
-	try
-	{
-	    /*
-	     * Must be an staResource to get here.
-	     */
+    try
+    {
+        /*
+         * Must be an staResource to get here.
+         */
 
-	    staResource = org.omg.CosTransactions.SubtransactionAwareResourceHelper.narrow(resourceHandle());
+        staResource = org.omg.CosTransactions.SubtransactionAwareResourceHelper.narrow(resourceHandle());
 
-	    if (staResource == null)
-		throw new BAD_PARAM(0, CompletionStatus.COMPLETED_NO);
-	}
-	catch (Exception exEnv)
-	{
-	    // not a sub tran resource, so ignore;
+        if (staResource == null)
+        throw new BAD_PARAM(0, CompletionStatus.COMPLETED_NO);
+    }
+    catch (Exception exEnv)
+    {
+        // not a sub tran resource, so ignore;
 
-	    o = TwoPhaseOutcome.FINISH_OK;
-	}
+        o = TwoPhaseOutcome.FINISH_OK;
+    }
 
-	if (staResource != null)
-	{
-	    try
-	    {
-		staResource.rollback_subtransaction();
-		o = TwoPhaseOutcome.FINISH_OK;
-	    }
-	    catch (Exception e)
-	    {
-		o = TwoPhaseOutcome.FINISH_ERROR;
-	    }
+    if (staResource != null)
+    {
+        try
+        {
+        staResource.rollback_subtransaction();
+        o = TwoPhaseOutcome.FINISH_OK;
+        }
+        catch (Exception e)
+        {
+        o = TwoPhaseOutcome.FINISH_ERROR;
+        }
 
-	    staResource = null;
-	}
+        staResource = null;
+    }
 
-	/*
-	 * Now release the parent as it is about to be destroyed
-	 * anyway.
-	 *
-	 * The parent may have already been released if abort is
-	 * being called because commit failed.
-	 */
+    /*
+     * Now release the parent as it is about to be destroyed
+     * anyway.
+     *
+     * The parent may have already been released if abort is
+     * being called because commit failed.
+     */
 
-	_parentCoordHandle = null;
+    _parentCoordHandle = null;
 
-	return o;
+    return o;
     }
 
     /**
@@ -303,12 +303,12 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
 
     public int nestedCommit ()
     {
-	if (jtsLogger.logger.isTraceEnabled())
-	{
-	    jtsLogger.logger.trace("ResourceRecord::nestedCommit() for "+order());
-	}
+    if (jtsLogger.logger.isTraceEnabled())
+    {
+        jtsLogger.logger.trace("ResourceRecord::nestedCommit() for "+order());
+    }
 
-	return TwoPhaseOutcome.FINISH_OK;
+    return TwoPhaseOutcome.FINISH_OK;
     }
 
     /**
@@ -321,282 +321,282 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
 
     public int nestedPrepare ()
     {
-	if (jtsLogger.logger.isTraceEnabled())
-	{
-	    jtsLogger.logger.trace("ResourceRecord::nestedPrepare() for "+order());
-	}
+    if (jtsLogger.logger.isTraceEnabled())
+    {
+        jtsLogger.logger.trace("ResourceRecord::nestedPrepare() for "+order());
+    }
 
-	int o = TwoPhaseOutcome.ONE_PHASE_ERROR;
-	SubtransactionAwareResource staResource = null;
+    int o = TwoPhaseOutcome.ONE_PHASE_ERROR;
+    SubtransactionAwareResource staResource = null;
 
-	try
-	{
-	    if (_committed)
-		return TwoPhaseOutcome.PREPARE_OK;
-	    else
-		_committed = true;
+    try
+    {
+        if (_committed)
+        return TwoPhaseOutcome.PREPARE_OK;
+        else
+        _committed = true;
 
-	    staResource = org.omg.CosTransactions.SubtransactionAwareResourceHelper.narrow(resourceHandle());
+        staResource = org.omg.CosTransactions.SubtransactionAwareResourceHelper.narrow(resourceHandle());
 
-	    if (staResource == null)
-		throw new BAD_PARAM(0, CompletionStatus.COMPLETED_NO);
-	}
-	catch (Exception e)
-	{
-	    /*
-	     * Not subtran aware resource, so return PREPARE_OK.
-	     * Resource will get invocations at top-level only.
-	     */
+        if (staResource == null)
+        throw new BAD_PARAM(0, CompletionStatus.COMPLETED_NO);
+    }
+    catch (Exception e)
+    {
+        /*
+         * Not subtran aware resource, so return PREPARE_OK.
+         * Resource will get invocations at top-level only.
+         */
 
-	    o = TwoPhaseOutcome.PREPARE_OK;
-	}
+        o = TwoPhaseOutcome.PREPARE_OK;
+    }
 
-	if (staResource != null)
-	{
-	    try
-	    {
-		staResource.commit_subtransaction(_parentCoordHandle);
+    if (staResource != null)
+    {
+        try
+        {
+        staResource.commit_subtransaction(_parentCoordHandle);
 
-		o = TwoPhaseOutcome.PREPARE_OK;
+        o = TwoPhaseOutcome.PREPARE_OK;
 
-		staResource = null;
-	    }
-	    catch (Exception e)
-	    {
-		o = TwoPhaseOutcome.ONE_PHASE_ERROR;
-	    }
-	}
+        staResource = null;
+        }
+        catch (Exception e)
+        {
+        o = TwoPhaseOutcome.ONE_PHASE_ERROR;
+        }
+    }
 
-	/*
-	 * Now release the parent as it is about to be destroyed
-	 * anyway.
-	 */
+    /*
+     * Now release the parent as it is about to be destroyed
+     * anyway.
+     */
 
-	_parentCoordHandle = null;
+    _parentCoordHandle = null;
 
-	return o;
+    return o;
     }
 
     public int topLevelAbort ()
     {
-	if (jtsLogger.logger.isTraceEnabled())
-	{
-	    jtsLogger.logger.trace("ResourceRecord::topLevelAbort() for "+order());
-	}
+    if (jtsLogger.logger.isTraceEnabled())
+    {
+        jtsLogger.logger.trace("ResourceRecord::topLevelAbort() for "+order());
+    }
 
-	try
-	{
-	    if (resourceHandle() != null)
-	    {
-		_resourceHandle.rollback();
-	    }
-	    else
-		return TwoPhaseOutcome.FINISH_ERROR;
-	}
-	catch (HeuristicCommit exEnv)
-	{
-	    if (_rolledback)
-		return TwoPhaseOutcome.HEURISTIC_HAZARD;  // participant lied in prepare!
-	    else
-		return TwoPhaseOutcome.HEURISTIC_COMMIT;
-	}
-	catch (HeuristicMixed ex1)
-	{
-	    return TwoPhaseOutcome.HEURISTIC_MIXED;
-	}
-	catch (HeuristicHazard ex2)
-	{
-	    return TwoPhaseOutcome.HEURISTIC_HAZARD;
-	}
-	catch (OBJECT_NOT_EXIST one)
-	{
-	    /*
-	     * If the resource voted to roll back in prepare then it can legally
-	     * be garbage collected at that point. Hence, it may be that we get
-	     * a failure during rollback if we try to call it. If it didn't vote
-	     * to roll back then some other error has happened.
-	     */
+    try
+    {
+        if (resourceHandle() != null)
+        {
+        _resourceHandle.rollback();
+        }
+        else
+        return TwoPhaseOutcome.FINISH_ERROR;
+    }
+    catch (HeuristicCommit exEnv)
+    {
+        if (_rolledback)
+        return TwoPhaseOutcome.HEURISTIC_HAZARD;  // participant lied in prepare!
+        else
+        return TwoPhaseOutcome.HEURISTIC_COMMIT;
+    }
+    catch (HeuristicMixed ex1)
+    {
+        return TwoPhaseOutcome.HEURISTIC_MIXED;
+    }
+    catch (HeuristicHazard ex2)
+    {
+        return TwoPhaseOutcome.HEURISTIC_HAZARD;
+    }
+    catch (OBJECT_NOT_EXIST one)
+    {
+        /*
+         * If the resource voted to roll back in prepare then it can legally
+         * be garbage collected at that point. Hence, it may be that we get
+         * a failure during rollback if we try to call it. If it didn't vote
+         * to roll back then some other error has happened.
+         */
 
-	    if (_rolledback)
-		return TwoPhaseOutcome.FINISH_OK;
-	    else
-		return TwoPhaseOutcome.HEURISTIC_HAZARD;
-	}
-	catch (SystemException ex3) {
+        if (_rolledback)
+        return TwoPhaseOutcome.FINISH_OK;
+        else
+        return TwoPhaseOutcome.HEURISTIC_HAZARD;
+    }
+    catch (SystemException ex3) {
         jtsLogger.i18NLogger.warn_resources_rrcaught("ResourceRecord.topLevelAbort", ex3);
 
         return TwoPhaseOutcome.FINISH_ERROR;
     }
 
-	return TwoPhaseOutcome.FINISH_OK;
+    return TwoPhaseOutcome.FINISH_OK;
     }
 
     public int topLevelCommit ()
     {
-	if (jtsLogger.logger.isTraceEnabled())
-	{
-	    jtsLogger.logger.trace("ResourceRecord::topLevelCommit() for "+order());
-	}
+    if (jtsLogger.logger.isTraceEnabled())
+    {
+        jtsLogger.logger.trace("ResourceRecord::topLevelCommit() for "+order());
+    }
 
-	try
-	{
-	    if (resourceHandle() != null)
-	    {
-		_resourceHandle.commit();
-	    }
-	    else
-		return TwoPhaseOutcome.FINISH_ERROR;
-	}
-	catch (NotPrepared ex1)
-	{
-	    return TwoPhaseOutcome.NOT_PREPARED;
-	}
-	catch (HeuristicRollback ex2)
-	{
-	    return TwoPhaseOutcome.HEURISTIC_ROLLBACK;
-	}
-	catch (HeuristicMixed ex3)
-	{
-	    return TwoPhaseOutcome.HEURISTIC_MIXED;
-	}
-	catch (HeuristicHazard ex4)
-	{
-	    return TwoPhaseOutcome.HEURISTIC_HAZARD;
-	}
-	catch (SystemException ex5) {
+    try
+    {
+        if (resourceHandle() != null)
+        {
+        _resourceHandle.commit();
+        }
+        else
+        return TwoPhaseOutcome.FINISH_ERROR;
+    }
+    catch (NotPrepared ex1)
+    {
+        return TwoPhaseOutcome.NOT_PREPARED;
+    }
+    catch (HeuristicRollback ex2)
+    {
+        return TwoPhaseOutcome.HEURISTIC_ROLLBACK;
+    }
+    catch (HeuristicMixed ex3)
+    {
+        return TwoPhaseOutcome.HEURISTIC_MIXED;
+    }
+    catch (HeuristicHazard ex4)
+    {
+        return TwoPhaseOutcome.HEURISTIC_HAZARD;
+    }
+    catch (SystemException ex5) {
         jtsLogger.i18NLogger.warn_resources_rrcaught("ResourceRecord commit -", ex5);
 
         return TwoPhaseOutcome.FINISH_ERROR;
     }
 
-	return TwoPhaseOutcome.FINISH_OK;
+    return TwoPhaseOutcome.FINISH_OK;
     }
 
     public int topLevelPrepare ()
     {
-	if (jtsLogger.logger.isTraceEnabled())
-	{
-	    jtsLogger.logger.trace("ResourceRecord::topLevelPrepare() for "+order());
-	}
+    if (jtsLogger.logger.isTraceEnabled())
+    {
+        jtsLogger.logger.trace("ResourceRecord::topLevelPrepare() for "+order());
+    }
 
-	try
-	{
-	    if (resourceHandle() != null)
-	    {
-		switch (_resourceHandle.prepare().value())
-		{
-		case Vote._VoteCommit:
-		    return TwoPhaseOutcome.PREPARE_OK;
-		case Vote._VoteRollback:
-		    _rolledback = true;
+    try
+    {
+        if (resourceHandle() != null)
+        {
+        switch (_resourceHandle.prepare().value())
+        {
+        case Vote._VoteCommit:
+            return TwoPhaseOutcome.PREPARE_OK;
+        case Vote._VoteRollback:
+            _rolledback = true;
 
-		    return TwoPhaseOutcome.PREPARE_NOTOK;
-		case Vote._VoteReadOnly:
-		    return TwoPhaseOutcome.PREPARE_READONLY;
-		}
-	    }
-	    else
-		return TwoPhaseOutcome.PREPARE_NOTOK;
-	}
-	catch (HeuristicMixed ex)
-	{
-	    return TwoPhaseOutcome.HEURISTIC_MIXED;
-	}
-	catch (HeuristicHazard ex)
-	{
-	    return TwoPhaseOutcome.HEURISTIC_HAZARD;
-	}
-	catch (Exception e)
-	{
-	    return TwoPhaseOutcome.PREPARE_NOTOK;
-	}
+            return TwoPhaseOutcome.PREPARE_NOTOK;
+        case Vote._VoteReadOnly:
+            return TwoPhaseOutcome.PREPARE_READONLY;
+        }
+        }
+        else
+        return TwoPhaseOutcome.PREPARE_NOTOK;
+    }
+    catch (HeuristicMixed ex)
+    {
+        return TwoPhaseOutcome.HEURISTIC_MIXED;
+    }
+    catch (HeuristicHazard ex)
+    {
+        return TwoPhaseOutcome.HEURISTIC_HAZARD;
+    }
+    catch (Exception e)
+    {
+        return TwoPhaseOutcome.PREPARE_NOTOK;
+    }
 
-	return TwoPhaseOutcome.PREPARE_NOTOK;
+    return TwoPhaseOutcome.PREPARE_NOTOK;
     }
 
     public int nestedOnePhaseCommit ()
     {
-	int res = nestedPrepare();
+    int res = nestedPrepare();
 
-	switch (res)
-	{
-	case TwoPhaseOutcome.PREPARE_OK:
-	    return nestedCommit();
-	case TwoPhaseOutcome.PREPARE_READONLY:
-	    return TwoPhaseOutcome.FINISH_OK;
-	default:
-	    return TwoPhaseOutcome.FINISH_ERROR;
-	}
+    switch (res)
+    {
+    case TwoPhaseOutcome.PREPARE_OK:
+        return nestedCommit();
+    case TwoPhaseOutcome.PREPARE_READONLY:
+        return TwoPhaseOutcome.FINISH_OK;
+    default:
+        return TwoPhaseOutcome.FINISH_ERROR;
+    }
     }
 
     public int topLevelOnePhaseCommit ()
     {
-	try
-	{
-	    if (resourceHandle() != null)
-		_resourceHandle.commit_one_phase();
-	}
-	catch (HeuristicHazard e1)
-	{
-	    return TwoPhaseOutcome.HEURISTIC_HAZARD;
-	}
-	catch (TRANSACTION_ROLLEDBACK e4)
-	{
-	    return TwoPhaseOutcome.ONE_PHASE_ERROR;
-	}
-	catch (INVALID_TRANSACTION e5)
-	{
-	    return TwoPhaseOutcome.ONE_PHASE_ERROR;
-	}
-	catch (Exception e5)
-	{
-	    /*
-	     * Unknown error - better assume heuristic!
-	     */
+    try
+    {
+        if (resourceHandle() != null)
+        _resourceHandle.commit_one_phase();
+    }
+    catch (HeuristicHazard e1)
+    {
+        return TwoPhaseOutcome.HEURISTIC_HAZARD;
+    }
+    catch (TRANSACTION_ROLLEDBACK e4)
+    {
+        return TwoPhaseOutcome.ONE_PHASE_ERROR;
+    }
+    catch (INVALID_TRANSACTION e5)
+    {
+        return TwoPhaseOutcome.ONE_PHASE_ERROR;
+    }
+    catch (Exception e5)
+    {
+        /*
+         * Unknown error - better assume heuristic!
+         */
 
-	    return TwoPhaseOutcome.HEURISTIC_HAZARD;
-	}
+        return TwoPhaseOutcome.HEURISTIC_HAZARD;
+    }
 
-	return TwoPhaseOutcome.FINISH_OK;
+    return TwoPhaseOutcome.FINISH_OK;
     }
 
     public boolean forgetHeuristic ()
     {
-	try
-	{
-	    if (resourceHandle() != null)
-	    {
-		_resourceHandle.forget();
+    try
+    {
+        if (resourceHandle() != null)
+        {
+        _resourceHandle.forget();
 
-		return true;
-	    }
-	    else {
+        return true;
+        }
+        else {
             jtsLogger.i18NLogger.warn_resources_rrinvalid("ResourceRecord.forgetHeuristic");
         }
-	}
-	catch (SystemException e) {
+    }
+    catch (SystemException e) {
         jtsLogger.i18NLogger.warn_resources_rrcaught("ResourceRecord.forgetHeuristic", e);
     }
 
-	return false;
+    return false;
     }
 /*
     public static AbstractRecord create ()
     {
-	return new ResourceRecord();
+    return new ResourceRecord();
     }
 */
     public static void remove (AbstractRecord toDelete)
     {
-	//toDelete = null;
+    //toDelete = null;
     }
 
     public void print (PrintWriter strm)
     {
-	super.print(strm);
+    super.print(strm);
 
-	strm.print("Resource Record");
-	strm.print(_resourceHandle+"\t"+_parentCoordHandle+"\t"+_propagateRecord);
+    strm.print("Resource Record");
+    strm.print(_resourceHandle+"\t"+_parentCoordHandle+"\t"+_propagateRecord);
     }
 
     /**
@@ -610,149 +610,149 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
 
     public boolean restore_state (InputObjectState os, int t)
     {
-	int isString = 0;
-	boolean result = super.restore_state(os, t);
+    int isString = 0;
+    boolean result = super.restore_state(os, t);
 
-	if (!result)
-	    return false;
+    if (!result)
+        return false;
 
-	try
-	{
-	    isString = os.unpackInt();
+    try
+    {
+        isString = os.unpackInt();
 
-	    /*
-	     * Do we need to restore the parent coordinator handle?
-	     */
+        /*
+         * Do we need to restore the parent coordinator handle?
+         */
 
-	    _parentCoordHandle = null;
+        _parentCoordHandle = null;
 
-	    if (isString == 1)
-	    {
-		_stringifiedResourceHandle = os.unpackString();
+        if (isString == 1)
+        {
+        _stringifiedResourceHandle = os.unpackString();
 
-		/*
-		 * Could call resourceHandle() here to restore the
-		 * _resourceHandle reference but no loss in doing it
-		 * lazily.
-		 */
+        /*
+         * Could call resourceHandle() here to restore the
+         * _resourceHandle reference but no loss in doing it
+         * lazily.
+         */
 
-		// Unpack recovery coordinator Uid
+        // Unpack recovery coordinator Uid
 
-		_recCoordUid = UidHelper.unpackFrom(os);
+        _recCoordUid = UidHelper.unpackFrom(os);
 
-		if (jtsLogger.logger.isTraceEnabled())
-		{
-		    jtsLogger.logger.trace("ResourceRecord.restore_state: unpacked rec co with uid="+_recCoordUid);
-		}
-	    }
-	}
-	catch (IOException e)
-	{
-	    result = false;
-	}
+        if (jtsLogger.logger.isTraceEnabled())
+        {
+            jtsLogger.logger.trace("ResourceRecord.restore_state: unpacked rec co with uid="+_recCoordUid);
+        }
+        }
+    }
+    catch (IOException e)
+    {
+        result = false;
+    }
 
-	return result;
+    return result;
     }
 
     public boolean save_state (OutputObjectState os, int t)
     {
-	boolean result = super.save_state(os, t);
+    boolean result = super.save_state(os, t);
 
-	if (!result)
-	    return false;
+    if (!result)
+        return false;
 
-	try
-	{
-	    /*
-	     * Do we need to save the parent coordinator handle?
-	     */
+    try
+    {
+        /*
+         * Do we need to save the parent coordinator handle?
+         */
 
-	    /*
-	     * If we have a _resourceHandle then we stringify it and
-	     * pack the string.  Failing that if we have a cached
-	     * stringified version (in _stringifiedResourceHandle)
-	     * then we pack that. If we have neither then we're
-	     * doomed.
-	     */
+        /*
+         * If we have a _resourceHandle then we stringify it and
+         * pack the string.  Failing that if we have a cached
+         * stringified version (in _stringifiedResourceHandle)
+         * then we pack that. If we have neither then we're
+         * doomed.
+         */
 
-	    if ( (resourceHandle() == null) && (_stringifiedResourceHandle == null) )
-	    {
-		os.packInt(-1);
-	    }
-	    else
-	    {
-		os.packInt(1);
-		String stringRef = null;
+        if ( (resourceHandle() == null) && (_stringifiedResourceHandle == null) )
+        {
+        os.packInt(-1);
+        }
+        else
+        {
+        os.packInt(1);
+        String stringRef = null;
 
-		if (_resourceHandle != null)
-		{
-		    org.omg.CORBA.ORB theOrb = ORBManager.getORB().orb();
+        if (_resourceHandle != null)
+        {
+            org.omg.CORBA.ORB theOrb = ORBManager.getORB().orb();
 
-		    if (theOrb == null)
-			throw new UNKNOWN();
+            if (theOrb == null)
+            throw new UNKNOWN();
 
-		    stringRef = theOrb.object_to_string(_resourceHandle);
+            stringRef = theOrb.object_to_string(_resourceHandle);
 
-		    theOrb = null;
-		}
-		else
-		{
-		    stringRef = _stringifiedResourceHandle;
-		}
+            theOrb = null;
+        }
+        else
+        {
+            stringRef = _stringifiedResourceHandle;
+        }
 
-		if (stringRef != null)
-		{
-		    os.packString(stringRef);
+        if (stringRef != null)
+        {
+            os.packString(stringRef);
 
-		    if (jtsLogger.logger.isTraceEnabled())
-		    {
-			jtsLogger.logger.trace("ResourceRecord: packed obj ref "+stringRef);
-		    }
-		}
-		else
-		{
-		    result = false;
-		}
+            if (jtsLogger.logger.isTraceEnabled())
+            {
+            jtsLogger.logger.trace("ResourceRecord: packed obj ref "+stringRef);
+            }
+        }
+        else
+        {
+            result = false;
+        }
 
-		stringRef = null;
+        stringRef = null;
 
-		if (result)
-		{
-		    // Pack recovery coordinator Uid
-		    UidHelper.packInto(_recCoordUid, os);
+        if (result)
+        {
+            // Pack recovery coordinator Uid
+            UidHelper.packInto(_recCoordUid, os);
 
-		    if (jtsLogger.logger.isTraceEnabled())
-		    {
-			jtsLogger.logger.trace("Packed rec co uid of "+_recCoordUid);
-		    }
-		}
-	    }
-	}
-	catch (IOException e)
-	{
-	    result = false;
-	}
-	catch (SystemException e)
-	{
-	    result = false;
-	}
+            if (jtsLogger.logger.isTraceEnabled())
+            {
+            jtsLogger.logger.trace("Packed rec co uid of "+_recCoordUid);
+            }
+        }
+        }
+    }
+    catch (IOException e)
+    {
+        result = false;
+    }
+    catch (SystemException e)
+    {
+        result = false;
+    }
 
-	return result;
+    return result;
     }
 
     public String type ()
     {
-	return "/StateManager/AbstractRecord/ResourceRecord";
+    return "/StateManager/AbstractRecord/ResourceRecord";
     }
 
     public boolean doSave ()
     {
-	return true;
+    return true;
     }
 
     public final Uid getRCUid ()
     {
-	return _recCoordUid;
+    return _recCoordUid;
     }
 
     public void merge (AbstractRecord a)
@@ -765,48 +765,48 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
 
     public boolean shouldAdd (AbstractRecord a)
     {
-	return false;
+    return false;
     }
 
     public boolean shouldAlter (AbstractRecord a)
     {
-	return false;
+    return false;
     }
 
     public boolean shouldMerge (AbstractRecord a)
     {
-	return false;
+    return false;
     }
 
     public boolean shouldReplace (AbstractRecord rec)
     {
-	boolean replace = false;
+    boolean replace = false;
 
-	if (rec != null)
-	{
-	    if (rec.typeIs() == typeIs())
-	    {
-		ResourceRecord newRec = (ResourceRecord) rec;
+    if (rec != null)
+    {
+        if (rec.typeIs() == typeIs())
+        {
+        ResourceRecord newRec = (ResourceRecord) rec;
 
-		/*
-		 * Check whether the new record corresponds to the same
-		 * RecoveryCoordinator as this one. If so replace.
-		 * Don't replace if the uids are NIL_UID
-		 */
+        /*
+         * Check whether the new record corresponds to the same
+         * RecoveryCoordinator as this one. If so replace.
+         * Don't replace if the uids are NIL_UID
+         */
 
-		if ( ( _recCoordUid.notEquals(Uid.nullUid()) ) && (_recCoordUid.equals(newRec.getRCUid())) )
-		{
-		    replace = true;
-		}
-	    }
-	}
+        if ( ( _recCoordUid.notEquals(Uid.nullUid()) ) && (_recCoordUid.equals(newRec.getRCUid())) )
+        {
+            replace = true;
+        }
+        }
+    }
 
-	if (jtsLogger.logger.isTraceEnabled())
-	{
-	    jtsLogger.logger.trace("ResourceRecord: shouldReplace() = "+replace);
-	}
+    if (jtsLogger.logger.isTraceEnabled())
+    {
+        jtsLogger.logger.trace("ResourceRecord: shouldReplace() = "+replace);
+    }
 
-	return replace;
+    return replace;
     }
 
     /*
@@ -814,36 +814,36 @@ public class ResourceRecord extends com.arjuna.ats.arjuna.coordinator.AbstractRe
      */
 
     public ResourceRecord (boolean propagate, Resource theResource,
-			      Uid recCoordUid)
+                  Uid recCoordUid)
     {
-	super(new Uid(), null, ObjectType.ANDPERSISTENT);
+    super(new Uid(), null, ObjectType.ANDPERSISTENT);
 
-	_parentCoordHandle = null;
-	_resourceHandle = theResource;
-	_stringifiedResourceHandle = null;
-	_recCoordUid = (recCoordUid != null) ? (new Uid(recCoordUid)) : Uid.nullUid();
-	_propagateRecord = propagate;
-	_committed = false;
-	_rolledback = false;
+    _parentCoordHandle = null;
+    _resourceHandle = theResource;
+    _stringifiedResourceHandle = null;
+    _recCoordUid = (recCoordUid != null) ? (new Uid(recCoordUid)) : Uid.nullUid();
+    _propagateRecord = propagate;
+    _committed = false;
+    _rolledback = false;
     }
 
     public ResourceRecord ()
     {
-	super();
+    super();
 
-	_parentCoordHandle = null;
-	_resourceHandle = null;
-	_stringifiedResourceHandle = null;
-	_recCoordUid = new Uid(Uid.nullUid());
-	_propagateRecord = false;
-	_committed = false;
-	_rolledback = false;
+    _parentCoordHandle = null;
+    _resourceHandle = null;
+    _stringifiedResourceHandle = null;
+    _recCoordUid = new Uid(Uid.nullUid());
+    _propagateRecord = false;
+    _committed = false;
+    _rolledback = false;
     }
 
     private Coordinator _parentCoordHandle;
     private Resource    _resourceHandle;
     private String      _stringifiedResourceHandle;
-    private Uid	        _recCoordUid;
+    private Uid            _recCoordUid;
     private boolean     _propagateRecord;
     private boolean     _committed;
     private boolean     _rolledback;

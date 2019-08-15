@@ -65,54 +65,54 @@ import org.omg.CosTransactions.NoTransaction;
 
 public class Test07
 {
-	public static void main(String[] args)
-	{
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+    public static void main(String[] args)
+    {
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			boolean correct = true;
+            boolean correct = true;
 
-			Current current = OTS.get_current();
+            Current current = OTS.get_current();
 
-			current.begin();
-			current.commit(true);
+            current.begin();
+            current.commit(true);
 
-			try
-			{
-				current.rollback();
-				correct = false;
-			}
-			catch (NoTransaction noTransaction)
-			{
-			}
+            try
+            {
+                current.rollback();
+                correct = false;
+            }
+            catch (NoTransaction noTransaction)
+            {
+            }
 
-			if (correct)
-			{
-				System.out.println("Passed");
-			}
-			else
-			{
-				System.out.println("Failed");
-			}
-		}
-		catch (Exception exception)
-		{
-			System.out.println("Failed");
-			System.err.println("Test07.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
+            if (correct)
+            {
+                System.out.println("Passed");
+            }
+            else
+            {
+                System.out.println("Failed");
+            }
+        }
+        catch (Exception exception)
+        {
+            System.out.println("Failed");
+            System.err.println("Test07.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
 
-		try
-		{
-			OAInterface.shutdownOA();
-			ORBInterface.shutdownORB();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Test07.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
-	}
+        try
+        {
+            OAInterface.shutdownOA();
+            ORBInterface.shutdownORB();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Test07.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
+    }
 }

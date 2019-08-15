@@ -80,110 +80,110 @@ public class TransactionServer
 
     static void doWork (String[] args, boolean exitOnComplete) throws Exception
     {
-	String refFile = com.arjuna.orbportability.Services.transactionService;
-	String objectName = null;
-	boolean printReady = false;
-	ORB myORB = null;
-	RootOA myOA = null;
+    String refFile = com.arjuna.orbportability.Services.transactionService;
+    String objectName = null;
+    boolean printReady = false;
+    ORB myORB = null;
+    RootOA myOA = null;
 
-	for (int i = 0; i < args.length; i++)
-	{
-	    if (args[i].compareTo("-otsname") == 0)
-		objectName = args[i+1];
-	    if (args[i].compareTo("-test") == 0)
-		printReady = true;
-	    if (args[i].compareTo("-help") == 0)
-	    {
-		System.out.println("Usage: [-otsname <name>] [-help] [-version] [-recovery]");
+    for (int i = 0; i < args.length; i++)
+    {
+        if (args[i].compareTo("-otsname") == 0)
+        objectName = args[i+1];
+        if (args[i].compareTo("-test") == 0)
+        printReady = true;
+        if (args[i].compareTo("-help") == 0)
+        {
+        System.out.println("Usage: [-otsname <name>] [-help] [-version] [-recovery]");
 
-		if (exitOnComplete)
-		    return;
-		else
-		    System.exit(0);
-	    }
-	    if (args[i].compareTo("-version") == 0)
-	    {
-		System.out.println("TransactionServer version "+ ConfigurationInfo.getVersion());
+        if (exitOnComplete)
+            return;
+        else
+            System.exit(0);
+        }
+        if (args[i].compareTo("-version") == 0)
+        {
+        System.out.println("TransactionServer version "+ ConfigurationInfo.getVersion());
 
-		if (exitOnComplete)
-		    return;
-		else
-		    System.exit(0);
-	    }
+        if (exitOnComplete)
+            return;
+        else
+            System.exit(0);
+        }
 
         if (args[i].compareTo("-recovery") == 0) {
             RecoveryManager.manager().startRecoveryManagerThread();
         }
-	}
+    }
 
-	com.arjuna.ats.internal.jts.orbspecific.TransactionFactoryImple theOTS = null;
-	final int resolver = Services.getResolver();
+    com.arjuna.ats.internal.jts.orbspecific.TransactionFactoryImple theOTS = null;
+    final int resolver = Services.getResolver();
 
-	try
-	{
-	    try
-	    {
-		myORB = ORB.getInstance("TransactionServer");
-		myOA = OA.getRootOA(myORB);
+    try
+    {
+        try
+        {
+        myORB = ORB.getInstance("TransactionServer");
+        myOA = OA.getRootOA(myORB);
 
-		myORB.initORB(args, null);
-		myOA.initOA();
+        myORB.initORB(args, null);
+        myOA.initOA();
 
-		ORBManager.setORB(myORB);
-		ORBManager.setPOA(myOA);
-	    }
-	    catch (Exception e)
-	    {
-		System.err.println("Initialisation of TransactionServer failed: "+e);
+        ORBManager.setORB(myORB);
+        ORBManager.setPOA(myOA);
+        }
+        catch (Exception e)
+        {
+        System.err.println("Initialisation of TransactionServer failed: "+e);
 
-		throw e;
-	    }
+        throw e;
+        }
 
-	    theOTS = new com.arjuna.ats.internal.jts.orbspecific.TransactionFactoryImple(objectName);
+        theOTS = new com.arjuna.ats.internal.jts.orbspecific.TransactionFactoryImple(objectName);
 
-	    try
-	    {
-	        registerTransactionManager(resolver, myORB, theOTS.getReference());
+        try
+        {
+            registerTransactionManager(resolver, myORB, theOTS.getReference());
 
                 if (!printReady)
                     System.out.println("Transaction manager registered.");
-	    }
-	    catch (Exception e1)
-	    {
-		System.err.println("Failed to bind transaction manager: "+e1);
+        }
+        catch (Exception e1)
+        {
+        System.err.println("Failed to bind transaction manager: "+e1);
 
-		if (exitOnComplete)
-		    throw new Exception("Failed to bind transaction manager:" +e1);
-		else
-		    System.exit(0);
-	    }
+        if (exitOnComplete)
+            throw new Exception("Failed to bind transaction manager:" +e1);
+        else
+            System.exit(0);
+        }
 
-	    if (printReady)
-		System.out.println("Ready");
-	    else
-		System.out.println("JBossTS OTS Server startup.");
+        if (printReady)
+        System.out.println("Ready");
+        else
+        System.out.println("JBossTS OTS Server startup.");
 
-	    if (!exitOnComplete)
-	    {
-	        if (resolver == com.arjuna.orbportability.Services.BIND_CONNECT)
-	            myOA.run(com.arjuna.orbportability.Services.transactionService);
-	        else
-	            myOA.run();
-	    }
-	}
-	catch (Exception e2)
-	{
-	    System.err.println("TransactionServer caught exception "+e2);
-	}
+        if (!exitOnComplete)
+        {
+            if (resolver == com.arjuna.orbportability.Services.BIND_CONNECT)
+                myOA.run(com.arjuna.orbportability.Services.transactionService);
+            else
+                myOA.run();
+        }
+    }
+    catch (Exception e2)
+    {
+        System.err.println("TransactionServer caught exception "+e2);
+    }
 
-	System.out.println("JBossTS OTS Server shutdown");
+    System.out.println("JBossTS OTS Server shutdown");
 
-	theOTS = null;
+    theOTS = null;
 
-	if (myOA != null)
-	    myOA.destroy();
+    if (myOA != null)
+        myOA.destroy();
 
-	if (myORB != null)
-	    myORB.shutdown();
+    if (myORB != null)
+        myORB.shutdown();
     }
 }

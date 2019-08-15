@@ -37,22 +37,22 @@ public class ORBRunner extends Thread
 
     public ORBRunner ()
     {
-	setDaemon(true);
+    setDaemon(true);
 
-	start();
+    start();
     }
 
     public void run()
     {
-	try
-	{
-	    JacOrbRCServiceInit._orb.orb().run();
-	}
-	catch (Throwable e)
-	{
-	    e.printStackTrace();
-	}
-	JacOrbRCServiceInit.orbRunnerCompleted();
+    try
+    {
+        JacOrbRCServiceInit._orb.orb().run();
+    }
+    catch (Throwable e)
+    {
+        e.printStackTrace();
+    }
+    JacOrbRCServiceInit.orbRunnerCompleted();
     }
 }
 

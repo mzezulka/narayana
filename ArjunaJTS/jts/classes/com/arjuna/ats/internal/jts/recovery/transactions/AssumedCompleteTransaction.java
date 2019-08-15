@@ -61,9 +61,9 @@ public class AssumedCompleteTransaction extends RecoveredTransaction
 {
     public AssumedCompleteTransaction ( Uid actionUid )
     {
-	super(actionUid,ourTypeName);
+    super(actionUid,ourTypeName);
 
-	if (jtsLogger.logger.isDebugEnabled()) {
+    if (jtsLogger.logger.isDebugEnabled()) {
         jtsLogger.logger.debug("AssumedCompleteTransaction "+get_uid()+" created");
     }
     }

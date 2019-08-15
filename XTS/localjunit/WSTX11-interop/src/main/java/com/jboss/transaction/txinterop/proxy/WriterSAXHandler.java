@@ -110,7 +110,7 @@ public class WriterSAXHandler implements ContentHandler
      * @throws SAXException for any errors.
      */
     public void startDocument()
-    	throws SAXException
+        throws SAXException
     {
     }
 
@@ -119,7 +119,7 @@ public class WriterSAXHandler implements ContentHandler
      * @throws SAXException for any errors.
      */
     public void endDocument()
-    	throws SAXException
+        throws SAXException
     {
         printWriter.flush() ;
     }
@@ -142,7 +142,7 @@ public class WriterSAXHandler implements ContentHandler
      * @throws SAXException for any errors.
      */
     public void endPrefixMapping(final String prefix)
-    	throws SAXException
+        throws SAXException
     {
     }
 
@@ -156,7 +156,7 @@ public class WriterSAXHandler implements ContentHandler
      */
     public void startElement(final String uri, final String localName, final String qName,
         final Attributes attributes)
-    	throws SAXException
+        throws SAXException
     {
         checkEndStartTag() ;
 
@@ -277,7 +277,7 @@ public class WriterSAXHandler implements ContentHandler
      * @throws SAXException for any errors.
      */
     public void skippedEntity(final String name)
-    	throws SAXException
+        throws SAXException
     {
     }
 

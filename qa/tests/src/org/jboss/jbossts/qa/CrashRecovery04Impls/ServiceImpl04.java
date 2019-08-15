@@ -66,97 +66,97 @@ import org.omg.CosTransactions.*;
 
 public class ServiceImpl04 implements ServiceOperations
 {
-	public ServiceImpl04(int objectNumber)
-	{
-		_objectNumber = objectNumber;
-	}
+    public ServiceImpl04(int objectNumber)
+    {
+        _objectNumber = objectNumber;
+    }
 
-	public void setup_oper(Control ctrl, int number_of_resources)
-	{
-		_resourceImpl = new ResourceImpl01[number_of_resources];
-		_resource = new Resource[number_of_resources];
-		_recoveryCoordinator = new RecoveryCoordinator[number_of_resources];
+    public void setup_oper(Control ctrl, int number_of_resources)
+    {
+        _resourceImpl = new ResourceImpl01[number_of_resources];
+        _resource = new Resource[number_of_resources];
+        _recoveryCoordinator = new RecoveryCoordinator[number_of_resources];
 
-		try
-		{
-			com.arjuna.ats.jts.ExplicitInterposition interposition = new com.arjuna.ats.jts.ExplicitInterposition();
+        try
+        {
+            com.arjuna.ats.jts.ExplicitInterposition interposition = new com.arjuna.ats.jts.ExplicitInterposition();
 
-			interposition.registerTransaction(ctrl);
+            interposition.registerTransaction(ctrl);
 
-			for (int index = 0; index < number_of_resources; index++)
-			{
-				_resourceImpl[index] = new ResourceImpl01(_objectNumber, index);
-				ResourcePOATie servant = new ResourcePOATie(_resourceImpl[index]);
+            for (int index = 0; index < number_of_resources; index++)
+            {
+                _resourceImpl[index] = new ResourceImpl01(_objectNumber, index);
+                ResourcePOATie servant = new ResourcePOATie(_resourceImpl[index]);
 
-				OAInterface.objectIsReady(servant);
-				_resource[index] = ResourceHelper.narrow(OAInterface.corbaReference(servant));
+                OAInterface.objectIsReady(servant);
+                _resource[index] = ResourceHelper.narrow(OAInterface.corbaReference(servant));
 
-				_recoveryCoordinator[index] = OTS.current().get_control().get_coordinator().register_resource(_resource[index]);
-			}
+                _recoveryCoordinator[index] = OTS.current().get_control().get_coordinator().register_resource(_resource[index]);
+            }
 
-			interposition.unregisterTransaction();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("ServiceImpl04.setup_oper: " + exception);
-			exception.printStackTrace(System.err);
-			_isCorrect = false;
-		}
-		catch (Error error)
-		{
-			System.err.println("ServiceImpl04.setup_oper: " + error);
-			error.printStackTrace(System.err);
-			_isCorrect = false;
-		}
-	}
+            interposition.unregisterTransaction();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("ServiceImpl04.setup_oper: " + exception);
+            exception.printStackTrace(System.err);
+            _isCorrect = false;
+        }
+        catch (Error error)
+        {
+            System.err.println("ServiceImpl04.setup_oper: " + error);
+            error.printStackTrace(System.err);
+            _isCorrect = false;
+        }
+    }
 
-	public boolean check_oper()
-	{
-		boolean correct = true;
+    public boolean check_oper()
+    {
+        boolean correct = true;
 
-		for (int index = 0; index < _recoveryCoordinator.length; index++)
-		{
-			try
-			{
-				Status status = _recoveryCoordinator[index].replay_completion(_resource[index]);
-				System.err.println("ServiceImpl04.check_oper: replay_completion didn't throw expected exception (NotPrepared)");
-				correct = false;
-			}
-			catch (NotPrepared notPrepared)
-			{
-			}
-			catch (Exception exception)
-			{
-				System.err.println("ServiceImpl04.check_oper: " + exception);
-				exception.printStackTrace(System.err);
-				correct = false;
-			}
-		}
+        for (int index = 0; index < _recoveryCoordinator.length; index++)
+        {
+            try
+            {
+                Status status = _recoveryCoordinator[index].replay_completion(_resource[index]);
+                System.err.println("ServiceImpl04.check_oper: replay_completion didn't throw expected exception (NotPrepared)");
+                correct = false;
+            }
+            catch (NotPrepared notPrepared)
+            {
+            }
+            catch (Exception exception)
+            {
+                System.err.println("ServiceImpl04.check_oper: " + exception);
+                exception.printStackTrace(System.err);
+                correct = false;
+            }
+        }
 
-		return correct;
-	}
+        return correct;
+    }
 
-	public boolean is_correct()
-	{
-		return _isCorrect;
-	}
+    public boolean is_correct()
+    {
+        return _isCorrect;
+    }
 
-	public ResourceTrace get_resource_trace(int resource_number)
-	{
-		if ((resource_number < 0) || (resource_number >= _resourceImpl.length))
-		{
-			return ResourceTrace.ResourceTraceUnknown;
-		}
-		else
-		{
-			return _resourceImpl[resource_number].getTrace();
-		}
-	}
+    public ResourceTrace get_resource_trace(int resource_number)
+    {
+        if ((resource_number < 0) || (resource_number >= _resourceImpl.length))
+        {
+            return ResourceTrace.ResourceTraceUnknown;
+        }
+        else
+        {
+            return _resourceImpl[resource_number].getTrace();
+        }
+    }
 
-	private int _objectNumber;
-	private boolean _isCorrect = true;
+    private int _objectNumber;
+    private boolean _isCorrect = true;
 
-	private ResourceImpl01[] _resourceImpl = null;
-	private Resource[] _resource = null;
-	private RecoveryCoordinator[] _recoveryCoordinator = null;
+    private ResourceImpl01[] _resourceImpl = null;
+    private Resource[] _resource = null;
+    private RecoveryCoordinator[] _recoveryCoordinator = null;
 }

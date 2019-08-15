@@ -63,45 +63,45 @@ public class RecoveryInit
      */
     public RecoveryInit ()
     {
-	/*
-	 * We only really want a single instance of this class to be executed,
-	 * no matter how many ORBs we may have in a process.
-	 */
+    /*
+     * We only really want a single instance of this class to be executed,
+     * no matter how many ORBs we may have in a process.
+     */
 
-	if (!_initialised)
-	{
-	    _initialised = true;
+    if (!_initialised)
+    {
+        _initialised = true;
 
-	    // the eventhandler is the same for all orbs (at the moment)
-	    String eventHandlerClassName = "com.arjuna.ats.internal.jts.recovery.contact.RecoveryContactWriter";
+        // the eventhandler is the same for all orbs (at the moment)
+        String eventHandlerClassName = "com.arjuna.ats.internal.jts.recovery.contact.RecoveryContactWriter";
 
-	    if ( _isNormalProcess)
-	    {
-		try
-		{
-		    // Use Here a class that should be initialized with a specific class specific to the ORB
-		    // To determine the class to load use the ORBType
+        if ( _isNormalProcess)
+        {
+        try
+        {
+            // Use Here a class that should be initialized with a specific class specific to the ORB
+            // To determine the class to load use the ORBType
 
-		    int orbType = ORBInfo.getOrbEnumValue();
-		    String initClassName;
+            int orbType = ORBInfo.getOrbEnumValue();
+            String initClassName;
 
-		    switch (orbType)
-		    {
-		    case ORBType.JACORB:
-			initClassName = "com.arjuna.ats.internal.jts.orbspecific.jacorb.recoverycoordinators.JacOrbRecoveryInit";
-			break;
-		    case ORBType.JAVAIDL:
-			initClassName = "com.arjuna.ats.internal.jts.orbspecific.javaidl.recoverycoordinators.JavaIdlRecoveryInit";
-			break;
-		    case ORBType.IBMORB: // ibm jdk bundles the javaidl orb so use that
+            switch (orbType)
+            {
+            case ORBType.JACORB:
+            initClassName = "com.arjuna.ats.internal.jts.orbspecific.jacorb.recoverycoordinators.JacOrbRecoveryInit";
+            break;
+            case ORBType.JAVAIDL:
+            initClassName = "com.arjuna.ats.internal.jts.orbspecific.javaidl.recoverycoordinators.JavaIdlRecoveryInit";
+            break;
+            case ORBType.IBMORB: // ibm jdk bundles the javaidl orb so use that
                 initClassName = "com.arjuna.ats.internal.jts.orbspecific.ibmorb.recoverycoordinators.JavaIdlRecoveryInit";
-			break;
-		    default: {
+            break;
+            default: {
                 initClassName = null;
                 jtsLogger.i18NLogger.warn_recovery_recoveryinit_1();
             }
-			break;
-		    }
+            break;
+            }
 
             if (initClassName != null)
             {
@@ -110,43 +110,43 @@ public class RecoveryInit
                 recoveryCoordinatorInitialiser.newInstance();
             }
 
-		    // register the ContactWriter to watch for the first ArjunaFactory construction
+            // register the ContactWriter to watch for the first ArjunaFactory construction
 
             List<String> eventHandlers = opPropertyManager.getOrbPortabilityEnvironmentBean().getEventHandlerClassNames();
             eventHandlers.add(eventHandlerClassName);
-		    opPropertyManager.getOrbPortabilityEnvironmentBean().setEventHandlerClassNames(eventHandlers);
+            opPropertyManager.getOrbPortabilityEnvironmentBean().setEventHandlerClassNames(eventHandlers);
 
-		    // Change here above the way to call this startRCService -
-		    // otherwise call it in JacOrbRecoveryInit above.
-		}
-		catch (Exception e)
-		{
+            // Change here above the way to call this startRCService -
+            // otherwise call it in JacOrbRecoveryInit above.
+        }
+        catch (Exception e)
+        {
             jtsLogger.i18NLogger.fatal_recovery_RecoveryInit_4();
 
-		    throw new com.arjuna.ats.arjuna.exceptions.FatalError(e.toString(), e);
-		}
+            throw new com.arjuna.ats.arjuna.exceptions.FatalError(e.toString(), e);
+        }
 
-		if (jtsLogger.logger.isDebugEnabled()) {
+        if (jtsLogger.logger.isDebugEnabled()) {
             jtsLogger.logger.debug("added ORBAttribute for recoveryCoordinatorInitialiser");
             jtsLogger.logger.debug("added event handler "+eventHandlerClassName);
         }
-	    }
-	}
+        }
     }
-	/**
-	 * This static method is used by the RecoveryManager to suppress
-	 * aspects of recovery enablement in it's own
-	 * process, without requiring further property manipulations
-	 */
+    }
+    /**
+     * This static method is used by the RecoveryManager to suppress
+     * aspects of recovery enablement in it's own
+     * process, without requiring further property manipulations
+     */
 
     public static void isNotANormalProcess()
     {
-	_isNormalProcess = false;
+    _isNormalProcess = false;
     }
 
     public static boolean isNormalProcess ()
     {
-	return _isNormalProcess;
+    return _isNormalProcess;
     }
 
 }

@@ -64,149 +64,149 @@ import com.arjuna.orbportability.RootOA;
 import com.arjuna.orbportability.common.opPropertyManager;
 
 public class JTSSynchronizationTest {
-	protected boolean failed;
+    protected boolean failed;
 
-	@Test
-	public void test() throws Exception {
+    @Test
+    public void test() throws Exception {
 
-		Map<String, String> map = new HashMap<String, String>();
-		map.put("com.arjuna.orbportability.orb.PreInit1",
-				"com.arjuna.ats.internal.jts.context.ContextPropagationManager");
-		map.put("com.arjuna.orbportability.orb.PostInit",
-				"com.arjuna.ats.jts.utils.ORBSetup");
-		map.put("com.arjuna.orbportability.orb.PostInit2",
-				"com.arjuna.ats.internal.jts.recovery.RecoveryInit");
-		map.put("com.arjuna.orbportability.orb.PostSet1",
-				"com.arjuna.ats.jts.utils.ORBSetup");
-		opPropertyManager.getOrbPortabilityEnvironmentBean()
-				.setOrbInitializationProperties(map);
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("com.arjuna.orbportability.orb.PreInit1",
+                "com.arjuna.ats.internal.jts.context.ContextPropagationManager");
+        map.put("com.arjuna.orbportability.orb.PostInit",
+                "com.arjuna.ats.jts.utils.ORBSetup");
+        map.put("com.arjuna.orbportability.orb.PostInit2",
+                "com.arjuna.ats.internal.jts.recovery.RecoveryInit");
+        map.put("com.arjuna.orbportability.orb.PostSet1",
+                "com.arjuna.ats.jts.utils.ORBSetup");
+        opPropertyManager.getOrbPortabilityEnvironmentBean()
+                .setOrbInitializationProperties(map);
 
-		ORB myORB = ORB.getInstance("test");
-		RootOA myOA = OA.getRootOA(myORB);
-		final Properties initORBProperties = new Properties();
-		initORBProperties.setProperty("com.sun.CORBA.POA.ORBServerId", "1");
-		initORBProperties.setProperty(
-				"com.sun.CORBA.POA.ORBPersistentServerPort", ""
-						+ jtsPropertyManager.getJTSEnvironmentBean()
-								.getRecoveryManagerPort());
-		myORB.initORB(new String[] {}, initORBProperties);
-		myOA.initOA();
-		ORBManager.setORB(myORB);
-		ORBManager.setPOA(myOA);
+        ORB myORB = ORB.getInstance("test");
+        RootOA myOA = OA.getRootOA(myORB);
+        final Properties initORBProperties = new Properties();
+        initORBProperties.setProperty("com.sun.CORBA.POA.ORBServerId", "1");
+        initORBProperties.setProperty(
+                "com.sun.CORBA.POA.ORBPersistentServerPort", ""
+                        + jtsPropertyManager.getJTSEnvironmentBean()
+                                .getRecoveryManagerPort());
+        myORB.initORB(new String[] {}, initORBProperties);
+        myOA.initOA();
+        ORBManager.setORB(myORB);
+        ORBManager.setPOA(myOA);
 
-		recoveryPropertyManager
-				.getRecoveryEnvironmentBean()
-				.setRecoveryActivatorClassNames(
-						Arrays.asList(new String[] { "com.arjuna.ats.internal.jts.orbspecific.recovery.RecoveryEnablement" }));
-		final TransactionSynchronizationRegistry tsr = new com.arjuna.ats.internal.jta.transaction.jts.TransactionSynchronizationRegistryImple();
+        recoveryPropertyManager
+                .getRecoveryEnvironmentBean()
+                .setRecoveryActivatorClassNames(
+                        Arrays.asList(new String[] { "com.arjuna.ats.internal.jts.orbspecific.recovery.RecoveryEnablement" }));
+        final TransactionSynchronizationRegistry tsr = new com.arjuna.ats.internal.jta.transaction.jts.TransactionSynchronizationRegistryImple();
 
-		new RecoveryManagerImple(false);
-		final javax.transaction.TransactionManager tm = com.arjuna.ats.jta.TransactionManager
-				.transactionManager();
+        new RecoveryManagerImple(false);
+        final javax.transaction.TransactionManager tm = com.arjuna.ats.jta.TransactionManager
+                .transactionManager();
 
-		tm.getStatus();
+        tm.getStatus();
 
-		tm.begin();
+        tm.begin();
 
-		javax.transaction.Transaction theTransaction = tm.getTransaction();
+        javax.transaction.Transaction theTransaction = tm.getTransaction();
 
-		assertTrue(theTransaction.enlistResource(new XARMERRXAResource(false)));
-		assertTrue(theTransaction.enlistResource(new XARMERRXAResource(false)));
-		tsr.registerInterposedSynchronization(new Synchronization() {
-			@Override
-			public void beforeCompletion() {
-			}
+        assertTrue(theTransaction.enlistResource(new XARMERRXAResource(false)));
+        assertTrue(theTransaction.enlistResource(new XARMERRXAResource(false)));
+        tsr.registerInterposedSynchronization(new Synchronization() {
+            @Override
+            public void beforeCompletion() {
+            }
 
-			@Override
-			public void afterCompletion(int arg0) {
-				try {
-					Transaction transaction = tm.getTransaction();
-					Transaction suspend = tm.suspend();
-					assertTrue(tm.getStatus() == javax.transaction.Status.STATUS_NO_TRANSACTION);
-					Transaction suspend2 = tm.suspend();
-					assertTrue(suspend2 == null);
-					tm.begin();
-					assertTrue(tm.getStatus() == javax.transaction.Status.STATUS_ACTIVE);
-					tm.commit();
-					assertTrue(tm.getStatus() == javax.transaction.Status.STATUS_NO_TRANSACTION);
-					tm.resume(suspend);
-					assertTrue(tm.getStatus() == arg0);
-					Transaction transaction2 = tm.getTransaction();
-					assertTrue(transaction == transaction2);
-				} catch (SystemException | IllegalStateException
-						| SecurityException | InvalidTransactionException
-						| NotSupportedException | RollbackException
-						| HeuristicMixedException | HeuristicRollbackException e) {
-					failed = true;
-					e.printStackTrace();
-				}
+            @Override
+            public void afterCompletion(int arg0) {
+                try {
+                    Transaction transaction = tm.getTransaction();
+                    Transaction suspend = tm.suspend();
+                    assertTrue(tm.getStatus() == javax.transaction.Status.STATUS_NO_TRANSACTION);
+                    Transaction suspend2 = tm.suspend();
+                    assertTrue(suspend2 == null);
+                    tm.begin();
+                    assertTrue(tm.getStatus() == javax.transaction.Status.STATUS_ACTIVE);
+                    tm.commit();
+                    assertTrue(tm.getStatus() == javax.transaction.Status.STATUS_NO_TRANSACTION);
+                    tm.resume(suspend);
+                    assertTrue(tm.getStatus() == arg0);
+                    Transaction transaction2 = tm.getTransaction();
+                    assertTrue(transaction == transaction2);
+                } catch (SystemException | IllegalStateException
+                        | SecurityException | InvalidTransactionException
+                        | NotSupportedException | RollbackException
+                        | HeuristicMixedException | HeuristicRollbackException e) {
+                    failed = true;
+                    e.printStackTrace();
+                }
 
-			}
-		});
-		tm.commit();
+            }
+        });
+        tm.commit();
 
-		myOA.destroy();
-		myORB.shutdown();
+        myOA.destroy();
+        myORB.shutdown();
 
-		if (failed) {
-			fail("Issues");
-		}
-	}
+        if (failed) {
+            fail("Issues");
+        }
+    }
 
-	private class XARMERRXAResource implements XAResource {
+    private class XARMERRXAResource implements XAResource {
 
-		private boolean returnRMERROutOfEnd;
+        private boolean returnRMERROutOfEnd;
 
-		public XARMERRXAResource(boolean returnRMERROutOfEnd) {
-			this.returnRMERROutOfEnd = returnRMERROutOfEnd;
-		}
+        public XARMERRXAResource(boolean returnRMERROutOfEnd) {
+            this.returnRMERROutOfEnd = returnRMERROutOfEnd;
+        }
 
-		@Override
-		public void commit(Xid xid, boolean onePhase) throws XAException {
-		}
+        @Override
+        public void commit(Xid xid, boolean onePhase) throws XAException {
+        }
 
-		@Override
-		public void end(Xid xid, int flags) throws XAException {
-			if (returnRMERROutOfEnd) {
-				throw new XAException(XAException.XAER_RMERR);
-			}
-		}
+        @Override
+        public void end(Xid xid, int flags) throws XAException {
+            if (returnRMERROutOfEnd) {
+                throw new XAException(XAException.XAER_RMERR);
+            }
+        }
 
-		@Override
-		public void forget(Xid xid) throws XAException {
-		}
+        @Override
+        public void forget(Xid xid) throws XAException {
+        }
 
-		@Override
-		public int getTransactionTimeout() throws XAException {
-			return 0;
-		}
+        @Override
+        public int getTransactionTimeout() throws XAException {
+            return 0;
+        }
 
-		@Override
-		public boolean isSameRM(XAResource xares) throws XAException {
-			return false;
-		}
+        @Override
+        public boolean isSameRM(XAResource xares) throws XAException {
+            return false;
+        }
 
-		@Override
-		public int prepare(Xid xid) throws XAException {
-			return 0;
-		}
+        @Override
+        public int prepare(Xid xid) throws XAException {
+            return 0;
+        }
 
-		@Override
-		public Xid[] recover(int flag) throws XAException {
-			return null;
-		}
+        @Override
+        public Xid[] recover(int flag) throws XAException {
+            return null;
+        }
 
-		@Override
-		public void rollback(Xid xid) throws XAException {
-		}
+        @Override
+        public void rollback(Xid xid) throws XAException {
+        }
 
-		@Override
-		public boolean setTransactionTimeout(int seconds) throws XAException {
-			return false;
-		}
+        @Override
+        public boolean setTransactionTimeout(int seconds) throws XAException {
+            return false;
+        }
 
-		@Override
-		public void start(Xid xid, int flags) throws XAException {
-		}
-	}
+        @Override
+        public void start(Xid xid, int flags) throws XAException {
+        }
+    }
 }

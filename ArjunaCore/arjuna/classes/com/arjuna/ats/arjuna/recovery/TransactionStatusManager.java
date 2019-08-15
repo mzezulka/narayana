@@ -107,10 +107,10 @@ public class TransactionStatusManager
    {
        if ( ! _finalizeCalled )
        {
-	  _finalizeCalled = true ;
+      _finalizeCalled = true ;
 
-	   _listener.stopListener() ;
-	   TransactionStatusManagerItem.removeThis( Utility.getProcessUid() ) ;
+       _listener.stopListener() ;
+       TransactionStatusManagerItem.removeThis( Utility.getProcessUid() ) ;
       }
    }
     */

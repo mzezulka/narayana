@@ -45,17 +45,17 @@ public class InvalidTimeoutException extends WSASException
 
     public InvalidTimeoutException ()
     {
-	super();
+    super();
     }
 
     public InvalidTimeoutException (String s)
     {
-	super(s);
+    super(s);
     }
 
     public InvalidTimeoutException (String s, int errorcode)
     {
-	super(s, errorcode);
+    super(s, errorcode);
     }
 
 }

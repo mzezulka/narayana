@@ -39,37 +39,37 @@ import com.arjuna.ats.jta.logging.jtaLogger;
 public class UserTransaction
 {
 
-	/**
-	 * Retrieve a reference to the user transaction.
-	 *
-	 * @return The user transaction bound to the appropriate JNDI context
-	 */
+    /**
+     * Retrieve a reference to the user transaction.
+     *
+     * @return The user transaction bound to the appropriate JNDI context
+     */
 
-	public static synchronized javax.transaction.UserTransaction userTransaction (InitialContext ctx)
-	{
-		javax.transaction.UserTransaction userTransaction = null;
+    public static synchronized javax.transaction.UserTransaction userTransaction (InitialContext ctx)
+    {
+        javax.transaction.UserTransaction userTransaction = null;
 
-		try
-		{
-			userTransaction = (javax.transaction.UserTransaction) ctx.lookup(jtaPropertyManager.getJTAEnvironmentBean().getUserTransactionJNDIContext());
-		}
-		catch (Exception e)
-		{
+        try
+        {
+            userTransaction = (javax.transaction.UserTransaction) ctx.lookup(jtaPropertyManager.getJTAEnvironmentBean().getUserTransactionJNDIContext());
+        }
+        catch (Exception e)
+        {
             jtaLogger.i18NLogger.warn_UserTransaction_jndifailure(e);
-		}
+        }
 
-		return userTransaction;
-	}
+        return userTransaction;
+    }
 
-	/**
-	 * Retrieve the singleton UserTransaction reference.
-	 *
-	 * @return The singleton UserTransaction reference. Can return null if the
-	 *         instantiation failed.
-	 */
+    /**
+     * Retrieve the singleton UserTransaction reference.
+     *
+     * @return The singleton UserTransaction reference. Can return null if the
+     *         instantiation failed.
+     */
 
-	public static synchronized javax.transaction.UserTransaction userTransaction ()
-	{
-		return jtaPropertyManager.getJTAEnvironmentBean().getUserTransaction();
-	}
+    public static synchronized javax.transaction.UserTransaction userTransaction ()
+    {
+        return jtaPropertyManager.getJTAEnvironmentBean().getUserTransaction();
+    }
 }

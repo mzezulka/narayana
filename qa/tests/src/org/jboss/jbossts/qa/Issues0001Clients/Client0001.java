@@ -66,70 +66,70 @@ import org.omg.CORBA.IntHolder;
 
 public class Client0001
 {
-	public static void main(String[] args)
-	{
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+    public static void main(String[] args)
+    {
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			String counterIOR = ServerIORStore.loadIOR(args[args.length - 1]);
-			Counter counter = CounterHelper.narrow(ORBInterface.orb().string_to_object(counterIOR));
+            String counterIOR = ServerIORStore.loadIOR(args[args.length - 1]);
+            Counter counter = CounterHelper.narrow(ORBInterface.orb().string_to_object(counterIOR));
 
-			int numberOfCalls = 1000;
+            int numberOfCalls = 1000;
 
-			for (int index = 0; index < numberOfCalls; index++)
-			{
-				AtomicTransaction atomicTransaction = new AtomicTransaction();
+            for (int index = 0; index < numberOfCalls; index++)
+            {
+                AtomicTransaction atomicTransaction = new AtomicTransaction();
 
-				atomicTransaction.begin();
+                atomicTransaction.begin();
 
-				try
-				{
-					counter.increase();
-				}
-				catch (InvocationException invocationException)
-				{
-				}
+                try
+                {
+                    counter.increase();
+                }
+                catch (InvocationException invocationException)
+                {
+                }
 
-				atomicTransaction.commit(true);
-			}
+                atomicTransaction.commit(true);
+            }
 
-			AtomicTransaction atomicTransaction = new AtomicTransaction();
+            AtomicTransaction atomicTransaction = new AtomicTransaction();
 
-			atomicTransaction.begin();
+            atomicTransaction.begin();
 
-			IntHolder value = new IntHolder();
+            IntHolder value = new IntHolder();
 
-			counter.get(value);
+            counter.get(value);
 
-			atomicTransaction.commit(true);
+            atomicTransaction.commit(true);
 
-			if (value.value == numberOfCalls)
-			{
-				System.out.println("Passed");
-			}
-			else
-			{
-				System.out.println("Failed");
-			}
-		}
-		catch (Exception exception)
-		{
-			System.out.println("Failed");
-			System.err.println("Client0001.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
+            if (value.value == numberOfCalls)
+            {
+                System.out.println("Passed");
+            }
+            else
+            {
+                System.out.println("Failed");
+            }
+        }
+        catch (Exception exception)
+        {
+            System.out.println("Failed");
+            System.err.println("Client0001.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
 
-		try
-		{
-			OAInterface.shutdownOA();
-			ORBInterface.shutdownORB();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Client0001.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
-	}
+        try
+        {
+            OAInterface.shutdownOA();
+            ORBInterface.shutdownORB();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Client0001.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
+    }
 }

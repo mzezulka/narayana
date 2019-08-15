@@ -45,17 +45,17 @@ public class NoActivityException extends WSASException
 
     public NoActivityException ()
     {
-	super();
+    super();
     }
 
     public NoActivityException (String s)
     {
-	super(s);
+    super(s);
     }
 
     public NoActivityException (String s, int errorcode)
     {
-	super(s, errorcode);
+    super(s, errorcode);
     }
 
 }

@@ -44,93 +44,93 @@ import com.arjuna.ats.arjuna.coordinator.TwoPhaseOutcome;
  */
 
 public class SubordinateAtomicAction extends
-		com.arjuna.ats.internal.jta.transaction.arjunacore.AtomicAction
+        com.arjuna.ats.internal.jta.transaction.arjunacore.AtomicAction
 {
 
-	public SubordinateAtomicAction ()
-	{
-		this(AtomicAction.NO_TIMEOUT);
-		subordinate = true;
-	}
+    public SubordinateAtomicAction ()
+    {
+        this(AtomicAction.NO_TIMEOUT);
+        subordinate = true;
+    }
 
-	public SubordinateAtomicAction (int timeout)
-	{
-		super();
-		subordinate = true;
+    public SubordinateAtomicAction (int timeout)
+    {
+        super();
+        subordinate = true;
 
-		start();
+        start();
 
-		_timeout = timeout;
+        _timeout = timeout;
 
-		// if it has a non-negative timeout, add it to the reaper.
+        // if it has a non-negative timeout, add it to the reaper.
 
-		if (timeout > AtomicAction.NO_TIMEOUT)
-			TransactionReaper.transactionReaper().insert(this, timeout);
-	}
+        if (timeout > AtomicAction.NO_TIMEOUT)
+            TransactionReaper.transactionReaper().insert(this, timeout);
+    }
 
-	/**
-	 * Commit the transaction, and have heuristic reporting. Heuristic reporting
-	 * via the return code is enabled.
-	 *
-	 * @return <code>ActionStatus</code> indicating outcome.
-	 */
+    /**
+     * Commit the transaction, and have heuristic reporting. Heuristic reporting
+     * via the return code is enabled.
+     *
+     * @return <code>ActionStatus</code> indicating outcome.
+     */
 
-	public int commit ()
-	{
-		return commit(true);
-	}
+    public int commit ()
+    {
+        return commit(true);
+    }
 
-	/**
-	 * Commit the transaction. The report_heuristics parameter can be used to
-	 * determine whether or not heuristic outcomes are reported.
-	 *
-	 * If the transaction has already terminated, or has not begun, then an
-	 * appropriate error code will be returned.
-	 *
-	 * @return <code>ActionStatus</code> indicating outcome.
-	 */
+    /**
+     * Commit the transaction. The report_heuristics parameter can be used to
+     * determine whether or not heuristic outcomes are reported.
+     *
+     * If the transaction has already terminated, or has not begun, then an
+     * appropriate error code will be returned.
+     *
+     * @return <code>ActionStatus</code> indicating outcome.
+     */
 
-	public int commit (boolean report_heuristics)
-	{
-		return ActionStatus.INVALID;
-	}
+    public int commit (boolean report_heuristics)
+    {
+        return ActionStatus.INVALID;
+    }
 
-	/**
-	 * Abort (rollback) the transaction.
-	 *
-	 * If the transaction has already terminated, or has not been begun, then an
-	 * appropriate error code will be returned.
-	 *
-	 * @return <code>ActionStatus</code> indicating outcome.
-	 */
+    /**
+     * Abort (rollback) the transaction.
+     *
+     * If the transaction has already terminated, or has not been begun, then an
+     * appropriate error code will be returned.
+     *
+     * @return <code>ActionStatus</code> indicating outcome.
+     */
 
-	public int abort ()
-	{
-		return ActionStatus.INVALID;
-	}
+    public int abort ()
+    {
+        return ActionStatus.INVALID;
+    }
 
-	/**
-	 * The type of the class is used to locate the state of the transaction log
-	 * in the object store.
-	 *
-	 * Overloads BasicAction.type()
-	 *
-	 * @return a string representation of the hierarchy of the class for storing
-	 *         logs in the transaction object store.
-	 */
+    /**
+     * The type of the class is used to locate the state of the transaction log
+     * in the object store.
+     *
+     * Overloads BasicAction.type()
+     *
+     * @return a string representation of the hierarchy of the class for storing
+     *         logs in the transaction object store.
+     */
 
-	public String type ()
-	{
-		return "/StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction/SubordinateAtomicAction";
-	}
+    public String type ()
+    {
+        return "/StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction/SubordinateAtomicAction";
+    }
 
-	public int doPrepare ()
-	{
+    public int doPrepare ()
+    {
         int status = super.status();
 
         // JBTM-927 it is possible this transaction has been aborted by the TransactionReaper
         if (status == ActionStatus.ABORTED) {
-        	return TwoPhaseOutcome.PREPARE_NOTOK;
+            return TwoPhaseOutcome.PREPARE_NOTOK;
         }
 
         // In JTA spec, beforeCompletions are run on commit attempts only, not rollbacks.
@@ -149,178 +149,178 @@ public class SubordinateAtomicAction extends
 
             return outcome;
         }
-		else
-		{
-			super.phase2Abort(true);
-			super.afterCompletion(Status.STATUS_ROLLEDBACK);
+        else
+        {
+            super.phase2Abort(true);
+            super.afterCompletion(Status.STATUS_ROLLEDBACK);
 
-			return TwoPhaseOutcome.PREPARE_NOTOK;
-		}
-	}
+            return TwoPhaseOutcome.PREPARE_NOTOK;
+        }
+    }
 
-	public int doCommit ()
-	{
-		super.phase2Commit(true);
+    public int doCommit ()
+    {
+        super.phase2Commit(true);
 
-		int toReturn;
+        int toReturn;
 
-		switch (super.getHeuristicDecision())
-		{
-		case TwoPhaseOutcome.PREPARE_OK:
-		case TwoPhaseOutcome.FINISH_OK:
-		    if (super.failedList != null && super.failedList.size() > 0) {
-		        return ActionStatus.COMMITTING;
-		    }
-			toReturn = super.status();
-			break;
-		case TwoPhaseOutcome.HEURISTIC_ROLLBACK:
-			toReturn = ActionStatus.H_ROLLBACK;
-			break;
-		case TwoPhaseOutcome.HEURISTIC_COMMIT:
-			toReturn = ActionStatus.H_COMMIT;
-			break;
-		case TwoPhaseOutcome.HEURISTIC_MIXED:
-			toReturn = ActionStatus.H_MIXED;
-			break;
-		case TwoPhaseOutcome.HEURISTIC_HAZARD:
-		default:
-			toReturn = ActionStatus.H_HAZARD;
-			break;
-		}
+        switch (super.getHeuristicDecision())
+        {
+        case TwoPhaseOutcome.PREPARE_OK:
+        case TwoPhaseOutcome.FINISH_OK:
+            if (super.failedList != null && super.failedList.size() > 0) {
+                return ActionStatus.COMMITTING;
+            }
+            toReturn = super.status();
+            break;
+        case TwoPhaseOutcome.HEURISTIC_ROLLBACK:
+            toReturn = ActionStatus.H_ROLLBACK;
+            break;
+        case TwoPhaseOutcome.HEURISTIC_COMMIT:
+            toReturn = ActionStatus.H_COMMIT;
+            break;
+        case TwoPhaseOutcome.HEURISTIC_MIXED:
+            toReturn = ActionStatus.H_MIXED;
+            break;
+        case TwoPhaseOutcome.HEURISTIC_HAZARD:
+        default:
+            toReturn = ActionStatus.H_HAZARD;
+            break;
+        }
 
-		super.afterCompletion(toReturn);
+        super.afterCompletion(toReturn);
 
-		TransactionReaper.transactionReaper().remove(this);
+        TransactionReaper.transactionReaper().remove(this);
 
-		return toReturn;
-	}
+        return toReturn;
+    }
 
-	public int doRollback ()
-	{
-		super.phase2Abort(true);
+    public int doRollback ()
+    {
+        super.phase2Abort(true);
 
-		int toReturn;
+        int toReturn;
 
-		switch (super.getHeuristicDecision())
-		{
-		case TwoPhaseOutcome.PREPARE_OK:
-		case TwoPhaseOutcome.FINISH_OK:
-			toReturn = super.status();
-			break;
-		case TwoPhaseOutcome.HEURISTIC_ROLLBACK:
-			toReturn = ActionStatus.H_ROLLBACK;
-			break;
-		case TwoPhaseOutcome.HEURISTIC_COMMIT:
-			toReturn = ActionStatus.H_COMMIT;
-			break;
-		case TwoPhaseOutcome.HEURISTIC_MIXED:
-			toReturn = ActionStatus.H_MIXED;
-			break;
-		case TwoPhaseOutcome.HEURISTIC_HAZARD:
-		default:
-			toReturn = ActionStatus.H_HAZARD;
-			break;
-		}
+        switch (super.getHeuristicDecision())
+        {
+        case TwoPhaseOutcome.PREPARE_OK:
+        case TwoPhaseOutcome.FINISH_OK:
+            toReturn = super.status();
+            break;
+        case TwoPhaseOutcome.HEURISTIC_ROLLBACK:
+            toReturn = ActionStatus.H_ROLLBACK;
+            break;
+        case TwoPhaseOutcome.HEURISTIC_COMMIT:
+            toReturn = ActionStatus.H_COMMIT;
+            break;
+        case TwoPhaseOutcome.HEURISTIC_MIXED:
+            toReturn = ActionStatus.H_MIXED;
+            break;
+        case TwoPhaseOutcome.HEURISTIC_HAZARD:
+        default:
+            toReturn = ActionStatus.H_HAZARD;
+            break;
+        }
 
-		super.afterCompletion(toReturn);
+        super.afterCompletion(toReturn);
 
-		TransactionReaper.transactionReaper().remove(this);
+        TransactionReaper.transactionReaper().remove(this);
 
-		return toReturn;
-	}
+        return toReturn;
+    }
 
-	public int doOnePhaseCommit ()
-	{
-	    int status = super.status();
+    public int doOnePhaseCommit ()
+    {
+        int status = super.status();
 
-	    // In JTA spec, beforeCompletions are run on commit attempts only, not rollbacks.
-	    // We attempt to mimic that here, even though we are outside the scope of the spec.
-	    // note it's not perfect- async timeout/rollback means there is a race condition in which we
-	    // can still call beforeCompletion on rollbacks, but that's not too bad as skipping it is really
-	    // just an optimization anyhow. JBTM-429
+        // In JTA spec, beforeCompletions are run on commit attempts only, not rollbacks.
+        // We attempt to mimic that here, even though we are outside the scope of the spec.
+        // note it's not perfect- async timeout/rollback means there is a race condition in which we
+        // can still call beforeCompletion on rollbacks, but that's not too bad as skipping it is really
+        // just an optimization anyhow. JBTM-429
 
-	    if (status == ActionStatus.ABORT_ONLY || doBeforeCompletion())
-	    {
-	        status = super.End(true);
+        if (status == ActionStatus.ABORT_ONLY || doBeforeCompletion())
+        {
+            status = super.End(true);
 
-	        switch (super.getHeuristicDecision())
-	        {
-	        // commit was processed correctly but some of the resources failed to finish
-	        // for 2PC this means no trouble as in case of a crash at this time
-	        // there is recovery which works with prepared transaction
-	        // for 1PC where there is nothing prepared and nothing stored at object store
-	        // we need to inform parent about error by setting up heuristic state
-	        case TwoPhaseOutcome.PREPARE_OK:
-	        case TwoPhaseOutcome.FINISH_OK:
-	            if (super.failedList != null && super.failedList.size() > 0) {
-	                status = ActionStatus.H_COMMIT;
-	            }
-	        default:
-	            break;
-	        }
-	    }
-	    else
-	    {
-	        status = ActionStatus.ABORTED;
-	    }
+            switch (super.getHeuristicDecision())
+            {
+            // commit was processed correctly but some of the resources failed to finish
+            // for 2PC this means no trouble as in case of a crash at this time
+            // there is recovery which works with prepared transaction
+            // for 1PC where there is nothing prepared and nothing stored at object store
+            // we need to inform parent about error by setting up heuristic state
+            case TwoPhaseOutcome.PREPARE_OK:
+            case TwoPhaseOutcome.FINISH_OK:
+                if (super.failedList != null && super.failedList.size() > 0) {
+                    status = ActionStatus.H_COMMIT;
+                }
+            default:
+                break;
+            }
+        }
+        else
+        {
+            status = ActionStatus.ABORTED;
+        }
 
-	    afterCompletion(status);
+        afterCompletion(status);
 
-		TransactionReaper.transactionReaper().remove(this);
+        TransactionReaper.transactionReaper().remove(this);
 
-	    return status;
-	}
+        return status;
+    }
 
-	/**
-	 * @deprecated Only called via tests
-	 */
-	public void doForget ()
-	{
-		super.forgetHeuristics();
-	}
+    /**
+     * @deprecated Only called via tests
+     */
+    public void doForget ()
+    {
+        super.forgetHeuristics();
+    }
 
-	public boolean doBeforeCompletion ()
-	{
-	    // should not need synchronizing at this level
+    public boolean doBeforeCompletion ()
+    {
+        // should not need synchronizing at this level
 
-	    if (!_doneBefore)
-	    {
-	        _beforeOutcome = super.beforeCompletion();
+        if (!_doneBefore)
+        {
+            _beforeOutcome = super.beforeCompletion();
 
-	        _doneBefore = true;
-	    }
+            _doneBefore = true;
+        }
 
-	    return _beforeOutcome;
-	}
+        return _beforeOutcome;
+    }
 
-	/**
-	 * For crash recovery purposes.
-	 *
-	 * @param actId the identifier to recover.
-	 */
+    /**
+     * For crash recovery purposes.
+     *
+     * @param actId the identifier to recover.
+     */
 
-	protected SubordinateAtomicAction (Uid actId)
-	{
-		super(actId);
-	}
+    protected SubordinateAtomicAction (Uid actId)
+    {
+        super(actId);
+    }
 
-	/**
-	 * By default the BasicAction class only allows the termination of a
-	 * transaction if it's the one currently associated with the thread. We
-	 * override this here.
-	 *
-	 * @return <code>false</code> to indicate that this transaction can only
-	 *         be terminated by the right thread.
-	 */
+    /**
+     * By default the BasicAction class only allows the termination of a
+     * transaction if it's the one currently associated with the thread. We
+     * override this here.
+     *
+     * @return <code>false</code> to indicate that this transaction can only
+     *         be terminated by the right thread.
+     */
 
-	protected boolean checkForCurrent ()
-	{
-		return false;
-	}
+    protected boolean checkForCurrent ()
+    {
+        return false;
+    }
 
     public boolean activated ()
     {
-    	return true;
+        return true;
     }
 
     /*

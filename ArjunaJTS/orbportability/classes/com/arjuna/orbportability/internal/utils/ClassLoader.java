@@ -38,28 +38,28 @@ class ClassLoader extends java.lang.ClassLoader
 
 public ClassLoader ()
     {
-	loadedClasses = new Hashtable();
+    loadedClasses = new Hashtable();
     }
 
 protected Class loadClass (String className, boolean resolve) throws ClassNotFoundException
     {
-	Class c = (Class) loadedClasses.get(className);
+    Class c = (Class) loadedClasses.get(className);
 
-	if (c == null)
-	{
-	    c = findSystemClass(className);
+    if (c == null)
+    {
+        c = findSystemClass(className);
 
-	    // put it into hash table for later.
+        // put it into hash table for later.
 
-	    loadedClasses.put(className, c);
-	}
+        loadedClasses.put(className, c);
+    }
 
-	// c must be set to get here!
+    // c must be set to get here!
 
-	if (resolve)
-	    resolveClass(c);
+    if (resolve)
+        resolveClass(c);
 
-	return c;
+    return c;
     }
 
 private Hashtable loadedClasses;

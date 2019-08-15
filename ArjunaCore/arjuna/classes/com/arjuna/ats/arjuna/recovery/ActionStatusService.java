@@ -77,16 +77,16 @@ public class ActionStatusService implements Service
 
       if (strUid != null)
       {
-	  Uid tranUid = new Uid( strUid );
+      Uid tranUid = new Uid( strUid );
 
-	  if ( transactionType == null || transactionType.equals("") )
-	  {
-	      action_status = getTranStatus( tranUid );
-	  }
-	  else
-	  {
+      if ( transactionType == null || transactionType.equals("") )
+      {
+          action_status = getTranStatus( tranUid );
+      }
+      else
+      {
               action_status = getActionStatus( tranUid, transactionType );
-	  }
+      }
       }
 
       return action_status;
@@ -124,24 +124,24 @@ public class ActionStatusService implements Service
                String transactionType = null;
                String strUid = null;
 
-	       try
-	       {
-		   transactionType = in.readLine();
-		   strUid = in.readLine();
-	       }
-	       catch (IOException ex)
-	       {
-		   // recovery manager has torn down connection, so end loop
-	       }
+           try
+           {
+           transactionType = in.readLine();
+           strUid = in.readLine();
+           }
+           catch (IOException ex)
+           {
+           // recovery manager has torn down connection, so end loop
+           }
 
-	       /*
-	        * check for null - in theory we get this from readLine when EOF has been reached, although in practice
-	        * since we are reading from a socket we will probably get an IOException in which case we will still
-	        * see null
-		    */
+           /*
+            * check for null - in theory we get this from readLine when EOF has been reached, although in practice
+            * since we are reading from a socket we will probably get an IOException in which case we will still
+            * see null
+            */
 
-	       if ((transactionType == null) && (strUid == null))
-		   return;
+           if ((transactionType == null) && (strUid == null))
+           return;
 
                int status = getTransactionStatus( transactionType, strUid );
                String strStatus = Integer.toString( status );
@@ -149,9 +149,9 @@ public class ActionStatusService implements Service
                out.println( strStatus );
                out.flush();
 
-	           tsLogger.i18NLogger.info_recovery_ActionStatusService_1(transactionType, strUid, strStatus);
+               tsLogger.i18NLogger.info_recovery_ActionStatusService_1(transactionType, strUid, strStatus);
 
-	    }
+        }
          }
       }
       catch ( IOException ex ) {
@@ -169,36 +169,36 @@ public class ActionStatusService implements Service
      */
     private int getActionStatus( Uid tranUid, String transactionType )
     {
-	int action_status = ActionStatus.INVALID;
+    int action_status = ActionStatus.INVALID;
 
-	try
-	{
-	    // check in local hash table
-	    BasicAction basic_action = null;
+    try
+    {
+        // check in local hash table
+        BasicAction basic_action = null;
 
-	    synchronized ( ActionManager.manager() )
-	    {
-		basic_action = (BasicAction)ActionManager.manager().get( tranUid );
-	    }
+        synchronized ( ActionManager.manager() )
+        {
+        basic_action = (BasicAction)ActionManager.manager().get( tranUid );
+        }
 
-	    if ( basic_action != null)
-	    {
-		action_status = basic_action.status();
-	    }
-	    else
-	    {
-		/*
-		 * If there is a persistent representation for this
-		 * transaction, then return that status.
-		 */
-		action_status = getObjectStoreStatus( tranUid, transactionType );
-	    }
-	}
-	catch ( Exception ex ) {
+        if ( basic_action != null)
+        {
+        action_status = basic_action.status();
+        }
+        else
+        {
+        /*
+         * If there is a persistent representation for this
+         * transaction, then return that status.
+         */
+        action_status = getObjectStoreStatus( tranUid, transactionType );
+        }
+    }
+    catch ( Exception ex ) {
         tsLogger.i18NLogger.warn_recovery_ActionStatusService_3(ex);
     }
 
-	return action_status;
+    return action_status;
     }
 
    /**
@@ -214,7 +214,7 @@ public class ActionStatusService implements Service
       {
          BasicAction basic_action = null;
 
-	 synchronized ( ActionManager.manager() )
+     synchronized ( ActionManager.manager() )
          {
             basic_action = (BasicAction)ActionManager.manager().get( tranUid );
          }
@@ -295,15 +295,15 @@ public class ActionStatusService implements Service
                                  matchingUidVector.addElement( tranUid );
                                  matchingUidTypeVector.addElement( theTypeName );
                                  tsLogger.i18NLogger.info_recovery_ActionStatusService_4(tranUid);
-			      }
+                  }
                            }
                         } else {
-                        	return action_status; // Errors contacting recovery store for the list of uids it has for a type so return INVALID state
+                            return action_status; // Errors contacting recovery store for the list of uids it has for a type so return INVALID state
                         }
                   }
                }
          } else {
-        	 return action_status; // Errors contacting recovery store for the list of types it holds so return INVALID state
+             return action_status; // Errors contacting recovery store for the list of types it holds so return INVALID state
          }
       }
       catch ( Exception ex ) {
@@ -362,18 +362,18 @@ public class ActionStatusService implements Service
 
          switch ( osState )
          {
-	 case StateStatus.OS_COMMITTED :
-	     action_status = ActionStatus.COMMITTED;
-	     break;
-	 case StateStatus.OS_UNKNOWN:
-	     action_status = ActionStatus.ABORTED;  // no state means aborted because of presumed abort rules
-	     break;
-	 case StateStatus.OS_UNCOMMITTED        :
-	 case StateStatus.OS_HIDDEN             :
-	 case StateStatus.OS_COMMITTED_HIDDEN   :
-	 case StateStatus.OS_UNCOMMITTED_HIDDEN :
-	     action_status = ActionStatus.PREPARED;
-	     break;
+     case StateStatus.OS_COMMITTED :
+         action_status = ActionStatus.COMMITTED;
+         break;
+     case StateStatus.OS_UNKNOWN:
+         action_status = ActionStatus.ABORTED;  // no state means aborted because of presumed abort rules
+         break;
+     case StateStatus.OS_UNCOMMITTED        :
+     case StateStatus.OS_HIDDEN             :
+     case StateStatus.OS_COMMITTED_HIDDEN   :
+     case StateStatus.OS_UNCOMMITTED_HIDDEN :
+         action_status = ActionStatus.PREPARED;
+         break;
          }
       }
       catch ( Exception ex ) {

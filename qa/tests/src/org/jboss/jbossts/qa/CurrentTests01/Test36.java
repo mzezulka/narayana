@@ -68,93 +68,93 @@ import org.omg.CosTransactions.NoTransaction;
  */
 public class Test36
 {
-	public static void main(String[] args)
-	{
-		boolean correct = true;
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+    public static void main(String[] args)
+    {
+        boolean correct = true;
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			Current current = OTS.get_current();
+            Current current = OTS.get_current();
 
-			try
-			{
-				current.commit(true);
-				correct = false;
-			}
-			catch (NoTransaction noTransaction)
-			{
-			}
+            try
+            {
+                current.commit(true);
+                correct = false;
+            }
+            catch (NoTransaction noTransaction)
+            {
+            }
 
-			if (!correct)
-			{
-				System.out.println("Failed");
+            if (!correct)
+            {
+                System.out.println("Failed");
                 return;
             }
-		}
-		catch (Exception exception)
-		{
-			System.out.println("Failed");
-			System.err.println("Test036.main: " + exception);
-			exception.printStackTrace(System.err);
+        }
+        catch (Exception exception)
+        {
+            System.out.println("Failed");
+            System.err.println("Test036.main: " + exception);
+            exception.printStackTrace(System.err);
             return;
         }
 
-		try
-		{
-			OAInterface.shutdownOA();
-			ORBInterface.shutdownORB();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Test036.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
+        try
+        {
+            OAInterface.shutdownOA();
+            ORBInterface.shutdownORB();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Test036.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
 
-		//now do the test again and see what happens
+        //now do the test again and see what happens
 
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			Current current = OTS.get_current();
+            Current current = OTS.get_current();
 
-			try
-			{
-				current.commit(true);
-				correct = false;
-			}
-			catch (NoTransaction noTransaction)
-			{
-			}
+            try
+            {
+                current.commit(true);
+                correct = false;
+            }
+            catch (NoTransaction noTransaction)
+            {
+            }
 
-			if (correct)
-			{
-				System.out.println("Passed");
-			}
-			else
-			{
-				System.out.println("Failed");
-			}
-		}
-		catch (Exception exception)
-		{
-			System.out.println("Failed");
-			System.err.println("Test036.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
+            if (correct)
+            {
+                System.out.println("Passed");
+            }
+            else
+            {
+                System.out.println("Failed");
+            }
+        }
+        catch (Exception exception)
+        {
+            System.out.println("Failed");
+            System.err.println("Test036.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
 
-		try
-		{
-			OAInterface.shutdownOA();
-			ORBInterface.shutdownORB();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Test01.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
-	}
+        try
+        {
+            OAInterface.shutdownOA();
+            ORBInterface.shutdownORB();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Test01.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
+    }
 }

@@ -54,13 +54,13 @@ public class CoordinationOutcome implements Outcome
 
     public CoordinationOutcome (int twophase)
     {
-	this(Success.instance(), twophase);
+    this(Success.instance(), twophase);
     }
 
     public CoordinationOutcome (CompletionStatus s, int twophase)
     {
-	_status = s;
-	_twophaseOutcome = twophase;
+    _status = s;
+    _twophaseOutcome = twophase;
     }
 
     /**
@@ -70,7 +70,7 @@ public class CoordinationOutcome implements Outcome
 
     public final int result ()
     {
-	return _twophaseOutcome;
+    return _twophaseOutcome;
     }
 
     /**
@@ -84,7 +84,7 @@ public class CoordinationOutcome implements Outcome
 
     public String name () throws SystemException
     {
-	return "org.w3c.wscf.twophase.outcomes.CoordinationOutcome";
+    return "org.w3c.wscf.twophase.outcomes.CoordinationOutcome";
     }
 
     /**
@@ -98,7 +98,7 @@ public class CoordinationOutcome implements Outcome
 
     public CompletionStatus completedStatus () throws SystemException
     {
-	return _status;
+    return _status;
     }
 
     /**
@@ -114,12 +114,12 @@ public class CoordinationOutcome implements Outcome
 
     public Object data () throws SystemException
     {
-	return null;
+    return null;
     }
 
     public String toString ()
     {
-	return "com.arjuna.mw.wscf.twophase.outcomes.CoordinationOutcome: "+TwoPhaseResult.stringForm(_twophaseOutcome);
+    return "com.arjuna.mw.wscf.twophase.outcomes.CoordinationOutcome: "+TwoPhaseResult.stringForm(_twophaseOutcome);
     }
 
     private CompletionStatus _status;

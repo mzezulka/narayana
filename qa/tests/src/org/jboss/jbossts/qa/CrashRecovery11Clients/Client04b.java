@@ -66,66 +66,66 @@ import org.omg.CosTransactions.HeuristicHazard;
 
 public class Client04b
 {
-	public static void main(String[] args)
-	{
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+    public static void main(String[] args)
+    {
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			String serviceIOR = ServerIORStore.loadIOR(args[args.length - 1]);
-			BeforeCrashService service = BeforeCrashServiceHelper.narrow(ORBInterface.orb().string_to_object(serviceIOR));
+            String serviceIOR = ServerIORStore.loadIOR(args[args.length - 1]);
+            BeforeCrashService service = BeforeCrashServiceHelper.narrow(ORBInterface.orb().string_to_object(serviceIOR));
 
-			boolean correct = true;
+            boolean correct = true;
 
-			OTS.current().begin();
+            OTS.current().begin();
 
-			service.set(0);
+            service.set(0);
 
-			OTS.current().commit(true);
+            OTS.current().commit(true);
 
-			OTS.current().begin();
+            OTS.current().begin();
 
-			service.set(1);
-			service.setStartCrashAbstractRecordAction(CrashBehavior.CrashBehaviorCrashInPrepare);
+            service.set(1);
+            service.setStartCrashAbstractRecordAction(CrashBehavior.CrashBehaviorCrashInPrepare);
 
-			correct = correct && service.is_correct(); // checks basic action was added correctly
+            correct = correct && service.is_correct(); // checks basic action was added correctly
 
-			try
-			{
-				OTS.current().commit(true);
-				correct = false;
-			}
-			catch (HeuristicHazard heuristicHazard)
-			{
-				//System.err.println ("Client04b.main : caught expected HeuristicHazard");
-			}
+            try
+            {
+                OTS.current().commit(true);
+                correct = false;
+            }
+            catch (HeuristicHazard heuristicHazard)
+            {
+                //System.err.println ("Client04b.main : caught expected HeuristicHazard");
+            }
 
-			if (correct)
-			{
-				System.out.println("Passed");
-			}
-			else
-			{
-				System.out.println("Failed");
-			}
-		}
-		catch (Exception exception)
-		{
-			System.out.println("Failed");
-			System.err.println("Client04b.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
+            if (correct)
+            {
+                System.out.println("Passed");
+            }
+            else
+            {
+                System.out.println("Failed");
+            }
+        }
+        catch (Exception exception)
+        {
+            System.out.println("Failed");
+            System.err.println("Client04b.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
 
-		try
-		{
-			OAInterface.shutdownOA();
-			ORBInterface.shutdownORB();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Client04b.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
-	}
+        try
+        {
+            OAInterface.shutdownOA();
+            ORBInterface.shutdownORB();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Client04b.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
+    }
 }

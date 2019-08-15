@@ -52,17 +52,17 @@ public class CoordinationResult
 
     public static String stringForm (int res)
     {
-	switch (res)
-	{
-	case CANCELLED:
-	    return "CoordinationResult.CANCELLED";
-	case CONFIRMED:
-	    return "CoordinationResult.CONFIRMED";
-	case COMPENSATED:
-	    return "CoordinationResult.COMPENSATED";
-	default:
-	    return "Unknown - "+res;
-	}
+    switch (res)
+    {
+    case CANCELLED:
+        return "CoordinationResult.CANCELLED";
+    case CONFIRMED:
+        return "CoordinationResult.CONFIRMED";
+    case COMPENSATED:
+        return "CoordinationResult.COMPENSATED";
+    default:
+        return "Unknown - "+res;
+    }
     }
 
 }

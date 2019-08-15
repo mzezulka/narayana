@@ -86,25 +86,25 @@ public class BusinessActivityManagerImple extends BusinessActivityManager
             ParticipantCompletionParticipantProcessor.getProcessor().activateParticipant(engine, id) ;
 
             return new BAParticipantCompletionParticipantManagerStub(engine);
-    	}
-    	catch (com.arjuna.wsc.InvalidProtocolException ex)
-    	{
-    	    throw new SystemException(ex.toString());
-    	}
-    	catch (com.arjuna.wsc.InvalidStateException ex)
-    	{
-    	    throw new WrongStateException();
-    	}
-    	catch (com.arjuna.wsc.CannotRegisterException ex)
-    	{
-    	    throw new UnknownTransactionException();
-    	}
-    	catch (Throwable ex)
-    	{
-    	    ex.printStackTrace();
+        }
+        catch (com.arjuna.wsc.InvalidProtocolException ex)
+        {
+            throw new SystemException(ex.toString());
+        }
+        catch (com.arjuna.wsc.InvalidStateException ex)
+        {
+            throw new WrongStateException();
+        }
+        catch (com.arjuna.wsc.CannotRegisterException ex)
+        {
+            throw new UnknownTransactionException();
+        }
+        catch (Throwable ex)
+        {
+            ex.printStackTrace();
 
-    	    throw new SystemException(ex.toString());
-    	}
+            throw new SystemException(ex.toString());
+        }
     }
 
     public com.arjuna.wst11.BAParticipantManager enlistForBusinessAgreementWithCoordinatorCompletion (BusinessAgreementWithCoordinatorCompletionParticipant bawcp, String id)
@@ -118,32 +118,32 @@ public class BusinessActivityManagerImple extends BusinessActivityManager
             final ServiceRegistry serviceRegistry = PrivilegedServiceRegistryFactory.getInstance().getServiceRegistry();
             final String address = serviceRegistry.getServiceURI(BusinessActivityConstants.COORDINATOR_COMPLETION_PARTICIPANT_SERVICE_NAME, isSecure);
             final W3CEndpointReference participant = getParticipant(service, endpoint, address, id) ;
-    	    W3CEndpointReference baPMEndpoint = registerParticipant(participant, BusinessActivityConstants.WSBA_SUB_PROTOCOL_COORDINATOR_COMPLETION);
+            W3CEndpointReference baPMEndpoint = registerParticipant(participant, BusinessActivityConstants.WSBA_SUB_PROTOCOL_COORDINATOR_COMPLETION);
             final CoordinatorCompletionParticipantEngine engine = new CoordinatorCompletionParticipantEngine(id, baPMEndpoint, bawcp) ;
             CoordinatorCompletionParticipantProcessor.getProcessor().activateParticipant(engine, id) ;
 
             return new BACoordinatorCompletionParticipantManagerStub(engine);
-    	}
-    	catch (com.arjuna.wsc.InvalidProtocolException ex)
-    	{
-    	    throw new SystemException(ex.toString());
-    	}
-    	catch (com.arjuna.wsc.InvalidStateException ex)
-    	{
-    	    throw new WrongStateException();
-    	}
-    	catch (com.arjuna.wsc.CannotRegisterException ex)
-    	{
-    	    ex.printStackTrace();
+        }
+        catch (com.arjuna.wsc.InvalidProtocolException ex)
+        {
+            throw new SystemException(ex.toString());
+        }
+        catch (com.arjuna.wsc.InvalidStateException ex)
+        {
+            throw new WrongStateException();
+        }
+        catch (com.arjuna.wsc.CannotRegisterException ex)
+        {
+            ex.printStackTrace();
 
-    	    throw new UnknownTransactionException();
-    	}
-    	catch (Throwable ex)
-    	{
-    	    ex.printStackTrace();
+            throw new UnknownTransactionException();
+        }
+        catch (Throwable ex)
+        {
+            ex.printStackTrace();
 
-    	    throw new SystemException(ex.toString());
-    	}
+            throw new SystemException(ex.toString());
+        }
     }
 
     public TxContext suspend () throws SystemException
@@ -166,19 +166,19 @@ public class BusinessActivityManagerImple extends BusinessActivityManager
     private final W3CEndpointReference registerParticipant(final W3CEndpointReference participant, final String protocol)
         throws com.arjuna.wsc.InvalidProtocolException, com.arjuna.wsc.InvalidStateException, com.arjuna.wsc.CannotRegisterException, SystemException
     {
-    	TxContextImple currentTx = null;
+        TxContextImple currentTx = null;
 
-    	try
-    	{
-    	    currentTx = (TxContextImple) _ctxManager.currentTransaction();
+        try
+        {
+            currentTx = (TxContextImple) _ctxManager.currentTransaction();
 
-    	    if (currentTx == null)
-        		throw new com.arjuna.wsc.NoActivityException();
+            if (currentTx == null)
+                throw new com.arjuna.wsc.NoActivityException();
 
             final CoordinationContextType coordinationContext = currentTx.context().getCoordinationContext() ;
             final String messageId = MessageId.getMessageId() ;
             return RegistrationCoordinator.register(coordinationContext, messageId, participant, protocol) ;
-    	}
+        }
         catch (final SoapFault sf)
         {
             throw new SystemException(sf.getMessage());
@@ -187,24 +187,24 @@ public class BusinessActivityManagerImple extends BusinessActivityManager
         {
             throw ex;
         }
-    	catch (Exception ex)
-    	{
-    	    ex.printStackTrace();
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
 
-    	    throw new SystemException(ex.toString());
-    	}
-    	finally
-    	{
-    	    try
-    	    {
-        		if (currentTx != null)
-        		    _ctxManager.resume(currentTx);
-    	    }
-    	    catch (Exception ex)
-    	    {
-        		ex.printStackTrace();
-    	    }
-    	}
+            throw new SystemException(ex.toString());
+        }
+        finally
+        {
+            try
+            {
+                if (currentTx != null)
+                    _ctxManager.resume(currentTx);
+            }
+            catch (Exception ex)
+            {
+                ex.printStackTrace();
+            }
+        }
     }
 
     private W3CEndpointReference getParticipant(final QName service, final QName endpoint, final String address, final String id)

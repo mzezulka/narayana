@@ -38,79 +38,79 @@ import org.jboss.jbossts.qa.Utils.JDBCProfileStore;
 
 public class Client01
 {
-	public static void main(String[] args)
-	{
-		try
-		{
-			String profileName = args[args.length - 1];
+    public static void main(String[] args)
+    {
+        try
+        {
+            String profileName = args[args.length - 1];
 
-			int numberOfDrivers = JDBCProfileStore.numberOfDrivers(profileName);
-			for (int index = 0; index < numberOfDrivers; index++)
-			{
-				String driver = JDBCProfileStore.driver(profileName, index);
+            int numberOfDrivers = JDBCProfileStore.numberOfDrivers(profileName);
+            for (int index = 0; index < numberOfDrivers; index++)
+            {
+                String driver = JDBCProfileStore.driver(profileName, index);
 
-				Class.forName(driver);
-			}
+                Class.forName(driver);
+            }
 
-			String databaseURL = JDBCProfileStore.databaseURL(profileName);
-			String databaseUser = JDBCProfileStore.databaseUser(profileName);
-			String databasePassword = JDBCProfileStore.databasePassword(profileName);
-			String databaseDynamicClass = JDBCProfileStore.databaseDynamicClass(profileName);
-			int databaseTimeout = JDBCProfileStore.timeout(profileName);
+            String databaseURL = JDBCProfileStore.databaseURL(profileName);
+            String databaseUser = JDBCProfileStore.databaseUser(profileName);
+            String databasePassword = JDBCProfileStore.databasePassword(profileName);
+            String databaseDynamicClass = JDBCProfileStore.databaseDynamicClass(profileName);
+            int databaseTimeout = JDBCProfileStore.timeout(profileName);
 
-			InfoTable infoTable = null;
-			boolean tableTwo = false;
+            InfoTable infoTable = null;
+            boolean tableTwo = false;
 
-			for (int i = 0; i < args.length; i++)
-			{
-				if (args[i].equals("-table2"))
-				{
-					tableTwo = true;
-				}
-			}
+            for (int i = 0; i < args.length; i++)
+            {
+                if (args[i].equals("-table2"))
+                {
+                    tableTwo = true;
+                }
+            }
 
-			if (!tableTwo)
-			{
-				infoTable = new JDBCInfoTableImpl01(databaseURL, databaseUser, databasePassword, databaseDynamicClass, databaseTimeout);
-			}
-			else
-			{
-				infoTable = new JDBCInfoTableImpl02(databaseURL, databaseUser, databasePassword, databaseDynamicClass, databaseTimeout);
-			}
+            if (!tableTwo)
+            {
+                infoTable = new JDBCInfoTableImpl01(databaseURL, databaseUser, databasePassword, databaseDynamicClass, databaseTimeout);
+            }
+            else
+            {
+                infoTable = new JDBCInfoTableImpl02(databaseURL, databaseUser, databasePassword, databaseDynamicClass, databaseTimeout);
+            }
 
-			boolean correct = true;
+            boolean correct = true;
 
-			for (int index = 0; index < 10; index++)
-			{
-				String name = "Name_" + index;
-				String value = "Value_" + index;
+            for (int index = 0; index < 10; index++)
+            {
+                String name = "Name_" + index;
+                String value = "Value_" + index;
 
-				infoTable.insert(name, value);
-			}
+                infoTable.insert(name, value);
+            }
 
-			for (int index = 0; correct && (index < 10); index++)
-			{
-				String name = "Name_" + index;
-				String value = "Value_" + index;
-				String newValue = infoTable.select(name);
+            for (int index = 0; correct && (index < 10); index++)
+            {
+                String name = "Name_" + index;
+                String value = "Value_" + index;
+                String newValue = infoTable.select(name);
 
-				correct = correct && value.equals(newValue);
-			}
+                correct = correct && value.equals(newValue);
+            }
 
-			if (correct)
-			{
-				System.out.println("Passed");
-			}
-			else
-			{
-				System.out.println("Failed");
-			}
-		}
-		catch (Exception exception)
-		{
-			System.out.println("Failed");
-			System.err.println("Client01.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
-	}
+            if (correct)
+            {
+                System.out.println("Passed");
+            }
+            else
+            {
+                System.out.println("Failed");
+            }
+        }
+        catch (Exception exception)
+        {
+            System.out.println("Failed");
+            System.err.println("Client01.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
+    }
 }

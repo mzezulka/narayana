@@ -54,9 +54,9 @@ public class SynchronizationImple implements org.omg.CosTransactions.Synchroniza
 
     public SynchronizationImple (javax.transaction.Synchronization ptr)
     {
-	_theSynch = ptr;
-	_theReference = null;
-	_theClassLoader = this.getContextClassLoader();
+    _theSynch = ptr;
+    _theReference = null;
+    _theClassLoader = this.getContextClassLoader();
     }
 
     public final org.omg.CosTransactions.Synchronization getSynchronization ()
@@ -75,68 +75,68 @@ public class SynchronizationImple implements org.omg.CosTransactions.Synchroniza
 
     public void before_completion () throws org.omg.CORBA.SystemException
     {
-	if (jtaxLogger.logger.isTraceEnabled()) {
+    if (jtaxLogger.logger.isTraceEnabled()) {
         jtaxLogger.logger.trace("SynchronizationImple.before_completion - Class: " + _theSynch.getClass() + " HashCode: " + _theSynch.hashCode() + " toString: " + _theSynch);
     }
 
-	if (_theSynch != null)
-	{
-	    ClassLoader origClassLoader = this.getContextClassLoader();
+    if (_theSynch != null)
+    {
+        ClassLoader origClassLoader = this.getContextClassLoader();
 
-	    try
-	    {
-		this.setContextClassLoader(_theClassLoader);
-		_theSynch.beforeCompletion();
-	    }
-	    catch (Exception e)
-	    {
-		jtaxLogger.logger.trace("SynchronizationImple.before_completion failed - toString: " + _theSynch, e);
-		throw new UNKNOWN();
-	    }
-	    finally
-	    {
-		this.setContextClassLoader(origClassLoader);
-	    }
-	}
-	else
-	    throw new UNKNOWN();
+        try
+        {
+        this.setContextClassLoader(_theClassLoader);
+        _theSynch.beforeCompletion();
+        }
+        catch (Exception e)
+        {
+        jtaxLogger.logger.trace("SynchronizationImple.before_completion failed - toString: " + _theSynch, e);
+        throw new UNKNOWN();
+        }
+        finally
+        {
+        this.setContextClassLoader(origClassLoader);
+        }
+    }
+    else
+        throw new UNKNOWN();
     }
 
     public void after_completion (org.omg.CosTransactions.Status status) throws org.omg.CORBA.SystemException
     {
-	if (jtaxLogger.logger.isTraceEnabled()) {
+    if (jtaxLogger.logger.isTraceEnabled()) {
         jtaxLogger.logger.trace("SynchronizationImple.after_completion - Class: " + _theSynch.getClass() + " HashCode: " + _theSynch.hashCode() + " toString: " + _theSynch);
     }
 
-	if (_theSynch != null)
-	{
-	    int s = StatusConverter.convert(status);
-	    ClassLoader origClassLoader = this.getContextClassLoader();
+    if (_theSynch != null)
+    {
+        int s = StatusConverter.convert(status);
+        ClassLoader origClassLoader = this.getContextClassLoader();
 
-	    try
-	    {
-		this.setContextClassLoader(_theClassLoader);
-		_theSynch.afterCompletion(s);
+        try
+        {
+        this.setContextClassLoader(_theClassLoader);
+        _theSynch.afterCompletion(s);
 
-		if (_theReference != null)
-		    ORBManager.getPOA().shutdownObject(_thePOATie);
-	    }
-	    catch (Exception e)
-	    {
-		jtaxLogger.logger.trace("SynchronizationImple.after_completion failed - toString: " + _theSynch, e);
+        if (_theReference != null)
+            ORBManager.getPOA().shutdownObject(_thePOATie);
+        }
+        catch (Exception e)
+        {
+        jtaxLogger.logger.trace("SynchronizationImple.after_completion failed - toString: " + _theSynch, e);
 
-		if (_theReference != null)
-		    ORBManager.getPOA().shutdownObject(_thePOATie);
+        if (_theReference != null)
+            ORBManager.getPOA().shutdownObject(_thePOATie);
 
-		throw new UNKNOWN(); // should not cause any affect!
-	    }
-	    finally
-	    {
-		this.setContextClassLoader(origClassLoader);
-	    }
-	}
-	else
-	    throw new UNKNOWN(); // should not cause any affect!
+        throw new UNKNOWN(); // should not cause any affect!
+        }
+        finally
+        {
+        this.setContextClassLoader(origClassLoader);
+        }
+    }
+    else
+        throw new UNKNOWN(); // should not cause any affect!
     }
 
     // this is used to allow subclasses to override the Tie type provided.
@@ -148,29 +148,29 @@ public class SynchronizationImple implements org.omg.CosTransactions.Synchroniza
 
     private ClassLoader getContextClassLoader() {
         if (System.getSecurityManager() == null) {
-	    return Thread.currentThread().getContextClassLoader();
-	} else {
-	    return (ClassLoader)AccessController.doPrivileged(
-	        new PrivilegedAction() {
-	            public Object run() {
-	    	        return Thread.currentThread().getContextClassLoader();
-	            }
-	        });
-	}
+        return Thread.currentThread().getContextClassLoader();
+    } else {
+        return (ClassLoader)AccessController.doPrivileged(
+            new PrivilegedAction() {
+                public Object run() {
+                    return Thread.currentThread().getContextClassLoader();
+                }
+            });
+    }
     }
 
     private void setContextClassLoader(final ClassLoader classLoader) {
         if (System.getSecurityManager() == null) {
-	    Thread.currentThread().setContextClassLoader(classLoader);
-	} else {
-	    AccessController.doPrivileged(
-	        new PrivilegedAction() {
-	            public Object run() {
-	    	        Thread.currentThread().setContextClassLoader(classLoader);
-			return null;
-	            }
-	        });
-	}
+        Thread.currentThread().setContextClassLoader(classLoader);
+    } else {
+        AccessController.doPrivileged(
+            new PrivilegedAction() {
+                public Object run() {
+                    Thread.currentThread().setContextClassLoader(classLoader);
+            return null;
+                }
+            });
+    }
     }
 
     private javax.transaction.Synchronization       _theSynch;

@@ -30,17 +30,17 @@ import org.jboss.tm.XAResourceRecovery;
 
 public class ProxyXAResourceRecovery implements XAResourceRecovery {
 
-	private List<ProxyXAResource> resources = new ArrayList<ProxyXAResource>();
+    private List<ProxyXAResource> resources = new ArrayList<ProxyXAResource>();
 
-	public ProxyXAResourceRecovery(String nodeName, String[] toRecoverFor) {
-		for (int i = 0; i < toRecoverFor.length; i++) {
-			resources.add(new ProxyXAResource(nodeName, toRecoverFor[i]));
-		}
-	}
+    public ProxyXAResourceRecovery(String nodeName, String[] toRecoverFor) {
+        for (int i = 0; i < toRecoverFor.length; i++) {
+            resources.add(new ProxyXAResource(nodeName, toRecoverFor[i]));
+        }
+    }
 
-	@Override
-	public XAResource[] getXAResources() {
-		return resources.toArray(new XAResource[] {});
-	}
+    @Override
+    public XAResource[] getXAResources() {
+        return resources.toArray(new XAResource[] {});
+    }
 
 }

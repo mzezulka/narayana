@@ -58,7 +58,7 @@ public interface RcvCoManager
  *    coordinator.
  */
 RecoveryCoordinator makeRC( Uid RCUid, Uid rootActionUid,
-		Uid processUid, boolean isServerTransaction );
+        Uid processUid, boolean isServerTransaction );
 /**
  * The RecoveryCoordinator instance is no longer needed. Will be a null-op in environments
  * where there is no real implementation object.

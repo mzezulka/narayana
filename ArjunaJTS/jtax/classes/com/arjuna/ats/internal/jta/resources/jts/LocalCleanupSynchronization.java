@@ -50,12 +50,12 @@ public class LocalCleanupSynchronization implements com.arjuna.ats.arjuna.coordi
 {
     public LocalCleanupSynchronization (TransactionImple tx)
     {
-	_tx = tx;
+    _tx = tx;
     }
 
     public boolean beforeCompletion ()
     {
-	return true;
+    return true;
     }
 
     /**
@@ -64,9 +64,9 @@ public class LocalCleanupSynchronization implements com.arjuna.ats.arjuna.coordi
 
     public boolean afterCompletion (int status)
     {
-	_tx.shutdown();
+    _tx.shutdown();
 
-	return true;
+    return true;
     }
 
     @Override
@@ -76,7 +76,7 @@ public class LocalCleanupSynchronization implements com.arjuna.ats.arjuna.coordi
 
     public Uid get_uid ()
     {
-	return _theUid;
+    return _theUid;
     }
 
     private TransactionImple _tx;

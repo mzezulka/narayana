@@ -33,16 +33,16 @@ import org.jboss.arquillian.core.spi.LoadableExtension;
  */
 public class JBossTSServerExtension implements LoadableExtension {
 
-	@Override
-	public void register(ExtensionBuilder builder) {
-		if (isWindows()) {
-			builder.service(ServerKillProcessor.class, JBossTSAS7ServerKillProcessorWin.class);
-		} else {
-			builder.service(ServerKillProcessor.class, JBossTSAS7ServerKillProcessor.class);
-		}
-	}
+    @Override
+    public void register(ExtensionBuilder builder) {
+        if (isWindows()) {
+            builder.service(ServerKillProcessor.class, JBossTSAS7ServerKillProcessorWin.class);
+        } else {
+            builder.service(ServerKillProcessor.class, JBossTSAS7ServerKillProcessor.class);
+        }
+    }
 
-	public static boolean isWindows() {
+    public static boolean isWindows() {
         String osName = System.getProperty("os.name");
 
         return osName != null  && ((osName.indexOf("Windows") > -1) || (osName.indexOf("windows") > -1));
@@ -72,61 +72,61 @@ public class JBossTSServerExtension implements LoadableExtension {
 
     enum OSType {
 
-    	WINDOWS {
-    		@Override
-    		public String getPSCommand() {
-    			return "wmic PROCESS GET ProcessId,CommandLine,Name";
-    		}
-   		},
-    	LINUX {
-    		@Override
-    		public String getPSCommand() {
-    			return "ps aux";
-    		}
+        WINDOWS {
+            @Override
+            public String getPSCommand() {
+                return "wmic PROCESS GET ProcessId,CommandLine,Name";
+            }
+           },
+        LINUX {
+            @Override
+            public String getPSCommand() {
+                return "ps aux";
+            }
 
-    		@Override
-    		String getPSIDIndex() {
-    			return "{print $2}";
-    		}
-    	},
-    	SOLARIS {
-    		@Override
-    		public String getPSCommand() {
-    			return  JBossTSServerExtension.isIbmJdk() ? "/usr/ucb/ps aux" : "jps";
-    		}
+            @Override
+            String getPSIDIndex() {
+                return "{print $2}";
+            }
+        },
+        SOLARIS {
+            @Override
+            public String getPSCommand() {
+                return  JBossTSServerExtension.isIbmJdk() ? "/usr/ucb/ps aux" : "jps";
+            }
 
-    		@Override
-    		String getPSIDIndex() {
-    			return JBossTSServerExtension.isIbmJdk() ? "{print $2}" : "{print $1}";
-    		}
-    	},
-    	HPUX {
-    		@Override
-    		public String getPSCommand() {
-    			return  JBossTSServerExtension.isIbmJdk() ? "/usr/ucb/ps aux" : "jps";
-    		}
+            @Override
+            String getPSIDIndex() {
+                return JBossTSServerExtension.isIbmJdk() ? "{print $2}" : "{print $1}";
+            }
+        },
+        HPUX {
+            @Override
+            public String getPSCommand() {
+                return  JBossTSServerExtension.isIbmJdk() ? "/usr/ucb/ps aux" : "jps";
+            }
 
-    		@Override
-    		String getPSIDIndex() {
-    			return JBossTSServerExtension.isIbmJdk() ? "{print $2}" : "{print $1}";
-    		}
-    	};
+            @Override
+            String getPSIDIndex() {
+                return JBossTSServerExtension.isIbmJdk() ? "{print $2}" : "{print $1}";
+            }
+        };
 
-    	// IBM JDK does not have "jps" so using "ps", Solaris have "ps" in "/usr/ucb/".
-    	String getPSCommand() {
-    		return null;
-    	}
+        // IBM JDK does not have "jps" so using "ps", Solaris have "ps" in "/usr/ucb/".
+        String getPSCommand() {
+            return null;
+        }
 
-    	String getPSIDIndex() {
-    		return null;
-    	}
+        String getPSIDIndex() {
+            return null;
+        }
 
-    	static OSType getOSType() {
-    		if (JBossTSServerExtension.isHpux()) return HPUX;
-    		if (JBossTSServerExtension.isWindows()) return WINDOWS;
-    		if (JBossTSServerExtension.isSolaris()) return SOLARIS;
-    		return LINUX;
-    	}
+        static OSType getOSType() {
+            if (JBossTSServerExtension.isHpux()) return HPUX;
+            if (JBossTSServerExtension.isWindows()) return WINDOWS;
+            if (JBossTSServerExtension.isSolaris()) return SOLARIS;
+            return LINUX;
+        }
 
     }
 }

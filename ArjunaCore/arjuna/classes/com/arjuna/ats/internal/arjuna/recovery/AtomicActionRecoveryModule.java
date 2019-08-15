@@ -83,11 +83,11 @@ public class AtomicActionRecoveryModule implements RecoveryModule
 
       try
       {
-	  if (tsLogger.logger.isDebugEnabled()) {
+      if (tsLogger.logger.isDebugEnabled()) {
           tsLogger.logger.debug("AtomicActionRecoveryModule first pass");
       }
 
-	  AtomicActions = _recoveryStore.allObjUids( _transactionType, aa_uids );
+      AtomicActions = _recoveryStore.allObjUids( _transactionType, aa_uids );
 
       }
       catch ( ObjectStoreException ex ) {
@@ -220,7 +220,7 @@ public class AtomicActionRecoveryModule implements RecoveryModule
             {
                Uid newUid = new Uid( theUid ) ;
 
-	       if (tsLogger.logger.isDebugEnabled()) {
+           if (tsLogger.logger.isDebugEnabled()) {
                tsLogger.logger.debug("found transaction " + newUid);
            }
 

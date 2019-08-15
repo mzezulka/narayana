@@ -503,7 +503,7 @@ public class ORB
     }
 
 public void setORBShutdownListener(ORBShutdownListener orbShutdownListener) {
-	_orbShutdownListener = orbShutdownListener;
+    _orbShutdownListener = orbShutdownListener;
 }
 
     com.arjuna.orbportability.orb.core.ORB _orb = new com.arjuna.orbportability.orb.core.ORB();
@@ -520,7 +520,7 @@ public void setORBShutdownListener(ORBShutdownListener orbShutdownListener) {
 
 private ORBShutdownListener _orbShutdownListener;
 
-private volatile static HashMap	 _orbMap = new HashMap();
+private volatile static HashMap     _orbMap = new HashMap();
 
     static final String ORB_INITIALISER_NS = "com.arjuna.orbportability.orb";
 

@@ -55,137 +55,137 @@ public class OutputObjectState extends OutputBuffer
 
 public OutputObjectState ()
     {
-	if (tsLogger.logger.isTraceEnabled()) {
+    if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("OutputObjectState::OutputObjectState()");
     }
 
-	bufferUid = new Uid();
-	super._valid = bufferUid.valid();
+    bufferUid = new Uid();
+    super._valid = bufferUid.valid();
 
-	imageType = null;
+    imageType = null;
     }
 
 public OutputObjectState (OutputObjectState copyFrom)
     {
-	/*
-	 * Don't use byte[] constructor as buffer is already
-	 * initialised.
-	 */
+    /*
+     * Don't use byte[] constructor as buffer is already
+     * initialised.
+     */
 
-	super(copyFrom);
+    super(copyFrom);
 
-	if (tsLogger.logger.isTraceEnabled()) {
+    if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("OutputObjectState::OutputObjectState(" + copyFrom + ")");
     }
 
-	try
-	{
-	    bufferUid = new Uid(copyFrom.bufferUid);
-	    super._valid = bufferUid.valid();
+    try
+    {
+        bufferUid = new Uid(copyFrom.bufferUid);
+        super._valid = bufferUid.valid();
 
-	    imageType = new String(copyFrom.imageType);
-	}
-	catch (Exception ex)
-	{
-	    super._valid = false;
-	}
+        imageType = new String(copyFrom.imageType);
+    }
+    catch (Exception ex)
+    {
+        super._valid = false;
+    }
     }
 
 public OutputObjectState (InputObjectState copyFrom)
     {
-	super(copyFrom.buffer());
+    super(copyFrom.buffer());
 
-	if (tsLogger.logger.isTraceEnabled()) {
+    if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("OutputObjectState::OutputObjectState(" + copyFrom + ")");
     }
 
-	try
-	{
-	    bufferUid = new Uid(copyFrom.stateUid());
-	    super._valid = super._valid && bufferUid.valid();
+    try
+    {
+        bufferUid = new Uid(copyFrom.stateUid());
+        super._valid = super._valid && bufferUid.valid();
 
-	    imageType = new String(copyFrom.type());
-	}
-	catch (Exception ex)
-	{
-	    super._valid = false;
-	}
+        imageType = new String(copyFrom.type());
+    }
+    catch (Exception ex)
+    {
+        super._valid = false;
+    }
     }
 
 public OutputObjectState (Uid newUid, String tName)
     {
-	if (tsLogger.logger.isTraceEnabled()) {
+    if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("OutputObjectState::OutputObjectState(" + newUid + ", " + tName + ")");
     }
 
-	bufferUid = new Uid(newUid);
-	super._valid = bufferUid.valid();
+    bufferUid = new Uid(newUid);
+    super._valid = bufferUid.valid();
 
-	imageType = (tName == null ? null : new String(tName));
+    imageType = (tName == null ? null : new String(tName));
     }
 
 public OutputObjectState (Uid newUid, String tName, byte[] buffer)
     {
-	super(buffer);
+    super(buffer);
 
-	if (tsLogger.logger.isTraceEnabled()) {
+    if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("OutputObjectState::OutputObjectState(" + newUid + ", " + tName + ")");
     }
 
-	bufferUid = new Uid(newUid);
-	super._valid = super._valid && bufferUid.valid();
+    bufferUid = new Uid(newUid);
+    super._valid = super._valid && bufferUid.valid();
 
-	imageType = (tName == null ? null : new String(tName));
+    imageType = (tName == null ? null : new String(tName));
     }
 
 public final boolean notempty ()
     {
-	return ((length() > 0) ? true : false);
+    return ((length() > 0) ? true : false);
     }
 
 public final int size ()
     {
-	return (length());
+    return (length());
     }
 
 public final Uid stateUid ()
     {
-	return bufferUid;
+    return bufferUid;
     }
 
 public final String type ()
     {
-	return imageType;
+    return imageType;
     }
 
 public void print (PrintWriter strm)
     {
-	strm.println("OutputObjectState Uid   : "+bufferUid+"\n");
+    strm.println("OutputObjectState Uid   : "+bufferUid+"\n");
 
-	if (imageType != null)
-	    strm.println("OutputObjectState Type  : "+imageType+"\n");
-	else
-	    strm.println("OutputObjectState Type  : null\n");
+    if (imageType != null)
+        strm.println("OutputObjectState Type  : "+imageType+"\n");
+    else
+        strm.println("OutputObjectState Type  : null\n");
 
-	strm.println("OutputObjectState Size  : "+size()+"\n");
-	strm.println("OutputObjectState Buffer: ");
+    strm.println("OutputObjectState Size  : "+size()+"\n");
+    strm.println("OutputObjectState Buffer: ");
 
-	super.print(strm);
+    super.print(strm);
     }
 
     public String toString ()
     {
-	String val = "OutputObjectState Uid   : "+bufferUid+"\n";
+    String val = "OutputObjectState Uid   : "+bufferUid+"\n";
 
-	if (imageType != null)
-	    val += "OutputObjectState Type  : "+imageType+"\n";
-	else
-	    val += "OutputObjectState Type  : null\n";
+    if (imageType != null)
+        val += "OutputObjectState Type  : "+imageType+"\n";
+    else
+        val += "OutputObjectState Type  : null\n";
 
-	val += "OutputObjectState Size  : "+size()+"\n";
-	val += "OutputObjectState Buffer: ";
+    val += "OutputObjectState Size  : "+size()+"\n";
+    val += "OutputObjectState Buffer: ";
 
-	return val;
+    return val;
     }
 
 public synchronized void copy (OutputObjectState objstate)
@@ -193,20 +193,20 @@ public synchronized void copy (OutputObjectState objstate)
         if (tsLogger.logger.isTraceEnabled())
             tsLogger.logger.trace("OutputObjectState::copy for " + bufferUid);
 
-	super.copy(objstate);
+    super.copy(objstate);
 
-	bufferUid = new Uid(objstate.bufferUid);
-	super._valid = bufferUid.valid();
+    bufferUid = new Uid(objstate.bufferUid);
+    super._valid = bufferUid.valid();
 
-	imageType = (objstate.imageType == null ? null : new String(objstate.imageType));
+    imageType = (objstate.imageType == null ? null : new String(objstate.imageType));
     }
 
 public synchronized void packInto (OutputBuffer buff) throws IOException
     {
-	buff.packString(imageType);
-	UidHelper.packInto(bufferUid, buff);
+    buff.packString(imageType);
+    UidHelper.packInto(bufferUid, buff);
 
-	super.packInto(buff);
+    super.packInto(buff);
     }
 
 private Uid    bufferUid;

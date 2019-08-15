@@ -49,10 +49,10 @@ import com.arjuna.ats.internal.jdbc.ConnectionImple;
 public class JDBC2RecoveryConnection extends ConnectionImple
 {
 
-	public JDBC2RecoveryConnection (String dbName, Properties info)
-			throws SQLException
-	{
-		super(dbName, info);
-	}
+    public JDBC2RecoveryConnection (String dbName, Properties info)
+            throws SQLException
+    {
+        super(dbName, info);
+    }
 
 }

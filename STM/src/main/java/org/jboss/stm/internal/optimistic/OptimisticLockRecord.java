@@ -69,8 +69,8 @@ class OptimisticLockRecord extends LockRecord
             _state = null;
         }
 
-	_status = lm.status();
-	_check = check;
+    _status = lm.status();
+    _check = check;
     }
 
     public OptimisticLockRecord (OptimisticLockManager lm, boolean rdOnly, BasicAction currAct, boolean check)
@@ -86,8 +86,8 @@ class OptimisticLockRecord extends LockRecord
             _state = null;
         }
 
-	_status = lm.status();
-	_check = check;
+    _status = lm.status();
+    _check = check;
     }
 
     public int typeIs ()
@@ -102,13 +102,13 @@ class OptimisticLockRecord extends LockRecord
             txojLogger.logger.trace("OptimisticLockRecord::nestedAbort() for "+order());
         }
 
-	/*
-	 * Optimistic cc means we just throw away the state.
-	 */
+    /*
+     * Optimistic cc means we just throw away the state.
+     */
 
-	_state = null;
+    _state = null;
 
-	return super.nestedAbort();
+    return super.nestedAbort();
     }
 
     public int topLevelPrepare ()
@@ -118,17 +118,17 @@ class OptimisticLockRecord extends LockRecord
             txojLogger.logger.trace("OptimisticLockRecord::nestedPrepare() for "+order());
         }
 
-	if (value() == null)
+    if (value() == null)
             return TwoPhaseOutcome.PREPARE_NOTOK;
 
-	if (checkState())
-	    return super.topLevelPrepare();
-	else
-	{
-	    txojLogger.i18NLogger.warn_OptimisticLockRecord_1((LockManager) value());
+    if (checkState())
+        return super.topLevelPrepare();
+    else
+    {
+        txojLogger.i18NLogger.warn_OptimisticLockRecord_1((LockManager) value());
 
-	    return TwoPhaseOutcome.PREPARE_NOTOK;
-	}
+        return TwoPhaseOutcome.PREPARE_NOTOK;
+    }
     }
 
     public int topLevelCommit ()
@@ -148,7 +148,7 @@ class OptimisticLockRecord extends LockRecord
 
     public String type ()
     {
-	return "/StateManager/AbstractRecord/LockRecord/OptimisticLockRecord";
+    return "/StateManager/AbstractRecord/LockRecord/OptimisticLockRecord";
     }
 
     public String toString ()
@@ -158,7 +158,7 @@ class OptimisticLockRecord extends LockRecord
 
     protected OptimisticLockRecord ()
     {
-	super();
+    super();
     }
 
     private boolean checkState ()

@@ -47,31 +47,31 @@ public class FailureXAResource implements XAResource
 
     public void commit(Xid id, boolean onePhase) throws XAException
     {
-	if (_locale == FailLocation.commit)
-	{
-	    if (_type == FailType.normal)
-	        throw new XAException(XAException.XA_HEURMIX);
+    if (_locale == FailLocation.commit)
+    {
+        if (_type == FailType.normal)
+            throw new XAException(XAException.XA_HEURMIX);
 
-	    if (_type == FailType.heurcom)
-	        throw new XAException(XAException.XA_HEURCOM);
+        if (_type == FailType.heurcom)
+            throw new XAException(XAException.XA_HEURCOM);
 
-	    if (_type == FailType.rollback)
+        if (_type == FailType.rollback)
                 throw new XAException(XAException.XA_HEURRB);
 
-	    if (_type == FailType.nota)
-	        throw new XAException(XAException.XAER_NOTA);
+        if (_type == FailType.nota)
+            throw new XAException(XAException.XAER_NOTA);
 
-	    if (_type == FailType.inval)
+        if (_type == FailType.inval)
                 throw new XAException(XAException.XAER_INVAL);
 
-	    if (_type == FailType.proto)
+        if (_type == FailType.proto)
                 throw new XAException(XAException.XAER_PROTO);
 
-	    if (_type == FailType.rmfail)
+        if (_type == FailType.rmfail)
                 throw new XAException(XAException.XAER_RMFAIL);
 
-	    throw new XAException(XAException.XA_RBTIMEOUT);
-	}
+        throw new XAException(XAException.XA_RBTIMEOUT);
+    }
     }
 
     public void end(Xid xid, int flags) throws XAException
@@ -95,12 +95,12 @@ public class FailureXAResource implements XAResource
 
     public int getTransactionTimeout() throws XAException
     {
-	return 0;
+    return 0;
     }
 
     public boolean isSameRM(XAResource xares) throws XAException
     {
-	return false;
+    return false;
     }
 
     public int prepare(Xid xid) throws XAException

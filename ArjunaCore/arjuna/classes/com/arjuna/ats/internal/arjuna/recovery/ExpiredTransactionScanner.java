@@ -41,129 +41,129 @@ import com.arjuna.ats.internal.arjuna.common.UidHelper;
 
 public class ExpiredTransactionScanner implements ExpiryScanner
 {
-	public ExpiredTransactionScanner(String typeName, String movedTypeName)
-	{
-		_recoveryStore = StoreManager.getRecoveryStore();
-		_typeName = typeName;
-		_movedTypeName = movedTypeName;
-	}
+    public ExpiredTransactionScanner(String typeName, String movedTypeName)
+    {
+        _recoveryStore = StoreManager.getRecoveryStore();
+        _typeName = typeName;
+        _movedTypeName = movedTypeName;
+    }
 
-	/**
-	 * This is called periodically by the RecoveryManager
-	 */
-	public void scan()
-	{
-		boolean initialScan = false;
+    /**
+     * This is called periodically by the RecoveryManager
+     */
+    public void scan()
+    {
+        boolean initialScan = false;
 
-		if (_scanM == null)
-		{
-			_scanM = new Hashtable();
-			initialScan = true;
-		}
+        if (_scanM == null)
+        {
+            _scanM = new Hashtable();
+            initialScan = true;
+        }
 
-		try
-		{
-			InputObjectState uids = new InputObjectState();
+        try
+        {
+            InputObjectState uids = new InputObjectState();
 
-			// take a snapshot of the log
+            // take a snapshot of the log
 
-			if (_recoveryStore.allObjUids(_typeName, uids))
-			{
-				Uid theUid = null;
+            if (_recoveryStore.allObjUids(_typeName, uids))
+            {
+                Uid theUid = null;
 
-				boolean endOfUids = false;
+                boolean endOfUids = false;
 
-				while (!endOfUids)
-				{
-					// extract a uid
-				        theUid = UidHelper.unpackFrom(uids);
+                while (!endOfUids)
+                {
+                    // extract a uid
+                        theUid = UidHelper.unpackFrom(uids);
 
-					if (theUid.equals(Uid.nullUid()))
-						endOfUids = true;
-					else
-					{
-						Uid newUid = new Uid(theUid);
+                    if (theUid.equals(Uid.nullUid()))
+                        endOfUids = true;
+                    else
+                    {
+                        Uid newUid = new Uid(theUid);
 
-						if (initialScan)
-							_scanM.put(newUid, newUid);
-						else
-						{
-							if (!_scanM.contains(newUid))
-							{
-								if (_scanN == null)
-									_scanN = new Hashtable();
+                        if (initialScan)
+                            _scanM.put(newUid, newUid);
+                        else
+                        {
+                            if (!_scanM.contains(newUid))
+                            {
+                                if (_scanN == null)
+                                    _scanN = new Hashtable();
 
-								_scanN.put(newUid, newUid);
-							}
-							else
-							// log is present in this iteration, so move it
-							{
-								tsLogger.i18NLogger.info_recovery_ExpiredTransactionScanner_4(newUid);
+                                _scanN.put(newUid, newUid);
+                            }
+                            else
+                            // log is present in this iteration, so move it
+                            {
+                                tsLogger.i18NLogger.info_recovery_ExpiredTransactionScanner_4(newUid);
 
-								try
-								{
-								    moveEntry(newUid);
-								}
-								catch (Exception ex)
-								{
+                                try
+                                {
+                                    moveEntry(newUid);
+                                }
+                                catch (Exception ex)
+                                {
                                     tsLogger.i18NLogger.warn_recovery_ExpiredTransactionScanner_2(newUid, ex);
 
-									_scanN.put(newUid, newUid);
-								}
-							}
-						}
-					}
-				}
+                                    _scanN.put(newUid, newUid);
+                                }
+                            }
+                        }
+                    }
+                }
 
-				if (_scanN != null)
-				{
-					_scanM = _scanN;
-					_scanN = null;
-				}
-			}
-		}
-		catch (Exception e)
-		{
-			// end of uids!
-		}
-	}
+                if (_scanN != null)
+                {
+                    _scanM = _scanN;
+                    _scanN = null;
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            // end of uids!
+        }
+    }
 
-	public boolean toBeUsed()
-	{
-		return true;
-	}
+    public boolean toBeUsed()
+    {
+        return true;
+    }
 
-	public boolean moveEntry (Uid newUid) throws ObjectStoreException
-	{
-	    InputObjectState state = _recoveryStore.read_committed(newUid, _typeName);
-	    boolean res = false;
+    public boolean moveEntry (Uid newUid) throws ObjectStoreException
+    {
+        InputObjectState state = _recoveryStore.read_committed(newUid, _typeName);
+        boolean res = false;
 
-	    if (state != null) // just in case recovery
-	        // kicked-in
-	    {
-	        boolean moved = _recoveryStore.write_committed(newUid, _movedTypeName, new OutputObjectState(state));
+        if (state != null) // just in case recovery
+            // kicked-in
+        {
+            boolean moved = _recoveryStore.write_committed(newUid, _movedTypeName, new OutputObjectState(state));
 
-	        if (!moved) {
+            if (!moved) {
                 tsLogger.logger.debugf("Removing old transaction status manager item %s", newUid);
                 }
-	        else {
-	            res = _recoveryStore.remove_committed(newUid, _typeName);
+            else {
+                res = _recoveryStore.remove_committed(newUid, _typeName);
                     tsLogger.i18NLogger.warn_recovery_ExpiredTransactionStatusManagerScanner_6(newUid);
                 }
 
-	    }
+        }
 
-	    return res;
-	}
+        return res;
+    }
 
-	private String _typeName;
+    private String _typeName;
 
-	private String _movedTypeName;
+    private String _movedTypeName;
 
-	private RecoveryStore _recoveryStore;
+    private RecoveryStore _recoveryStore;
 
-	private Hashtable _scanM = null;
+    private Hashtable _scanM = null;
 
-	private Hashtable _scanN = null;
+    private Hashtable _scanN = null;
 
 }

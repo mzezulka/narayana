@@ -46,12 +46,12 @@ public class ProtocolRegistry
 
     public static ProtocolManager sharedManager ()
     {
-	return _shared;
+    return _shared;
     }
 
     public static ProtocolManager createManager ()
     {
-	return new ProtocolManager();
+    return new ProtocolManager();
     }
 
     private static ProtocolManager _shared = new ProtocolManager();

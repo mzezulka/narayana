@@ -56,39 +56,39 @@ public class TwoPhaseParticipant implements Participant
 {
     public TwoPhaseParticipant(String id)
     {
-	_id = id;
+    _id = id;
     }
 
     public Vote prepare () throws InvalidParticipantException, WrongStateException, HeuristicHazardException, HeuristicMixedException, SystemException
     {
-	System.out.println("TwoPhaseParticipant.prepare");
+    System.out.println("TwoPhaseParticipant.prepare");
 
-	return new VoteConfirm();
+    return new VoteConfirm();
     }
 
     public void confirm () throws InvalidParticipantException, WrongStateException, HeuristicHazardException, HeuristicMixedException, HeuristicCancelException, SystemException
     {
-	System.out.println("TwoPhaseParticipant.confirm");
+    System.out.println("TwoPhaseParticipant.confirm");
     }
 
     public void cancel () throws InvalidParticipantException, WrongStateException, HeuristicHazardException, HeuristicMixedException, HeuristicConfirmException, SystemException
     {
-	System.out.println("TwoPhaseParticipant.cancel");
+    System.out.println("TwoPhaseParticipant.cancel");
     }
 
     public void confirmOnePhase () throws InvalidParticipantException, WrongStateException, HeuristicHazardException, HeuristicMixedException, HeuristicCancelException, SystemException
     {
-	System.out.println("TwoPhaseParticipant.confirmOnePhase");
+    System.out.println("TwoPhaseParticipant.confirmOnePhase");
     }
 
     public void forget () throws InvalidParticipantException, WrongStateException, SystemException
     {
-	System.out.println("TwoPhaseParticipant.forget");
+    System.out.println("TwoPhaseParticipant.forget");
     }
 
     public String id () throws SystemException
     {
-	return _id;
+    return _id;
     }
 
     public boolean save_state(OutputObjectState os)

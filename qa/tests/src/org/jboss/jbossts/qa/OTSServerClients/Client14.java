@@ -67,127 +67,127 @@ import org.omg.CosTransactions.TransactionFactoryHelper;
 
 public class Client14
 {
-	public static void main(String[] args)
-	{
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+    public static void main(String[] args)
+    {
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			TransactionFactory transactionFactory = null;
-
-
-			String[] transactionFactoryParams = new String[1];
-			transactionFactoryParams[0] = ORBServices.otsKind;
-
-			transactionFactory = TransactionFactoryHelper.narrow(ORBServices.getService(ORBServices.transactionService, transactionFactoryParams));
+            TransactionFactory transactionFactory = null;
 
 
-			int numberOfWorkers = Integer.parseInt(args[args.length - 2]);
-			int numberOfControls = Integer.parseInt(args[args.length - 1]);
+            String[] transactionFactoryParams = new String[1];
+            transactionFactoryParams[0] = ORBServices.otsKind;
 
-			boolean correct = true;
+            transactionFactory = TransactionFactoryHelper.narrow(ORBServices.getService(ORBServices.transactionService, transactionFactoryParams));
 
-			Worker[] workers = new Worker[numberOfWorkers];
 
-			for (int index = 0; index < workers.length; index++)
-			{
-				workers[index] = new Worker(numberOfControls, transactionFactory);
-			}
+            int numberOfWorkers = Integer.parseInt(args[args.length - 2]);
+            int numberOfControls = Integer.parseInt(args[args.length - 1]);
 
-			for (int index = 0; index < workers.length; index++)
-			{
-				workers[index].start();
-			}
+            boolean correct = true;
 
-			for (int index = 0; index < workers.length; index++)
-			{
-				workers[index].join();
-				correct = correct && workers[index].isCorrect();
-			}
+            Worker[] workers = new Worker[numberOfWorkers];
 
-			if (correct)
-			{
-				System.out.println("Passed");
-			}
-			else
-			{
-				System.out.println("Failed");
-			}
-		}
-		catch (Exception exception)
-		{
-			System.out.println("Failed");
-			System.err.println("Client14.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
+            for (int index = 0; index < workers.length; index++)
+            {
+                workers[index] = new Worker(numberOfControls, transactionFactory);
+            }
 
-		try
-		{
-			OAInterface.shutdownOA();
-			ORBInterface.shutdownORB();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Client14.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
-	}
+            for (int index = 0; index < workers.length; index++)
+            {
+                workers[index].start();
+            }
 
-	private static class Worker extends Thread
-	{
-		public Worker(int numberOfControls, TransactionFactory transactionFactory)
-		{
-			_numberOfControls = numberOfControls;
-			_transactionFactory = transactionFactory;
-		}
+            for (int index = 0; index < workers.length; index++)
+            {
+                workers[index].join();
+                correct = correct && workers[index].isCorrect();
+            }
 
-		public void run()
-		{
-			try
-			{
-				Control[] controls = new Control[_numberOfControls];
+            if (correct)
+            {
+                System.out.println("Passed");
+            }
+            else
+            {
+                System.out.println("Failed");
+            }
+        }
+        catch (Exception exception)
+        {
+            System.out.println("Failed");
+            System.err.println("Client14.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
 
-				for (int index = 0; _correct && (index < controls.length); index++)
-				{
-					controls[index] = _transactionFactory.create(0);
+        try
+        {
+            OAInterface.shutdownOA();
+            ORBInterface.shutdownORB();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Client14.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
+    }
 
-					_correct = _correct && (controls[index].get_coordinator().get_status() == Status.StatusActive);
-				}
+    private static class Worker extends Thread
+    {
+        public Worker(int numberOfControls, TransactionFactory transactionFactory)
+        {
+            _numberOfControls = numberOfControls;
+            _transactionFactory = transactionFactory;
+        }
 
-				for (int index = 0; _correct && (index < controls.length); index++)
-				{
-					int option = index % 3;
+        public void run()
+        {
+            try
+            {
+                Control[] controls = new Control[_numberOfControls];
 
-					if (option == 0)
-					{
-						controls[index].get_terminator().commit(true);
-					}
-					else if (option == 1)
-					{
-						controls[index].get_terminator().commit(false);
-					}
-					else
-					{
-						controls[index].get_terminator().rollback();
-					}
-				}
-			}
-			catch (Exception exception)
-			{
-				System.err.println("Client14.Worker.run: " + exception);
-				exception.printStackTrace(System.err);
-				_correct = false;
-			}
-		}
+                for (int index = 0; _correct && (index < controls.length); index++)
+                {
+                    controls[index] = _transactionFactory.create(0);
 
-		public boolean isCorrect()
-		{
-			return _correct;
-		}
+                    _correct = _correct && (controls[index].get_coordinator().get_status() == Status.StatusActive);
+                }
 
-		private boolean _correct = true;
-		private int _numberOfControls;
-		private TransactionFactory _transactionFactory = null;
-	}
+                for (int index = 0; _correct && (index < controls.length); index++)
+                {
+                    int option = index % 3;
+
+                    if (option == 0)
+                    {
+                        controls[index].get_terminator().commit(true);
+                    }
+                    else if (option == 1)
+                    {
+                        controls[index].get_terminator().commit(false);
+                    }
+                    else
+                    {
+                        controls[index].get_terminator().rollback();
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                System.err.println("Client14.Worker.run: " + exception);
+                exception.printStackTrace(System.err);
+                _correct = false;
+            }
+        }
+
+        public boolean isCorrect()
+        {
+            return _correct;
+        }
+
+        private boolean _correct = true;
+        private int _numberOfControls;
+        private TransactionFactory _transactionFactory = null;
+    }
 }

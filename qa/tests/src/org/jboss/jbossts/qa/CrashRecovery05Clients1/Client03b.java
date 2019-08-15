@@ -62,26 +62,26 @@ import org.jboss.jbossts.qa.Utils.OTS;
 
 public class Client03b
 {
-	public static void main(String[] args)
+    public static void main(String[] args)
     {
         ClientBeforeCrash beforeCrash = new ClientBeforeCrash(Client01b.class.getSimpleName());
 
-		try
-		{
+        try
+        {
             beforeCrash.initOrb(args);
             beforeCrash.initCrashBehaviour(CrashBehavior.CrashBehaviorCrashInRollback);
             beforeCrash.serviceSetup();
 
-			OTS.current().rollback();
+            OTS.current().rollback();
 
             beforeCrash.reportStatus();
-		}
-		catch (Exception exception)
-		{
-			beforeCrash.reportException(exception);
-		}
+        }
+        catch (Exception exception)
+        {
+            beforeCrash.reportException(exception);
+        }
         finally {
             beforeCrash.shutdownOrb();
         }
-	}
+    }
 }

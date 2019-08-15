@@ -11,7 +11,7 @@ import javax.xml.namespace.QName;
 
 /**
  *
- * 	    Fault reporting structure
+ *         Fault reporting structure
  *
  *
  * <p>Java class for Fault complex type.

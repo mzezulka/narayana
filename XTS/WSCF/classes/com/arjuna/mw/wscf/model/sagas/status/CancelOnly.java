@@ -46,12 +46,12 @@ public class CancelOnly implements Status
 
     public static CancelOnly instance ()
     {
-	return _instance;
+    return _instance;
     }
 
     public String toString ()
     {
-	return "org.w3c.wscf.sagas.status.CancelOnly";
+    return "org.w3c.wscf.sagas.status.CancelOnly";
     }
 
     private CancelOnly ()

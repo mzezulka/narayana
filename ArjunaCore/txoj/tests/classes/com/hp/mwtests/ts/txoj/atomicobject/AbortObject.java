@@ -35,32 +35,32 @@ import com.arjuna.ats.arjuna.AtomicAction;
 
 public class AbortObject extends Thread
 {
-	public AbortObject ()
-	    {
-	    }
+    public AbortObject ()
+        {
+        }
 
-	public void run ()
-	    {
-		int thr = nextThreadId;
+    public void run ()
+        {
+        int thr = nextThreadId;
 
-		nextThreadId++;
+        nextThreadId++;
 
-		AtomicAction a = new AtomicAction();
+        AtomicAction a = new AtomicAction();
 
-		a.begin();
+        a.begin();
 
-		AtomicObjectTest3.indent(thr, 0);
-		System.out.println("begin");
+        AtomicObjectTest3.indent(thr, 0);
+        System.out.println("begin");
 
-		AtomicObjectTest3.randomOperation(thr, 0);
-		AtomicObjectTest3.randomOperation(thr, 0);
+        AtomicObjectTest3.randomOperation(thr, 0);
+        AtomicObjectTest3.randomOperation(thr, 0);
 
-		a.abort();
+        a.abort();
 
-		AtomicObjectTest3.indent(thr, 0);
-		System.out.println("abort");
-	    }
+        AtomicObjectTest3.indent(thr, 0);
+        System.out.println("abort");
+        }
 
-	private static int nextThreadId = 3;
+    private static int nextThreadId = 3;
 
-	}
+    }

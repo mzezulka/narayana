@@ -41,8 +41,8 @@ public class TestGroup_jtsremote  extends TestGroupBase
         server2.start("$(2)");
 
         Task client = createTask("client1", com.hp.mwtests.ts.jts.remote.hammer.DistributedHammer1.class, Task.TaskType.EXPECT_PASS_FAIL, getTimeout(960));
-		client.start("$(1)", "$(2)");
-		client.waitFor();
+        client.start("$(1)", "$(2)");
+        client.waitFor();
 
         server1.terminate();
         server2.terminate();
@@ -55,8 +55,8 @@ public class TestGroup_jtsremote  extends TestGroupBase
         server2.start("$(2)");
 
         Task client = createTask("client1", com.hp.mwtests.ts.jts.remote.hammer.DistributedHammer2.class, Task.TaskType.EXPECT_PASS_FAIL, getTimeout(960));
-		client.start("$(1)", "$(2)");
-		client.waitFor();
+        client.start("$(1)", "$(2)");
+        client.waitFor();
 
         server1.terminate();
         server2.terminate();

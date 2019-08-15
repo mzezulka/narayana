@@ -53,8 +53,8 @@ public class ActivityHandleImple implements ActivityHandle
 
     public ActivityHandleImple (ActivityImple curr)
     {
-	_theActivity = curr;
-	_valid = ((_theActivity == null) ? false : true);
+    _theActivity = curr;
+    _valid = ((_theActivity == null) ? false : true);
     }
 
     /**
@@ -68,22 +68,22 @@ public class ActivityHandleImple implements ActivityHandle
 
     public boolean equals (Object obj)
     {
-	if (obj != null)
-	{
-	    if (obj == this)
-		return true;
-	    else
-	    {
-		if (obj instanceof ActivityHandleImple)
-		{
-			ActivityImple compare = ((ActivityHandleImple) obj).getActivity();
-			if (_theActivity.equals(compare))
-				return true;
-		}
-	    }
-	}
+    if (obj != null)
+    {
+        if (obj == this)
+        return true;
+        else
+        {
+        if (obj instanceof ActivityHandleImple)
+        {
+            ActivityImple compare = ((ActivityHandleImple) obj).getActivity();
+            if (_theActivity.equals(compare))
+                return true;
+        }
+        }
+    }
 
-	return false;
+    return false;
     }
 
     /**
@@ -95,7 +95,7 @@ public class ActivityHandleImple implements ActivityHandle
 
     public int hashCode ()
     {
-	return ((_theActivity == null) ? 0 : _theActivity.hashCode());
+    return ((_theActivity == null) ? 0 : _theActivity.hashCode());
     }
 
     /**
@@ -104,21 +104,21 @@ public class ActivityHandleImple implements ActivityHandle
 
     public boolean valid ()
     {
-	return _valid;
+    return _valid;
     }
 
     public int getTimeout ()
     {
-	try
-	{
-	    return _theActivity.getTimeout();
-	}
-	catch (Exception ex)
-	{
-	    ex.printStackTrace();
+    try
+    {
+        return _theActivity.getTimeout();
+    }
+    catch (Exception ex)
+    {
+        ex.printStackTrace();
 
-	    return -1;
-	}
+        return -1;
+    }
     }
 
     /**
@@ -127,17 +127,17 @@ public class ActivityHandleImple implements ActivityHandle
 
     public String tid ()
     {
-	return ((_theActivity == null) ? null : new String(_theActivity.getGlobalId().value(), StandardCharsets.UTF_8));
+    return ((_theActivity == null) ? null : new String(_theActivity.getGlobalId().value(), StandardCharsets.UTF_8));
     }
 
     public final ActivityImple getActivity ()
     {
-	return _theActivity;
+    return _theActivity;
     }
 
     public String toString ()
     {
-	return tid();
+    return tid();
     }
 
     private ActivityImple _theActivity;

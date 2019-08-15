@@ -66,7 +66,7 @@ public class SubordinationManager
 
     public static void setTxType(TxType txType)
     {
-		if (jtaLogger.logger.isTraceEnabled()) {
+        if (jtaLogger.logger.isTraceEnabled()) {
             jtaLogger.logger.trace("SubordinationManager.setTxType(" + txType + ")");
         }
 

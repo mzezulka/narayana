@@ -46,12 +46,12 @@ public class Confirmed implements Status
 
     public static Confirmed instance ()
     {
-	return _instance;
+    return _instance;
     }
 
     public String toString ()
     {
-	return "org.w3c.wscf.twophase.status.Confirmed";
+    return "org.w3c.wscf.twophase.status.Confirmed";
     }
 
     private Confirmed ()

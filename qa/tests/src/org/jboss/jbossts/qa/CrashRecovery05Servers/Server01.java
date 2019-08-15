@@ -65,32 +65,32 @@ import org.jboss.jbossts.qa.Utils.ServerIORStore;
 
 public class Server01
 {
-	public static void main(String args[])
-	{
-		try
-		{
-			if (ORBInterface.getORB() == null) {
-				ORBInterface.initORB(args, null);
-				OAInterface.initOA();
-			}
+    public static void main(String args[])
+    {
+        try
+        {
+            if (ORBInterface.getORB() == null) {
+                ORBInterface.initORB(args, null);
+                OAInterface.initOA();
+            }
 
-			BeforeCrashServiceImpl01 beforeCrashServiceImpl = new BeforeCrashServiceImpl01(args[args.length - 2].hashCode(), 0);
-			BeforeCrashServicePOATie servant = new BeforeCrashServicePOATie(beforeCrashServiceImpl);
+            BeforeCrashServiceImpl01 beforeCrashServiceImpl = new BeforeCrashServiceImpl01(args[args.length - 2].hashCode(), 0);
+            BeforeCrashServicePOATie servant = new BeforeCrashServicePOATie(beforeCrashServiceImpl);
 
-			OAInterface.objectIsReady(servant);
-			BeforeCrashService beforeCrashService = BeforeCrashServiceHelper.narrow(OAInterface.corbaReference(servant));
+            OAInterface.objectIsReady(servant);
+            BeforeCrashService beforeCrashService = BeforeCrashServiceHelper.narrow(OAInterface.corbaReference(servant));
 
-			ServerIORStore.storeIOR(args[args.length - 1], ORBInterface.orb().object_to_string(beforeCrashService));
+            ServerIORStore.storeIOR(args[args.length - 1], ORBInterface.orb().object_to_string(beforeCrashService));
 
-			System.out.println("Ready");
+            System.out.println("Ready");
 
-			ORBInterface.run();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Server01.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
-	}
+            ORBInterface.run();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Server01.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
+    }
 }
 

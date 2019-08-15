@@ -44,12 +44,12 @@ public class HLSError extends Error
 
     public HLSError ()
     {
-	super();
+    super();
     }
 
     public HLSError (String s)
     {
-	super(s);
+    super(s);
     }
 
 }

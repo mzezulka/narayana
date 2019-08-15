@@ -141,12 +141,12 @@ public Status checkOriginalStatus (Uid transactionUid, Uid itemUid, boolean chec
 
     if (item != null)
     {
-	return getStatus(transactionUid, item, checkTheObjectStore);
+    return getStatus(transactionUid, item, checkTheObjectStore);
     }
     else
     {
-	// null item implies long-dead process
-	throw new Inactive();
+    // null item implies long-dead process
+    throw new Inactive();
     }
 }
 
@@ -166,48 +166,48 @@ private Status getStatus (Uid transactionUid, FactoryContactItem item, boolean c
 
     if (factory != null)
     {
-	Status otsStatus = Status.StatusUnknown;
-	boolean originalDead = false;
+    Status otsStatus = Status.StatusUnknown;
+    boolean originalDead = false;
 
-	try
-	{
-	    otid_t otid = Utility.uidToOtid(transactionUid);
+    try
+    {
+        otid_t otid = Utility.uidToOtid(transactionUid);
 
-	    otsStatus = factory.getCurrentStatus(otid);
+        otsStatus = factory.getCurrentStatus(otid);
 
-	    if (jtsLogger.logger.isDebugEnabled()) {
+        if (jtsLogger.logger.isDebugEnabled()) {
             jtsLogger.logger.debug("StatusChecker.getStatus("+transactionUid+") - current status = "+Utility.stringStatus(otsStatus));
         }
 
-	    /*
-	     * If the factory doesn't know about the transaction, then
-	     * check the object store for the intentions list. If not
-	     * present, then the transaction must have rolled back.
-	     * If present, then we don't know what's going on, since the
-	     * factory should still have a reference to the transaction!
-	     */
+        /*
+         * If the factory doesn't know about the transaction, then
+         * check the object store for the intentions list. If not
+         * present, then the transaction must have rolled back.
+         * If present, then we don't know what's going on, since the
+         * factory should still have a reference to the transaction!
+         */
 
-	    if (otsStatus == Status.StatusNoTransaction)
-	    {
-		otsStatus = factory.getStatus(otid);
+        if (otsStatus == Status.StatusNoTransaction)
+        {
+        otsStatus = factory.getStatus(otid);
 
-		if (jtsLogger.logger.isDebugEnabled()) {
+        if (jtsLogger.logger.isDebugEnabled()) {
             jtsLogger.logger.debug("StatusChecker.getStatus("+transactionUid+") - stored status = "+Utility.stringStatus(otsStatus));
         }
 
-		switch (otsStatus.value())
-		{
-		case Status._StatusNoTransaction:
-		    /*
-		     * A definitive NoTransaction means rolled back because of
-		     * presumed abort protocol.
-		     */
+        switch (otsStatus.value())
+        {
+        case Status._StatusNoTransaction:
+            /*
+             * A definitive NoTransaction means rolled back because of
+             * presumed abort protocol.
+             */
 
-		    //		    return Status.StatusRolledBack;
-		    return otsStatus;
-		case Status._StatusUnknown:
-		    return otsStatus;
-		default: {
+            //            return Status.StatusRolledBack;
+            return otsStatus;
+        case Status._StatusUnknown:
+            return otsStatus;
+        default: {
             /*
                 * We got an answer! This probably means that the
                 * factory has just finished with the transaction, but
@@ -219,72 +219,72 @@ private Status getStatus (Uid transactionUid, FactoryContactItem item, boolean c
 
             otsStatus = Status.StatusUnknown;
         }
-		    break;
-		}
-	    }
+            break;
+        }
+        }
 
-	    if (jtsLogger.logger.isDebugEnabled()) {
+        if (jtsLogger.logger.isDebugEnabled()) {
             jtsLogger.logger.debug("StatusChecker.getStatus("+transactionUid+") - Status = "+Utility.stringStatus(otsStatus));
         }
 
-	    item.markAsAlive();
-	} catch ( NO_IMPLEMENT ex_noimp) {
-	    // the original application has died
+        item.markAsAlive();
+    } catch ( NO_IMPLEMENT ex_noimp) {
+        // the original application has died
 
-	    if (jtsLogger.logger.isDebugEnabled()) {
+        if (jtsLogger.logger.isDebugEnabled()) {
             jtsLogger.logger.debug("StatusChecker.getStatus("+transactionUid+") - NO_IMPLEMENT = dead");
         }
 
-	    originalDead = true;
+        originalDead = true;
 
-	// orbix seems to count unreachable as transient. Over infinite time, all
-	// addresses are valid
-	} catch ( TRANSIENT ex_trans) {
+    // orbix seems to count unreachable as transient. Over infinite time, all
+    // addresses are valid
+    } catch ( TRANSIENT ex_trans) {
 
-	    if (ORBInfo.getOrbEnumValue() == ORBType.JACORB)
-	    {
-		    // the original application has (probably) died
-		    if (jtsLogger.logger.isDebugEnabled()) {
+        if (ORBInfo.getOrbEnumValue() == ORBType.JACORB)
+        {
+            // the original application has (probably) died
+            if (jtsLogger.logger.isDebugEnabled()) {
                 jtsLogger.logger.debug("StatusChecker.getStatus("+transactionUid+") - TRANSIENT = dead");
             }
-		    originalDead = true;
-	    }
+            originalDead = true;
+        }
 
-	} catch ( COMM_FAILURE ex_comm) {
-	    if (ORBInfo.getOrbEnumValue() == ORBType.JAVAIDL)
-	    {
-		    // the original application has (probably) died
-		    if (jtsLogger.logger.isDebugEnabled()) {
+    } catch ( COMM_FAILURE ex_comm) {
+        if (ORBInfo.getOrbEnumValue() == ORBType.JAVAIDL)
+        {
+            // the original application has (probably) died
+            if (jtsLogger.logger.isDebugEnabled()) {
                 jtsLogger.logger.debug("StatusChecker.getStatus("+transactionUid+") - COMM_FAILURE = dead");
             }
-		    originalDead = true;
-	    }
-	    /*
-	     * Probably the original application has died, but only just - do
-	     * not mark either way.
-	     */
-	    else if (jtsLogger.logger.isDebugEnabled()) {
+            originalDead = true;
+        }
+        /*
+         * Probably the original application has died, but only just - do
+         * not mark either way.
+         */
+        else if (jtsLogger.logger.isDebugEnabled()) {
             jtsLogger.logger.debug("StatusChecker.getStatus("+transactionUid+") - COMM_FAILURE = live");
         }
 
-	} catch ( OBJECT_NOT_EXIST ex_noobj) {
-	    // the original process must have gone away, and another one
-	    // come up in the same place
-	    // (or, just possibly, the original closed the ots)
-	    originalDead = true;
-	    if (jtsLogger.logger.isDebugEnabled()) {
+    } catch ( OBJECT_NOT_EXIST ex_noobj) {
+        // the original process must have gone away, and another one
+        // come up in the same place
+        // (or, just possibly, the original closed the ots)
+        originalDead = true;
+        if (jtsLogger.logger.isDebugEnabled()) {
             jtsLogger.logger.debug("StatusChecker.getStatus("+transactionUid+") - OBJECT_NOT_EXIST = dead");
         }
 
-	} catch ( BAD_PARAM ex_badparam) {
+    } catch ( BAD_PARAM ex_badparam) {
         jtsLogger.i18NLogger.warn_recovery_contact_StatusChecker_9();
-	    // the transactionUid is invalid !
-	} catch ( NoTransaction ex_notran) {
+        // the transactionUid is invalid !
+    } catch ( NoTransaction ex_notran) {
         jtsLogger.i18NLogger.warn_recovery_contact_StatusChecker_10();
-	    // the transactionUid is invalid !
-	    // no transaction
-	} catch ( SystemException ex_corba ) {
-	    // why did this happen ?
+        // the transactionUid is invalid !
+        // no transaction
+    } catch ( SystemException ex_corba ) {
+        // why did this happen ?
         if (ORBInfo.getOrbEnumValue() == ORBType.JAVAIDL)
         {
             // the original application has (probably) died
@@ -294,61 +294,61 @@ private Status getStatus (Uid transactionUid, FactoryContactItem item, boolean c
             originalDead = true;
         }
         jtsLogger.i18NLogger.warn_recovery_contact_StatusChecker_11(ex_corba);
-	} catch ( Exception ex_other) {
-	    // this really shouldn't happen
+    } catch ( Exception ex_other) {
+        // this really shouldn't happen
         jtsLogger.i18NLogger.warn_recovery_contact_StatusChecker_12(ex_other);
-	}
+    }
 
-	if (originalDead)
-	{
-	    item.markAsDead();
+    if (originalDead)
+    {
+        item.markAsDead();
 
-	    // use Inactive as an indication that the parent process
-	    // has gone
+        // use Inactive as an indication that the parent process
+        // has gone
 
-	    throw new Inactive();
-	}
-	else
-	{
-	    return otsStatus;
-	}
+        throw new Inactive();
     }
     else
     {
-	// factory in item is null - process already dead
-	if (jtsLogger.logger.isDebugEnabled()) {
+        return otsStatus;
+    }
+    }
+    else
+    {
+    // factory in item is null - process already dead
+    if (jtsLogger.logger.isDebugEnabled()) {
         jtsLogger.logger.debug("StatusChecker.getStatus("+transactionUid+") -  no factory, process previously dead");
     }
 
-	/*
-	 * In which case we can use the current, in process local factory, to
-	 * look at the object store and get the status from that. At present
-	 * all factories can look at the entire object store on a machine, so
-	 * this will work. If a factory is limited to only a portion of the object
-	 * store then we may need to create an explicit factory that has "global"
-	 * knowledge.
-	 */
+    /*
+     * In which case we can use the current, in process local factory, to
+     * look at the object store and get the status from that. At present
+     * all factories can look at the entire object store on a machine, so
+     * this will work. If a factory is limited to only a portion of the object
+     * store then we may need to create an explicit factory that has "global"
+     * knowledge.
+     */
 
         if ( checkTheObjectStore )
         {
             try
             {
-		Status s = OTSManager.factory().getStatus(transactionUid);
+        Status s = OTSManager.factory().getStatus(transactionUid);
 
-		/*
-		 * If the status is committing or rolling back from a dead
-		 * (local) process then we can direct recovery now.
-		 */
+        /*
+         * If the status is committing or rolling back from a dead
+         * (local) process then we can direct recovery now.
+         */
 
-		if (s == Status.StatusCommitting)
-		    return Status.StatusCommitted;
-		else
-		{
-		    if (s == Status.StatusRollingBack)
-			return Status.StatusRolledBack;
-		}
+        if (s == Status.StatusCommitting)
+            return Status.StatusCommitted;
+        else
+        {
+            if (s == Status.StatusRollingBack)
+            return Status.StatusRolledBack;
+        }
 
-		return s;
+        return s;
             }
             catch (NoTransaction e1)
             {
@@ -378,10 +378,10 @@ private FactoryContactItem getItem (Uid uid)
     FactoryContactItem theItem = null;
     theItem = getKnownItem(uid);
     if (theItem == null) {
-	// not previously known - see if it exists now
-	theItem = getNewItem(uid);
+    // not previously known - see if it exists now
+    theItem = getNewItem(uid);
 
-	if (theItem == null) {
+    if (theItem == null) {
 
         // if it's still null, either something has gone wrong
         // - how did it get in the recoverycoordkey when the
@@ -401,8 +401,8 @@ private FactoryContactItem getKnownItem(Uid uid)
     FactoryContactItem theItem = null;
 
     try {
-	theItem = (FactoryContactItem) _itemFromUid.get(uid);
-	return theItem;
+    theItem = (FactoryContactItem) _itemFromUid.get(uid);
+    return theItem;
     } catch (ClassCastException ex) {
         jtsLogger.i18NLogger.warn_recovery_contact_StatusChecker_15(uid, ex);
         return null;
@@ -413,8 +413,8 @@ private FactoryContactItem getNewItem (Uid uid)
 {
     FactoryContactItem item = FactoryContactItem.recreate(uid);
     if (item != null) {
-	// enter in the uid hashtable
-	_itemFromUid.put(uid,item);
+    // enter in the uid hashtable
+    _itemFromUid.put(uid,item);
     }
     return item;
 }

@@ -58,10 +58,10 @@ public class BasicUnitTest
     @Transactional
     public class ExampleSTM implements Atomic
     {
-	/*
-	 * Define read/write operations here. Can do them in the interface
-	 * if you want.
-	 */
+    /*
+     * Define read/write operations here. Can do them in the interface
+     * if you want.
+     */
 
         @ReadLock
         public int get () throws Exception
@@ -81,9 +81,9 @@ public class BasicUnitTest
             state += value;
         }
 
-	/**
-	 * This is the state that will be manipulated (saved and restored).
-	 */
+    /**
+     * This is the state that will be manipulated (saved and restored).
+     */
 
         private int state;
     }
@@ -91,32 +91,32 @@ public class BasicUnitTest
     @Test
     public void testExampleSTM () throws Exception
     {
-	/*
-	 * Create the container for the Transactional interface.
-	 */
+    /*
+     * Create the container for the Transactional interface.
+     */
         Container<Atomic> theContainer = new Container<Atomic>();
 
-	/*
-	 * Create the instance of the class. But this won't be an STM object yet, so don't
-	 * manipulate it just yet.
-	 */
+    /*
+     * Create the instance of the class. But this won't be an STM object yet, so don't
+     * manipulate it just yet.
+     */
 
         ExampleSTM basic = new ExampleSTM();
         boolean success = true;
 
-	/*
-	 * This object will be the one we actually use.
-	 */
+    /*
+     * This object will be the one we actually use.
+     */
 
         Atomic obj = null;
 
         try
         {
-	    /*
-	     * Pass the instance we created previously to the Container so it
-	     * can then create an STM object which we then use to manipulate
-	     * the first object in a transactional manner.
-	     */
+        /*
+         * Pass the instance we created previously to the Container so it
+         * can then create an STM object which we then use to manipulate
+         * the first object in a transactional manner.
+         */
 
             obj = theContainer.create(basic);
         }
@@ -129,7 +129,7 @@ public class BasicUnitTest
 
         assertTrue(success);
 
-	// a transaction!
+    // a transaction!
 
         AtomicAction a = new AtomicAction();
 

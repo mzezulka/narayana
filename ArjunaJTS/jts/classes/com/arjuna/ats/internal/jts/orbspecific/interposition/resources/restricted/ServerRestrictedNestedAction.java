@@ -47,21 +47,21 @@ public class ServerRestrictedNestedAction extends ServerNestedAction
 
 public ServerRestrictedNestedAction (ServerControl myControl)
     {
-	super(myControl);
+    super(myControl);
 
-	if (jtsLogger.logger.isTraceEnabled()) {
+    if (jtsLogger.logger.isTraceEnabled()) {
         jtsLogger.logger.trace("ServerRestrictedNestedAction::ServerRestrictedNestedAction ( " + _theUid + " )");
     }
     }
 
 public final synchronized ServerControl deepestControl ()
     {
-	ServerRestrictedNestedAction myChild = child();
+    ServerRestrictedNestedAction myChild = child();
 
-	if (myChild != null)
-	    return myChild.deepestControl();
-	else
-	    return control();
+    if (myChild != null)
+        return myChild.deepestControl();
+    else
+        return control();
     }
 
     public final synchronized ServerRestrictedNestedAction child ()

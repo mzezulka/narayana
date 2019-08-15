@@ -48,29 +48,29 @@ public class ORBAttribute extends com.arjuna.orbportability.orb.Attribute
 
 public void initialise (String[] params)
     {
-	if (params != null)
-	{
+    if (params != null)
+    {
             if (opLogger.logger.isTraceEnabled()) {
                 opLogger.logger.trace("ORBAttribute.initialise - parameters: ");
             }
 
-	    for (int i = 0; i < params.length; i++)
-	    {
+        for (int i = 0; i < params.length; i++)
+        {
                 if (opLogger.logger.isTraceEnabled()) {
                     opLogger.logger.trace(params[i]);
                 }
-	    }
+        }
 
             if (opLogger.logger.isTraceEnabled()) {
                 opLogger.logger.trace("");
             }
-	}
+    }
 
     }
 
 public boolean postORBInit ()
     {
-	return true;
+    return true;
     }
 
 }

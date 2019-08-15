@@ -45,24 +45,24 @@ import javax.transaction.Synchronization;
 public class ConnectionSynchronization implements Synchronization
 {
 
-	public ConnectionSynchronization (ConnectionImple conn)
+    public ConnectionSynchronization (ConnectionImple conn)
     {
-	_theConnection = conn;
-	_theConnection.incrementUseCount();
+    _theConnection = conn;
+    _theConnection.incrementUseCount();
     }
 
     public void afterCompletion(int status)
     {
-		try
-		{
-			if (_theConnection != null) {
-				_theConnection.closeImpl();
-			}
-		}
-		catch (Exception ex)
-		{
-			jdbcLogger.i18NLogger.warn_not_closed(ex);
-		}
+        try
+        {
+            if (_theConnection != null) {
+                _theConnection.closeImpl();
+            }
+        }
+        catch (Exception ex)
+        {
+            jdbcLogger.i18NLogger.warn_not_closed(ex);
+        }
     }
 
     public void beforeCompletion()

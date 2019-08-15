@@ -82,49 +82,49 @@ private static final String rcvcoRepositoryId = RecoveryCoordinatorHelper.id();
      */
 
     public RecoveryCoordinator makeRC( Uid RCUid, Uid tranUid,
-				       Uid processUid,
-				       boolean isServerTransaction )
+                       Uid processUid,
+                       boolean isServerTransaction )
     {
-	initialise();
+    initialise();
 
-	RecoveryCoordinator rc = null;
+    RecoveryCoordinator rc = null;
 
-	// mangle those parameters to the string key (object id sort of thing)
+    // mangle those parameters to the string key (object id sort of thing)
 
-	try
-	{
-	    String rcObjectId = GenericRecoveryCoordinator.makeId(RCUid, tranUid, processUid, isServerTransaction);
+    try
+    {
+        String rcObjectId = GenericRecoveryCoordinator.makeId(RCUid, tranUid, processUid, isServerTransaction);
 
-	    if (ref_ReCoo != null)
-	    {
-		// New for IOR template
-		String new_ior = RecoverIOR.newObjectKey(ref_ReCoo, rcObjectId);
-		org.omg.CORBA.Object rcAsObject = ORBManager.getORB().orb().string_to_object(new_ior);
-		//End for IOR Template
+        if (ref_ReCoo != null)
+        {
+        // New for IOR template
+        String new_ior = RecoverIOR.newObjectKey(ref_ReCoo, rcObjectId);
+        org.omg.CORBA.Object rcAsObject = ORBManager.getORB().orb().string_to_object(new_ior);
+        //End for IOR Template
 
-		rc = RecoveryCoordinatorHelper.narrow(rcAsObject);
+        rc = RecoveryCoordinatorHelper.narrow(rcAsObject);
 
-		if (jtsLogger.logger.isDebugEnabled()) {
+        if (jtsLogger.logger.isDebugEnabled()) {
             jtsLogger.logger.debug("JacOrbRCManager: Created reference for tran "+tranUid+" = "+rc);
         }
-	    }
-	    else
-	    {
-		if (JacOrbRCManager._runWithoutDaemon)
-		    throw new NO_IMPLEMENT();
-		else {
+        }
+        else
+        {
+        if (JacOrbRCManager._runWithoutDaemon)
+            throw new NO_IMPLEMENT();
+        else {
             jtsLogger.i18NLogger.warn_orbspecific_jacorb_recoverycoordinators_JacOrbRCManager_3();
 
             rc = null;
         }
-	    }
-	}
+        }
+    }
 
-	catch (Exception ex) {
+    catch (Exception ex) {
         jtsLogger.i18NLogger.warn_orbspecific_jacorb_recoverycoordinators_JacOrbRCManager_2(ex);
     }
 
-	return rc;
+    return rc;
     }
 
     public void destroy (RecoveryCoordinator rc) throws SystemException
@@ -139,30 +139,30 @@ private static final String rcvcoRepositoryId = RecoveryCoordinatorHelper.id();
 
     private final synchronized void initialise ()
     {
-	if (!_initialised)
-	{
-	    _initialised = true;
+    if (!_initialised)
+    {
+        _initialised = true;
 
-	    if (!_runWithoutDaemon)
-	    {
-		try
-		{
-		    ParticipantStore participantStore = StoreManager.getCommunicationStore();
-		    InputObjectState iState = participantStore.read_committed(new Uid( JacOrbRCServiceInit.uid4Recovery), JacOrbRCServiceInit.type());
+        if (!_runWithoutDaemon)
+        {
+        try
+        {
+            ParticipantStore participantStore = StoreManager.getCommunicationStore();
+            InputObjectState iState = participantStore.read_committed(new Uid( JacOrbRCServiceInit.uid4Recovery), JacOrbRCServiceInit.type());
 
             if (iState != null)
                 ref_ReCoo = iState.unpackString();
             else
                 jtsLogger.i18NLogger.warn_orbspecific_jacorb_recoverycoordinators_JacOrbRCManager_4();
-		}
-		catch (java.io.FileNotFoundException ex) {
+        }
+        catch (java.io.FileNotFoundException ex) {
             jtsLogger.i18NLogger.warn_orbspecific_jacorb_recoverycoordinators_JacOrbRCManager_4();
         }
-		catch (Exception ex) {
+        catch (Exception ex) {
             jtsLogger.i18NLogger.warn_orbspecific_jacorb_recoverycoordinators_JacOrbRCManager_5(ex);
         }
-	    }
-	}
+        }
+    }
     }
 
 protected char rcKeyDelimiter = '#';
@@ -178,22 +178,22 @@ private POA _ourPOA;
 
     static
     {
-	/*
-	 * Undocumented "feature" that lets us run tests without having
-	 * to start the recovery daemon. In general we don't want people
-	 * doing that kind of thing, but it makes development testing a
-	 * lot easier.
-	 *
-	 * Note: this relies directly on system property lookup, since we don't
-	 * want to expose the setting via the public EnvironmentBean config.
-	 */
-	String env = System.getProperty("com.arjuna.ats.internal.jts.orbspecific.jacorb.recoverycoordinators.noDaemon");
+    /*
+     * Undocumented "feature" that lets us run tests without having
+     * to start the recovery daemon. In general we don't want people
+     * doing that kind of thing, but it makes development testing a
+     * lot easier.
+     *
+     * Note: this relies directly on system property lookup, since we don't
+     * want to expose the setting via the public EnvironmentBean config.
+     */
+    String env = System.getProperty("com.arjuna.ats.internal.jts.orbspecific.jacorb.recoverycoordinators.noDaemon");
 
-	if (env != null)
-	{
-	    if (env.equals("YES"))
-		_runWithoutDaemon = true;
-	}
+    if (env != null)
+    {
+        if (env.equals("YES"))
+        _runWithoutDaemon = true;
+    }
     }
 
 }

@@ -736,7 +736,7 @@ public class LogStore extends FileSystemStore
 
             if (imageSize > 0)
             {
-                TransactionData theLogEntry = getLogName(objUid, tName, buffSize);		// always adds entry to log
+                TransactionData theLogEntry = getLogName(objUid, tName, buffSize);        // always adds entry to log
                 LogInstance theLog = theLogEntry.container;
 
                 if (theLog == null)

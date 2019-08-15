@@ -42,41 +42,41 @@ public class SetupOTSServer2
 {
     public final static String NAME_SERVICE_BIND_NAME_PROPERTY = "ots.server.bindname";
 
-	public static void main(String[] args)
-	{
-		String bindName = System.getProperty(NAME_SERVICE_BIND_NAME_PROPERTY);
+    public static void main(String[] args)
+    {
+        String bindName = System.getProperty(NAME_SERVICE_BIND_NAME_PROPERTY);
 
-		if (bindName != null)
-		{
-			System.out.println("Looking up OTS Server '" + bindName + "'");
+        if (bindName != null)
+        {
+            System.out.println("Looking up OTS Server '" + bindName + "'");
 
-			try
-			{
-				String transactionServiceIOR = getService(bindName);
+            try
+            {
+                String transactionServiceIOR = getService(bindName);
 
-				ORBInterface.initORB(args, null);
+                ORBInterface.initORB(args, null);
 
-				String[] transactionFactoryParams = new String[1];
-				transactionFactoryParams[0] = ORBServices.otsKind;
+                String[] transactionFactoryParams = new String[1];
+                transactionFactoryParams[0] = ORBServices.otsKind;
 
-				Services services = new Services(ORBInterface.getORB());
+                Services services = new Services(ORBInterface.getORB());
 
-				services.registerService(ORBInterface.orb().string_to_object(transactionServiceIOR), ORBServices.transactionService, transactionFactoryParams);
+                services.registerService(ORBInterface.orb().string_to_object(transactionServiceIOR), ORBServices.transactionService, transactionFactoryParams);
 
                 System.out.println("Ready");
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace(System.err);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace(System.err);
                 System.out.println("Failed");
-			}
-		}
-		else
-		{
-			System.out.println("Bind name '" + NAME_SERVICE_BIND_NAME_PROPERTY + "' not specified");
+            }
+        }
+        else
+        {
+            System.out.println("Bind name '" + NAME_SERVICE_BIND_NAME_PROPERTY + "' not specified");
             System.out.println("Failed");
-		}
-	}
+        }
+    }
 
     public static String getService(String name) throws IOException
     {

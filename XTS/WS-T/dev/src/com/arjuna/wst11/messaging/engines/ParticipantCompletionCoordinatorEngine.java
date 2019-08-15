@@ -405,7 +405,7 @@ public class ParticipantCompletionCoordinatorEngine implements ParticipantComple
             current = state ;
             if (current == State.STATE_ACTIVE)
             {
-        	changeState(State.STATE_FAILING_ACTIVE) ;
+            changeState(State.STATE_FAILING_ACTIVE) ;
             }
             else if (current == State.STATE_CANCELING)
             {
@@ -494,11 +494,11 @@ public class ParticipantCompletionCoordinatorEngine implements ParticipantComple
             WSTLogger.logger.trace(getClass() + ".getStatus");
         }
 
-	final State current ;
-	synchronized(this)
-	{
-	    current = state ;
-	}
+    final State current ;
+    synchronized(this)
+    {
+        current = state ;
+    }
         if (WSTLogger.logger.isTraceEnabled()) {
             WSTLogger.logger.trace(getClass() + ".getStatus. State: " + current);
         }
@@ -521,10 +521,10 @@ public class ParticipantCompletionCoordinatorEngine implements ParticipantComple
         // TODO - is this correct?
 
         final State current ;
-	    synchronized(this)
-	    {
-	        current = state ;
-	    }
+        synchronized(this)
+        {
+            current = state ;
+        }
 
         if (WSTLogger.logger.isTraceEnabled()) {
             WSTLogger.logger.trace(getClass() + ".status. State: " + current);
@@ -740,12 +740,12 @@ public class ParticipantCompletionCoordinatorEngine implements ParticipantComple
             WSTLogger.logger.trace(getClass() + ".soapFault");
         }
 
-	ended() ;
-	try
-	{
-	    // TODO - we cannot do this with JaxWS. need to log something
-	}
-	catch (final Throwable th) {} // ignore
+    ended() ;
+    try
+    {
+        // TODO - we cannot do this with JaxWS. need to log something
+    }
+    catch (final Throwable th) {} // ignore
     }
 
     /**

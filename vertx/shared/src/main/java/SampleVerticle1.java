@@ -21,32 +21,32 @@ public class SampleVerticle1 extends AbstractVerticle {
 
       try
       {
-	  initialValue = obj1.value();
+      initialValue = obj1.value();
 
-	  obj1.increment();
+      obj1.increment();
 
-	  value = obj1.value();
+      value = obj1.value();
       }
       catch (final Throwable ex)
       {
-	  ex.printStackTrace();
+      ex.printStackTrace();
 
-	  shouldCommit = false;
+      shouldCommit = false;
       }
 
       if (shouldCommit)
-	  A.commit();
+      A.commit();
       else
       {
-	  A.abort();
-	  value = -1;
+      A.abort();
+      value = -1;
       }
 
       System.err.println("SampleVerticle1 initialised state with: "+value);
 
       if (value == initialValue + 1)
-	  System.err.println("SampleVerticle1 SUCCEEDED!");
+      System.err.println("SampleVerticle1 SUCCEEDED!");
       else
-	  System.err.println("SampleVerticle1 FAILED!");
+      System.err.println("SampleVerticle1 FAILED!");
   }
 }

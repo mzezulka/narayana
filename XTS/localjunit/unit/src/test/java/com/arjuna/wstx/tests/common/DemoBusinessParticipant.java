@@ -48,49 +48,49 @@ public class DemoBusinessParticipant implements BusinessAgreementWithParticipant
 
     public DemoBusinessParticipant (int outcome, String id)
     {
-	_outcome = outcome;
-	_id = id;
+    _outcome = outcome;
+    _id = id;
     }
 
     public final boolean passed ()
     {
-	/*
-	 * If we get a passed result and our status was EXIT then this
-	 * means that one of our methods was called, which is wrong if
-	 * we exited!
-	 */
+    /*
+     * If we get a passed result and our status was EXIT then this
+     * means that one of our methods was called, which is wrong if
+     * we exited!
+     */
 
-	switch (_outcome)
-	{
-	case EXIT:
-	    return !_passed;
-	default:
-	    return _passed;
-	}
+    switch (_outcome)
+    {
+    case EXIT:
+        return !_passed;
+    default:
+        return _passed;
+    }
     }
 
     public void close () throws WrongStateException, SystemException
     {
-	System.out.println(this.getClass().getName()+".close for "+this);
+    System.out.println(this.getClass().getName()+".close for "+this);
 
-	if (_outcome == CLOSE)
-	    _passed = true;
+    if (_outcome == CLOSE)
+        _passed = true;
     }
 
     public void cancel () throws WrongStateException, SystemException
     {
-	System.out.println(this.getClass().getName()+".cancel for "+this);
+    System.out.println(this.getClass().getName()+".cancel for "+this);
 
-	if (_outcome == CANCEL)
-	    _passed = true;
+    if (_outcome == CANCEL)
+        _passed = true;
     }
 
     public void compensate () throws FaultedException, WrongStateException, SystemException
     {
-	System.out.println(this.getClass().getName()+".compensate for "+this);
+    System.out.println(this.getClass().getName()+".compensate for "+this);
 
-	if (_outcome == COMPENSATE)
-	    _passed = true;
+    if (_outcome == COMPENSATE)
+        _passed = true;
     }
 
     public void forget () throws WrongStateException, SystemException
@@ -107,19 +107,19 @@ public class DemoBusinessParticipant implements BusinessAgreementWithParticipant
 
     public String toString ()
     {
-	try
-	{
-	    return identifier();
-	}
-	catch (SystemException ex)
-	{
-	    return "Unknown";
-	}
+    try
+    {
+        return identifier();
+    }
+    catch (SystemException ex)
+    {
+        return "Unknown";
+    }
     }
 
     public String identifier () throws SystemException
     {
-	return _id;
+    return _id;
     }
 
     /**
@@ -128,7 +128,7 @@ public class DemoBusinessParticipant implements BusinessAgreementWithParticipant
 
     public String status () throws SystemException
     {
-	return "Unknown";
+    return "Unknown";
     }
 
     protected boolean _passed = false;

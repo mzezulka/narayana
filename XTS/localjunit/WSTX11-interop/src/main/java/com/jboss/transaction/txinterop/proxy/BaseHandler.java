@@ -45,7 +45,7 @@ public class BaseHandler implements ContentHandler
      */
     protected BaseHandler(final ContentHandler nextHandler)
     {
-	this.nextHandler = nextHandler ;
+    this.nextHandler = nextHandler ;
     }
 
     /**
@@ -54,7 +54,7 @@ public class BaseHandler implements ContentHandler
      */
     public void setDocumentLocator(final Locator locator)
     {
-	nextHandler.setDocumentLocator(locator) ;
+    nextHandler.setDocumentLocator(locator) ;
     }
 
     /**
@@ -66,7 +66,7 @@ public class BaseHandler implements ContentHandler
     public void processingInstruction(final String target, final String data)
         throws SAXException
     {
-	nextHandler.processingInstruction(target, data) ;
+    nextHandler.processingInstruction(target, data) ;
     }
 
     /**
@@ -74,9 +74,9 @@ public class BaseHandler implements ContentHandler
      * @throws SAXException for any errors.
      */
     public void startDocument()
-    	throws SAXException
+        throws SAXException
     {
-	nextHandler.startDocument() ;
+    nextHandler.startDocument() ;
     }
 
     /**
@@ -84,9 +84,9 @@ public class BaseHandler implements ContentHandler
      * @throws SAXException for any errors.
      */
     public void endDocument()
-    	throws SAXException
+        throws SAXException
     {
-	nextHandler.endDocument() ;
+    nextHandler.endDocument() ;
     }
 
     /**
@@ -98,7 +98,7 @@ public class BaseHandler implements ContentHandler
     public void startPrefixMapping(final String prefix, final String uri)
         throws SAXException
     {
-	nextHandler.startPrefixMapping(prefix, uri) ;
+    nextHandler.startPrefixMapping(prefix, uri) ;
     }
 
     /**
@@ -107,9 +107,9 @@ public class BaseHandler implements ContentHandler
      * @throws SAXException for any errors.
      */
     public void endPrefixMapping(final String prefix)
-    	throws SAXException
+        throws SAXException
     {
-	nextHandler.endPrefixMapping(prefix) ;
+    nextHandler.endPrefixMapping(prefix) ;
     }
 
     /**
@@ -122,9 +122,9 @@ public class BaseHandler implements ContentHandler
      */
     public void startElement(final String uri, final String localName, final String qName,
         final Attributes attributes)
-    	throws SAXException
+        throws SAXException
     {
-	nextHandler.startElement(uri, localName, qName, attributes) ;
+    nextHandler.startElement(uri, localName, qName, attributes) ;
     }
 
     /**
@@ -137,7 +137,7 @@ public class BaseHandler implements ContentHandler
     public void endElement(final String uri, final String localName, final String qName)
         throws SAXException
     {
-	nextHandler.endElement(uri, localName, qName) ;
+    nextHandler.endElement(uri, localName, qName) ;
     }
 
     /**
@@ -150,7 +150,7 @@ public class BaseHandler implements ContentHandler
     public void characters(char[] chars, int start, int length)
         throws SAXException
     {
-	nextHandler.characters(chars, start, length) ;
+    nextHandler.characters(chars, start, length) ;
     }
 
     /**
@@ -163,7 +163,7 @@ public class BaseHandler implements ContentHandler
     public void ignorableWhitespace(char[] chars, int start, int length)
         throws SAXException
     {
-	nextHandler.ignorableWhitespace(chars, start, length) ;
+    nextHandler.ignorableWhitespace(chars, start, length) ;
     }
 
     /**
@@ -171,9 +171,9 @@ public class BaseHandler implements ContentHandler
      * @throws SAXException for any errors.
      */
     public void skippedEntity(final String name)
-    	throws SAXException
+        throws SAXException
     {
-	nextHandler.skippedEntity(name) ;
+    nextHandler.skippedEntity(name) ;
     }
 
     /**
@@ -182,6 +182,6 @@ public class BaseHandler implements ContentHandler
      */
     protected final ContentHandler getNextHandler()
     {
-	return nextHandler ;
+    return nextHandler ;
     }
 }

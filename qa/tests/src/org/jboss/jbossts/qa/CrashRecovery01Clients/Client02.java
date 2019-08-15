@@ -62,70 +62,70 @@ import org.jboss.jbossts.qa.Utils.*;
 
 public class Client02
 {
-	public static void main(String[] args)
-	{
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+    public static void main(String[] args)
+    {
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			String serviceIOR = ServerIORStore.loadIOR(args[args.length - 1]);
-			Service service = ServiceHelper.narrow(ORBInterface.orb().string_to_object(serviceIOR));
+            String serviceIOR = ServerIORStore.loadIOR(args[args.length - 1]);
+            Service service = ServiceHelper.narrow(ORBInterface.orb().string_to_object(serviceIOR));
 
-			boolean correct = true;
+            boolean correct = true;
 
-			OTS.current().begin();
+            OTS.current().begin();
 
-			service.setup_oper(1);
+            service.setup_oper(1);
 
-			OTS.current().commit(true);
+            OTS.current().commit(true);
 
 //  code changed to cope with recovery manager fix
-// 	that makes reply_completion cause resource to rollback even though
-//	transaction has completed
-			ResourceTrace resourceTrace = service.get_resource_trace(0);
+//     that makes reply_completion cause resource to rollback even though
+//    transaction has completed
+            ResourceTrace resourceTrace = service.get_resource_trace(0);
 
 //  trace should be Commit_One_Phase because only single resource used
-			correct = correct && (resourceTrace == ResourceTrace.ResourceTraceCommitOnePhase);
+            correct = correct && (resourceTrace == ResourceTrace.ResourceTraceCommitOnePhase);
 
 //  check_oper will invoke reply_completion and check the state of the transaction
-			correct = correct && service.check_oper();
+            correct = correct && service.check_oper();
 
 // now sleep to let reply completion do its job 1 second should be more than enough
-			CrashRecoveryDelays.awaitReplayCompletionCR01();
+            CrashRecoveryDelays.awaitReplayCompletionCR01();
 
-			correct = correct && service.is_correct();
+            correct = correct && service.is_correct();
 //  after reply_completion is called the resource will have rollback called on
-//	it changeing the ResourceTrace to ResourceTrace.ResourceTraceUnknown
-			resourceTrace = service.get_resource_trace(0);
+//    it changeing the ResourceTrace to ResourceTrace.ResourceTraceUnknown
+            resourceTrace = service.get_resource_trace(0);
 
-			correct = correct && (resourceTrace == ResourceTrace.ResourceTraceUnknown);
+            correct = correct && (resourceTrace == ResourceTrace.ResourceTraceUnknown);
 
-			if (correct)
-			{
-				System.out.println("Passed");
-			}
-			else
-			{
-				System.out.println("Failed");
-			}
-		}
-		catch (Exception exception)
-		{
-			System.out.println("Failed");
-			System.err.println("Client02.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
+            if (correct)
+            {
+                System.out.println("Passed");
+            }
+            else
+            {
+                System.out.println("Failed");
+            }
+        }
+        catch (Exception exception)
+        {
+            System.out.println("Failed");
+            System.err.println("Client02.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
 
-		try
-		{
-			OAInterface.shutdownOA();
-			ORBInterface.shutdownORB();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Client02.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
-	}
+        try
+        {
+            OAInterface.shutdownOA();
+            ORBInterface.shutdownORB();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Client02.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
+    }
 }

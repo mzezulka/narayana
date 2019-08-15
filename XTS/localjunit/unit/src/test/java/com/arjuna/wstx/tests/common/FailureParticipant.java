@@ -53,75 +53,75 @@ public class FailureParticipant implements Durable2PCParticipant
 
     public FailureParticipant (int failurePoint, int failureType)
     {
-	_failurePoint = failurePoint;
-	_failureType = failureType;
+    _failurePoint = failurePoint;
+    _failureType = failureType;
     _prepared = false;
     _resolved = false;
     }
 
     public final boolean passed ()
     {
-	return _passed;
+    return _passed;
     }
 
     public final boolean prepared ()
     {
-	return _prepared;
+    return _prepared;
     }
 
     public final boolean resolved ()
     {
-	return _resolved;
+    return _resolved;
     }
 
     public Vote prepare () throws WrongStateException, SystemException
     {
-	System.out.println("FailureParticipant.prepare");
+    System.out.println("FailureParticipant.prepare");
 
     _prepared = true;
-	if (_failurePoint == FAIL_IN_PREPARE)
-	{
-	    generateException();
+    if (_failurePoint == FAIL_IN_PREPARE)
+    {
+        generateException();
 
-	    return new Aborted();
-	}
-	else
-	    return new Prepared();
+        return new Aborted();
+    }
+    else
+        return new Prepared();
     }
 
     public void commit () throws WrongStateException, SystemException
     {
-	System.out.println("FailureParticipant.commit");
+    System.out.println("FailureParticipant.commit");
 
     _resolved = true;
-	if (_failurePoint == FAIL_IN_COMMIT)
-	    generateException();
+    if (_failurePoint == FAIL_IN_COMMIT)
+        generateException();
 
-	if (_failurePoint == FAIL_IN_PREPARE)
-	    _passed = false;
+    if (_failurePoint == FAIL_IN_PREPARE)
+        _passed = false;
     }
 
     public void rollback () throws WrongStateException, SystemException
     {
     _resolved = true;
-	System.out.println("FailureParticipant.rollback");
+    System.out.println("FailureParticipant.rollback");
 
-	if (_failurePoint == FAIL_IN_ROLLBACK)
-	    generateException();
+    if (_failurePoint == FAIL_IN_ROLLBACK)
+        generateException();
 
-	if (_failurePoint == FAIL_IN_PREPARE)
-	    _passed = true;
+    if (_failurePoint == FAIL_IN_PREPARE)
+        _passed = true;
     }
 
     public void commitOnePhase () throws WrongStateException, SystemException
     {
     _resolved = true;
-	System.out.println("FailureParticipant.commitOnePhase");
+    System.out.println("FailureParticipant.commitOnePhase");
 
-	if (_failurePoint == FAIL_IN_ONE_PHASE)
-	    generateException();
+    if (_failurePoint == FAIL_IN_ONE_PHASE)
+        generateException();
 
-	_passed = true;
+    _passed = true;
     }
 
     public void unknown () throws SystemException
@@ -134,15 +134,15 @@ public class FailureParticipant implements Durable2PCParticipant
 
     private void generateException () throws WrongStateException, SystemException
     {
-	switch (_failureType)
-	{
-	case WRONG_STATE:
-	    throw new WrongStateException();
-	case SYSTEM:
-	    throw new SystemException();
-	default:
-	    break;
-	}
+    switch (_failureType)
+    {
+    case WRONG_STATE:
+        throw new WrongStateException();
+    case SYSTEM:
+        throw new SystemException();
+    default:
+        break;
+    }
     }
 
     private int     _failurePoint;

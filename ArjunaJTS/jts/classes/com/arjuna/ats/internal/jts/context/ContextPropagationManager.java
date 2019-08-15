@@ -48,54 +48,54 @@ public class ContextPropagationManager
 {
     public ContextPropagationManager ()
     {
-	String contextMode = jtsPropertyManager.getJTSEnvironmentBean().getContextPropMode();
-	boolean interposition = true;
+    String contextMode = jtsPropertyManager.getJTSEnvironmentBean().getContextPropMode();
+    boolean interposition = true;
 
-	if (contextMode != null)
-	{
-	    if (contextMode.equals("CONTEXT"))
-		interposition = false;
-	    else
-	    {
-		if (contextMode.equals("NONE"))
-		    return;
-	    }
-	}
+    if (contextMode != null)
+    {
+        if (contextMode.equals("CONTEXT"))
+        interposition = false;
+        else
+        {
+        if (contextMode.equals("NONE"))
+            return;
+        }
+    }
 
-	int orbType = ORBInfo.getOrbEnumValue();
+    int orbType = ORBInfo.getOrbEnumValue();
 
-	switch (orbType)
-	{
-	case ORBType.JAVAIDL:
-	    {
-		if (interposition)
-			System.setProperty("org.omg.PortableInterceptor.ORBInitializerClass.com.arjuna.ats.jts.orbspecific.javaidl.interceptors.interposition.InterpositionORBInitializerImpl", "com.arjuna.ats.jts.orbspecific.javaidl.interceptors.interposition.InterpositionORBInitializerImpl");
-		else
-			System.setProperty("org.omg.PortableInterceptor.ORBInitializerClass.com.arjuna.ats.jts.orbspecific.javaidl.interceptors.context.ContextORBInitializerImpl", "com.arjuna.ats.jts.orbspecific.javaidl.interceptors.context.ContextORBInitializerImpl");
-	    }
-	    break;
-	case ORBType.JACORB:
-	    {
-		if (interposition)
-			System.setProperty("org.omg.PortableInterceptor.ORBInitializerClass.com.arjuna.ats.jts.orbspecific.jacorb.interceptors.interposition.InterpositionORBInitializerImpl", "com.arjuna.ats.jts.orbspecific.jacorb.interceptors.interposition.InterpositionORBInitializerImpl");
-		else
-			System.setProperty("org.omg.PortableInterceptor.ORBInitializerClass.com.arjuna.ats.jts.orbspecific.jacorb.interceptors.context.ContextORBInitializerImpl", "com.arjuna.ats.jts.orbspecific.jacorb.interceptors.context.ContextORBInitializerImpl");
-	    }
-	    break;
-	case ORBType.IBMORB:
-	    {
-		if (interposition)
-			System.setProperty("org.omg.PortableInterceptor.ORBInitializerClass.com.arjuna.ats.jts.orbspecific.ibmorb.interceptors.interposition.InterpositionORBInitializerImpl", "com.arjuna.ats.jts.orbspecific.ibmorb.interceptors.interposition.InterpositionORBInitializerImpl");
-		else
-			System.setProperty("org.omg.PortableInterceptor.ORBInitializerClass.com.arjuna.ats.jts.orbspecific.ibmorb.interceptors.context.ContextORBInitializerImpl", "com.arjuna.ats.jts.orbspecific.ibmorb.interceptors.context.ContextORBInitializerImpl");
-	    }
-	    break;
-	default:
-	    {
+    switch (orbType)
+    {
+    case ORBType.JAVAIDL:
+        {
+        if (interposition)
+            System.setProperty("org.omg.PortableInterceptor.ORBInitializerClass.com.arjuna.ats.jts.orbspecific.javaidl.interceptors.interposition.InterpositionORBInitializerImpl", "com.arjuna.ats.jts.orbspecific.javaidl.interceptors.interposition.InterpositionORBInitializerImpl");
+        else
+            System.setProperty("org.omg.PortableInterceptor.ORBInitializerClass.com.arjuna.ats.jts.orbspecific.javaidl.interceptors.context.ContextORBInitializerImpl", "com.arjuna.ats.jts.orbspecific.javaidl.interceptors.context.ContextORBInitializerImpl");
+        }
+        break;
+    case ORBType.JACORB:
+        {
+        if (interposition)
+            System.setProperty("org.omg.PortableInterceptor.ORBInitializerClass.com.arjuna.ats.jts.orbspecific.jacorb.interceptors.interposition.InterpositionORBInitializerImpl", "com.arjuna.ats.jts.orbspecific.jacorb.interceptors.interposition.InterpositionORBInitializerImpl");
+        else
+            System.setProperty("org.omg.PortableInterceptor.ORBInitializerClass.com.arjuna.ats.jts.orbspecific.jacorb.interceptors.context.ContextORBInitializerImpl", "com.arjuna.ats.jts.orbspecific.jacorb.interceptors.context.ContextORBInitializerImpl");
+        }
+        break;
+    case ORBType.IBMORB:
+        {
+        if (interposition)
+            System.setProperty("org.omg.PortableInterceptor.ORBInitializerClass.com.arjuna.ats.jts.orbspecific.ibmorb.interceptors.interposition.InterpositionORBInitializerImpl", "com.arjuna.ats.jts.orbspecific.ibmorb.interceptors.interposition.InterpositionORBInitializerImpl");
+        else
+            System.setProperty("org.omg.PortableInterceptor.ORBInitializerClass.com.arjuna.ats.jts.orbspecific.ibmorb.interceptors.context.ContextORBInitializerImpl", "com.arjuna.ats.jts.orbspecific.ibmorb.interceptors.context.ContextORBInitializerImpl");
+        }
+        break;
+    default:
+        {
             jtsLogger.i18NLogger.warn_context_orbnotsupported("ContextPropagationManager", ORBInfo.getInfo());
-	    }
-	    break;
-	}
+        }
+        break;
+    }
     }
 
 }

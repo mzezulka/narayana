@@ -29,19 +29,19 @@ import java.util.Map;
  */
 public interface Buffer extends Serializable {
 
-	/**
-	 * Get the type
-	 *
-	 * @return The type
-	 */
-	public String getType();
+    /**
+     * Get the type
+     *
+     * @return The type
+     */
+    public String getType();
 
-	/**
-	 * Get the subtype
-	 *
-	 * @return The subtype
-	 */
-	public String getSubtype();
+    /**
+     * Get the subtype
+     *
+     * @return The subtype
+     */
+    public String getSubtype();
 
-	public int getLen();
+    public int getLen();
 }

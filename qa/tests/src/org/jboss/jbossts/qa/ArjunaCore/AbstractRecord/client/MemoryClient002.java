@@ -26,47 +26,47 @@ import org.jboss.jbossts.qa.ArjunaCore.Utils.qautil;
 
 public class MemoryClient002 extends BaseTestClient
 {
-	public static void main(String[] args)
-	{
-		MemoryClient002 test = new MemoryClient002(args);
-	}
+    public static void main(String[] args)
+    {
+        MemoryClient002 test = new MemoryClient002(args);
+    }
 
-	private MemoryClient002(String[] args)
-	{
-		super(args);
-	}
+    private MemoryClient002(String[] args)
+    {
+        super(args);
+    }
 
-	public void Test()
-	{
-		try
-		{
-			setNumberOfCalls(3);
-			setNumberOfResources(2);
-			getClientThreshold(1);
+    public void Test()
+    {
+        try
+        {
+            setNumberOfCalls(3);
+            setNumberOfResources(2);
+            getClientThreshold(1);
 
-			Service01 mService = new Service01(mNumberOfResources);
-			startTx();
-			mService.setupOper(true);
-			mService.doWork(mMaxIteration);
-			commit();
+            Service01 mService = new Service01(mNumberOfResources);
+            startTx();
+            mService.setupOper(true);
+            mService.doWork(mMaxIteration);
+            commit();
 
-			//get first memory reading.
-			getFirstReading();
+            //get first memory reading.
+            getFirstReading();
 
-			mService = new Service01(mNumberOfResources);
-			startTx();
-			mService.setupOper(true);
-			mService.doWork(mMaxIteration);
-			abort();
+            mService = new Service01(mNumberOfResources);
+            startTx();
+            mService.setupOper(true);
+            mService.doWork(mMaxIteration);
+            abort();
 
-			getSecondReading();
+            getSecondReading();
 
-			qaMemoryAssert();
-		}
-		catch (Exception e)
-		{
-			Fail("Error in MemoryClient002.test() :", e);
-		}
-	}
+            qaMemoryAssert();
+        }
+        catch (Exception e)
+        {
+            Fail("Error in MemoryClient002.test() :", e);
+        }
+    }
 
 }

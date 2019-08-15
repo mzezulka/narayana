@@ -43,7 +43,7 @@ public class BAInteropParticipantCompletedState extends BaseState
      */
     public BAInteropParticipantCompletedState(final String lastAction)
     {
-	this.lastAction = lastAction ;
+    this.lastAction = lastAction ;
     }
 
     /**
@@ -73,36 +73,36 @@ public class BAInteropParticipantCompletedState extends BaseState
      */
     public boolean waitForParticipantCompleted(final long timeout)
     {
-	final long endTime = System.currentTimeMillis() + timeout ;
-	final boolean result ;
-	synchronized(this)
-	{
-	    while(!participantCompleted)
-	    {
-		final long currentTimeout = endTime - System.currentTimeMillis() ;
-		if (currentTimeout <= 0)
-		{
-		    break ;
-		}
+    final long endTime = System.currentTimeMillis() + timeout ;
+    final boolean result ;
+    synchronized(this)
+    {
+        while(!participantCompleted)
+        {
+        final long currentTimeout = endTime - System.currentTimeMillis() ;
+        if (currentTimeout <= 0)
+        {
+            break ;
+        }
                 try
                 {
                     wait(currentTimeout) ;
                 }
                 catch (final InterruptedException ie) {}
-	    }
+        }
 
-	    result = participantCompleted ;
-	}
+        result = participantCompleted ;
+    }
 
-	if (result)
-	{
-	    // If it is completd then wait to allow processing of message.
-	    try
-	    {
-		Thread.sleep(2000) ;
-	    }
-	    catch (final InterruptedException ie) {}
-	}
-	return result ;
+    if (result)
+    {
+        // If it is completd then wait to allow processing of message.
+        try
+        {
+        Thread.sleep(2000) ;
+        }
+        catch (final InterruptedException ie) {}
+    }
+    return result ;
     }
 }

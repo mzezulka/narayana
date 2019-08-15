@@ -47,9 +47,9 @@ public class DHThreadObject3b extends Thread
     {
         for (int i = 0; i < 1000; i++)
         {
-        	CurrentImple current = OTSImpleManager.current();
-        	System.out.println("Tripling the timeout from: " + current.get_timeout());
-        	current.set_timeout(current.get_timeout() * 3);
+            CurrentImple current = OTSImpleManager.current();
+            System.out.println("Tripling the timeout from: " + current.get_timeout());
+            current.set_timeout(current.get_timeout() * 3);
 
             DistributedHammerWorker3.randomOperation(_id, 0);
             Util.highProbYield();

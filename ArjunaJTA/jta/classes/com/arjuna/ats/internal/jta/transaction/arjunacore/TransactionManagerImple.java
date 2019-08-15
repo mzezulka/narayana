@@ -39,105 +39,105 @@ import com.arjuna.ats.arjuna.AtomicAction;
 import com.arjuna.ats.jta.logging.jtaLogger;
 
 public class TransactionManagerImple extends BaseTransaction implements
-		javax.transaction.TransactionManager, javax.naming.spi.ObjectFactory
+        javax.transaction.TransactionManager, javax.naming.spi.ObjectFactory
 {
 
-	public TransactionManagerImple()
-	{
-	}
+    public TransactionManagerImple()
+    {
+    }
 
-	public Transaction getTransaction()
-			throws javax.transaction.SystemException
-	{
-		return TransactionImple.getTransaction();
-	}
+    public Transaction getTransaction()
+            throws javax.transaction.SystemException
+    {
+        return TransactionImple.getTransaction();
+    }
 
-	/**
-	 * @return the suspended transaction.
-	 */
+    /**
+     * @return the suspended transaction.
+     */
 
-	public Transaction suspend() throws javax.transaction.SystemException
-	{
-		if (jtaLogger.logger.isTraceEnabled()) {
+    public Transaction suspend() throws javax.transaction.SystemException
+    {
+        if (jtaLogger.logger.isTraceEnabled()) {
             jtaLogger.logger.trace("TransactionImpleManager.suspend");
         }
 
-		try
-		{
-			TransactionImple tx = TransactionImple.getTransaction();
+        try
+        {
+            TransactionImple tx = TransactionImple.getTransaction();
 
-			if (tx != null)
-			{
-				tx.getAtomicAction().suspend();
-			}
+            if (tx != null)
+            {
+                tx.getAtomicAction().suspend();
+            }
 
-			return tx;
-		}
-		catch (Exception e)
-		{
+            return tx;
+        }
+        catch (Exception e)
+        {
             javax.transaction.SystemException systemException = new javax.transaction.SystemException(e.toString());
             systemException.initCause(e);
             throw systemException;
-		}
-	}
+        }
+    }
 
-	/**
-	 * Unlike the OTS, if we are already associated with a transaction then we
-	 * cannot call resume.
-	 */
+    /**
+     * Unlike the OTS, if we are already associated with a transaction then we
+     * cannot call resume.
+     */
 
-	public void resume(Transaction which) throws InvalidTransactionException,
-			java.lang.IllegalStateException, javax.transaction.SystemException
-	{
-		if (jtaLogger.logger.isTraceEnabled()) {
+    public void resume(Transaction which) throws InvalidTransactionException,
+            java.lang.IllegalStateException, javax.transaction.SystemException
+    {
+        if (jtaLogger.logger.isTraceEnabled()) {
             jtaLogger.logger.trace("TransactionImpleManager.resume");
         }
 
-		super.checkTransactionState();
+        super.checkTransactionState();
 
-		/*
-		 * If we are here then there is no transaction associated with the
-		 * thread.
-		 */
+        /*
+         * If we are here then there is no transaction associated with the
+         * thread.
+         */
 
-		if ((which == null) || (which instanceof TransactionImple))
-		{
-		    TransactionImple theTransaction = (TransactionImple) which;
+        if ((which == null) || (which instanceof TransactionImple))
+        {
+            TransactionImple theTransaction = (TransactionImple) which;
 
-		    try
-		    {
-		        AtomicAction act = ((theTransaction == null) ? null : theTransaction.getAtomicAction());
+            try
+            {
+                AtomicAction act = ((theTransaction == null) ? null : theTransaction.getAtomicAction());
 
-		        if (!AtomicAction.resume(act))
-		            throw new InvalidTransactionException();
+                if (!AtomicAction.resume(act))
+                    throw new InvalidTransactionException();
 
-		        theTransaction = null;
-		    }
-		    catch (final Exception e2)
-		    {
-		        javax.transaction.SystemException systemException = new javax.transaction.SystemException();
+                theTransaction = null;
+            }
+            catch (final Exception e2)
+            {
+                javax.transaction.SystemException systemException = new javax.transaction.SystemException();
                 systemException.initCause(e2);
                 throw systemException;
-		    }
-		}
-		else
-		    throw new InvalidTransactionException("Illegal type is: "
-		            + which);
-	}
+            }
+        }
+        else
+            throw new InvalidTransactionException("Illegal type is: "
+                    + which);
+    }
 
-	/**
-	 * Creates a TransactionManageImple from the given information.
-	 *
-	 * @param obj
-	 * @param name
-	 * @param nameCtx
-	 * @param environment
-	 * @return the instance of the transaction manager
-	 * @throws Exception
-	 */
-	public Object getObjectInstance(Object obj, Name name, Context nameCtx,
-			Hashtable environment) throws Exception
-	{
-		return this;
-	}
+    /**
+     * Creates a TransactionManageImple from the given information.
+     *
+     * @param obj
+     * @param name
+     * @param nameCtx
+     * @param environment
+     * @return the instance of the transaction manager
+     * @throws Exception
+     */
+    public Object getObjectInstance(Object obj, Name name, Context nameCtx,
+            Hashtable environment) throws Exception
+    {
+        return this;
+    }
 }

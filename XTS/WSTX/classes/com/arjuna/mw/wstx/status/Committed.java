@@ -46,12 +46,12 @@ public class Committed implements Status
 
     public static Committed instance ()
     {
-	return _instance;
+    return _instance;
     }
 
     public String toString ()
     {
-	return "Status.Committed";
+    return "Status.Committed";
     }
 
     private Committed ()

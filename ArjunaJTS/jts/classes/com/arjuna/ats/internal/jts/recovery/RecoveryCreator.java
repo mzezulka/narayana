@@ -47,7 +47,7 @@ class DummyCreator extends RecoveryCreator
 
 public RecoveryCoordinator create (Resource res, Object[] params) throws SystemException
     {
-	throw new NO_IMPLEMENT();
+    throw new NO_IMPLEMENT();
     }
 
 public void destroy (RecoveryCoordinator rc) throws SystemException
@@ -72,40 +72,40 @@ public abstract class RecoveryCreator
 
 public static final RecoveryCreator getCreator ()
     {
-	if (_theCreator == null)
-	    _theCreator = new DummyCreator();
+    if (_theCreator == null)
+        _theCreator = new DummyCreator();
 
-	return _theCreator;
+    return _theCreator;
     }
 
 
 public static final void setCreator (RecoveryCreator c)
     {
-	if (c == null) {
+    if (c == null) {
         jtsLogger.i18NLogger.warn_recovery_rcnull("RecoveryCreator.setCreator");
     }
-	else
-	    _theCreator = c;
+    else
+        _theCreator = c;
 
     }
 
 public static final RecoveryCoordinator createRecoveryCoordinator (Resource res, Object[] params) throws SystemException
     {
-	if (jtsLogger.logger.isDebugEnabled()) {
+    if (jtsLogger.logger.isDebugEnabled()) {
         jtsLogger.logger.debug("RecoveryCreator::createRecoveryCoordinator");
     }
 
-	return getCreator().create(res, params);
+    return getCreator().create(res, params);
     }
 
 public static final void destroyRecoveryCoordinator (RecoveryCoordinator rc) throws SystemException
     {
-	getCreator().destroy(rc);
+    getCreator().destroy(rc);
     }
 
 public static final void destroyAllRecoveryCoordinators (Object[] params) throws SystemException
     {
-	getCreator().destroyAll(params);
+    getCreator().destroyAll(params);
     }
 
 protected abstract RecoveryCoordinator create (Resource res, Object[] params) throws SystemException;

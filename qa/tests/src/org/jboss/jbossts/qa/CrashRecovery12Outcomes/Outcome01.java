@@ -39,50 +39,50 @@ import java.io.FileReader;
 
 public class Outcome01
 {
-	public static void main(String[] args)
-	{
-		String resultsFile = args[0];
+    public static void main(String[] args)
+    {
+        String resultsFile = args[0];
         boolean recoveryPassedExpected = "yes".equalsIgnoreCase(args[1]);
 
-		boolean passed = false;
+        boolean passed = false;
         boolean foundRecoveryPassed = false;
         boolean foundPassed = false;
 
-		try
-		{
+        try
+        {
             CrashRecoveryDelays.awaitRecoveryCR12();
 
 
-			FileReader fr = new FileReader(resultsFile);
-			BufferedReader br = new BufferedReader(fr);
-			String line;
+            FileReader fr = new FileReader(resultsFile);
+            BufferedReader br = new BufferedReader(fr);
+            String line;
 
-			while ((line = br.readLine()) != null)
-			{
-				System.err.println("Read: " + line);
-				if ("Passed".equals(line))
-				{
-					foundPassed = true;
-				}
-				if ("Recovery Passed".equals(line))
-				{
-					foundRecoveryPassed = true;
-				}
-			}
-			br.close();
-		}
-		catch (Exception ex)
-		{
-		}
+            while ((line = br.readLine()) != null)
+            {
+                System.err.println("Read: " + line);
+                if ("Passed".equals(line))
+                {
+                    foundPassed = true;
+                }
+                if ("Recovery Passed".equals(line))
+                {
+                    foundRecoveryPassed = true;
+                }
+            }
+            br.close();
+        }
+        catch (Exception ex)
+        {
+        }
 
-		passed = recoveryPassedExpected ? foundRecoveryPassed : foundPassed;
-		if (passed)
-		{
-			System.out.println("Passed");
-		}
-		else
-		{
-			System.out.println("Failed");
-		}
-	}
+        passed = recoveryPassedExpected ? foundRecoveryPassed : foundPassed;
+        if (passed)
+        {
+            System.out.println("Passed");
+        }
+        else
+        {
+            System.out.println("Failed");
+        }
+    }
 }

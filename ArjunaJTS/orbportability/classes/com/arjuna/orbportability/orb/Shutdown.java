@@ -46,12 +46,12 @@ public abstract void work ();
 
 public final String name ()
     {
-	return _name;
+    return _name;
     }
 
 protected Shutdown (String theName)
     {
-	_name = theName;
+    _name = theName;
     }
 
 private String _name;

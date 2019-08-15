@@ -65,60 +65,60 @@ import org.omg.CosTransactions.Current;
 
 public class Test20
 {
-	public static void main(String[] args)
-	{
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+    public static void main(String[] args)
+    {
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			boolean correct = true;
+            boolean correct = true;
 
-			int numberOfControls = 1000;
+            int numberOfControls = 1000;
 
-			Current current = OTS.get_current();
+            Current current = OTS.get_current();
 
-			String[] transactionNames = new String[numberOfControls];
-			Control[] controls = new Control[numberOfControls];
-			for (int index = 0; index < numberOfControls; index++)
-			{
-				current.begin();
-				transactionNames[index] = current.get_transaction_name();
-				controls[index] = current.suspend();
-			}
+            String[] transactionNames = new String[numberOfControls];
+            Control[] controls = new Control[numberOfControls];
+            for (int index = 0; index < numberOfControls; index++)
+            {
+                current.begin();
+                transactionNames[index] = current.get_transaction_name();
+                controls[index] = current.suspend();
+            }
 
-			for (int index = 0; index < numberOfControls; index++)
-			{
-				current.resume(controls[index]);
-				correct = correct && transactionNames[index].equals(current.get_transaction_name());
-				current.commit(true);
-			}
+            for (int index = 0; index < numberOfControls; index++)
+            {
+                current.resume(controls[index]);
+                correct = correct && transactionNames[index].equals(current.get_transaction_name());
+                current.commit(true);
+            }
 
-			if (correct)
-			{
-				System.out.println("Passed");
-			}
-			else
-			{
-				System.out.println("Failed");
-			}
-		}
-		catch (Exception exception)
-		{
-			System.out.println("Failed");
-			System.err.println("Test20.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
+            if (correct)
+            {
+                System.out.println("Passed");
+            }
+            else
+            {
+                System.out.println("Failed");
+            }
+        }
+        catch (Exception exception)
+        {
+            System.out.println("Failed");
+            System.err.println("Test20.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
 
-		try
-		{
-			OAInterface.shutdownOA();
-			ORBInterface.shutdownORB();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Test20.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
-	}
+        try
+        {
+            OAInterface.shutdownOA();
+            ORBInterface.shutdownORB();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Test20.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
+    }
 }

@@ -41,47 +41,47 @@ import java.util.Properties;
 
 public class MemoryTestProfileStore
 {
-	private final static String BASE_DIRECTORY_PROPERTY = "memorytestprofilestore.dir";
+    private final static String BASE_DIRECTORY_PROPERTY = "memorytestprofilestore.dir";
 
-	public static String getNoThresholdValue() throws Exception
-	{
-		loadProfile();
-		return (String) _profile.get("NoThresholdValue");
-	}
+    public static String getNoThresholdValue() throws Exception
+    {
+        loadProfile();
+        return (String) _profile.get("NoThresholdValue");
+    }
 
-	public static String getDefaultClientIncreaseThreshold() throws Exception
-	{
-		loadProfile();
-		return (String) _profile.get("DefaultClientIncreaseThreshold");
-	}
+    public static String getDefaultClientIncreaseThreshold() throws Exception
+    {
+        loadProfile();
+        return (String) _profile.get("DefaultClientIncreaseThreshold");
+    }
 
-	public static String getDefaultServerIncreaseThreshold() throws Exception
-	{
-		loadProfile();
-		return (String) _profile.get("DefaultServerIncreaseThreshold");
-	}
+    public static String getDefaultServerIncreaseThreshold() throws Exception
+    {
+        loadProfile();
+        return (String) _profile.get("DefaultServerIncreaseThreshold");
+    }
 
-	// end of new methods
+    // end of new methods
 
-	private static void loadProfile()
-			throws Exception
-	{
-		if (_profile == null)
-		{
-			String baseDir = System.getProperty(BASE_DIRECTORY_PROPERTY);
+    private static void loadProfile()
+            throws Exception
+    {
+        if (_profile == null)
+        {
+            String baseDir = System.getProperty(BASE_DIRECTORY_PROPERTY);
 
-			if (baseDir == null)
-			{
-				throw new Exception(BASE_DIRECTORY_PROPERTY + " property not set - cannot find memory test profiles!");
-			}
+            if (baseDir == null)
+            {
+                throw new Exception(BASE_DIRECTORY_PROPERTY + " property not set - cannot find memory test profiles!");
+            }
 
-			_profile = new Properties();
-			FileInputStream profileFileInputStream =
-					new FileInputStream(baseDir + File.separator + "MemoryTestProfile");
-			_profile.load(profileFileInputStream);
-			profileFileInputStream.close();
-		}
-	}
+            _profile = new Properties();
+            FileInputStream profileFileInputStream =
+                    new FileInputStream(baseDir + File.separator + "MemoryTestProfile");
+            _profile.load(profileFileInputStream);
+            profileFileInputStream.close();
+        }
+    }
 
-	private static Properties _profile = null;
+    private static Properties _profile = null;
 }

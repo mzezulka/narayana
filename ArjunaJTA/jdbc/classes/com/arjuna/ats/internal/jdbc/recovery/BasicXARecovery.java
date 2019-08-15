@@ -83,154 +83,154 @@ import com.arjuna.common.util.propertyservice.PropertiesFactory;
 
 public class BasicXARecovery implements XAResourceRecovery
 {
-	/*
-	 * Some XAResourceRecovery implementations will do their startup work here,
-	 * and then do little or nothing in setDetails. Since this one needs to know
-	 * dynamic class name, the constructor does nothing.
-	 */
+    /*
+     * Some XAResourceRecovery implementations will do their startup work here,
+     * and then do little or nothing in setDetails. Since this one needs to know
+     * dynamic class name, the constructor does nothing.
+     */
 
-	public BasicXARecovery () throws SQLException
-	{
-		if (jdbcLogger.logger.isDebugEnabled()) {
+    public BasicXARecovery () throws SQLException
+    {
+        if (jdbcLogger.logger.isDebugEnabled()) {
             jdbcLogger.logger.debug("BasicXARecovery ()");
         }
 
-		numberOfConnections = 1;
-		connectionIndex = 0;
-		props = null;
-	}
+        numberOfConnections = 1;
+        connectionIndex = 0;
+        props = null;
+    }
 
-	/**
-	 * The recovery module will have chopped off this class name already. The
-	 * parameter should specify a property file from which the url, user name,
-	 * password, etc. can be read.
-	 */
+    /**
+     * The recovery module will have chopped off this class name already. The
+     * parameter should specify a property file from which the url, user name,
+     * password, etc. can be read.
+     */
 
-	public boolean initialise (String parameter) throws SQLException
-	{
-		if (jdbcLogger.logger.isDebugEnabled()) {
+    public boolean initialise (String parameter) throws SQLException
+    {
+        if (jdbcLogger.logger.isDebugEnabled()) {
             jdbcLogger.logger.debug("BasicXARecovery.setDetail(" + parameter + ")");
         }
 
-		if (parameter == null)
-			return true;
+        if (parameter == null)
+            return true;
 
-		int breakPosition = parameter.indexOf(BREAKCHARACTER);
-		String fileName = parameter;
+        int breakPosition = parameter.indexOf(BREAKCHARACTER);
+        String fileName = parameter;
 
-		if (breakPosition != -1)
-		{
-			fileName = parameter.substring(0, breakPosition - 1);
+        if (breakPosition != -1)
+        {
+            fileName = parameter.substring(0, breakPosition - 1);
 
-			try
-			{
-				numberOfConnections = Integer.parseInt(parameter
-						.substring(breakPosition + 1));
-			}
-			catch (NumberFormatException e)
-			{
+            try
+            {
+                numberOfConnections = Integer.parseInt(parameter
+                        .substring(breakPosition + 1));
+            }
+            catch (NumberFormatException e)
+            {
                 jdbcLogger.i18NLogger.warn_recovery_basic_initexp(e);
 
-				return false;
-			}
-		}
+                return false;
+            }
+        }
 
-		try
-		{
+        try
+        {
             props = PropertiesFactory.getPropertiesFromFile(fileName, BasicXARecovery.class.getClassLoader());
-		}
-		catch (Exception e)
-		{
+        }
+        catch (Exception e)
+        {
             jdbcLogger.i18NLogger.warn_recovery_basic_initexp(e);
 
-			return false;
-		}
+            return false;
+        }
 
-		if (jdbcLogger.logger.isDebugEnabled()) {
+        if (jdbcLogger.logger.isDebugEnabled()) {
             jdbcLogger.logger.debug("BasicXARecovery properties file = " + parameter);
         }
 
-		return true;
-	}
+        return true;
+    }
 
-	public synchronized XAResource getXAResource () throws SQLException {
-		if (connections == null) {
-			connections = new JDBC2RecoveryConnection[numberOfConnections];
-		}
-		try {
-			RecoverableXAConnection recoveryConnection = getConnection().recoveryConnection();
-			if(recoveryConnection == null)
-				throw new IllegalStateException("Recovery connection of connection " + getConnection() + " is null");
-			return recoveryConnection.getResource();
-		} finally {
-			connectionIndex++;
-		}
-	}
+    public synchronized XAResource getXAResource () throws SQLException {
+        if (connections == null) {
+            connections = new JDBC2RecoveryConnection[numberOfConnections];
+        }
+        try {
+            RecoverableXAConnection recoveryConnection = getConnection().recoveryConnection();
+            if(recoveryConnection == null)
+                throw new IllegalStateException("Recovery connection of connection " + getConnection() + " is null");
+            return recoveryConnection.getResource();
+        } finally {
+            connectionIndex++;
+        }
+    }
 
-	public synchronized boolean hasMoreResources ()
-	{
-		if (connectionIndex == numberOfConnections) {
-			// Reset the connection position
-			connectionIndex = 0;
-			return false;
-		} else
-			return true;
-	}
+    public synchronized boolean hasMoreResources ()
+    {
+        if (connectionIndex == numberOfConnections) {
+            // Reset the connection position
+            connectionIndex = 0;
+            return false;
+        } else
+            return true;
+    }
 
-	private final JDBC2RecoveryConnection getConnection ()
-			throws SQLException
-	{
-		if (connections[connectionIndex] == null) {
-			String number = new String(""+ (connectionIndex + 1));
-			String url = new String(dbTag + number + urlTag);
-			String password = new String(dbTag + number + passwordTag);
-			String user = new String(dbTag + number + userTag);
-			String dynamicClass = new String(dbTag + number + dynamicClassTag);
+    private final JDBC2RecoveryConnection getConnection ()
+            throws SQLException
+    {
+        if (connections[connectionIndex] == null) {
+            String number = new String(""+ (connectionIndex + 1));
+            String url = new String(dbTag + number + urlTag);
+            String password = new String(dbTag + number + passwordTag);
+            String user = new String(dbTag + number + userTag);
+            String dynamicClass = new String(dbTag + number + dynamicClassTag);
 
-			Properties dbProperties = new Properties();
+            Properties dbProperties = new Properties();
 
-			String theUser = props.getProperty(user);
-			String thePassword = props.getProperty(password);
-			String theURL = props.getProperty(url);
+            String theUser = props.getProperty(user);
+            String thePassword = props.getProperty(password);
+            String theURL = props.getProperty(url);
 
-			if (theUser != null) {
-				dbProperties.put(TransactionalDriver.userName, theUser);
-				dbProperties.put(TransactionalDriver.password, thePassword);
+            if (theUser != null) {
+                dbProperties.put(TransactionalDriver.userName, theUser);
+                dbProperties.put(TransactionalDriver.password, thePassword);
 
-				String dc = props.getProperty(dynamicClass);
+                String dc = props.getProperty(dynamicClass);
 
-				if (dc != null)
-					dbProperties.put(TransactionalDriver.dynamicClass, dc);
+                if (dc != null)
+                    dbProperties.put(TransactionalDriver.dynamicClass, dc);
 
-				JDBC2RecoveryConnection connection = new JDBC2RecoveryConnection(theURL, dbProperties);
-				connections[connectionIndex] = connection;
-				return connection;
-			} else {
-				jdbcLogger.i18NLogger.warn_recovery_basic_xarec("BasicXARecovery.getConnection -");
-				throw new SQLException(jdbcLogger.i18NLogger.insufficientConnectionInformation());
-			}
-		}
-		return connections[connectionIndex];
-	}
+                JDBC2RecoveryConnection connection = new JDBC2RecoveryConnection(theURL, dbProperties);
+                connections[connectionIndex] = connection;
+                return connection;
+            } else {
+                jdbcLogger.i18NLogger.warn_recovery_basic_xarec("BasicXARecovery.getConnection -");
+                throw new SQLException(jdbcLogger.i18NLogger.insufficientConnectionInformation());
+            }
+        }
+        return connections[connectionIndex];
+    }
 
-	private int numberOfConnections;
+    private int numberOfConnections;
 
-	private int connectionIndex;
+    private int connectionIndex;
 
-	private Properties props;
+    private Properties props;
 
-	private static final String dbTag = "DB_";
+    private static final String dbTag = "DB_";
 
-	private static final String urlTag = "_DatabaseURL";
+    private static final String urlTag = "_DatabaseURL";
 
-	private static final String passwordTag = "_DatabasePassword";
+    private static final String passwordTag = "_DatabasePassword";
 
-	private static final String userTag = "_DatabaseUser";
+    private static final String userTag = "_DatabaseUser";
 
-	private static final String dynamicClassTag = "_DatabaseDynamicClass";
+    private static final String dynamicClassTag = "_DatabaseDynamicClass";
 
-	private static final char BREAKCHARACTER = ';'; // delimiter for parameters
+    private static final char BREAKCHARACTER = ';'; // delimiter for parameters
 
-	private JDBC2RecoveryConnection[] connections;
+    private JDBC2RecoveryConnection[] connections;
 
 }

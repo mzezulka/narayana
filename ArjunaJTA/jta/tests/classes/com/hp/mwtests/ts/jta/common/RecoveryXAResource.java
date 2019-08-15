@@ -44,29 +44,29 @@ public class RecoveryXAResource implements XAResource
 
     public RecoveryXAResource ()
     {
-	if (xids == null)
-	{
-	    xids = new Xid[2];
+    if (xids == null)
+    {
+        xids = new Xid[2];
 
-	    AtomicAction a = new AtomicAction();
+        AtomicAction a = new AtomicAction();
 
-	    xids[0] = new XidImple(a);
+        xids[0] = new XidImple(a);
 
-	    String c = com.arjuna.ats.arjuna.coordinator.TxControl.getXANodeName();
+        String c = com.arjuna.ats.arjuna.coordinator.TxControl.getXANodeName();
 
-	    String b = "2";
+        String b = "2";
 
-	    com.arjuna.ats.arjuna.coordinator.TxControl.setXANodeName(b);
+        com.arjuna.ats.arjuna.coordinator.TxControl.setXANodeName(b);
 
-	    xids[1] = new XidImple(new Uid());
+        xids[1] = new XidImple(new Uid());
 
-	    com.arjuna.ats.arjuna.coordinator.TxControl.setXANodeName(c);
-	}
+        com.arjuna.ats.arjuna.coordinator.TxControl.setXANodeName(c);
+    }
     }
 
     public void commit (Xid xid, boolean onePhase) throws XAException
     {
-	System.err.println("**commit "+xid);
+    System.err.println("**commit "+xid);
     }
 
     public void end (Xid xid, int flags) throws XAException
@@ -79,29 +79,29 @@ public class RecoveryXAResource implements XAResource
 
     public int getTransactionTimeout () throws XAException
     {
-	return 0;
+    return 0;
     }
 
     public int prepare (Xid xid) throws XAException
     {
-	return XAResource.XA_OK;
+    return XAResource.XA_OK;
     }
 
     public Xid[] recover (int flag) throws XAException
     {
-	System.err.println("**returning "+xids[0]+" and "+xids[1]);
+    System.err.println("**returning "+xids[0]+" and "+xids[1]);
 
-	return xids;
+    return xids;
     }
 
     public void rollback (Xid xid) throws XAException
     {
-	System.err.println("**rollback "+xid);
+    System.err.println("**rollback "+xid);
     }
 
     public boolean setTransactionTimeout (int seconds) throws XAException
     {
-	return true;
+    return true;
     }
 
     public void start (Xid xid, int flags) throws XAException
@@ -110,7 +110,7 @@ public class RecoveryXAResource implements XAResource
 
     public boolean isSameRM (XAResource xares) throws XAException
     {
-	return (xares == this);
+    return (xares == this);
     }
 
     private static Xid[] xids = null;

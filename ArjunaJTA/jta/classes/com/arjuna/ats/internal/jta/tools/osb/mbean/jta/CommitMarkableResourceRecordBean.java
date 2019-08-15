@@ -39,51 +39,51 @@ import com.arjuna.ats.jta.xa.XidImple;
  */
 @Deprecated // in order to provide a better separation between public and internal classes.
 public class CommitMarkableResourceRecordBean extends LogRecordWrapper
-		implements CommitMarkableResourceRecordBeanMBean {
-	String className;
-	String eisProductName;
-	String eisProductVersion;
-	String jndiName;
+        implements CommitMarkableResourceRecordBeanMBean {
+    String className;
+    String eisProductName;
+    String eisProductVersion;
+    String jndiName;
     int timeout;
-	XidImple xidImple;
+    XidImple xidImple;
 
-	int heuristic;
+    int heuristic;
 
-	public CommitMarkableResourceRecordBean(UidWrapper w) {
-		super(w.getUid());
-		init();
-	}
+    public CommitMarkableResourceRecordBean(UidWrapper w) {
+        super(w.getUid());
+        init();
+    }
 
-	public CommitMarkableResourceRecordBean(ActionBean parent, AbstractRecord rec, ParticipantStatus listType) {
-		super(parent, rec, listType);
-		init();
-		// xares = new JTAXAResourceRecordWrapper(rec.order());
-	}
+    public CommitMarkableResourceRecordBean(ActionBean parent, AbstractRecord rec, ParticipantStatus listType) {
+        super(parent, rec, listType);
+        init();
+        // xares = new JTAXAResourceRecordWrapper(rec.order());
+    }
 
-	private void init() {
-		jndiName = getUid().stringForm();
-		className = "unavailable";
-		eisProductName = "unavailable";
-		eisProductVersion = "unavailable";
-		timeout = 0;
-		heuristic = -1;
-		xidImple = new XidImple(new XID());
-	}
+    private void init() {
+        jndiName = getUid().stringForm();
+        className = "unavailable";
+        eisProductName = "unavailable";
+        eisProductVersion = "unavailable";
+        timeout = 0;
+        heuristic = -1;
+        xidImple = new XidImple(new XID());
+    }
 
-	public boolean activate() {
-		boolean ok = super.activate();
-		XAResource xares = (XAResource) rec.value();
+    public boolean activate() {
+        boolean ok = super.activate();
+        XAResource xares = (XAResource) rec.value();
 
-		className = rec.getClass().getName();
+        className = rec.getClass().getName();
 
-		if (rec instanceof CommitMarkableResourceRecord) {
-			CommitMarkableResourceRecord xarec = (CommitMarkableResourceRecord) rec;
+        if (rec instanceof CommitMarkableResourceRecord) {
+            CommitMarkableResourceRecord xarec = (CommitMarkableResourceRecord) rec;
 
-			eisProductName = xarec.getProductName();
-			eisProductVersion = xarec.getProductVersion();
-			jndiName = xarec.getJndiName();
-			heuristic = xarec.getHeuristic();
-		}
+            eisProductName = xarec.getProductName();
+            eisProductVersion = xarec.getProductVersion();
+            jndiName = xarec.getJndiName();
+            heuristic = xarec.getHeuristic();
+        }
 
         if (xares != null) {
             className = xares.getClass().getName();
@@ -94,41 +94,41 @@ public class CommitMarkableResourceRecordBean extends LogRecordWrapper
             }
         }
 
-		return ok;
-	}
+        return ok;
+    }
 
-	public String getClassName() {
-		return className;
-	}
+    public String getClassName() {
+        return className;
+    }
 
-	public String getEisProductName() {
-		return eisProductName;
-	}
+    public String getEisProductName() {
+        return eisProductName;
+    }
 
-	public String getEisProductVersion() {
-		return eisProductVersion;
-	}
+    public String getEisProductVersion() {
+        return eisProductVersion;
+    }
 
     @Override
     public int getTimeout() {
         return timeout;
     }
 
-	@Override
-	public String getJndiName() {
-		return jndiName;
-	}
+    @Override
+    public String getJndiName() {
+        return jndiName;
+    }
 
-	@Override
-	public String getHeuristicStatus() {
-		String hs = super.getHeuristicStatus();
+    @Override
+    public String getHeuristicStatus() {
+        String hs = super.getHeuristicStatus();
 
-		if (heuristic != -1 && HeuristicStatus.UNKNOWN.name().equals(hs)) {
-			hs = HeuristicStatus.intToStatus(heuristic).name();
-		}
+        if (heuristic != -1 && HeuristicStatus.UNKNOWN.name().equals(hs)) {
+            hs = HeuristicStatus.intToStatus(heuristic).name();
+        }
 
-		return hs;
-	}
+        return hs;
+    }
 
     @Override
     public byte[] getGlobalTransactionId() {
@@ -151,22 +151,22 @@ public class CommitMarkableResourceRecordBean extends LogRecordWrapper
         return heuristic;
     }
 
-	@Override
-	public boolean forget() {
-		if (rec instanceof CommitMarkableResourceRecord) {
-			CommitMarkableResourceRecord xarec = (CommitMarkableResourceRecord) rec;
+    @Override
+    public boolean forget() {
+        if (rec instanceof CommitMarkableResourceRecord) {
+            CommitMarkableResourceRecord xarec = (CommitMarkableResourceRecord) rec;
 
-			return xarec.forgetHeuristic();
-		}
+            return xarec.forgetHeuristic();
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	@Override
-	public String remove() throws MBeanException {
-		if (forget())
-			return super.remove();
+    @Override
+    public String remove() throws MBeanException {
+        if (forget())
+            return super.remove();
 
-		return "Operation in progress";
-	}
+        return "Operation in progress";
+    }
 }

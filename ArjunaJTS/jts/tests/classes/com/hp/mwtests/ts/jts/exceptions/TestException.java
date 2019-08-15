@@ -37,12 +37,12 @@ public class TestException extends Exception
 
     public TestException ()
     {
-	super();
+    super();
     }
 
     public TestException (String s)
     {
-	super(s);
+    super(s);
     }
 
     public TestException(Exception e) {

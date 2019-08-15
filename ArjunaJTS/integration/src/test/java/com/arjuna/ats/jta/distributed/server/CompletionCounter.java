@@ -27,82 +27,82 @@ import java.util.Map;
 
 public class CompletionCounter {
 
-	private static CompletionCounter instance;
+    private static CompletionCounter instance;
 
-	private Map<String, Integer> commitCounter = new HashMap<String, Integer>();
-	private Map<String, Integer> rollbackCounter = new HashMap<String, Integer>();
+    private Map<String, Integer> commitCounter = new HashMap<String, Integer>();
+    private Map<String, Integer> rollbackCounter = new HashMap<String, Integer>();
 
-	public static CompletionCounter getInstance() {
-		if (instance == null) {
-			instance = new CompletionCounter();
-		}
-		return instance;
-	}
+    public static CompletionCounter getInstance() {
+        if (instance == null) {
+            instance = new CompletionCounter();
+        }
+        return instance;
+    }
 
-	protected CompletionCounter() {
+    protected CompletionCounter() {
 
-	}
+    }
 
-	public void incrementCommit(String nodeName) {
-		Integer integer = commitCounter.get(nodeName);
-		if (integer == null) {
-			integer = new Integer(1);
-		} else {
-			integer = new Integer(integer.intValue() + 1);
-		}
-		commitCounter.put(nodeName, integer);
+    public void incrementCommit(String nodeName) {
+        Integer integer = commitCounter.get(nodeName);
+        if (integer == null) {
+            integer = new Integer(1);
+        } else {
+            integer = new Integer(integer.intValue() + 1);
+        }
+        commitCounter.put(nodeName, integer);
 
-	}
+    }
 
-	public void incrementRollback(String nodeName) {
-		Integer integer = rollbackCounter.get(nodeName);
-		if (integer == null) {
-			integer = new Integer(1);
-		} else {
-			integer = new Integer(integer.intValue() + 1);
-		}
-		rollbackCounter.put(nodeName, integer);
-		synchronized (this) {
-			notify();
-		}
-	}
+    public void incrementRollback(String nodeName) {
+        Integer integer = rollbackCounter.get(nodeName);
+        if (integer == null) {
+            integer = new Integer(1);
+        } else {
+            integer = new Integer(integer.intValue() + 1);
+        }
+        rollbackCounter.put(nodeName, integer);
+        synchronized (this) {
+            notify();
+        }
+    }
 
-	public int getCommitCount(String nodeName) {
-		Integer integer = commitCounter.get(nodeName);
-		if (integer == null) {
-			integer = new Integer(0);
-		}
-		return integer;
-	}
+    public int getCommitCount(String nodeName) {
+        Integer integer = commitCounter.get(nodeName);
+        if (integer == null) {
+            integer = new Integer(0);
+        }
+        return integer;
+    }
 
-	public int getRollbackCount(String nodeName) {
-		Integer integer = rollbackCounter.get(nodeName);
-		if (integer == null) {
-			integer = new Integer(0);
-		}
-		return integer;
-	}
+    public int getRollbackCount(String nodeName) {
+        Integer integer = rollbackCounter.get(nodeName);
+        if (integer == null) {
+            integer = new Integer(0);
+        }
+        return integer;
+    }
 
-	public int getTotalCommitCount() {
-		Integer toReturn = 0;
-		Iterator<Integer> iterator = commitCounter.values().iterator();
-		while (iterator.hasNext()) {
-			toReturn += iterator.next();
-		}
-		return toReturn;
-	}
+    public int getTotalCommitCount() {
+        Integer toReturn = 0;
+        Iterator<Integer> iterator = commitCounter.values().iterator();
+        while (iterator.hasNext()) {
+            toReturn += iterator.next();
+        }
+        return toReturn;
+    }
 
-	public int getTotalRollbackCount() {
-		Integer toReturn = 0;
-		Iterator<Integer> iterator = rollbackCounter.values().iterator();
-		while (iterator.hasNext()) {
-			toReturn += iterator.next();
-		}
-		return toReturn;
-	}
+    public int getTotalRollbackCount() {
+        Integer toReturn = 0;
+        Iterator<Integer> iterator = rollbackCounter.values().iterator();
+        while (iterator.hasNext()) {
+            toReturn += iterator.next();
+        }
+        return toReturn;
+    }
 
-	public void reset() {
-		commitCounter.clear();
-		rollbackCounter.clear();
-	}
+    public void reset() {
+        commitCounter.clear();
+        rollbackCounter.clear();
+    }
 }

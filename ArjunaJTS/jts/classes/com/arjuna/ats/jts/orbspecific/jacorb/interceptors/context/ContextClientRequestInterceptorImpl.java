@@ -100,147 +100,147 @@ class ContextClientRequestInterceptorImpl extends LocalObject implements ClientR
 
 public ContextClientRequestInterceptorImpl (int localSlot, Codec codec)
     {
-	if (jtsLogger.logger.isTraceEnabled())
-	{
-	    jtsLogger.logger.trace("ContextClientRequestInterceptorImpl ( "+localSlot+" )");
-	}
+    if (jtsLogger.logger.isTraceEnabled())
+    {
+        jtsLogger.logger.trace("ContextClientRequestInterceptorImpl ( "+localSlot+" )");
+    }
 
-	_localSlot = localSlot;
-	_codec = codec;
+    _localSlot = localSlot;
+    _codec = codec;
     }
 
 public String name ()
     {
-	return "OTS_Context";
+    return "OTS_Context";
     }
 
 public void send_request (ClientRequestInfo request_info) throws SystemException
     {
-	if (jtsLogger.logger.isTraceEnabled())
-	{
-	    jtsLogger.logger.trace("ContextClientRequestInterceptorImpl::send_request ( "+request_info+" )");
-	}
+    if (jtsLogger.logger.isTraceEnabled())
+    {
+        jtsLogger.logger.trace("ContextClientRequestInterceptorImpl::send_request ( "+request_info+" )");
+    }
 
-	if (systemCall(request_info))
-	    return;
+    if (systemCall(request_info))
+        return;
 
-	final boolean otsAlwaysPropagate = InterceptorInfo.getAlwaysPropagate() ;
-	try
-	{
-	    if (!otsAlwaysPropagate)
-	    {
-		TransactionalObject ptr = TransactionalObjectHelper.narrow(request_info.target());
+    final boolean otsAlwaysPropagate = InterceptorInfo.getAlwaysPropagate() ;
+    try
+    {
+        if (!otsAlwaysPropagate)
+        {
+        TransactionalObject ptr = TransactionalObjectHelper.narrow(request_info.target());
 
-		if (ptr == null)
-		    throw new BAD_PARAM();
-	    }
-	    else
-	    {
-		/** If we are set to always propagate then ensure we're not already in use **/
-	        /** If the value is not null then we are currently in use **/
+        if (ptr == null)
+            throw new BAD_PARAM();
+        }
+        else
+        {
+        /** If we are set to always propagate then ensure we're not already in use **/
+            /** If the value is not null then we are currently in use **/
                 if ( _inUse.get() != null )
                 {
-            	    return;
+                    return;
                 }
                 else
                 {
-            	    _inUse.set(_inUse);
+                    _inUse.set(_inUse);
                 }
-	    }
+        }
 
-	    try
-	    {
-		/*
-		 * We get back an Any, which contains a key which we must
-		 * now use to get the actual transaction context. This
-		 * saves use having to pack and unpack the context every
-		 * time it changes, even if we don't then make a remote
-		 * invocation.
-		 */
+        try
+        {
+        /*
+         * We get back an Any, which contains a key which we must
+         * now use to get the actual transaction context. This
+         * saves use having to pack and unpack the context every
+         * time it changes, even if we don't then make a remote
+         * invocation.
+         */
 
-		Any localData = request_info.get_slot(_localSlot);
-		String threadId = null;
-		boolean problem = false;
-		String stringRef = null;
+        Any localData = request_info.get_slot(_localSlot);
+        String threadId = null;
+        boolean problem = false;
+        String stringRef = null;
 
-		/*
-		 * If we are using co-location optimisations, then
-		 * filters may not have been used to set up the
-		 * thread-to-context association. So, if the PI slot
-		 * is null, check whether the current thread has a context
-		 * on it already. If so, use it.
-		 */
+        /*
+         * If we are using co-location optimisations, then
+         * filters may not have been used to set up the
+         * thread-to-context association. So, if the PI slot
+         * is null, check whether the current thread has a context
+         * on it already. If so, use it.
+         */
 
-		if ( (localData != null) && (localData.type().kind().value() != TCKind._tk_null) )
-		{
-		    if ( (threadId = localData.extract_string()) == null )
-			throw new UNKNOWN(jtsLogger.i18NLogger.get_orbspecific_jacorb_interceptors_context_invalidparam());
-		}
-		else
-		    threadId = ThreadUtil.getThreadId() ;
+        if ( (localData != null) && (localData.type().kind().value() != TCKind._tk_null) )
+        {
+            if ( (threadId = localData.extract_string()) == null )
+            throw new UNKNOWN(jtsLogger.i18NLogger.get_orbspecific_jacorb_interceptors_context_invalidparam());
+        }
+        else
+            threadId = ThreadUtil.getThreadId() ;
 
-		if (threadId != null)
-		{
-		    ControlWrapper theControl = OTSImpleManager.current().contextManager().current(threadId);
+        if (threadId != null)
+        {
+            ControlWrapper theControl = OTSImpleManager.current().contextManager().current(threadId);
 
-		    if (theControl != null)
-		    {
-			try
-			{
-			    Coordinator theCoordinator = theControl.get_coordinator();
+            if (theControl != null)
+            {
+            try
+            {
+                Coordinator theCoordinator = theControl.get_coordinator();
 
-			    if (theCoordinator != null)
-			    {
-				stringRef = ORBManager.getORB().orb().object_to_string(theCoordinator);
-			    }
-			    else
-			    {
-				problem = true;
-			    }
-			}
-			catch (Unavailable e)
-			{
-			    problem = true;
-			}
+                if (theCoordinator != null)
+                {
+                stringRef = ORBManager.getORB().orb().object_to_string(theCoordinator);
+                }
+                else
+                {
+                problem = true;
+                }
+            }
+            catch (Unavailable e)
+            {
+                problem = true;
+            }
 
-			theControl = null;
-		    }
-		    else
-			problem = true;
-		}
-		else
-		    problem = true;
+            theControl = null;
+            }
+            else
+            problem = true;
+        }
+        else
+            problem = true;
 
-		if (problem)
-		{
-		    /*
-		     * Only throw an exception if we have no
-		     * transaction context and we require one.
-		     */
+        if (problem)
+        {
+            /*
+             * Only throw an exception if we have no
+             * transaction context and we require one.
+             */
 
-		    if (InterceptorInfo.getNeedTranContext())
-			throw new TRANSACTION_REQUIRED();
-		    else
-			stringRef = null;
-		}
+            if (InterceptorInfo.getNeedTranContext())
+            throw new TRANSACTION_REQUIRED();
+            else
+            stringRef = null;
+        }
 
-		if (stringRef != null)
-		{
-		    Any data = ORBManager.getORB().orb().create_any();
+        if (stringRef != null)
+        {
+            Any data = ORBManager.getORB().orb().create_any();
 
-		    data.insert_string(stringRef);
+            data.insert_string(stringRef);
 
-		    byte[] octets = _codec.encode_value(data);
-		    ServiceContext service_context = new ServiceContext(OTSManager.serviceId, octets);
+            byte[] octets = _codec.encode_value(data);
+            ServiceContext service_context = new ServiceContext(OTSManager.serviceId, octets);
 
-		    request_info.add_request_service_context(service_context, true);
-		}
-	    }
-	    catch (SystemException e)
-	    {
-		throw e;
-	    }
-	    catch (Exception ex) {
+            request_info.add_request_service_context(service_context, true);
+        }
+        }
+        catch (SystemException e)
+        {
+        throw e;
+        }
+        catch (Exception ex) {
             jtsLogger.i18NLogger.warn_orbspecific_jacorb_interceptors_context_error(ex);
 
             throw new UNKNOWN(ex.toString());
@@ -253,59 +253,59 @@ public void send_request (ClientRequestInfo request_info) throws SystemException
                         _inUse.set(null);
                 }
             }
-	}
-	catch (BAD_PARAM ex)
-	{
-	    // narrow failed, so not a transactional object.
-	}
-	catch (OBJECT_NOT_EXIST ex)
-	{
-	}
+    }
+    catch (BAD_PARAM ex)
+    {
+        // narrow failed, so not a transactional object.
+    }
+    catch (OBJECT_NOT_EXIST ex)
+    {
+    }
     }
 
 public void send_poll (ClientRequestInfo request_info) throws SystemException
     {
-	if (jtsLogger.logger.isTraceEnabled())
-	{
-	    jtsLogger.logger.trace("ContextClientRequestInterceptorImpl::send_poll ( "+request_info+" )");
-	}
+    if (jtsLogger.logger.isTraceEnabled())
+    {
+        jtsLogger.logger.trace("ContextClientRequestInterceptorImpl::send_poll ( "+request_info+" )");
+    }
     }
 
 public void receive_reply (ClientRequestInfo request_info) throws SystemException
     {
-	if (jtsLogger.logger.isTraceEnabled())
-	{
-	    jtsLogger.logger.trace("ContextClientRequestInterceptorImpl::receive_reply ( "+request_info+" )");
-	}
+    if (jtsLogger.logger.isTraceEnabled())
+    {
+        jtsLogger.logger.trace("ContextClientRequestInterceptorImpl::receive_reply ( "+request_info+" )");
+    }
     }
 
 public void receive_exception (ClientRequestInfo request_info) throws SystemException
     {
-	if (jtsLogger.logger.isTraceEnabled())
-	{
-	    jtsLogger.logger.trace("ContextClientRequestInterceptorImpl::receive_exception ( "+request_info+" )");
-	}
+    if (jtsLogger.logger.isTraceEnabled())
+    {
+        jtsLogger.logger.trace("ContextClientRequestInterceptorImpl::receive_exception ( "+request_info+" )");
+    }
 
-	// mark transaction as rollback only if a system exception
+    // mark transaction as rollback only if a system exception
     }
 
 public void receive_other (ClientRequestInfo request_info) throws SystemException
     {
-	if (jtsLogger.logger.isTraceEnabled())
-	{
-	    jtsLogger.logger.trace("ContextClientRequestInterceptorImpl::receive_other ( "+request_info+" )");
-	}
+    if (jtsLogger.logger.isTraceEnabled())
+    {
+        jtsLogger.logger.trace("ContextClientRequestInterceptorImpl::receive_other ( "+request_info+" )");
+    }
     }
 
 private final boolean systemCall (ClientRequestInfo request_info)
     {
-	return ("_is_a".equals(request_info.operation())) ;
+    return ("_is_a".equals(request_info.operation())) ;
     }
 
-	public void destroy()
-	{
-		// Do nothing
-	}
+    public void destroy()
+    {
+        // Do nothing
+    }
 
 private int   _localSlot;
 private Codec _codec;

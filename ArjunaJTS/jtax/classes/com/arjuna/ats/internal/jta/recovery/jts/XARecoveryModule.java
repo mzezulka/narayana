@@ -36,15 +36,15 @@ package com.arjuna.ats.internal.jta.recovery.jts;
  */
 
 public class XARecoveryModule extends
-		com.arjuna.ats.internal.jta.recovery.arjunacore.XARecoveryModule
+        com.arjuna.ats.internal.jta.recovery.arjunacore.XARecoveryModule
 {
 
-	public XARecoveryModule ()
-	{
-		super(new com.arjuna.ats.internal.jta.recovery.jts.XARecoveryResourceManagerImple(),
+    public XARecoveryModule ()
+    {
+        super(new com.arjuna.ats.internal.jta.recovery.jts.XARecoveryResourceManagerImple(),
                 "JTS XARecoveryModule");
 
-		com.arjuna.ats.internal.jta.Implementationsx.initialise();
-	}
+        com.arjuna.ats.internal.jta.Implementationsx.initialise();
+    }
 
 }

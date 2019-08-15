@@ -351,7 +351,7 @@ public class LockManager extends StateManager
         // is issued which would try to lock the mutex before we can call modified
         Object toLock = BasicAction.Current();
         if (toLock == null) {
-        	toLock = new Object();
+            toLock = new Object();
         }
 
         synchronized (toLock) {

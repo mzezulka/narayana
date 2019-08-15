@@ -55,22 +55,22 @@ public static final int AR_DUPLICATE = 4;
 
 public static String printString (int res)
     {
-	switch (res)
-	{
-	case AR_ADDED:
-	    return "AddOutcome.AR_ADDED";
-	case AR_REJECTED:
-	    return "AddOutcome.AR_REJECTED";
-	case AR_DUPLICATE:
-	    return "AddOutcome.AR_DUPLICATE";
-	default:
-	    return "Unknown";
-	}
+    switch (res)
+    {
+    case AR_ADDED:
+        return "AddOutcome.AR_ADDED";
+    case AR_REJECTED:
+        return "AddOutcome.AR_REJECTED";
+    case AR_DUPLICATE:
+        return "AddOutcome.AR_DUPLICATE";
+    default:
+        return "Unknown";
+    }
     }
 
 public static void print (PrintWriter strm, int res)
     {
-	strm.print(printString(res));
+    strm.print(printString(res));
     }
 
 }

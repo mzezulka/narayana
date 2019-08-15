@@ -44,13 +44,13 @@ public class RecordListIterator
 
     public RecordListIterator (RecordList R)
     {
-	curElem = R.listHead;
-	curList = R;
+    curElem = R.listHead;
+    curList = R;
     }
 
     public final synchronized void restart ()
     {
-	curElem = null;
+    curElem = null;
     }
 
     /**
@@ -61,10 +61,10 @@ public class RecordListIterator
     {
         AbstractRecord ret = curElem;
 
-	if (curElem != null)
-	    curElem = curElem.getNext();
+    if (curElem != null)
+        curElem = curElem.getNext();
 
-	return ret;
+    return ret;
     }
 
     private AbstractRecord curElem;

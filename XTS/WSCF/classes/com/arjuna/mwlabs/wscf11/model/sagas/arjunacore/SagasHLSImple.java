@@ -79,32 +79,32 @@ public class SagasHLSImple implements SagasHLS, UserCoordinatorService
 
     public SagasHLSImple()
     {
-	try
-	{
-	    ActivityManagerFactory.activityManager().addHLS((HLS) this);
-	}
-	catch (Exception ex)
-	{
-	    throw new HLSError(ex.toString());
-	}
+    try
+    {
+        ActivityManagerFactory.activityManager().addHLS((HLS) this);
+    }
+    catch (Exception ex)
+    {
+        throw new HLSError(ex.toString());
+    }
 
-	_coordinatorService = new CoordinatorServiceImple();
-	_coordManager = new CoordinatorControl();
+    _coordinatorService = new CoordinatorServiceImple();
+    _coordManager = new CoordinatorControl();
     }
 
     public UserCoordinatorService coordinatorService ()
     {
-	return this;
+    return this;
     }
 
     public UserCoordinator userCoordinator ()
     {
-	return _coordinatorService;
+    return _coordinatorService;
     }
 
     public CoordinatorManager coordinatorManager ()
     {
-	return _coordinatorService;
+    return _coordinatorService;
     }
 
     /**
@@ -113,7 +113,7 @@ public class SagasHLSImple implements SagasHLS, UserCoordinatorService
 
     public void begun () throws SystemException
     {
-	_coordManager.begin();
+    _coordManager.begin();
     }
 
     /**
@@ -127,7 +127,7 @@ public class SagasHLSImple implements SagasHLS, UserCoordinatorService
 
     public Outcome complete (CompletionStatus cs) throws SystemException
     {
-	return _coordManager.complete(cs);
+    return _coordManager.complete(cs);
     }
 
     /**
@@ -136,7 +136,7 @@ public class SagasHLSImple implements SagasHLS, UserCoordinatorService
 
     public void suspended () throws SystemException
     {
-	_coordManager.suspend();
+    _coordManager.suspend();
     }
 
     /**
@@ -145,7 +145,7 @@ public class SagasHLSImple implements SagasHLS, UserCoordinatorService
 
     public void resumed () throws SystemException
     {
-	_coordManager.resume();
+    _coordManager.resume();
     }
 
     /**
@@ -155,7 +155,7 @@ public class SagasHLSImple implements SagasHLS, UserCoordinatorService
 
     public void completed () throws SystemException
     {
-	_coordManager.completed();
+    _coordManager.completed();
     }
 
     /**
@@ -180,7 +180,7 @@ public class SagasHLSImple implements SagasHLS, UserCoordinatorService
 
     public int priority () throws SystemException
     {
-	return 0;
+    return 0;
     }
 
     /**
@@ -258,7 +258,7 @@ public class SagasHLSImple implements SagasHLS, UserCoordinatorService
 
     public Outcome coordinate (CompletionStatus cs) throws WrongStateException, ProtocolViolationException, SystemException
     {
-	return _coordManager.coordinate(cs);
+    return _coordManager.coordinate(cs);
     }
 
     /**
@@ -273,7 +273,7 @@ public class SagasHLSImple implements SagasHLS, UserCoordinatorService
 
     public com.arjuna.mw.wsas.status.Status status () throws SystemException
     {
-	return _coordManager.status();
+    return _coordManager.status();
     }
 
     /**
@@ -287,7 +287,7 @@ public class SagasHLSImple implements SagasHLS, UserCoordinatorService
 
     public Qualifier[] qualifiers () throws NoCoordinatorException, SystemException
     {
-	return _coordManager.qualifiers();
+    return _coordManager.qualifiers();
     }
 
     /**
@@ -298,12 +298,12 @@ public class SagasHLSImple implements SagasHLS, UserCoordinatorService
 
     public CoordinatorId identifier () throws NoCoordinatorException, SystemException
     {
-	return _coordManager.identifier();
+    return _coordManager.identifier();
     }
 
     public static String className ()
     {
-    	return SagasHLSImple.class.getName();
+        return SagasHLSImple.class.getName();
     }
 
     private static Class<?> CONTEXT_IMPLE_CLASS = null;

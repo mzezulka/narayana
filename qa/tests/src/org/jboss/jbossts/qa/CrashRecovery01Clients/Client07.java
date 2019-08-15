@@ -65,59 +65,59 @@ import org.jboss.jbossts.qa.Utils.ServerIORStore;
 
 public class Client07
 {
-	public static void main(String[] args)
-	{
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+    public static void main(String[] args)
+    {
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			String serviceIOR = ServerIORStore.loadIOR(args[args.length - 1]);
-			Service service = ServiceHelper.narrow(ORBInterface.orb().string_to_object(serviceIOR));
+            String serviceIOR = ServerIORStore.loadIOR(args[args.length - 1]);
+            Service service = ServiceHelper.narrow(ORBInterface.orb().string_to_object(serviceIOR));
 
-			boolean correct = true;
+            boolean correct = true;
 
-			OTS.current().begin();
+            OTS.current().begin();
 
-			service.setup_oper(2);
+            service.setup_oper(2);
 
-			correct = service.check_oper();
+            correct = service.check_oper();
 
-			OTS.current().commit(true);
+            OTS.current().commit(true);
 
-			correct = correct && service.is_correct();
+            correct = correct && service.is_correct();
 
-			ResourceTrace resourceTrace1 = service.get_resource_trace(0);
-			ResourceTrace resourceTrace2 = service.get_resource_trace(1);
+            ResourceTrace resourceTrace1 = service.get_resource_trace(0);
+            ResourceTrace resourceTrace2 = service.get_resource_trace(1);
 
-			correct = correct && (resourceTrace1 == ResourceTrace.ResourceTracePrepareCommit);
-			correct = correct && (resourceTrace2 == ResourceTrace.ResourceTracePrepareCommit);
+            correct = correct && (resourceTrace1 == ResourceTrace.ResourceTracePrepareCommit);
+            correct = correct && (resourceTrace2 == ResourceTrace.ResourceTracePrepareCommit);
 
-			if (correct)
-			{
-				System.out.println("Passed");
-			}
-			else
-			{
-				System.out.println("Failed");
-			}
-		}
-		catch (Exception exception)
-		{
-			System.out.println("Failed");
-			System.err.println("Client07.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
+            if (correct)
+            {
+                System.out.println("Passed");
+            }
+            else
+            {
+                System.out.println("Failed");
+            }
+        }
+        catch (Exception exception)
+        {
+            System.out.println("Failed");
+            System.err.println("Client07.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
 
-		try
-		{
-			OAInterface.shutdownOA();
-			ORBInterface.shutdownORB();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Client07.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
-	}
+        try
+        {
+            OAInterface.shutdownOA();
+            ORBInterface.shutdownORB();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Client07.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
+    }
 }

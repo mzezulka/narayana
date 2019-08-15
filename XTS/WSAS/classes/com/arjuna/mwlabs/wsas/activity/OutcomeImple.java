@@ -50,14 +50,14 @@ public class OutcomeImple implements Outcome
 
     public OutcomeImple (CompletionStatus s)
     {
-	_status = s;
-	_exception = null;
+    _status = s;
+    _exception = null;
     }
 
     public OutcomeImple (HLSException ex, CompletionStatus cs)
     {
-	_status = cs;
-	_exception = ex;
+    _status = cs;
+    _exception = ex;
     }
 
     /**
@@ -71,7 +71,7 @@ public class OutcomeImple implements Outcome
 
     public String name () throws SystemException
     {
-	return "OutcomeImple";
+    return "OutcomeImple";
     }
 
     /**
@@ -84,7 +84,7 @@ public class OutcomeImple implements Outcome
 
     public CompletionStatus completedStatus () throws SystemException
     {
-	return _status;
+    return _status;
     }
 
     /**
@@ -100,12 +100,12 @@ public class OutcomeImple implements Outcome
     //    public org.w3c.dom.Document data () throws SystemException
     public Object data () throws SystemException
     {
-	return null;
+    return null;
     }
 
     public final HLSException exception ()
     {
-	return _exception;
+    return _exception;
     }
 
     private CompletionStatus _status;

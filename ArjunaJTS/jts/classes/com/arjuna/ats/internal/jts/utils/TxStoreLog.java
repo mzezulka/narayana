@@ -42,26 +42,26 @@ public class TxStoreLog
 
     public static boolean getTransactions (InputObjectState os)
     {
-	return getTransactions(os, StateStatus.OS_UNKNOWN);
+    return getTransactions(os, StateStatus.OS_UNKNOWN);
     }
 
     public static boolean getTransactions (InputObjectState os, int status)
     {
-	RecoveryStore recoveryStore = StoreManager.getRecoveryStore();
+    RecoveryStore recoveryStore = StoreManager.getRecoveryStore();
 
-	try
-	{
-	    return recoveryStore.allObjUids(com.arjuna.ats.internal.jts.orbspecific.coordinator.ArjunaTransactionImple.typeName(), os, status);
-	}
-	catch (NullPointerException ex)
-	{
-	}
-	catch (ObjectStoreException e)
-	{
-	    e.printStackTrace();
-	}
+    try
+    {
+        return recoveryStore.allObjUids(com.arjuna.ats.internal.jts.orbspecific.coordinator.ArjunaTransactionImple.typeName(), os, status);
+    }
+    catch (NullPointerException ex)
+    {
+    }
+    catch (ObjectStoreException e)
+    {
+        e.printStackTrace();
+    }
 
-	return false;
+    return false;
     }
 
 }

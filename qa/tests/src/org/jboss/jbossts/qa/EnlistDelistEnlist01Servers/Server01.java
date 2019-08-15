@@ -67,41 +67,41 @@ import org.jboss.jbossts.qa.Utils.ServerIORStore;
 
 public class Server01
 {
-	public static void main(String args[])
-	{
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+    public static void main(String args[])
+    {
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			String profileName = args[args.length - 2];
+            String profileName = args[args.length - 2];
 
-			//
-			// from the JNDI profile...
-			//
-			String binding = JDBCProfileStore.binding(profileName);
+            //
+            // from the JNDI profile...
+            //
+            String binding = JDBCProfileStore.binding(profileName);
 
-			//
-			// ..and from the JDBC equivalent
-			//
-			String databaseUser = JDBCProfileStore.databaseUser(profileName);
-			String databasePassword = JDBCProfileStore.databasePassword(profileName);
+            //
+            // ..and from the JDBC equivalent
+            //
+            String databaseUser = JDBCProfileStore.databaseUser(profileName);
+            String databasePassword = JDBCProfileStore.databasePassword(profileName);
 
-			EnlistDelistEnlistImpl01 enlistDelistEnlistImpl = new EnlistDelistEnlistImpl01(binding, databaseUser, databasePassword);
-			ServicePOATie servant = new ServicePOATie(enlistDelistEnlistImpl);
+            EnlistDelistEnlistImpl01 enlistDelistEnlistImpl = new EnlistDelistEnlistImpl01(binding, databaseUser, databasePassword);
+            ServicePOATie servant = new ServicePOATie(enlistDelistEnlistImpl);
 
-			OAInterface.objectIsReady(servant);
-			Service enlistDelistEnlist = ServiceHelper.narrow(OAInterface.corbaReference(servant));
+            OAInterface.objectIsReady(servant);
+            Service enlistDelistEnlist = ServiceHelper.narrow(OAInterface.corbaReference(servant));
 
-			ServerIORStore.storeIOR(args[args.length - 1], ORBInterface.orb().object_to_string(enlistDelistEnlist));
+            ServerIORStore.storeIOR(args[args.length - 1], ORBInterface.orb().object_to_string(enlistDelistEnlist));
 
-			System.out.println("Ready");
+            System.out.println("Ready");
 
-			ORBInterface.run();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Server01.main: " + exception);
-		}
-	}
+            ORBInterface.run();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Server01.main: " + exception);
+        }
+    }
 }

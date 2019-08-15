@@ -284,17 +284,17 @@ public class RecoveredTransaction extends ArjunaTransactionImple implements
 
     public boolean assumeComplete ()
     {
-    	final int heuristicDecision = getHeuristicDecision();
+        final int heuristicDecision = getHeuristicDecision();
 
-    	if (heuristicDecision == TwoPhaseOutcome.HEURISTIC_COMMIT
-    			|| heuristicDecision == TwoPhaseOutcome.HEURISTIC_HAZARD
-    			|| heuristicDecision == TwoPhaseOutcome.HEURISTIC_MIXED
-    			|| heuristicDecision == TwoPhaseOutcome.HEURISTIC_ROLLBACK) {
+        if (heuristicDecision == TwoPhaseOutcome.HEURISTIC_COMMIT
+                || heuristicDecision == TwoPhaseOutcome.HEURISTIC_HAZARD
+                || heuristicDecision == TwoPhaseOutcome.HEURISTIC_MIXED
+                || heuristicDecision == TwoPhaseOutcome.HEURISTIC_ROLLBACK) {
 
-    		_typeName = AssumedCompleteHeuristicTransaction.typeName();
-    	} else {
-    	    _typeName = AssumedCompleteTransaction.typeName();
-    	}
+            _typeName = AssumedCompleteHeuristicTransaction.typeName();
+        } else {
+            _typeName = AssumedCompleteTransaction.typeName();
+        }
 
         return true;
     }

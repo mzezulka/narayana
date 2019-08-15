@@ -67,18 +67,18 @@ public class DemoHLS implements HLS
 
     public void begun () throws SystemException
     {
-	try
-	{
-	    GlobalId activityId = UserActivityFactory.userActivity().activityId();
+    try
+    {
+        GlobalId activityId = UserActivityFactory.userActivity().activityId();
 
         _id.push(activityId);
 
         System.out.println("DemoHLS.begun "+activityId);
-	}
-	catch (Exception ex)
-	{
-	    ex.printStackTrace();
-	}
+    }
+    catch (Exception ex)
+    {
+        ex.printStackTrace();
+    }
     }
 
     /**
@@ -90,16 +90,16 @@ public class DemoHLS implements HLS
 
     public Outcome complete (CompletionStatus cs) throws SystemException
     {
-	try
-	{
-	    System.out.println("DemoHLS.complete ( "+cs+" ) " + UserActivityFactory.userActivity().activityId());
+    try
+    {
+        System.out.println("DemoHLS.complete ( "+cs+" ) " + UserActivityFactory.userActivity().activityId());
     }
-	catch (Exception ex)
-	{
-	    ex.printStackTrace();
-	}
+    catch (Exception ex)
+    {
+        ex.printStackTrace();
+    }
 
-	return null;
+    return null;
     }
 
     /**
@@ -144,7 +144,7 @@ public class DemoHLS implements HLS
 
     public String identity () throws SystemException
     {
-	return "DemoHLS";
+    return "DemoHLS";
     }
 
     /**
@@ -160,7 +160,7 @@ public class DemoHLS implements HLS
 
     public int priority () throws SystemException
     {
-	return 0;
+    return 0;
     }
 
     /**

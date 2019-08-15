@@ -55,66 +55,66 @@ public class DirectRecoverableConnection extends BaseTransactionalDriverXAConnec
 
     public DirectRecoverableConnection () throws SQLException
     {
-	if (jdbcLogger.logger.isTraceEnabled()) {
+    if (jdbcLogger.logger.isTraceEnabled()) {
         jdbcLogger.logger.trace("DirectRecoverableConnection.DirectRecoverableConnection()");
     }
     }
 
     public DirectRecoverableConnection (String dbName, String user,
-				      String passwd, String dynamic,
-				      ConnectionImple conn) throws SQLException
+                      String passwd, String dynamic,
+                      ConnectionImple conn) throws SQLException
     {
-	if (jdbcLogger.logger.isTraceEnabled()) {
+    if (jdbcLogger.logger.isTraceEnabled()) {
         jdbcLogger.logger.trace("DirectRecoverableConnection.DirectRecoverableConnection( " + dbName + ", " + user + ", " + passwd + ", " + dynamic + " )");
     }
 
-	_dbName = dbName;
-	_user = user;
-	_passwd = passwd;
-	_dynamic = dynamic;
-	_theArjunaConnection = conn;
+    _dbName = dbName;
+    _user = user;
+    _passwd = passwd;
+    _dynamic = dynamic;
+    _theArjunaConnection = conn;
     }
 
     public boolean packInto (OutputObjectState os)
     {
-	if (jdbcLogger.logger.isTraceEnabled()) {
+    if (jdbcLogger.logger.isTraceEnabled()) {
         jdbcLogger.logger.trace("DirectRecoverableConnection.packInto ()");
     }
 
-	try
-	{
-	    os.packString(_dbName);
-	    os.packString(_user);
-	    os.packString(_passwd);
-	    os.packString(_dynamic);
+    try
+    {
+        os.packString(_dbName);
+        os.packString(_user);
+        os.packString(_passwd);
+        os.packString(_dynamic);
 
-	    return true;
-	}
-	catch (Exception e)
-	{
-	    return false;
-	}
+        return true;
+    }
+    catch (Exception e)
+    {
+        return false;
+    }
     }
 
     public boolean unpackFrom (InputObjectState os)
     {
-	if (jdbcLogger.logger.isTraceEnabled()) {
+    if (jdbcLogger.logger.isTraceEnabled()) {
         jdbcLogger.logger.trace("DirectRecoverableConnection.unpackFrom ()");
     }
 
-	try
-	{
-	    _dbName = os.unpackString();
-	    _user = os.unpackString();
-	    _passwd = os.unpackString();
-	    _dynamic = os.unpackString();
+    try
+    {
+        _dbName = os.unpackString();
+        _user = os.unpackString();
+        _passwd = os.unpackString();
+        _dynamic = os.unpackString();
 
-	    return true;
-	}
-	catch (Exception e)
-	{
-	    return false;
-	}
+        return true;
+    }
+    catch (Exception e)
+    {
+        return false;
+    }
     }
 
     /**
@@ -124,7 +124,7 @@ public class DirectRecoverableConnection extends BaseTransactionalDriverXAConnec
 
     public XAConnection getCurrentConnection () throws SQLException
     {
-	return _theConnection;
+    return _theConnection;
     }
 
     protected void createConnection() throws SQLException {
@@ -156,7 +156,7 @@ public class DirectRecoverableConnection extends BaseTransactionalDriverXAConnec
         }
     }
 
-    private String		          _dynamic;
+    private String                  _dynamic;
     private DynamicClass                  _dynamicConnection;
     private ConnectionImple               _theArjunaConnection;
 

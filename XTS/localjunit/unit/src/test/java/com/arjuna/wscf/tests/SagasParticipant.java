@@ -51,7 +51,7 @@ public class SagasParticipant implements ParticipantWithComplete
 {
     public SagasParticipant(String id)
     {
-	_id = id;
+    _id = id;
     }
 
     public void close() throws InvalidParticipantException, WrongStateException, SystemException {
@@ -77,7 +77,7 @@ public class SagasParticipant implements ParticipantWithComplete
     }
     public String id () throws SystemException
     {
-	return _id;
+    return _id;
     }
 
     public boolean save_state(OutputObjectState os)

@@ -41,50 +41,50 @@ public class DemoBusinessParticipantWithComplete extends DemoBusinessParticipant
 
     public DemoBusinessParticipantWithComplete (int outcome, String id)
     {
-	super(outcome, id);
+    super(outcome, id);
     }
 
     public void close () throws WrongStateException, SystemException
     {
-	System.out.println(this.getClass().getName()+".close for "+this);
+    System.out.println(this.getClass().getName()+".close for "+this);
 
-	if (!_completed)
-	    throw new SystemException();
+    if (!_completed)
+        throw new SystemException();
 
-	if (_outcome == CLOSE)
-	    _passed = true;
+    if (_outcome == CLOSE)
+        _passed = true;
     }
 
     public void cancel () throws WrongStateException, SystemException
     {
-	System.out.println(this.getClass().getName()+".cancel for "+this);
+    System.out.println(this.getClass().getName()+".cancel for "+this);
 
-	if (!_completed)
-	    throw new SystemException();
+    if (!_completed)
+        throw new SystemException();
 
-	if (_outcome == CANCEL)
-	    _passed = true;
+    if (_outcome == CANCEL)
+        _passed = true;
     }
 
     public void compensate () throws FaultedException, WrongStateException, SystemException
     {
-	System.out.println(this.getClass().getName()+".compensate for "+this);
+    System.out.println(this.getClass().getName()+".compensate for "+this);
 
-	if (!_completed)
-	    throw new SystemException();
+    if (!_completed)
+        throw new SystemException();
 
-	if (_outcome == COMPENSATE)
-	    _passed = true;
+    if (_outcome == COMPENSATE)
+        _passed = true;
     }
 
     public void complete () throws WrongStateException, SystemException
     {
-	System.out.println(this.getClass().getName()+".complete for "+this);
+    System.out.println(this.getClass().getName()+".complete for "+this);
 
-	if (_outcome == COMPLETE)
-	    _passed = true;
+    if (_outcome == COMPLETE)
+        _passed = true;
 
-	_completed = true;
+    _completed = true;
     }
 
     private boolean _completed = false;

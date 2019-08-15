@@ -65,29 +65,29 @@ import org.jboss.jbossts.qa.Utils.ServerIORStore;
 
 public class Server02
 {
-	public static void main(String args[])
-	{
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+    public static void main(String args[])
+    {
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			AITMatrixImpl02 aitMatrixImpl = new AITMatrixImpl02(16, 16);
-			MatrixPOATie servant = new MatrixPOATie(aitMatrixImpl);
+            AITMatrixImpl02 aitMatrixImpl = new AITMatrixImpl02(16, 16);
+            MatrixPOATie servant = new MatrixPOATie(aitMatrixImpl);
 
-			OAInterface.objectIsReady(servant);
-			Matrix aitMatrix = MatrixHelper.narrow(OAInterface.corbaReference(servant));
+            OAInterface.objectIsReady(servant);
+            Matrix aitMatrix = MatrixHelper.narrow(OAInterface.corbaReference(servant));
 
-			ServerIORStore.storeIOR(args[args.length - 1], ORBInterface.orb().object_to_string(aitMatrix));
+            ServerIORStore.storeIOR(args[args.length - 1], ORBInterface.orb().object_to_string(aitMatrix));
 
-			System.out.println("Ready");
+            System.out.println("Ready");
 
-			ORBInterface.run();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Server02.main: " + exception);
-		}
-	}
+            ORBInterface.run();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Server02.main: " + exception);
+        }
+    }
 }
 

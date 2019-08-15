@@ -61,27 +61,27 @@ public class RecoverAtomicAction extends AtomicAction
 
        if ( _activated )
        {
-	   if ( (_theStatus == ActionStatus.PREPARED) ||
-		(_theStatus == ActionStatus.COMMITTING) ||
-		(_theStatus == ActionStatus.COMMITTED) ||
-		(_theStatus == ActionStatus.H_COMMIT) ||
-		(_theStatus == ActionStatus.H_MIXED) ||
-		(_theStatus == ActionStatus.H_HAZARD) )
-	   {
-	       super.phase2Commit( _reportHeuristics ) ;
-	   }
-	   else if ( (_theStatus == ActionStatus.ABORTED) ||
-		     (_theStatus == ActionStatus.H_ROLLBACK) ||
-		     (_theStatus == ActionStatus.ABORTING) ||
-		     (_theStatus == ActionStatus.ABORT_ONLY) )
-	   {
-	       super.phase2Abort( _reportHeuristics ) ;
-	   }
-	   else {
+       if ( (_theStatus == ActionStatus.PREPARED) ||
+        (_theStatus == ActionStatus.COMMITTING) ||
+        (_theStatus == ActionStatus.COMMITTED) ||
+        (_theStatus == ActionStatus.H_COMMIT) ||
+        (_theStatus == ActionStatus.H_MIXED) ||
+        (_theStatus == ActionStatus.H_HAZARD) )
+       {
+           super.phase2Commit( _reportHeuristics ) ;
+       }
+       else if ( (_theStatus == ActionStatus.ABORTED) ||
+             (_theStatus == ActionStatus.H_ROLLBACK) ||
+             (_theStatus == ActionStatus.ABORTING) ||
+             (_theStatus == ActionStatus.ABORT_ONLY) )
+       {
+           super.phase2Abort( _reportHeuristics ) ;
+       }
+       else {
            tsLogger.i18NLogger.warn_recovery_RecoverAtomicAction_2(ActionStatus.stringForm(_theStatus));
        }
 
-	   if (tsLogger.logger.isDebugEnabled()) {
+       if (tsLogger.logger.isDebugEnabled()) {
            tsLogger.logger.debug("RecoverAtomicAction.replayPhase2( "+get_uid()+" )  finished");
        }
        }

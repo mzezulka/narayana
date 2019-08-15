@@ -51,270 +51,270 @@ public class StackImple extends LockManager implements com.hp.mwtests.ts.jts.Tes
 
     public StackImple ()
     {
-	super (ObjectType.ANDPERSISTENT);
+    super (ObjectType.ANDPERSISTENT);
 
-	top = 0;
+    top = 0;
 
-	for (int i = 0; i < ARRAY_SIZE; i++)
-	    array[i] = 0;
+    for (int i = 0; i < ARRAY_SIZE; i++)
+        array[i] = 0;
 
-	AtomicTransaction A = new AtomicTransaction();
+    AtomicTransaction A = new AtomicTransaction();
 
-	try
-	{
-	    A.begin();
+    try
+    {
+        A.begin();
 
-	    if (setlock(new Lock(LockMode.WRITE), 0) == LockResult.GRANTED)
-		A.commit(false);
-	    else
-		A.rollback();
-	}
-	catch (Exception e1)
-	{
-	    System.err.println(e1);
+        if (setlock(new Lock(LockMode.WRITE), 0) == LockResult.GRANTED)
+        A.commit(false);
+        else
+        A.rollback();
+    }
+    catch (Exception e1)
+    {
+        System.err.println(e1);
 
-	    try
-	    {
-		A.rollback();
-	    }
-	    catch (Exception e2)
-	    {
-		System.err.println(e2);
-	    }
+        try
+        {
+        A.rollback();
+        }
+        catch (Exception e2)
+        {
+        System.err.println(e2);
+        }
 
-	    System.exit(1);
-	}
+        System.exit(1);
+    }
     }
 
     public StackImple (Uid uid)
     {
-	super(uid);
+    super(uid);
 
-	top = 0;
+    top = 0;
 
-	for (int i = 0; i < ARRAY_SIZE; i++)
-	    array[i] = 0;
+    for (int i = 0; i < ARRAY_SIZE; i++)
+        array[i] = 0;
 
-	AtomicTransaction A = new AtomicTransaction();
+    AtomicTransaction A = new AtomicTransaction();
 
-	try
-	{
-	    A.begin();
+    try
+    {
+        A.begin();
 
-	    if (setlock(new Lock(LockMode.WRITE), 0) == LockResult.GRANTED)
-		A.commit(false);
-	    else
-		A.rollback();
-	}
-	catch (Exception e1)
-	{
-	    System.err.println(e1);
+        if (setlock(new Lock(LockMode.WRITE), 0) == LockResult.GRANTED)
+        A.commit(false);
+        else
+        A.rollback();
+    }
+    catch (Exception e1)
+    {
+        System.err.println(e1);
 
-	    try
-	    {
-		A.rollback();
-	    }
-	    catch (Exception e2)
-	    {
-		System.err.println(e2);
-	    }
+        try
+        {
+        A.rollback();
+        }
+        catch (Exception e2)
+        {
+        System.err.println(e2);
+        }
 
-	    System.exit(1);
-	}
+        System.exit(1);
+    }
     }
 
     public void finalize () throws Throwable
     {
-	super.terminate();
-	super.finalize();
+    super.terminate();
+    super.finalize();
     }
 
     public int push (int val) throws SystemException
     {
-	AtomicTransaction A = new AtomicTransaction();
-	int res = 0;
+    AtomicTransaction A = new AtomicTransaction();
+    int res = 0;
 
-	try
-	{
-	    A.begin();
+    try
+    {
+        A.begin();
 
-	    if (setlock(new Lock(LockMode.WRITE), 0) == LockResult.GRANTED)
-	    {
-		if (top < ARRAY_SIZE)
-		{
-		    array[top] = val;
-		    top++;
-		}
-		else
-		    res = -1;
+        if (setlock(new Lock(LockMode.WRITE), 0) == LockResult.GRANTED)
+        {
+        if (top < ARRAY_SIZE)
+        {
+            array[top] = val;
+            top++;
+        }
+        else
+            res = -1;
 
-		if (res == 0)
-		{
-		    A.commit(false);
-		}
-		else
-		    A.rollback();
-	    }
-	    else
-		A.rollback();
-	}
-	catch (Exception e1)
-	{
-	    try
-	    {
-		A.rollback();
-	    }
-	    catch (Exception e2)
-	    {
-		System.err.println(e2);
-	    }
+        if (res == 0)
+        {
+            A.commit(false);
+        }
+        else
+            A.rollback();
+        }
+        else
+        A.rollback();
+    }
+    catch (Exception e1)
+    {
+        try
+        {
+        A.rollback();
+        }
+        catch (Exception e2)
+        {
+        System.err.println(e2);
+        }
 
-	    res = -1;
-	}
+        res = -1;
+    }
 
-	return res;
+    return res;
     }
 
     public int pop (IntHolder val) throws SystemException
     {
-	AtomicTransaction A = new AtomicTransaction();
-	int res = 0;
+    AtomicTransaction A = new AtomicTransaction();
+    int res = 0;
 
-	try
-	{
-	    A.begin();
+    try
+    {
+        A.begin();
 
-	    if (setlock(new Lock(LockMode.WRITE), 0) == LockResult.GRANTED)
-	    {
-		if (top > 0)
-		{
-		    top--;
-		    val.value = array[top];
-		}
-		else
-		    res = -1;
+        if (setlock(new Lock(LockMode.WRITE), 0) == LockResult.GRANTED)
+        {
+        if (top > 0)
+        {
+            top--;
+            val.value = array[top];
+        }
+        else
+            res = -1;
 
-		if (res == 0)
-		{
-		    A.commit(false);
-		}
-		else
-		    A.rollback();
-	    }
-	    else
-	    {
-		A.rollback();
-	    }
-	}
-	catch (Exception e1)
-	{
-	    try
-	    {
-		A.rollback();
-	    }
-	    catch (Exception e2)
-	    {
-		System.err.println(e2);
-	    }
+        if (res == 0)
+        {
+            A.commit(false);
+        }
+        else
+            A.rollback();
+        }
+        else
+        {
+        A.rollback();
+        }
+    }
+    catch (Exception e1)
+    {
+        try
+        {
+        A.rollback();
+        }
+        catch (Exception e2)
+        {
+        System.err.println(e2);
+        }
 
-	    res = -1;
-	}
+        res = -1;
+    }
 
-	return res;
+    return res;
     }
 
     public void printStack () throws SystemException
     {
-	AtomicTransaction A = new AtomicTransaction();
+    AtomicTransaction A = new AtomicTransaction();
 
-	try
-	{
-	    A.begin();
+    try
+    {
+        A.begin();
 
-	    if (setlock(new Lock(LockMode.WRITE), 0) == LockResult.GRANTED)
-	    {
-		if (top > 0)
-		{
-		    System.out.println("\nContents of stack:");
+        if (setlock(new Lock(LockMode.WRITE), 0) == LockResult.GRANTED)
+        {
+        if (top > 0)
+        {
+            System.out.println("\nContents of stack:");
 
-		    for (int i = 0; i < top; i++)
-			System.out.println("\t"+array[i]);
-		}
-		else
-		    System.out.println("\nStack is empty.");
+            for (int i = 0; i < top; i++)
+            System.out.println("\t"+array[i]);
+        }
+        else
+            System.out.println("\nStack is empty.");
 
-		A.commit(false);
-	    }
-	    else
-	    {
-		System.out.println("printStack: could not set WRITE lock.");
+        A.commit(false);
+        }
+        else
+        {
+        System.out.println("printStack: could not set WRITE lock.");
 
-		A.rollback();
-	    }
-	}
-	catch (Exception e1)
-	{
-	    try
-	    {
-		A.rollback();
-	    }
-	    catch (Exception e2)
-	    {
-		System.err.println(e2);
-	    }
-	}
+        A.rollback();
+        }
+    }
+    catch (Exception e1)
+    {
+        try
+        {
+        A.rollback();
+        }
+        catch (Exception e2)
+        {
+        System.err.println(e2);
+        }
+    }
     }
 
     public boolean save_state (OutputObjectState objectState, int ot)
     {
-	if (!super.save_state(objectState, ot))
-	    return false;
+    if (!super.save_state(objectState, ot))
+        return false;
 
-	try
-	{
-	    objectState.packInt(top);
+    try
+    {
+        objectState.packInt(top);
 
-	    for (int i = 0; i < top; i++)
-	    {
-		objectState.packInt(array[i]);
-	    }
+        for (int i = 0; i < top; i++)
+        {
+        objectState.packInt(array[i]);
+        }
 
-	    return true;
-	}
-	catch (IOException e)
-	{
-	    return false;
-	}
+        return true;
+    }
+    catch (IOException e)
+    {
+        return false;
+    }
     }
 
     public boolean restore_state (InputObjectState objectState, int ot)
     {
-	if (!super.restore_state(objectState, ot))
-	    return false;
+    if (!super.restore_state(objectState, ot))
+        return false;
 
-	try
-	{
-	    top = objectState.unpackInt();
+    try
+    {
+        top = objectState.unpackInt();
 
-	    for (int j = 0; j < ARRAY_SIZE; j++)
-		array[j] = 0;
+        for (int j = 0; j < ARRAY_SIZE; j++)
+        array[j] = 0;
 
-	    for (int i = 0; i < top; i++)
-	    {
-		array[i] = objectState.unpackInt();
-	    }
+        for (int i = 0; i < top; i++)
+        {
+        array[i] = objectState.unpackInt();
+        }
 
-	    return true;
-	}
-	catch (IOException e)
-	{
-	    return false;
-	}
+        return true;
+    }
+    catch (IOException e)
+    {
+        return false;
+    }
     }
 
     public String type ()
     {
-	return "/StateManager/LockManager/StackImple";
+    return "/StateManager/LockManager/StackImple";
     }
 
     public static final int ARRAY_SIZE = 10;

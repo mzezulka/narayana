@@ -46,17 +46,17 @@ public class BegunFailedException extends SystemException
 
     public BegunFailedException ()
     {
-	super();
+    super();
     }
 
     public BegunFailedException (String s)
     {
-	super(s);
+    super(s);
     }
 
     public BegunFailedException (String s, int errorcode)
     {
-	super(s, errorcode);
+    super(s, errorcode);
     }
 
 }

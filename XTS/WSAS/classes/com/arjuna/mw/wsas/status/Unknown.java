@@ -44,12 +44,12 @@ public class Unknown implements Status
 
     public static Unknown instance ()
     {
-	return _instance;
+    return _instance;
     }
 
     public String toString ()
     {
-	return "Status.Unknown";
+    return "Status.Unknown";
     }
 
     private Unknown ()

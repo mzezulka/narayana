@@ -41,17 +41,17 @@ public class CancelFailedException extends SystemException
 
     public CancelFailedException()
     {
-	super();
+    super();
     }
 
     public CancelFailedException(String s)
     {
-	super(s);
+    super(s);
     }
 
     public CancelFailedException(String s, int errorcode)
     {
-	super(s, errorcode);
+    super(s, errorcode);
     }
 
 }

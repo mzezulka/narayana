@@ -47,21 +47,21 @@ import com.arjuna.ats.jts.logging.jtsLogger;
 public class RecoveryCoordinatorId
 {
     /* fields have package access - we are close friends with GenericRecoveryCoordinator */
-    Uid	      _RCUid;
-    Uid	      _actionUid;
-    Uid	    _originalProcessUid;
+    Uid          _RCUid;
+    Uid          _actionUid;
+    Uid        _originalProcessUid;
     boolean     _isServerTransaction;
 
     /**
      * Constructor with separate fields
      */
     RecoveryCoordinatorId (Uid RCUid, Uid actionUid,
-			   Uid processUid, boolean isServerTransaction)
+               Uid processUid, boolean isServerTransaction)
     {
-	_RCUid = RCUid;
-	_actionUid = actionUid;
-	_originalProcessUid = processUid;
-	_isServerTransaction = isServerTransaction;
+    _RCUid = RCUid;
+    _actionUid = actionUid;
+    _originalProcessUid = processUid;
+    _isServerTransaction = isServerTransaction;
     }
 
     /**
@@ -74,34 +74,34 @@ public class RecoveryCoordinatorId
      */
     String makeId()
     {
-	String rcObjectKey = null;
+    String rcObjectKey = null;
 
-	/*
-	 * Pack the fields in to the string.
-	 * perhaps replace ':' with '-' if required
-	 *   (likely to be orb-specific requirement)
-	 */
+    /*
+     * Pack the fields in to the string.
+     * perhaps replace ':' with '-' if required
+     *   (likely to be orb-specific requirement)
+     */
 
-	try
-	{
-	    StringBuffer stringBuf = new StringBuffer();
-	    stringBuf.append(_RCUid.toString());
-	    stringBuf.append(_ObjKeyDelimiter);
-	    stringBuf.append(_actionUid.toString());
-	    stringBuf.append(_ObjKeyDelimiter);
-	    stringBuf.append(_originalProcessUid.toString());
-	    stringBuf.append(_ObjKeyDelimiter);
-	    stringBuf.append(_isServerTransaction);
-	    rcObjectKey = stringBuf.toString();
+    try
+    {
+        StringBuffer stringBuf = new StringBuffer();
+        stringBuf.append(_RCUid.toString());
+        stringBuf.append(_ObjKeyDelimiter);
+        stringBuf.append(_actionUid.toString());
+        stringBuf.append(_ObjKeyDelimiter);
+        stringBuf.append(_originalProcessUid.toString());
+        stringBuf.append(_ObjKeyDelimiter);
+        stringBuf.append(_isServerTransaction);
+        rcObjectKey = stringBuf.toString();
 
-	    if (jtsLogger.logger.isDebugEnabled()) {
+        if (jtsLogger.logger.isDebugEnabled()) {
             jtsLogger.logger.debug("RecoveryCoordinatorId: created RCkey "+rcObjectKey);
         }
-	}
-	catch (Exception e) {
+    }
+    catch (Exception e) {
         jtsLogger.i18NLogger.warn_recovery_recoverycoordinators_RecoveryCoordinatorId_2(e);
     }
-	return rcObjectKey;
+    return rcObjectKey;
     }
 
     /**
@@ -110,69 +110,69 @@ public class RecoveryCoordinatorId
      */
     public static RecoveryCoordinatorId reconstruct(String encodedRCData)
     {
-	if (jtsLogger.logger.isDebugEnabled()) {
+    if (jtsLogger.logger.isDebugEnabled()) {
         jtsLogger.logger.debug("RecoveryCoordinatorId(" + encodedRCData + ")");
     }
-	Uid	      RCUid = null;
-	Uid	      actionUid = null;
-	Uid	    originalProcessUid = null;
-	boolean     isServerTransaction = false;
+    Uid          RCUid = null;
+    Uid          actionUid = null;
+    Uid        originalProcessUid = null;
+    boolean     isServerTransaction = false;
 
-	boolean ok = (encodedRCData != null);
+    boolean ok = (encodedRCData != null);
 
-	if (ok)
-	{
-	    int index1 = encodedRCData.indexOf(_ObjKeyDelimiter);
-	    int index2 = 0;
+    if (ok)
+    {
+        int index1 = encodedRCData.indexOf(_ObjKeyDelimiter);
+        int index2 = 0;
 
-	    if (index1 != -1)
-	    {
-		String stringifiedRCUid = encodedRCData.substring(0, index1);
-		RCUid = new Uid (stringifiedRCUid);
-	    }
-	    else
-		ok = false;
+        if (index1 != -1)
+        {
+        String stringifiedRCUid = encodedRCData.substring(0, index1);
+        RCUid = new Uid (stringifiedRCUid);
+        }
+        else
+        ok = false;
 
-	    if (ok)
-	    {
-		index2 = encodedRCData.indexOf(_ObjKeyDelimiter, index1 +1);
+        if (ok)
+        {
+        index2 = encodedRCData.indexOf(_ObjKeyDelimiter, index1 +1);
 
-		if (index2 != -1)
-		{
-		    String stringifiedTranUid = encodedRCData.substring(index1 +1, index2);
-		    actionUid = new Uid (stringifiedTranUid);
-		    index1 = index2;
-		}
-		else
-		    ok = false;
-	    }
+        if (index2 != -1)
+        {
+            String stringifiedTranUid = encodedRCData.substring(index1 +1, index2);
+            actionUid = new Uid (stringifiedTranUid);
+            index1 = index2;
+        }
+        else
+            ok = false;
+        }
 
-	    if (ok)
-	    {
-		index2 = encodedRCData.indexOf(_ObjKeyDelimiter, index1 +1);
+        if (ok)
+        {
+        index2 = encodedRCData.indexOf(_ObjKeyDelimiter, index1 +1);
 
-		if (index2 != -1)
-		{
-		    String stringifiedProcessUid = encodedRCData.substring(index1 +1, index2);
-		    originalProcessUid = new Uid (stringifiedProcessUid);
-		    index1 = index2;
-		}
-		else
-		    ok = false;
-	    }
+        if (index2 != -1)
+        {
+            String stringifiedProcessUid = encodedRCData.substring(index1 +1, index2);
+            originalProcessUid = new Uid (stringifiedProcessUid);
+            index1 = index2;
+        }
+        else
+            ok = false;
+        }
 
 
-	    if (ok)
-	    {
-		String stringifiedIsServerTransaction = encodedRCData.substring(index1 +1);
-		isServerTransaction = (Boolean.valueOf(stringifiedIsServerTransaction)).booleanValue();
-	    }
-	}
+        if (ok)
+        {
+        String stringifiedIsServerTransaction = encodedRCData.substring(index1 +1);
+        isServerTransaction = (Boolean.valueOf(stringifiedIsServerTransaction)).booleanValue();
+        }
+    }
 
-	if (ok) {
-	    return new RecoveryCoordinatorId (RCUid, actionUid,
-				 originalProcessUid, isServerTransaction);
-	} else {
+    if (ok) {
+        return new RecoveryCoordinatorId (RCUid, actionUid,
+                 originalProcessUid, isServerTransaction);
+    } else {
         jtsLogger.i18NLogger.warn_recovery_recoverycoordinators_RecoveryCoordinatorId_3(encodedRCData);
         return null;
     }
@@ -183,8 +183,8 @@ public class RecoveryCoordinatorId
      */
     public String toString()
     {
-	return "(" + _RCUid+", "+_actionUid+", " + _originalProcessUid
-			 + (_isServerTransaction ? ", interposed-tx" : ", root-tx" ) + ")" ;
+    return "(" + _RCUid+", "+_actionUid+", " + _originalProcessUid
+             + (_isServerTransaction ? ", interposed-tx" : ", root-tx" ) + ")" ;
 
     }
 

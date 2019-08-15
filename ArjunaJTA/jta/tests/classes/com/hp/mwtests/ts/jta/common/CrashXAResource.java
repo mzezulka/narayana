@@ -29,17 +29,17 @@ public class CrashXAResource implements XAResource
 
     public void commit(Xid id, boolean onePhase) throws XAException
     {
-	System.err.println("**sleeping**");
+    System.err.println("**sleeping**");
 
-	try
-	{
-	    Thread.sleep(10000);
-	}
-	catch (Exception ex)
-	{
-	}
+    try
+    {
+        Thread.sleep(10000);
+    }
+    catch (Exception ex)
+    {
+    }
 
-	System.err.println("**committed**");
+    System.err.println("**committed**");
     }
 
     public void end(Xid xid, int flags) throws XAException
@@ -52,12 +52,12 @@ public class CrashXAResource implements XAResource
 
     public int getTransactionTimeout() throws XAException
     {
-	return 0;
+    return 0;
     }
 
     public boolean isSameRM(XAResource xares) throws XAException
     {
-	return false;
+    return false;
     }
 
     public int prepare(Xid xid) throws XAException

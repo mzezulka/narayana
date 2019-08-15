@@ -50,24 +50,24 @@ public class ReaperThread extends Thread
 public ReaperThread (TransactionReaper arg)
     {
         super("Transaction Reaper");
-	reaperObject = arg;
-	sleepPeriod = reaperObject.checkingPeriod();
-	_shutdown = false;
+    reaperObject = arg;
+    sleepPeriod = reaperObject.checkingPeriod();
+    _shutdown = false;
     }
 
 public void run ()
     {
-    	if (tsLogger.logger.isTraceEnabled()) {
+        if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("ReaperThread.run ()");
         }
 
-    	for (;;)
-    	{
-    	    /*
-    	     * Cannot assume we sleep for the entire period. We may
-    	     * be interrupted. If we are, just run a check anyway and
-    	     * ignore.
-    	     */
+        for (;;)
+        {
+            /*
+             * Cannot assume we sleep for the entire period. We may
+             * be interrupted. If we are, just run a check anyway and
+             * ignore.
+             */
 
             synchronized(reaperObject)
             {
@@ -77,7 +77,7 @@ public void run ()
                     return;
                 }
 
-		sleepPeriod = reaperObject.checkingPeriod();
+        sleepPeriod = reaperObject.checkingPeriod();
 
                 if (sleepPeriod > 0)
                 {
@@ -103,13 +103,13 @@ public void run ()
                 tsLogger.logger.trace("ReaperThread.run ()");
             }
 
-    	    reaperObject.check();
-    	}
+            reaperObject.check();
+        }
     }
 
     public void shutdown ()
     {
-	_shutdown = true;
+    _shutdown = true;
     }
 
     private TransactionReaper reaperObject;

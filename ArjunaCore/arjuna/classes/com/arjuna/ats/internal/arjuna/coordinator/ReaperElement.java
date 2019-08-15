@@ -45,45 +45,45 @@ public class ReaperElement implements Comparable<ReaperElement>
       * the relative cost of recreating them over keeping them around.
       */
 
-	public ReaperElement(Reapable control, int timeout)
-	{
-		if (tsLogger.logger.isTraceEnabled()) {
+    public ReaperElement(Reapable control, int timeout)
+    {
+        if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("ReaperElement::ReaperElement ( " + control + ", "
                     + timeout + " )");
         }
 
-		_control = control;
-		_timeout = timeout;
-		_status = RUN;
+        _control = control;
+        _timeout = timeout;
+        _status = RUN;
         _worker = null;
 
-		/*
-		 * Given a timeout period in seconds, calculate its absolute value from
-		 * the current time of day in milliseconds.
-		 */
+        /*
+         * Given a timeout period in seconds, calculate its absolute value from
+         * the current time of day in milliseconds.
+         */
 
-		_absoluteTimeoutMills = (timeout * 1000L) + System.currentTimeMillis();
+        _absoluteTimeoutMills = (timeout * 1000L) + System.currentTimeMillis();
 
         // add additional variation to distinguish instances created in the same millisecond.
         _bias = getBiasCounter();
 
-	}
+    }
 
-	public String toString ()
-	{
-	    return "ReaperElement < "+_control+", "+_timeout+", "+statusName()+", "+_worker+" >";
-	}
+    public String toString ()
+    {
+        return "ReaperElement < "+_control+", "+_timeout+", "+statusName()+", "+_worker+" >";
+    }
 
-	/**
-	 * Order by absoluteTimeout first, then by Uid.
-	 * This is required so that the set maintained by the TransactionReaper
-	 * is in timeout order for efficient processing.
-	 *
-	 * @param other the ReaperElement to compare
-	 * @return 0 if equal, 1 if this is greater, -1 if this is smaller
-	 */
-	public int compareTo(ReaperElement other)
-	{
+    /**
+     * Order by absoluteTimeout first, then by Uid.
+     * This is required so that the set maintained by the TransactionReaper
+     * is in timeout order for efficient processing.
+     *
+     * @param other the ReaperElement to compare
+     * @return 0 if equal, 1 if this is greater, -1 if this is smaller
+     */
+    public int compareTo(ReaperElement other)
+    {
         if(this == other) {
             return 0;
         }
@@ -103,7 +103,7 @@ public class ReaperElement implements Comparable<ReaperElement>
         } else {
             return (_absoluteTimeoutMills > other._absoluteTimeoutMills) ? 1 : -1;
         }
-	}
+    }
 
     @Override
     public boolean equals(Object o)
@@ -128,7 +128,7 @@ public class ReaperElement implements Comparable<ReaperElement>
 
     public final Reapable _control;
 
-	private long _absoluteTimeoutMills;
+    private long _absoluteTimeoutMills;
     private final int _bias;
 
     // bias is used to distinguish/sort instances with the same _absoluteTimeoutMills

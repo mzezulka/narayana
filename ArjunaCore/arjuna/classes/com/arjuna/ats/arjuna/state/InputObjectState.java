@@ -52,129 +52,129 @@ public class InputObjectState extends InputBuffer
 
 public InputObjectState ()
     {
-	if (tsLogger.logger.isTraceEnabled()) {
+    if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("InputObjectState::InputObjectState()");
     }
 
-	bufferUid = new Uid(Uid.nullUid());
-	super._valid = false;
-	imageType = null;
+    bufferUid = new Uid(Uid.nullUid());
+    super._valid = false;
+    imageType = null;
     }
 
 public InputObjectState (InputObjectState copyFrom)
     {
-	super(copyFrom);
+    super(copyFrom);
 
-	if (tsLogger.logger.isTraceEnabled()) {
+    if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("InputObjectState::InputObjectState(" + copyFrom + ")");
     }
 
-	try
-	{
-	    bufferUid = new Uid(copyFrom.bufferUid);
-	    super._valid = bufferUid.valid();
+    try
+    {
+        bufferUid = new Uid(copyFrom.bufferUid);
+        super._valid = bufferUid.valid();
 
-	    imageType = new String((copyFrom.imageType == null) ? "" : copyFrom.imageType);
-	}
-	catch (Exception ex)
-	{
-	    super._valid = false;
-	}
+        imageType = new String((copyFrom.imageType == null) ? "" : copyFrom.imageType);
+    }
+    catch (Exception ex)
+    {
+        super._valid = false;
+    }
     }
 
 public InputObjectState (OutputObjectState copyFrom)
     {
-	super(copyFrom.buffer());
+    super(copyFrom.buffer());
 
-	if (tsLogger.logger.isTraceEnabled()) {
+    if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("InputObjectState::InputObjectState(" + copyFrom + ")");
     }
 
-	try
-	{
-	    bufferUid = new Uid(copyFrom.stateUid());
-	    super._valid = super._valid && bufferUid.valid();
+    try
+    {
+        bufferUid = new Uid(copyFrom.stateUid());
+        super._valid = super._valid && bufferUid.valid();
 
-	    imageType = new String((copyFrom.type() == null) ? "" : copyFrom.type());
-	}
-	catch (Exception ex)
-	{
-	    super._valid = false;
-	}
+        imageType = new String((copyFrom.type() == null) ? "" : copyFrom.type());
+    }
+    catch (Exception ex)
+    {
+        super._valid = false;
+    }
     }
 
 public InputObjectState (Uid newUid, String tName, byte[] buff)
     {
-	super(buff);  // implicitly copies the array contents.
+    super(buff);  // implicitly copies the array contents.
 
-	if (tsLogger.logger.isTraceEnabled()) {
+    if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("InputObjectState::InputObjectState(" + newUid + ", " + tName + ")");
     }
 
-	bufferUid = new Uid(newUid);
-	super._valid = super._valid && bufferUid.valid();
+    bufferUid = new Uid(newUid);
+    super._valid = super._valid && bufferUid.valid();
 
-	imageType = new String(tName);
+    imageType = new String(tName);
     }
 
 public final boolean notempty ()
     {
-	return ((length() > 0) ? true : false);
+    return ((length() > 0) ? true : false);
     }
 
 public final int size ()
     {
-	return (length());
+    return (length());
     }
 
 public final Uid stateUid ()
     {
-	return bufferUid;
+    return bufferUid;
     }
 
 public final String type ()
     {
-	return imageType;
+    return imageType;
     }
 
 public void copyFrom (OutputObjectState copyFrom)
     {
-	super.setBuffer(copyFrom.buffer());
+    super.setBuffer(copyFrom.buffer());
 
-	bufferUid = new Uid(copyFrom.stateUid());
-	super._valid = bufferUid.valid();
+    bufferUid = new Uid(copyFrom.stateUid());
+    super._valid = bufferUid.valid();
 
-	imageType = (copyFrom.type() == null ? null : new String(copyFrom.type()));
+    imageType = (copyFrom.type() == null ? null : new String(copyFrom.type()));
     }
 
 public void print (PrintWriter strm)
     {
-	strm.println("InputObjectState Uid   : "+bufferUid+"\n");
+    strm.println("InputObjectState Uid   : "+bufferUid+"\n");
 
-	if (imageType != null)
-	    strm.println("InputObjectState Type  : "+imageType+"\n");
-	else
-	    strm.println("InputObjectState Type  : null\n");
+    if (imageType != null)
+        strm.println("InputObjectState Type  : "+imageType+"\n");
+    else
+        strm.println("InputObjectState Type  : null\n");
 
-	strm.println("InputObjectState Size  : "+size()+"\n");
-	strm.println("InputObjectState Buffer: ");
+    strm.println("InputObjectState Size  : "+size()+"\n");
+    strm.println("InputObjectState Buffer: ");
 
-	super.print(strm);
+    super.print(strm);
     }
 
     public String toString ()
     {
-	String val = "InputObjectState Uid   : "+bufferUid+"\n";
+    String val = "InputObjectState Uid   : "+bufferUid+"\n";
 
-	if (imageType != null)
-	    val += "InputObjectState Type  : "+imageType+"\n";
-	else
-	    val += "InputObjectState Type  : null\n";
+    if (imageType != null)
+        val += "InputObjectState Type  : "+imageType+"\n";
+    else
+        val += "InputObjectState Type  : null\n";
 
-	val += "InputObjectState Size  : "+size()+"\n";
-	val += "InputObjectState Buffer: ";
+    val += "InputObjectState Size  : "+size()+"\n";
+    val += "InputObjectState Buffer: ";
 
-	return val;
+    return val;
     }
 
 public synchronized void copy (InputObjectState objstate)
@@ -182,21 +182,21 @@ public synchronized void copy (InputObjectState objstate)
         if (tsLogger.logger.isTraceEnabled())
             tsLogger.logger.trace("InputObjectState::copy for " + bufferUid);
 
-	super.copy(objstate);
+    super.copy(objstate);
 
-	bufferUid = new Uid(objstate.bufferUid);
-	super._valid = bufferUid.valid();
+    bufferUid = new Uid(objstate.bufferUid);
+    super._valid = bufferUid.valid();
 
-	imageType = (objstate.imageType == null ? null : new String(objstate.imageType));
+    imageType = (objstate.imageType == null ? null : new String(objstate.imageType));
     }
 
 public synchronized void unpackFrom (InputBuffer buff) throws IOException
     {
-	imageType = buff.unpackString();
+    imageType = buff.unpackString();
 
-	bufferUid = UidHelper.unpackFrom(buff);
+    bufferUid = UidHelper.unpackFrom(buff);
 
-	super.unpackFrom(buff);
+    super.unpackFrom(buff);
     }
 
 private Uid    bufferUid;

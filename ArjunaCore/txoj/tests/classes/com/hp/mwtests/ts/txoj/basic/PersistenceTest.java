@@ -54,7 +54,7 @@ public class PersistenceTest
     @Test
     public void test () throws Throwable
     {
-    	ParticipantStore store = StoreManager.getParticipantStore();
+        ParticipantStore store = StoreManager.getParticipantStore();
         OutputObjectState state = new OutputObjectState();
         Uid u = new Uid();
 

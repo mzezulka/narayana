@@ -42,8 +42,8 @@ class UserDefFirst0Map implements RecordTypeMap
 
 public class AddUserDefFirst0
 {
-	public AddUserDefFirst0()
-	{
-	    RecordTypeManager.manager().add(new UserDefFirst0Map());
-	}
+    public AddUserDefFirst0()
+    {
+        RecordTypeManager.manager().add(new UserDefFirst0Map());
+    }
 }

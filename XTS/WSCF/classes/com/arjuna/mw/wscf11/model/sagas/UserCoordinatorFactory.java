@@ -65,8 +65,8 @@ public class UserCoordinatorFactory
 
     public static UserCoordinator userCoordinator () throws ProtocolNotRegisteredException, SystemException
     {
-		return userCoordinator("Sagas11HLS");
-	}
+        return userCoordinator("Sagas11HLS");
+    }
 
     /**
      * Obtain a reference to a coordinator that implements the specified

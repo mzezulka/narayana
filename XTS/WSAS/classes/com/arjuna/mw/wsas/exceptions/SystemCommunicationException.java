@@ -25,29 +25,29 @@ package com.arjuna.mw.wsas.exceptions;
  */
 public class SystemCommunicationException extends SystemException {
 
-	public SystemCommunicationException ()
-	{
-		super();
-	}
+    public SystemCommunicationException ()
+    {
+        super();
+    }
 
-	public SystemCommunicationException (String s)
-	{
-		super(s);
-	}
+    public SystemCommunicationException (String s)
+    {
+        super(s);
+    }
 
-	public SystemCommunicationException (String s, int errorcode)
-	{
-		super(s, errorcode);
-	}
+    public SystemCommunicationException (String s, int errorcode)
+    {
+        super(s, errorcode);
+    }
 
-	public SystemCommunicationException (String reason, Object obj)
-	{
-		super(reason, obj);
-	}
+    public SystemCommunicationException (String reason, Object obj)
+    {
+        super(reason, obj);
+    }
 
-	public SystemCommunicationException (Object ex)
-	{
-		super(ex);
-	}
+    public SystemCommunicationException (Object ex)
+    {
+        super(ex);
+    }
 
 }

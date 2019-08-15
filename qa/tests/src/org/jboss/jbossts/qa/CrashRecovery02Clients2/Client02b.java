@@ -66,70 +66,70 @@ import org.omg.CosTransactions.HeuristicHazard;
 
 public class Client02b
 {
-	public static void main(String[] args)
-	{
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+    public static void main(String[] args)
+    {
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			String serviceIOR1 = ServerIORStore.loadIOR(args[args.length - 2]);
-			BeforeCrashService service1 = BeforeCrashServiceHelper.narrow(ORBInterface.orb().string_to_object(serviceIOR1));
+            String serviceIOR1 = ServerIORStore.loadIOR(args[args.length - 2]);
+            BeforeCrashService service1 = BeforeCrashServiceHelper.narrow(ORBInterface.orb().string_to_object(serviceIOR1));
 
-			String serviceIOR2 = ServerIORStore.loadIOR(args[args.length - 1]);
-			BeforeCrashService service2 = BeforeCrashServiceHelper.narrow(ORBInterface.orb().string_to_object(serviceIOR2));
+            String serviceIOR2 = ServerIORStore.loadIOR(args[args.length - 1]);
+            BeforeCrashService service2 = BeforeCrashServiceHelper.narrow(ORBInterface.orb().string_to_object(serviceIOR2));
 
-			ResourceBehavior[] resourceBehaviors1 = new ResourceBehavior[1];
-			resourceBehaviors1[0] = new ResourceBehavior();
-			resourceBehaviors1[0].crash_behavior = CrashBehavior.CrashBehaviorCrashInCommit;
+            ResourceBehavior[] resourceBehaviors1 = new ResourceBehavior[1];
+            resourceBehaviors1[0] = new ResourceBehavior();
+            resourceBehaviors1[0].crash_behavior = CrashBehavior.CrashBehaviorCrashInCommit;
 
-			ResourceBehavior[] resourceBehaviors2 = new ResourceBehavior[1];
-			resourceBehaviors2[0] = new ResourceBehavior();
-			resourceBehaviors2[0].crash_behavior = CrashBehavior.CrashBehaviorNoCrash;
+            ResourceBehavior[] resourceBehaviors2 = new ResourceBehavior[1];
+            resourceBehaviors2[0] = new ResourceBehavior();
+            resourceBehaviors2[0].crash_behavior = CrashBehavior.CrashBehaviorNoCrash;
 
-			boolean correct = true;
+            boolean correct = true;
 
-			OTS.current().begin();
+            OTS.current().begin();
 
-			service1.setup_oper(resourceBehaviors1);
-			service2.setup_oper(resourceBehaviors2);
+            service1.setup_oper(resourceBehaviors1);
+            service2.setup_oper(resourceBehaviors2);
 
-			correct = correct && service1.is_correct();
-			correct = correct && service2.is_correct();
+            correct = correct && service1.is_correct();
+            correct = correct && service2.is_correct();
 
-			try
-			{
-				OTS.current().commit(true);
-			}
-			catch (HeuristicHazard heuristicHazard)
-			{
-			}
+            try
+            {
+                OTS.current().commit(true);
+            }
+            catch (HeuristicHazard heuristicHazard)
+            {
+            }
 
-			if (correct)
-			{
-				System.out.println("Passed");
-			}
-			else
-			{
-				System.out.println("Failed");
-			}
-		}
-		catch (Exception exception)
-		{
-			System.out.println("Failed");
-			System.err.println("Client02b.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
+            if (correct)
+            {
+                System.out.println("Passed");
+            }
+            else
+            {
+                System.out.println("Failed");
+            }
+        }
+        catch (Exception exception)
+        {
+            System.out.println("Failed");
+            System.err.println("Client02b.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
 
-		try
-		{
-			OAInterface.shutdownOA();
-			ORBInterface.shutdownORB();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Client02b.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
-	}
+        try
+        {
+            OAInterface.shutdownOA();
+            ORBInterface.shutdownORB();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Client02b.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
+    }
 }

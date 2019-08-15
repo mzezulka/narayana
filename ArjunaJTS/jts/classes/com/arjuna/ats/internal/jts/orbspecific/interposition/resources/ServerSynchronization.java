@@ -44,75 +44,75 @@ import com.arjuna.ats.jts.logging.jtsLogger;
 import com.arjuna.ats.jts.utils.Utility;
 
 public class ServerSynchronization extends
-		org.omg.CosTransactions.SynchronizationPOA
+        org.omg.CosTransactions.SynchronizationPOA
 {
 
-	public ServerSynchronization(ServerTransaction topLevel)
-	{
-		ORBManager.getPOA().objectIsReady(this);
+    public ServerSynchronization(ServerTransaction topLevel)
+    {
+        ORBManager.getPOA().objectIsReady(this);
 
-		_theTransaction = topLevel;
-		_theSynchronization = org.omg.CosTransactions.SynchronizationHelper
-				.narrow(ORBManager.getPOA().corbaReference(this));
-	}
+        _theTransaction = topLevel;
+        _theSynchronization = org.omg.CosTransactions.SynchronizationHelper
+                .narrow(ORBManager.getPOA().corbaReference(this));
+    }
 
-	public final Synchronization getSynchronization()
-	{
-		return _theSynchronization;
-	}
+    public final Synchronization getSynchronization()
+    {
+        return _theSynchronization;
+    }
 
-	public void destroy()
-	{
-		try
-		{
-			ORBManager.getPOA().shutdownObject(this);
-		}
-		catch (Exception e)
-		{
+    public void destroy()
+    {
+        try
+        {
+            ORBManager.getPOA().shutdownObject(this);
+        }
+        catch (Exception e)
+        {
             jtsLogger.i18NLogger.warn_orbspecific_interposition_resources_destroyfailed();
-		}
-	}
+        }
+    }
 
-	public void before_completion() throws SystemException
-	{
-		if (_theTransaction == null)
-			throw new BAD_OPERATION(ExceptionCodes.NO_TRANSACTION,
-					CompletionStatus.COMPLETED_NO);
-		else
-		{
-			_theTransaction.doBeforeCompletion();
-		}
-	}
+    public void before_completion() throws SystemException
+    {
+        if (_theTransaction == null)
+            throw new BAD_OPERATION(ExceptionCodes.NO_TRANSACTION,
+                    CompletionStatus.COMPLETED_NO);
+        else
+        {
+            _theTransaction.doBeforeCompletion();
+        }
+    }
 
-	public void after_completion(org.omg.CosTransactions.Status status)
-			throws SystemException
-	{
-		if (_theTransaction == null)
-		{
-			destroy();
+    public void after_completion(org.omg.CosTransactions.Status status)
+            throws SystemException
+    {
+        if (_theTransaction == null)
+        {
+            destroy();
 
-			throw new BAD_OPERATION(ExceptionCodes.NO_TRANSACTION,
-					CompletionStatus.COMPLETED_NO);
-		}
-		else
-		{
-			/*
-			 * Check that the given status is the same as our status. It should
-			 * be!
-			 */
+            throw new BAD_OPERATION(ExceptionCodes.NO_TRANSACTION,
+                    CompletionStatus.COMPLETED_NO);
+        }
+        else
+        {
+            /*
+             * Check that the given status is the same as our status. It should
+             * be!
+             */
 
-			org.omg.CosTransactions.Status myStatus = org.omg.CosTransactions.Status.StatusUnknown;
+            org.omg.CosTransactions.Status myStatus = org.omg.CosTransactions.Status.StatusUnknown;
 
-			try
-			{
-				myStatus = _theTransaction.get_status();
-			}
-			catch (Exception e)
-			{
-				myStatus = org.omg.CosTransactions.Status.StatusUnknown;
-			}
+            try
+            {
+                myStatus = _theTransaction.get_status();
+            }
+            catch (Exception e)
+            {
+                myStatus = org.omg.CosTransactions.Status.StatusUnknown;
+            }
 
-			if (myStatus != status) {
+            if (myStatus != status) {
                 jtsLogger.i18NLogger.warn_orbspecific_interposition_resources_stateerror(
                         "ServerSynchronization.after_completion",
                         Utility.stringStatus(myStatus), Utility.stringStatus(status));
@@ -147,18 +147,18 @@ public class ServerSynchronization extends
                 }
             }
 
-			_theTransaction.doAfterCompletion(status);
-		}
+            _theTransaction.doAfterCompletion(status);
+        }
 
-		/*
-		 * Now dispose of self.
-		 */
+        /*
+         * Now dispose of self.
+         */
 
-		destroy();
-	}
+        destroy();
+    }
 
-	private ServerTransaction _theTransaction;
+    private ServerTransaction _theTransaction;
 
-	private Synchronization _theSynchronization;
+    private Synchronization _theSynchronization;
 
 }

@@ -60,304 +60,304 @@ import com.arjuna.ats.jts.logging.jtsLogger;
 public class ExplicitInterposition
 {
 
-	/**
-	 * Create a new instance and remember any current transaction that may be
-	 * associated with the invoking thread so that it can be restored once
-	 * interposition has finished.
-	 */
+    /**
+     * Create a new instance and remember any current transaction that may be
+     * associated with the invoking thread so that it can be restored once
+     * interposition has finished.
+     */
 
-	public ExplicitInterposition ()
-	{
-		this(true);
-	}
+    public ExplicitInterposition ()
+    {
+        this(true);
+    }
 
-	/**
-	 * Create a new instance. Depending upon the value of the boolean parameter,
-	 * remember any current transaction that may be associated with the invoking
-	 * thread so that it can be restored once interposition has finished.
-	 */
+    /**
+     * Create a new instance. Depending upon the value of the boolean parameter,
+     * remember any current transaction that may be associated with the invoking
+     * thread so that it can be restored once interposition has finished.
+     */
 
-	public ExplicitInterposition (boolean remember)
-	{
-		if (jtsLogger.logger.isTraceEnabled()) {
+    public ExplicitInterposition (boolean remember)
+    {
+        if (jtsLogger.logger.isTraceEnabled()) {
             jtsLogger.logger.trace("ExplicitInterposition::ExplicitInterposition ( "
                     + remember + " )");
         }
 
-		_remember = remember;
-		_inUse = false;
-		_oldControl = null;
-	}
+        _remember = remember;
+        _inUse = false;
+        _oldControl = null;
+    }
 
-	/**
-	 * Create a new instance and interpose with the specified transaction.
-	 * Depending upon the value of the boolean parameter, remember any current
-	 * transaction that may be associated with the invoking thread so that it
-	 * can be restored once interposition has finished.
-	 */
+    /**
+     * Create a new instance and interpose with the specified transaction.
+     * Depending upon the value of the boolean parameter, remember any current
+     * transaction that may be associated with the invoking thread so that it
+     * can be restored once interposition has finished.
+     */
 
-	public ExplicitInterposition (Control action, boolean remember)
-			throws InterpositionFailed, SystemException
-	{
-		if (jtsLogger.logger.isTraceEnabled()) {
+    public ExplicitInterposition (Control action, boolean remember)
+            throws InterpositionFailed, SystemException
+    {
+        if (jtsLogger.logger.isTraceEnabled()) {
             jtsLogger.logger.trace("ExplicitInterposition::ExplicitInterposition ( Control action, "
                     + remember + " )");
         }
 
-		_remember = remember;
-		_inUse = false;
-		_oldControl = null;
+        _remember = remember;
+        _inUse = false;
+        _oldControl = null;
 
-		registerTransaction(action);
-	}
+        registerTransaction(action);
+    }
 
-	/**
-	 * Create a new instance and interpose with the specified transaction.
-	 * Depending upon the value of the boolean parameter, remember any current
-	 * transaction that may be associated with the invoking thread so that it
-	 * can be restored once interposition has finished.
-	 */
+    /**
+     * Create a new instance and interpose with the specified transaction.
+     * Depending upon the value of the boolean parameter, remember any current
+     * transaction that may be associated with the invoking thread so that it
+     * can be restored once interposition has finished.
+     */
 
-	public ExplicitInterposition (PropagationContext ctx, boolean remember)
-			throws InterpositionFailed, SystemException
-	{
-		if (jtsLogger.logger.isTraceEnabled()) {
+    public ExplicitInterposition (PropagationContext ctx, boolean remember)
+            throws InterpositionFailed, SystemException
+    {
+        if (jtsLogger.logger.isTraceEnabled()) {
             jtsLogger.logger.trace("ExplicitInterposition::ExplicitInterposition ( PropagationContext ctx, "
                     + remember + " )");
         }
 
-		_remember = remember;
-		_inUse = false;
-		_oldControl = null;
+        _remember = remember;
+        _inUse = false;
+        _oldControl = null;
 
-		registerTransaction(ctx);
-	}
+        registerTransaction(ctx);
+    }
 
-	public void finalize ()
-	{
-		if (jtsLogger.logger.isTraceEnabled()) {
+    public void finalize ()
+    {
+        if (jtsLogger.logger.isTraceEnabled()) {
             jtsLogger.logger.trace("ExplicitInterposition.finalize ()");
         }
 
-		if (_inUse)
-		{
-			try
-			{
-				unregisterTransaction();
-			}
-			catch (Exception e)
-			{
+        if (_inUse)
+        {
+            try
+            {
+                unregisterTransaction();
+            }
+            catch (Exception e)
+            {
                 jtsLogger.i18NLogger.warn_exunregfail("ExplicitInterposition.finalize");
-			}
-		}
-	}
+            }
+        }
+    }
 
-	/**
-	 * Perform interposition with the specified transaction.
-	 */
+    /**
+     * Perform interposition with the specified transaction.
+     */
 
-	public final synchronized void registerTransaction (Control action)
-			throws InterpositionFailed, SystemException
-	{
-		if (jtsLogger.logger.isTraceEnabled()) {
+    public final synchronized void registerTransaction (Control action)
+            throws InterpositionFailed, SystemException
+    {
+        if (jtsLogger.logger.isTraceEnabled()) {
             jtsLogger.logger.trace("ExplicitInterposition::registerTransaction ( Control action )");
         }
 
-		if (_inUse)
-		{
+        if (_inUse)
+        {
             jtsLogger.i18NLogger.warn_excalledagain("ExplicitInterposition.unregisterTransaction");
 
-			throw new InterpositionFailed();
-		}
+            throw new InterpositionFailed();
+        }
 
-		boolean registerNull = false;
+        boolean registerNull = false;
 
-		if (action != null)
-		{
-			try
-			{
-				Coordinator coord = action.get_coordinator();
+        if (action != null)
+        {
+            try
+            {
+                Coordinator coord = action.get_coordinator();
 
-				if (coord != null)
-				{
-					PropagationContext ctx = coord.get_txcontext();
+                if (coord != null)
+                {
+                    PropagationContext ctx = coord.get_txcontext();
 
-					if (ctx != null)
-					{
-						try
-						{
-							registerTransaction(ctx);
-							ctx = null;
-						}
-						catch (Exception e)
-						{
-							e.printStackTrace();
+                    if (ctx != null)
+                    {
+                        try
+                        {
+                            registerTransaction(ctx);
+                            ctx = null;
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
 
-							ctx = null;
+                            ctx = null;
 
-							throw new InterpositionFailed(e.toString());
-						}
-					}
-					else
-						registerNull = true;
+                            throw new InterpositionFailed(e.toString());
+                        }
+                    }
+                    else
+                        registerNull = true;
 
-					coord = null;
-				}
-				else
-					registerNull = true;
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
+                    coord = null;
+                }
+                else
+                    registerNull = true;
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
 
-				throw new InterpositionFailed(e.toString());
-			}
-		}
-		else
-		{
-			_inUse = true;
-			registerNull = true;
-		}
+                throw new InterpositionFailed(e.toString());
+            }
+        }
+        else
+        {
+            _inUse = true;
+            registerNull = true;
+        }
 
-		if (registerNull)
-		{
-			try
-			{
-				OTSImpleManager.current().resume((Control) null);
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
+        if (registerNull)
+        {
+            try
+            {
+                OTSImpleManager.current().resume((Control) null);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
 
-				throw new InterpositionFailed(e.toString());
-			}
-		}
-	}
+                throw new InterpositionFailed(e.toString());
+            }
+        }
+    }
 
-	/**
-	 * We need this explicit method because we cannot rely upon the object
-	 * "destructor" being called by the time the method which instantiated the
-	 * interposition class ends!
-	 */
+    /**
+     * We need this explicit method because we cannot rely upon the object
+     * "destructor" being called by the time the method which instantiated the
+     * interposition class ends!
+     */
 
-	public synchronized void unregisterTransaction () throws SystemException
-	{
-		if (jtsLogger.logger.isTraceEnabled()) {
+    public synchronized void unregisterTransaction () throws SystemException
+    {
+        if (jtsLogger.logger.isTraceEnabled()) {
             jtsLogger.logger.trace("ExplicitInterposition::unregisterTransaction ()");
         }
 
-		if (!_inUse)
-			throw new INVALID_TRANSACTION(ExceptionCodes.INVALID_ACTION,
-					CompletionStatus.COMPLETED_NO);
-		else
-		{
-			try
-			{
-				Control control = OTSImpleManager.current().suspend();
+        if (!_inUse)
+            throw new INVALID_TRANSACTION(ExceptionCodes.INVALID_ACTION,
+                    CompletionStatus.COMPLETED_NO);
+        else
+        {
+            try
+            {
+                Control control = OTSImpleManager.current().suspend();
 
-				control = null;
+                control = null;
 
-				if (_remember && (_oldControl != null))
-				{
-					try
-					{
-						OTSImpleManager.current().resumeWrapper(_oldControl);
-						_oldControl = null;
-					}
-					catch (Exception exp)
-					{
-						throw new UNKNOWN(exp.toString());
-					}
-				}
-			}
-			catch (UNKNOWN exp)
-			{
-				throw exp;
-			}
-			catch (SystemException ex)
-			{
-				_inUse = false;
+                if (_remember && (_oldControl != null))
+                {
+                    try
+                    {
+                        OTSImpleManager.current().resumeWrapper(_oldControl);
+                        _oldControl = null;
+                    }
+                    catch (Exception exp)
+                    {
+                        throw new UNKNOWN(exp.toString());
+                    }
+                }
+            }
+            catch (UNKNOWN exp)
+            {
+                throw exp;
+            }
+            catch (SystemException ex)
+            {
+                _inUse = false;
 
-				throw ex;
-			}
-			catch (Exception e)
-			{
-				_inUse = false;
+                throw ex;
+            }
+            catch (Exception e)
+            {
+                _inUse = false;
 
-				throw new UNKNOWN(e.toString());
-			}
+                throw new UNKNOWN(e.toString());
+            }
 
-			_inUse = false;
-		}
-	}
+            _inUse = false;
+        }
+    }
 
-	private final synchronized void registerTransaction (PropagationContext ctx)
-			throws InterpositionFailed, SystemException
-	{
-		if (jtsLogger.logger.isTraceEnabled()) {
+    private final synchronized void registerTransaction (PropagationContext ctx)
+            throws InterpositionFailed, SystemException
+    {
+        if (jtsLogger.logger.isTraceEnabled()) {
             jtsLogger.logger.trace("ExplicitInterposition::registerTransaction ( PropagationContext ctx )");
         }
 
-		if (_inUse)
-		{
+        if (_inUse)
+        {
             jtsLogger.i18NLogger.warn_excalledagain("ExplicitInterposition.registerTransaction");
 
-			throw new InterpositionFailed();
-		}
+            throw new InterpositionFailed();
+        }
 
-		if ((ctx == null) || (ctx.current.coord == null)) // invalid
-			throw new INVALID_TRANSACTION(ExceptionCodes.INVALID_ACTION,
-					CompletionStatus.COMPLETED_NO);
+        if ((ctx == null) || (ctx.current.coord == null)) // invalid
+            throw new INVALID_TRANSACTION(ExceptionCodes.INVALID_ACTION,
+                    CompletionStatus.COMPLETED_NO);
 
-		_inUse = true;
+        _inUse = true;
 
-		TransactionFactoryImple _localFactory = OTSImpleManager.factory();
+        TransactionFactoryImple _localFactory = OTSImpleManager.factory();
 
-		try
-		{
-			ControlImple cont = _localFactory.recreateLocal(ctx);
-			CurrentImple current = OTSImpleManager.current();
+        try
+        {
+            ControlImple cont = _localFactory.recreateLocal(ctx);
+            CurrentImple current = OTSImpleManager.current();
 
-			/*
-			 * If this thread is associated with any transactions, then they
-			 * will be lost in favour of this new hierarchy, unless we have
-			 * remembered them explicitly.
-			 */
+            /*
+             * If this thread is associated with any transactions, then they
+             * will be lost in favour of this new hierarchy, unless we have
+             * remembered them explicitly.
+             */
 
-			if (_remember)
-			{
-				try
-				{
-					_oldControl = current.suspendWrapper();
-				}
-				catch (Exception e)
-				{
-					throw new InterpositionFailed();
-				}
-			}
+            if (_remember)
+            {
+                try
+                {
+                    _oldControl = current.suspendWrapper();
+                }
+                catch (Exception e)
+                {
+                    throw new InterpositionFailed();
+                }
+            }
 
-			current.resumeImple(cont);
+            current.resumeImple(cont);
 
-			//	    current.resume(cont.getControl());
+            //        current.resume(cont.getControl());
 
-			cont = null;
-		}
-		catch (InterpositionFailed ex)
-		{
-			throw ex;
-		}
-		catch (Exception e)
-		{
+            cont = null;
+        }
+        catch (InterpositionFailed ex)
+        {
+            throw ex;
+        }
+        catch (Exception e)
+        {
             jtsLogger.i18NLogger.warn_eicaughtexception("ExplicitInterposition.registerTransaction(PropagationContext)", e);
 
-			throw new InterpositionFailed();
-		}
-	}
+            throw new InterpositionFailed();
+        }
+    }
 
-	private boolean _remember;
+    private boolean _remember;
 
-	private boolean _inUse;
+    private boolean _inUse;
 
-	private ControlWrapper _oldControl;
+    private ControlWrapper _oldControl;
 
 }

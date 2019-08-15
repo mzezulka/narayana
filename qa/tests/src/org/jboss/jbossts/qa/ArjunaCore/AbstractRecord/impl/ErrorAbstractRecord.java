@@ -34,236 +34,236 @@ import org.jboss.jbossts.qa.ArjunaCore.Utils.qautil;
 
 public class ErrorAbstractRecord extends AbstractRecord
 {
-	/**
-	 * default constructor will call main constructor setting crash point and type
-	 * so that no crash will occur.
-	 */
-	public ErrorAbstractRecord()
-	{
-		this(0, 0);
-	}
+    /**
+     * default constructor will call main constructor setting crash point and type
+     * so that no crash will occur.
+     */
+    public ErrorAbstractRecord()
+    {
+        this(0, 0);
+    }
 
-	public ErrorAbstractRecord(int crashpoint, int crashtype)
-	{
-		super(new Uid());
-		mCrashPoint = crashpoint;
-		mCrashType = crashtype;
-	}
+    public ErrorAbstractRecord(int crashpoint, int crashtype)
+    {
+        super(new Uid());
+        mCrashPoint = crashpoint;
+        mCrashType = crashtype;
+    }
 
-	/**
-	 * Typeis is over-riden to force TransactionManager to process this record first.
-	 */
-	public int typeIs()
-	{
-		return RecordType.USER_DEF_FIRST0;
-	}
+    /**
+     * Typeis is over-riden to force TransactionManager to process this record first.
+     */
+    public int typeIs()
+    {
+        return RecordType.USER_DEF_FIRST0;
+    }
 
-	public Object value()
-	{
-		return null;
-	}
+    public Object value()
+    {
+        return null;
+    }
 
-	public void setValue(Object object)
-	{
-	}
+    public void setValue(Object object)
+    {
+    }
 
-	public int topLevelOnePhaseCommit()
-	{
-		qautil.qadebug("top level one phase commit has been called : " + order());
-		if (mCrashPoint == 1)
-		{
-			qautil.qadebug("Changing return value on top level commit");
-			return outcome();
-		}
-		return TwoPhaseOutcome.FINISH_OK;
-	}
+    public int topLevelOnePhaseCommit()
+    {
+        qautil.qadebug("top level one phase commit has been called : " + order());
+        if (mCrashPoint == 1)
+        {
+            qautil.qadebug("Changing return value on top level commit");
+            return outcome();
+        }
+        return TwoPhaseOutcome.FINISH_OK;
+    }
 
-	public int topLevelCommit()
-	{
-		qautil.qadebug("top level commit has been called : " + order());
-		if (mCrashPoint == 1)
-		{
-			qautil.qadebug("Changing return value on top level commit");
-			return outcome();
-		}
-		return TwoPhaseOutcome.FINISH_OK;
-	}
+    public int topLevelCommit()
+    {
+        qautil.qadebug("top level commit has been called : " + order());
+        if (mCrashPoint == 1)
+        {
+            qautil.qadebug("Changing return value on top level commit");
+            return outcome();
+        }
+        return TwoPhaseOutcome.FINISH_OK;
+    }
 
-	public int topLevelAbort()
-	{
-		qautil.qadebug("top level abort has been called : " + order());
-		if (mCrashPoint == 2)
-		{
-			qautil.qadebug("Changing return value on top level abort");
-			return outcome();
-		}
-		return TwoPhaseOutcome.FINISH_OK;
-	}
+    public int topLevelAbort()
+    {
+        qautil.qadebug("top level abort has been called : " + order());
+        if (mCrashPoint == 2)
+        {
+            qautil.qadebug("Changing return value on top level abort");
+            return outcome();
+        }
+        return TwoPhaseOutcome.FINISH_OK;
+    }
 
-	public int topLevelPrepare()
-	{
-		qautil.qadebug("prep has been called : " + order());
-		if (mCrashPoint == 3)
-		{
-			qautil.qadebug("Changing return value on top level prepare");
-			return outcome();
-		}
-		return TwoPhaseOutcome.PREPARE_OK;
-	}
+    public int topLevelPrepare()
+    {
+        qautil.qadebug("prep has been called : " + order());
+        if (mCrashPoint == 3)
+        {
+            qautil.qadebug("Changing return value on top level prepare");
+            return outcome();
+        }
+        return TwoPhaseOutcome.PREPARE_OK;
+    }
 
-	public int nestedOnePhaseCommit()
-	{
+    public int nestedOnePhaseCommit()
+    {
 
-		qautil.qadebug("nested one phase comit has been called : " + order());
-		if (mCrashPoint == 4)
-		{
-			qautil.qadebug("Changing return value on nested one phase commit");
-			return outcome();
-		}
-		return TwoPhaseOutcome.FINISH_OK;
-	}
+        qautil.qadebug("nested one phase comit has been called : " + order());
+        if (mCrashPoint == 4)
+        {
+            qautil.qadebug("Changing return value on nested one phase commit");
+            return outcome();
+        }
+        return TwoPhaseOutcome.FINISH_OK;
+    }
 
-	public int nestedCommit()
-	{
+    public int nestedCommit()
+    {
 
-		qautil.qadebug("nested comit has been called : " + order());
-		if (mCrashPoint == 4)
-		{
-			qautil.qadebug("Changing return value on nested commit");
-			return outcome();
-		}
-		return TwoPhaseOutcome.FINISH_OK;
-	}
+        qautil.qadebug("nested comit has been called : " + order());
+        if (mCrashPoint == 4)
+        {
+            qautil.qadebug("Changing return value on nested commit");
+            return outcome();
+        }
+        return TwoPhaseOutcome.FINISH_OK;
+    }
 
-	public int nestedAbort()
-	{
-		qautil.qadebug("nested abort has been called : " + order());
-		if (mCrashPoint == 5)
-		{
-			qautil.qadebug("Changing return value on nested abort");
-			return outcome();
-		}
-		return TwoPhaseOutcome.FINISH_OK;
-	}
+    public int nestedAbort()
+    {
+        qautil.qadebug("nested abort has been called : " + order());
+        if (mCrashPoint == 5)
+        {
+            qautil.qadebug("Changing return value on nested abort");
+            return outcome();
+        }
+        return TwoPhaseOutcome.FINISH_OK;
+    }
 
-	public int nestedPrepare()
-	{
-		if (mCrashPoint == 6)
-		{
-			qautil.qadebug("Changing return value on nested prepare");
-			return outcome();
-		}
-		return TwoPhaseOutcome.PREPARE_OK;
-	}
+    public int nestedPrepare()
+    {
+        if (mCrashPoint == 6)
+        {
+            qautil.qadebug("Changing return value on nested prepare");
+            return outcome();
+        }
+        return TwoPhaseOutcome.PREPARE_OK;
+    }
 
-	public void alter(AbstractRecord abstractRecord)
-	{
-	}
+    public void alter(AbstractRecord abstractRecord)
+    {
+    }
 
-	public void merge(AbstractRecord abstractRecord)
-	{
-	}
+    public void merge(AbstractRecord abstractRecord)
+    {
+    }
 
-	public boolean shouldAdd(AbstractRecord abstractRecord)
-	{
-		return false;
-	}
+    public boolean shouldAdd(AbstractRecord abstractRecord)
+    {
+        return false;
+    }
 
-	public boolean shouldAlter(AbstractRecord abstractRecord)
-	{
-		return false;
-	}
+    public boolean shouldAlter(AbstractRecord abstractRecord)
+    {
+        return false;
+    }
 
-	public boolean shouldMerge(AbstractRecord abstractRecord)
-	{
-		return false;
-	}
+    public boolean shouldMerge(AbstractRecord abstractRecord)
+    {
+        return false;
+    }
 
-	public boolean shouldReplace(AbstractRecord abstractRecord)
-	{
-		return false;
-	}
+    public boolean shouldReplace(AbstractRecord abstractRecord)
+    {
+        return false;
+    }
 
-	private int outcome()
-	{
-		int value = TwoPhaseOutcome.FINISH_OK;
-		;//default
+    private int outcome()
+    {
+        int value = TwoPhaseOutcome.FINISH_OK;
+        ;//default
 
-		if (mCrashType == 0)
-		{
-			value = TwoPhaseOutcome.PREPARE_OK;
-		}
-		else if (mCrashType == 1)
-		{
-			value = TwoPhaseOutcome.PREPARE_NOTOK;
-		}
-		else if (mCrashType == 2)
-		{
-			value = TwoPhaseOutcome.PREPARE_READONLY;
-		}
-		else if (mCrashType == 3)
-		{
-			value = TwoPhaseOutcome.HEURISTIC_ROLLBACK;
-		}
-		else if (mCrashType == 4)
-		{
-			value = TwoPhaseOutcome.HEURISTIC_COMMIT;
-		}
-		else if (mCrashType == 5)
-		{
-			value = TwoPhaseOutcome.HEURISTIC_MIXED;
-		}
-		else if (mCrashType == 6)
-		{
-			value = TwoPhaseOutcome.HEURISTIC_HAZARD;
-		}
-		else if (mCrashType == 7)
-		{
-			value = TwoPhaseOutcome.FINISH_OK;
-		}
-		else if (mCrashType == 8)
-		{
-			value = TwoPhaseOutcome.FINISH_ERROR;
-		}
-		else if (mCrashType == 9)
-		{
-			value = TwoPhaseOutcome.NOT_PREPARED;
-		}
-		else if (mCrashType == 10)
-		{
-			value = TwoPhaseOutcome.ONE_PHASE_ERROR;
-		}
-		else if (mCrashType == 11)
-		{
-			value = TwoPhaseOutcome.INVALID_TRANSACTION;
-		}
+        if (mCrashType == 0)
+        {
+            value = TwoPhaseOutcome.PREPARE_OK;
+        }
+        else if (mCrashType == 1)
+        {
+            value = TwoPhaseOutcome.PREPARE_NOTOK;
+        }
+        else if (mCrashType == 2)
+        {
+            value = TwoPhaseOutcome.PREPARE_READONLY;
+        }
+        else if (mCrashType == 3)
+        {
+            value = TwoPhaseOutcome.HEURISTIC_ROLLBACK;
+        }
+        else if (mCrashType == 4)
+        {
+            value = TwoPhaseOutcome.HEURISTIC_COMMIT;
+        }
+        else if (mCrashType == 5)
+        {
+            value = TwoPhaseOutcome.HEURISTIC_MIXED;
+        }
+        else if (mCrashType == 6)
+        {
+            value = TwoPhaseOutcome.HEURISTIC_HAZARD;
+        }
+        else if (mCrashType == 7)
+        {
+            value = TwoPhaseOutcome.FINISH_OK;
+        }
+        else if (mCrashType == 8)
+        {
+            value = TwoPhaseOutcome.FINISH_ERROR;
+        }
+        else if (mCrashType == 9)
+        {
+            value = TwoPhaseOutcome.NOT_PREPARED;
+        }
+        else if (mCrashType == 10)
+        {
+            value = TwoPhaseOutcome.ONE_PHASE_ERROR;
+        }
+        else if (mCrashType == 11)
+        {
+            value = TwoPhaseOutcome.INVALID_TRANSACTION;
+        }
 //        else if (mCrashType == 12)
 //            return TwoPhaseOutcome.IGNORE_PHASE;
-		qautil.qadebug("return value = " + value + " " + TwoPhaseOutcome.stringForm(value));
-		return value;
-	}
+        qautil.qadebug("return value = " + value + " " + TwoPhaseOutcome.stringForm(value));
+        return value;
+    }
 
-	public int getCrashPoint()
-	{
-		return mCrashPoint;
-	}
+    public int getCrashPoint()
+    {
+        return mCrashPoint;
+    }
 
-	public void setCrashPoint(int mCrashPoint)
-	{
-		this.mCrashPoint = mCrashPoint;
-	}
+    public void setCrashPoint(int mCrashPoint)
+    {
+        this.mCrashPoint = mCrashPoint;
+    }
 
-	private int mCrashPoint = 0;
+    private int mCrashPoint = 0;
 
-	public int getCrashType()
-	{
-		return mCrashType;
-	}
+    public int getCrashType()
+    {
+        return mCrashType;
+    }
 
-	public void setCrashType(int mCrashType)
-	{
-		this.mCrashType = mCrashType;
-	}
+    public void setCrashType(int mCrashType)
+    {
+        this.mCrashType = mCrashType;
+    }
 
-	private int mCrashType = 7; //default is 7 these are the return values of TwoPhaseOutcome
+    private int mCrashType = 7; //default is 7 these are the return values of TwoPhaseOutcome
 }

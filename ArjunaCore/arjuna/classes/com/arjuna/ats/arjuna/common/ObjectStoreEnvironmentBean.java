@@ -76,13 +76,13 @@ public class ObjectStoreEnvironmentBean implements ObjectStoreEnvironmentBeanMBe
 
     private volatile boolean androidDirCheck = false;
 
-	private volatile String jdbcAccess;
+    private volatile String jdbcAccess;
 
-	private volatile String tablePrefix;
+    private volatile String tablePrefix;
 
-	private volatile boolean dropTable;
+    private volatile boolean dropTable;
 
-	private volatile boolean createTable = true;
+    private volatile boolean createTable = true;
 
     private volatile boolean exposeAllLogRecordsAsMBeans = false;
 
@@ -684,81 +684,81 @@ public class ObjectStoreEnvironmentBean implements ObjectStoreEnvironmentBeanMBe
         this.purgeTime = purgeTime;
     }
 
-	/**
-	 * Returns an instance of a class implementing JDBCAccess.
-	 *
-	 * @return a JDBCAccess implementation instance, or null.
-	 */
-	public String getJdbcAccess() {
-		return jdbcAccess;
-	}
+    /**
+     * Returns an instance of a class implementing JDBCAccess.
+     *
+     * @return a JDBCAccess implementation instance, or null.
+     */
+    public String getJdbcAccess() {
+        return jdbcAccess;
+    }
 
-	/**
-	 * Sets the instance of JDBCAccess
-	 *
-	 * @param connectionDetails
-	 *            an Object that provides JDBCAccess, or null.
-	 */
-	public void setJdbcAccess(String connectionDetails) {
-		jdbcAccess = connectionDetails;
-	}
+    /**
+     * Sets the instance of JDBCAccess
+     *
+     * @param connectionDetails
+     *            an Object that provides JDBCAccess, or null.
+     */
+    public void setJdbcAccess(String connectionDetails) {
+        jdbcAccess = connectionDetails;
+    }
 
-	/**
-	 * Get the table prefix
-	 *
-	 * @return The prefix to apply to the table
-	 */
-	public String getTablePrefix() {
-		return tablePrefix;
-	}
+    /**
+     * Get the table prefix
+     *
+     * @return The prefix to apply to the table
+     */
+    public String getTablePrefix() {
+        return tablePrefix;
+    }
 
-	/**
-	 * Set the table prefix
-	 *
-	 * @param tablePrefix
-	 *            A prefix to use on the tables
-	 */
-	public void setTablePrefix(String tablePrefix) {
-		this.tablePrefix = tablePrefix;
-	}
+    /**
+     * Set the table prefix
+     *
+     * @param tablePrefix
+     *            A prefix to use on the tables
+     */
+    public void setTablePrefix(String tablePrefix) {
+        this.tablePrefix = tablePrefix;
+    }
 
-	/**
-	 * Should the store drop the table
-	 *
-	 * @return Whether to drop the table
-	 */
-	public boolean getDropTable() {
-		return dropTable;
-	}
+    /**
+     * Should the store drop the table
+     *
+     * @return Whether to drop the table
+     */
+    public boolean getDropTable() {
+        return dropTable;
+    }
 
-	/**
-	 * Set whether to drop the table.
-	 *
-	 * @param dropTable
-	 *            Drop the table
-	 */
-	public void setDropTable(boolean dropTable) {
-		this.dropTable = dropTable;
-	}
+    /**
+     * Set whether to drop the table.
+     *
+     * @param dropTable
+     *            Drop the table
+     */
+    public void setDropTable(boolean dropTable) {
+        this.dropTable = dropTable;
+    }
 
-	/**
-	 * Should the store create the table
-	 *
-	 * @return Whether to create the table
-	 */
-	public boolean getCreateTable() {
-		return createTable;
-	}
+    /**
+     * Should the store create the table
+     *
+     * @return Whether to create the table
+     */
+    public boolean getCreateTable() {
+        return createTable;
+    }
 
-	/**
-	 * Set whether to create the table.
-	 *
-	 * @param createTable
-	 *            Create the table
-	 */
-	public void setCreateTable(boolean createTable) {
-		this.createTable = createTable;
-	}
+    /**
+     * Set whether to create the table.
+     *
+     * @param createTable
+     *            Create the table
+     */
+    public void setCreateTable(boolean createTable) {
+        this.createTable = createTable;
+    }
 
     /**
      * @return Whether basic information about all log reccords are exposed

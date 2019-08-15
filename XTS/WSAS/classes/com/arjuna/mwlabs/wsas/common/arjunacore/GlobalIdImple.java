@@ -49,21 +49,21 @@ public class GlobalIdImple extends Uid implements GlobalId
 
     public GlobalIdImple ()
     {
-	super();
+    super();
 
-	_value = stringForm().getBytes(StandardCharsets.UTF_8);
+    _value = stringForm().getBytes(StandardCharsets.UTF_8);
     }
 
     public GlobalIdImple (String id)
     {
-	super(id);
+    super(id);
 
-	_value = stringForm().getBytes(StandardCharsets.UTF_8);
+    _value = stringForm().getBytes(StandardCharsets.UTF_8);
     }
 
     public byte[] value ()
     {
-	return _value;
+    return _value;
     }
 
     private byte[] _value;

@@ -25,9 +25,9 @@ import org.junit.Test;
 
 public class TestGroup_jdbcresources02_ibmdb2_jndi extends TestGroup_jdbcresources02_abstract
 {
-	public String getTestGroupName() {
-		return "jdbcresources02_ibmdb2_jndi";
-	}
+    public String getTestGroupName() {
+        return "jdbcresources02_ibmdb2_jndi";
+    }
 
     public String getDBName1() {
         return "DB1_IBMDB2_JNDI";

@@ -46,12 +46,12 @@ public class Cancelling implements Status
 
     public static Cancelling instance ()
     {
-	return _instance;
+    return _instance;
     }
 
     public String toString ()
     {
-	return "org.w3c.wscf.twophase.status.Cancelling";
+    return "org.w3c.wscf.twophase.status.Cancelling";
     }
 
     private Cancelling ()

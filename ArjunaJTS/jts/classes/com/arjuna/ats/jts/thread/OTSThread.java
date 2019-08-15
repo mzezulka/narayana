@@ -58,63 +58,63 @@ public class OTSThread extends Thread
 
     public void terminate ()
     {
-	try
-	{
-	    CurrentImple current = OTSImpleManager.current();
+    try
+    {
+        CurrentImple current = OTSImpleManager.current();
 
-	    if (current != null)
-	    {
-		Control c = current.suspend();
+        if (current != null)
+        {
+        Control c = current.suspend();
 
-		c = null;
-	    }
-	}
-	catch (Exception e)
-	{
-	}
+        c = null;
+        }
+    }
+    catch (Exception e)
+    {
+    }
     }
 
     public void run ()
     {
-	if (_currentControl != null)
-	{
-	    try
-	    {
-		CurrentImple current = OTSImpleManager.current();
+    if (_currentControl != null)
+    {
+        try
+        {
+        CurrentImple current = OTSImpleManager.current();
 
-		if (current != null)
-		{
-		    current.resume(_currentControl);
-		    current = null;
-		}
-	    }
-	    catch (Exception e)
-	    {
+        if (current != null)
+        {
+            current.resume(_currentControl);
+            current = null;
+        }
+        }
+        catch (Exception e)
+        {
             jtsLogger.i18NLogger.warn_thread_resumefailed( "OTSThread.run", e);
 
-		throw new FatalError("OTSThread.run - "+jtsLogger.i18NLogger.get_thread_resumefailederror(), e);
-	    }
+        throw new FatalError("OTSThread.run - "+jtsLogger.i18NLogger.get_thread_resumefailederror(), e);
+        }
 
-	    _currentControl = null;
-	}
+        _currentControl = null;
+    }
     }
 
     protected OTSThread ()
     {
-	try
-	{
-	    CurrentImple current = OTSImpleManager.current();
+    try
+    {
+        CurrentImple current = OTSImpleManager.current();
 
-	    if (current != null)
-	    {
-		_currentControl = current.get_control();
-		current = null;
-	    }
-	}
-	catch (Exception e)
-	{
-	    _currentControl = null;
-	}
+        if (current != null)
+        {
+        _currentControl = current.get_control();
+        current = null;
+        }
+    }
+    catch (Exception e)
+    {
+        _currentControl = null;
+    }
     }
 
     private Control _currentControl;

@@ -55,22 +55,22 @@ public static final int LOCKRETAINED = 2;
 
 public static String printString (int ls)
     {
-	switch (ls)
-	{
-	case LOCKFREE:
-	    return "LockStatus.LOCKFREE";
-	case LOCKHELD:
-	    return "LockStatus.LOCKHELD";
-	case LOCKRETAINED:
-	    return "LockStatus.LOCKRETAINED";
-	default:
-	    return "Unknown";
-	}
+    switch (ls)
+    {
+    case LOCKFREE:
+        return "LockStatus.LOCKFREE";
+    case LOCKHELD:
+        return "LockStatus.LOCKHELD";
+    case LOCKRETAINED:
+        return "LockStatus.LOCKRETAINED";
+    default:
+        return "Unknown";
+    }
     }
 
 public static void print (PrintWriter strm, int ls)
     {
-	strm.print(LockStatus.printString(ls));
+    strm.print(LockStatus.printString(ls));
     }
 
 };

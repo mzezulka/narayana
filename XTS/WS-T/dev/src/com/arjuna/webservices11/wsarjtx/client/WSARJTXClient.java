@@ -88,8 +88,8 @@ public class WSARJTXClient
         /*
          * we no longer have to add the JaxWS WSAddressingClientHandler because we can specify the WSAddressing feature
         List<Handler> customHandlerChain = new ArrayList<Handler>();
-		customHandlerChain.add(new WSAddressingClientHandler());
-		bindingProvider.getBinding().setHandlerChain(customHandlerChain);
+        customHandlerChain.add(new WSAddressingClientHandler());
+        bindingProvider.getBinding().setHandlerChain(customHandlerChain);
          */
 
         Map<String, Object> requestContext = bindingProvider.getRequestContext();
@@ -113,8 +113,8 @@ public class WSARJTXClient
         /*
          * we no longer have to add the JaxWS WSAddressingClientHandler because we can specify the WSAddressing feature
         List<Handler> customHandlerChain = new ArrayList<Handler>();
-		customHandlerChain.add(new WSAddressingClientHandler());
-		bindingProvider.getBinding().setHandlerChain(customHandlerChain);
+        customHandlerChain.add(new WSAddressingClientHandler());
+        bindingProvider.getBinding().setHandlerChain(customHandlerChain);
          */
         Map<String, Object> requestContext = bindingProvider.getRequestContext();
         MAP requestMap = AddressingHelper.outboundMap(requestContext);
@@ -135,8 +135,8 @@ public class WSARJTXClient
         /*
          * we no longer have to add the JaxWS WSAddressingClientHandler because we can specify the WSAddressing feature
         List<Handler> customHandlerChain = new ArrayList<Handler>();
-		customHandlerChain.add(new WSAddressingClientHandler());
-		bindingProvider.getBinding().setHandlerChain(customHandlerChain);
+        customHandlerChain.add(new WSAddressingClientHandler());
+        bindingProvider.getBinding().setHandlerChain(customHandlerChain);
          */
         Map<String, Object> requestContext = bindingProvider.getRequestContext();
         Element refParam = InstanceIdentifier.createInstanceIdentifierElement(identifier.getInstanceIdentifier());
@@ -156,8 +156,8 @@ public class WSARJTXClient
         /*
          * we no longer have to add the JaxWS WSAddressingClientHandler because we can specify the WSAddressing feature
         List<Handler> customHandlerChain = new ArrayList<Handler>();
-		customHandlerChain.add(new WSAddressingClientHandler());
-		bindingProvider.getBinding().setHandlerChain(customHandlerChain);
+        customHandlerChain.add(new WSAddressingClientHandler());
+        bindingProvider.getBinding().setHandlerChain(customHandlerChain);
          */
 
         Map<String, Object> requestContext = bindingProvider.getRequestContext();

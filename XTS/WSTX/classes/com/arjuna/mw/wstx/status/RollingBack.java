@@ -46,12 +46,12 @@ public class RollingBack implements Status
 
     public static RollingBack instance ()
     {
-	return _instance;
+    return _instance;
     }
 
     public String toString ()
     {
-	return "Status.RollingBack";
+    return "Status.RollingBack";
     }
 
     private RollingBack ()

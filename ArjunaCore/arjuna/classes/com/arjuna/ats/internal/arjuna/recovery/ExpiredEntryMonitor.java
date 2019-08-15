@@ -63,7 +63,7 @@ public class ExpiredEntryMonitor extends Thread
       // ensure singleton
       if ( _theInstance != null )
       {
-	  return false;
+      return false;
       }
 
       // process system properties -- n.b. we only do this once!
@@ -74,24 +74,24 @@ public class ExpiredEntryMonitor extends Thread
 
       if ( _scanIntervalSeconds == 0 )
       {
-	  // no scanning wanted
+      // no scanning wanted
 
-	  if (tsLogger.logger.isDebugEnabled()) {
+      if (tsLogger.logger.isDebugEnabled()) {
           tsLogger.logger.debug("Expiry scan zero - not scanning");
       }
 
-	  return false;
+      return false;
       }
 
       if ( _expiryScanners.size() == 0 )
       {
-	  // nothing to do
+      // nothing to do
 
-	  if (tsLogger.logger.isDebugEnabled()) {
+      if (tsLogger.logger.isDebugEnabled()) {
           tsLogger.logger.debug("No Expiry scanners loaded - not scanning");
       }
 
-	  return false;
+      return false;
       }
 
       // create, and thus launch the monitor
@@ -141,9 +141,9 @@ public class ExpiredEntryMonitor extends Thread
   {
     while( true )
     {
-	    tsLogger.logger.debugf("ExpiredEntryMonitor running at %s", _theTimestamper.format(new Date()).toString());
+        tsLogger.logger.debugf("ExpiredEntryMonitor running at %s", _theTimestamper.format(new Date()).toString());
 
-	if (_skipNext)
+    if (_skipNext)
     {
         // make sure we skip at most one scan
 
@@ -152,12 +152,12 @@ public class ExpiredEntryMonitor extends Thread
          tsLogger.i18NLogger.info_recovery_ExpiredEntryMonitor_5();
     }
     else
-	{
-	    Enumeration scanners = _expiryScanners.elements();
+    {
+        Enumeration scanners = _expiryScanners.elements();
 
-	    while ( scanners.hasMoreElements() )
-	    {
-		ExpiryScanner m = (ExpiryScanner)scanners.nextElement();
+        while ( scanners.hasMoreElements() )
+        {
+        ExpiryScanner m = (ExpiryScanner)scanners.nextElement();
 
             // check for a shutdown request before starting a scan
             synchronized (this) {
@@ -168,36 +168,36 @@ public class ExpiredEntryMonitor extends Thread
 
             // ok go ahead and scan
 
-		m.scan();
+        m.scan();
 
-		if (tsLogger.logger.isDebugEnabled()) {
+        if (tsLogger.logger.isDebugEnabled()) {
             tsLogger.logger.debug("  ");
             // bit of space if detailing
         }
         }
-	}
+    }
 
-	// wait for a bit to avoid catching (too many) transactions etc. that
-	// are really progressing quite happily
+    // wait for a bit to avoid catching (too many) transactions etc. that
+    // are really progressing quite happily
 
-	try
-	{
+    try
+    {
         // check for shutdown request before we sleep
         synchronized (this) {
         if (_stop) {
             break;
         }
-	    wait( _scanIntervalSeconds * 1000 );
+        wait( _scanIntervalSeconds * 1000 );
         // check if we were woken because of a shutdown
         if (_stop) {
             break;
         }
         }
-	}
-	catch ( InterruptedException e1 )
-	{
+    }
+    catch ( InterruptedException e1 )
+    {
         // we should only get shut down by a shutdown request so ignore interrupts
-	}
+    }
     }
   }
 

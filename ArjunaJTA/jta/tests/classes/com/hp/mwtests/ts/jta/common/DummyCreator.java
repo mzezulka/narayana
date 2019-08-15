@@ -38,7 +38,7 @@ public class DummyCreator implements XACreator
 
     public XAResource create (String param, boolean print)
     {
-	return new DummyXA(print);
+    return new DummyXA(print);
     }
 
 }

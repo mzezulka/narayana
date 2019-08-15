@@ -65,55 +65,55 @@ import org.jboss.jbossts.qa.Utils.ServerIORStore;
 
 public class Client03b
 {
-	public static void main(String[] args)
-	{
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+    public static void main(String[] args)
+    {
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			String serviceIOR = ServerIORStore.loadIOR(args[args.length - 1]);
-			BeforeCrashService service = BeforeCrashServiceHelper.narrow(ORBInterface.orb().string_to_object(serviceIOR));
+            String serviceIOR = ServerIORStore.loadIOR(args[args.length - 1]);
+            BeforeCrashService service = BeforeCrashServiceHelper.narrow(ORBInterface.orb().string_to_object(serviceIOR));
 
-			ResourceBehavior[] resourceBehaviors = new ResourceBehavior[1];
-			resourceBehaviors[0] = new ResourceBehavior();
-			resourceBehaviors[0].crash_behavior = CrashBehavior.CrashBehaviorCrashInRollback;
+            ResourceBehavior[] resourceBehaviors = new ResourceBehavior[1];
+            resourceBehaviors[0] = new ResourceBehavior();
+            resourceBehaviors[0].crash_behavior = CrashBehavior.CrashBehaviorCrashInRollback;
 
-			boolean correct = true;
+            boolean correct = true;
 
-			OTS.current().begin();
+            OTS.current().begin();
 
-			service.setup_oper(resourceBehaviors);
+            service.setup_oper(resourceBehaviors);
 
-			correct = service.is_correct();
+            correct = service.is_correct();
 
-			OTS.current().rollback();
+            OTS.current().rollback();
 
-			if (correct)
-			{
-				System.out.println("Passed");
-			}
-			else
-			{
-				System.out.println("Failed");
-			}
-		}
-		catch (Exception exception)
-		{
-			System.out.println("Failed");
-			System.err.println("Client03b.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
+            if (correct)
+            {
+                System.out.println("Passed");
+            }
+            else
+            {
+                System.out.println("Failed");
+            }
+        }
+        catch (Exception exception)
+        {
+            System.out.println("Failed");
+            System.err.println("Client03b.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
 
-		try
-		{
-			OAInterface.shutdownOA();
-			ORBInterface.shutdownORB();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Client03b.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
-	}
+        try
+        {
+            OAInterface.shutdownOA();
+            ORBInterface.shutdownORB();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Client03b.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
+    }
 }

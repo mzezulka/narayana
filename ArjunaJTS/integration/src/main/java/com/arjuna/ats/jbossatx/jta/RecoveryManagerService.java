@@ -129,7 +129,7 @@ public class RecoveryManagerService implements XAResourceRecoveryRegistry
         xaRecoveryModule.removeXAResourceRecoveryHelper(new XAResourceRecoveryHelperWrapper(xaResourceRecovery));
     }
 
-	public void addSerializableXAResourceDeserializer(SerializableXAResourceDeserializer serializableXAResourceDeserializer) {
+    public void addSerializableXAResourceDeserializer(SerializableXAResourceDeserializer serializableXAResourceDeserializer) {
 
         XARecoveryModule xaRecoveryModule = null;
         for(RecoveryModule recoveryModule : ((Vector<RecoveryModule>)_recoveryManager.getModules())) {
@@ -145,5 +145,5 @@ public class RecoveryManagerService implements XAResourceRecoveryRegistry
 
         xaRecoveryModule.addSerializableXAResourceDeserializer(serializableXAResourceDeserializer);
 
-	}
+    }
 }

@@ -42,29 +42,29 @@ package com.arjuna.mw.wsas.exceptions;
 public class SystemException extends WSASException
 {
 
-	public SystemException ()
-	{
-		super();
-	}
+    public SystemException ()
+    {
+        super();
+    }
 
-	public SystemException (String s)
-	{
-		super(s);
-	}
+    public SystemException (String s)
+    {
+        super(s);
+    }
 
-	public SystemException (String s, int errorcode)
-	{
-		super(s, errorcode);
-	}
+    public SystemException (String s, int errorcode)
+    {
+        super(s, errorcode);
+    }
 
-	public SystemException (String reason, Object obj)
-	{
-		super(reason, obj);
-	}
+    public SystemException (String reason, Object obj)
+    {
+        super(reason, obj);
+    }
 
-	public SystemException (Object ex)
-	{
-		super(ex);
-	}
+    public SystemException (Object ex)
+    {
+        super(ex);
+    }
 
 }

@@ -50,7 +50,7 @@ public class ActivityManagerFactory
 
     public static ActivityManager activityManager ()
     {
-	return _imple;
+    return _imple;
     }
 
     private static ActivityManagerImple _imple = new ActivityManagerImple();

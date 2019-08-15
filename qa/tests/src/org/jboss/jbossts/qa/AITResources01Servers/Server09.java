@@ -65,30 +65,30 @@ import org.jboss.jbossts.qa.Utils.ServerIORStore;
 
 public class Server09
 {
-	public static void main(String args[])
-	{
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+    public static void main(String args[])
+    {
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			AITCounterImpl03 aitCounterImpl = new AITCounterImpl03();
-			CounterPOATie servant = new CounterPOATie(aitCounterImpl);
+            AITCounterImpl03 aitCounterImpl = new AITCounterImpl03();
+            CounterPOATie servant = new CounterPOATie(aitCounterImpl);
 
-			OAInterface.objectIsReady(servant);
-			Counter aitCounter = CounterHelper.narrow(OAInterface.corbaReference(servant));
+            OAInterface.objectIsReady(servant);
+            Counter aitCounter = CounterHelper.narrow(OAInterface.corbaReference(servant));
 
-			ServerIORStore.storeIOR(args[args.length - 1], ORBInterface.orb().object_to_string(aitCounter));
+            ServerIORStore.storeIOR(args[args.length - 1], ORBInterface.orb().object_to_string(aitCounter));
 
-			System.out.println("Ready");
+            System.out.println("Ready");
 
-			ORBInterface.run();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Server09.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
-	}
+            ORBInterface.run();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Server09.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
+    }
 }
 

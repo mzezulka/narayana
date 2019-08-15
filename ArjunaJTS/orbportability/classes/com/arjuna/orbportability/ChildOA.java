@@ -209,13 +209,13 @@ public boolean shutdownObject (Servant obj)
                 result = false;
             }
         }
-	catch (NullPointerException ex)
-	{
-	    /*
-	     * Ignore this as it means some other thread/process was sharing
-	     * the POA and shut it down itself.
-	     */
-	}
+    catch (NullPointerException ex)
+    {
+        /*
+         * Ignore this as it means some other thread/process was sharing
+         * the POA and shut it down itself.
+         */
+    }
         catch (Exception e)
         {
             opLogger.i18NLogger.warn_OA_caughtexception("shutdownObject", e);

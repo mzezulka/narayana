@@ -45,27 +45,27 @@ public class HLSException extends SystemException
 
     public HLSException ()
     {
-	super();
+    super();
     }
 
     public HLSException (String reason)
     {
-	super(reason);
+    super(reason);
     }
 
     public HLSException (String reason, int errorcode)
     {
-	super(reason, errorcode);
+    super(reason, errorcode);
     }
 
     public HLSException (String reason, SystemException obj)
     {
-	super(reason, obj);
+    super(reason, obj);
     }
 
     public HLSException (SystemException ex)
     {
-	super(ex);
+    super(ex);
     }
 
 }

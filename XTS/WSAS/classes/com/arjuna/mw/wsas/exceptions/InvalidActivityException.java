@@ -44,17 +44,17 @@ public class InvalidActivityException extends WSASException
 
     public InvalidActivityException ()
     {
-	super();
+    super();
     }
 
     public InvalidActivityException (String s)
     {
-	super(s);
+    super(s);
     }
 
     public InvalidActivityException (String s, int errorcode)
     {
-	super(s, errorcode);
+    super(s, errorcode);
     }
 
 }

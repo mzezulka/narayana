@@ -37,5 +37,5 @@ public interface XAResourceRecordWrappingPlugin
 
     public Integer getEISName(XAResource xaResource) throws IOException, ObjectStoreException;
 
-	public String getEISName(Integer eisName);
+    public String getEISName(Integer eisName);
 }

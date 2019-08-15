@@ -46,12 +46,12 @@ public class WrongStateException extends Exception
 
     public WrongStateException ()
     {
-	super();
+    super();
     }
 
     public WrongStateException (String s)
     {
-	super(s);
+    super(s);
     }
 
 }

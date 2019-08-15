@@ -47,12 +47,12 @@ public class HeuristicHazard implements Status
 
     public static HeuristicHazard instance ()
     {
-	return _instance;
+    return _instance;
     }
 
     public String toString ()
     {
-	return "org.w3c.wscf.twophase.status.HeuristicHazard";
+    return "org.w3c.wscf.twophase.status.HeuristicHazard";
     }
 
     private HeuristicHazard ()

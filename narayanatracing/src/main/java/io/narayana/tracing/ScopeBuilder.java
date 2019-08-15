@@ -19,43 +19,43 @@ import static io.narayana.tracing.TracingUtils.getTracer;
  */
 public final class ScopeBuilder {
 
-	private SpanBuilder spanBldr;
+    private SpanBuilder spanBldr;
 
-	/**
-	 * @param name   name of the span which will be activated in the scope
-	 */
-	public ScopeBuilder(SpanName name) {
-		this.spanBldr = prepareSpan(name);
-	}
+    /**
+     * @param name   name of the span which will be activated in the scope
+     */
+    public ScopeBuilder(SpanName name) {
+        this.spanBldr = prepareSpan(name);
+    }
 
-	/**
-	 * Construct a span with a special Narayana-specific component tag "narayana"
-	 */
-	private static SpanBuilder prepareSpan(SpanName name) {
-		Objects.requireNonNull(name, "Name of the span cannot be null");
-		return getTracer().buildSpan(name.toString());
-	}
+    /**
+     * Construct a span with a special Narayana-specific component tag "narayana"
+     */
+    private static SpanBuilder prepareSpan(SpanName name) {
+        Objects.requireNonNull(name, "Name of the span cannot be null");
+        return getTracer().buildSpan(name.toString());
+    }
 
-	/**
-	 * Adds tag to the started span.
-	 */
-	public ScopeBuilder tag(TagName name, Object val) {
-		Objects.requireNonNull(name, "Name of the tag cannot be null");
-		spanBldr = spanBldr.withTag(name.toString(), val == null ? "null" : val.toString());
-		return this;
-	}
+    /**
+     * Adds tag to the started span.
+     */
+    public ScopeBuilder tag(TagName name, Object val) {
+        Objects.requireNonNull(name, "Name of the tag cannot be null");
+        spanBldr = spanBldr.withTag(name.toString(), val == null ? "null" : val.toString());
+        return this;
+    }
 
-	public <T> ScopeBuilder tag(Tag<T> tag, T value) {
-		Objects.requireNonNull(tag, "Tag cannot be null.");
-		spanBldr = spanBldr.withTag(tag, value);
-		return this;
-	}
+    public <T> ScopeBuilder tag(Tag<T> tag, T value) {
+        Objects.requireNonNull(tag, "Tag cannot be null.");
+        spanBldr = spanBldr.withTag(tag, value);
+        return this;
+    }
 
-	public Scope start() {
-		return getTracer().scopeManager().activate(spanBldr.withTag(Tags.COMPONENT, "narayana").start(), true);
-	}
+    public Scope start() {
+        return getTracer().scopeManager().activate(spanBldr.withTag(Tags.COMPONENT, "narayana").start(), true);
+    }
 
-	public Scope startButDontFinish() {
-		return getTracer().scopeManager().activate(spanBldr.withTag(Tags.COMPONENT, "narayana").start());
-	}
+    public Scope startButDontFinish() {
+        return getTracer().scopeManager().activate(spanBldr.withTag(Tags.COMPONENT, "narayana").start());
+    }
 }

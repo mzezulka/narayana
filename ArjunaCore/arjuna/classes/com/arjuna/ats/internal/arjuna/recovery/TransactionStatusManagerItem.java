@@ -55,15 +55,15 @@ public class TransactionStatusManagerItem
      */
     public static boolean createAndSave( int port )
     {
-	boolean ret_status = true ;
+    boolean ret_status = true ;
 
-	if ( _singularItem == null )
-	    {
-		_singularItem = new TransactionStatusManagerItem( port );
+    if ( _singularItem == null )
+        {
+        _singularItem = new TransactionStatusManagerItem( port );
 
-		ret_status = _singularItem.saveThis();
-	    }
-	return ret_status ;
+        ret_status = _singularItem.saveThis();
+        }
+    return ret_status ;
     }
 
     public static boolean createAndSave(String hostAddress, int port )
@@ -92,7 +92,7 @@ public class TransactionStatusManagerItem
      */
     public String host()
     {
-	return _host ;
+    return _host ;
     }
 
     /**
@@ -100,7 +100,7 @@ public class TransactionStatusManagerItem
      */
     public int port()
     {
-	return _port ;
+    return _port ;
     }
 
     /**
@@ -108,14 +108,14 @@ public class TransactionStatusManagerItem
      */
     public void markAsDead()
     {
-	// ignore if done previously
-	if ( ! _markedDead )
-	    {
-		// the host/port won't work any more, so forget it
-		_markedDead = true ;
-		_deadTime = new Date() ;
-		saveThis() ;
-	    }
+    // ignore if done previously
+    if ( ! _markedDead )
+        {
+        // the host/port won't work any more, so forget it
+        _markedDead = true ;
+        _deadTime = new Date() ;
+        saveThis() ;
+        }
     }
 
     /**
@@ -123,7 +123,7 @@ public class TransactionStatusManagerItem
      */
     public Date getDeadTime()
     {
-	return _deadTime ;
+    return _deadTime ;
     }
 
     /**
@@ -131,7 +131,7 @@ public class TransactionStatusManagerItem
      */
     public static TransactionStatusManagerItem get()
     {
-	return _singularItem ;
+    return _singularItem ;
     }
 
     /**
@@ -141,17 +141,17 @@ public class TransactionStatusManagerItem
     */
     public static TransactionStatusManagerItem recreate ( Uid uid )
     {
-	TransactionStatusManagerItem
-	    theItem = new TransactionStatusManagerItem( uid ) ;
+    TransactionStatusManagerItem
+        theItem = new TransactionStatusManagerItem( uid ) ;
 
-	if ( theItem.restoreThis() )
-	    {
-		return theItem ;
-	    }
-	else
-	    {
+    if ( theItem.restoreThis() )
+        {
+        return theItem ;
+        }
+    else
+        {
          return null;
-	    }
+        }
     }
 
     /**
@@ -159,12 +159,12 @@ public class TransactionStatusManagerItem
      */
     public static boolean removeThis( Uid pidUid )
     {
-	boolean ret_status = false ;
+    boolean ret_status = false ;
 
       try
-	  {
-	      ret_status = getStore().remove_committed( pidUid, _typeName ) ;
-	  }
+      {
+          ret_status = getStore().remove_committed( pidUid, _typeName ) ;
+      }
       catch ( ObjectStoreException ex ) {
           tsLogger.i18NLogger.warn_recovery_TransactionStatusManagerItem_1(ex);
       }
@@ -177,7 +177,7 @@ public class TransactionStatusManagerItem
      */
     public static String typeName()
     {
-	return _typeName ;
+    return _typeName ;
    }
 
     /**
@@ -190,13 +190,13 @@ public class TransactionStatusManagerItem
 
        try
       {
-	  InputObjectState objstate = getStore().read_committed( _pidUid,
-								 _typeName ) ;
+      InputObjectState objstate = getStore().read_committed( _pidUid,
+                                 _typeName ) ;
 
-	  if ( restore_state( objstate) )
-	      {
+      if ( restore_state( objstate) )
+          {
             return ret_status = true ;
-	      }
+          }
       }
        catch ( ObjectStoreException ex ) {
            ret_status = false;
@@ -212,27 +212,27 @@ public class TransactionStatusManagerItem
     */
     private boolean restore_state ( InputObjectState objstate )
     {
-	boolean ret_status = false ;
+    boolean ret_status = false ;
 
-	try
+    try
         {
-	    _host = objstate.unpackString() ;
-	    _port = objstate.unpackInt() ;
-	    _markedDead = objstate.unpackBoolean() ;
+        _host = objstate.unpackString() ;
+        _port = objstate.unpackInt() ;
+        _markedDead = objstate.unpackBoolean() ;
 
-	    if ( _markedDead )
-		{
-		    long deadtime = objstate.unpackLong() ;
-		    _deadTime = new Date( deadtime ) ;
-		}
+        if ( _markedDead )
+        {
+            long deadtime = objstate.unpackLong() ;
+            _deadTime = new Date( deadtime ) ;
+        }
 
-	    ret_status = true ;
-	}
-	catch ( IOException ex ) {
+        ret_status = true ;
+    }
+    catch ( IOException ex ) {
         tsLogger.i18NLogger.warn_recovery_TransactionStatusManagerItem_3(ex);
     }
 
-	return ret_status ;
+    return ret_status ;
     }
 
     /**
@@ -240,27 +240,27 @@ public class TransactionStatusManagerItem
      */
     private boolean save_state ( OutputObjectState objstate )
     {
-	boolean ret_status = false ;
+    boolean ret_status = false ;
 
-	try
-	    {
-		objstate.packString( _host ) ;
-		objstate.packInt( _port ) ;
+    try
+        {
+        objstate.packString( _host ) ;
+        objstate.packInt( _port ) ;
 
-		objstate.packBoolean( _markedDead ) ;
+        objstate.packBoolean( _markedDead ) ;
 
-		if ( _markedDead )
-		    {
+        if ( _markedDead )
+            {
             objstate.packLong( _deadTime.getTime() ) ;
-		    }
+            }
 
-		ret_status = true ;
-	    }
-	catch ( IOException ex ) {
+        ret_status = true ;
+        }
+    catch ( IOException ex ) {
         tsLogger.i18NLogger.warn_recovery_TransactionStatusManagerItem_2(ex);
     }
 
-	return ret_status ;
+    return ret_status ;
     }
 
     /**
@@ -269,24 +269,24 @@ public class TransactionStatusManagerItem
      */
    private boolean saveThis()
     {
-	boolean ret_status = false ;
+    boolean ret_status = false ;
 
-	try
-	    {
-		OutputObjectState objstate = new OutputObjectState();
+    try
+        {
+        OutputObjectState objstate = new OutputObjectState();
 
-		if ( save_state(objstate) )
-		    {
-			ret_status = getStore().write_committed ( _pidUid,
-								  _typeName,
-								  objstate ) ;
+        if ( save_state(objstate) )
+            {
+            ret_status = getStore().write_committed ( _pidUid,
+                                  _typeName,
+                                  objstate ) ;
          }
-	    }
-	catch ( ObjectStoreException ex ) {
+        }
+    catch ( ObjectStoreException ex ) {
         tsLogger.i18NLogger.warn_recovery_TransactionStatusManagerItem_2(ex);
     }
 
-	return ret_status ;
+    return ret_status ;
    }
 
     /**
@@ -295,16 +295,16 @@ public class TransactionStatusManagerItem
      */
    private TransactionStatusManagerItem ( int port )
     {
-	_pidUid = Utility.getProcessUid() ;
-	_port = port ;
+    _pidUid = Utility.getProcessUid() ;
+    _port = port ;
 
-	try
-	{
-	    _host = InetAddress.getLocalHost().getHostAddress() ;
+    try
+    {
+        _host = InetAddress.getLocalHost().getHostAddress() ;
 
-	    tsLogger.logger.debugf("TransactionStatusManagerItem host: {0} port: {1}", _host, Integer.toString(_port));
-	}
-	catch ( UnknownHostException ex ) {
+        tsLogger.logger.debugf("TransactionStatusManagerItem host: {0} port: {1}", _host, Integer.toString(_port));
+    }
+    catch ( UnknownHostException ex ) {
         tsLogger.i18NLogger.warn_recovery_TransactionStatusManagerItem_4(ex);
     }
     }
@@ -337,7 +337,7 @@ public class TransactionStatusManagerItem
     */
     private TransactionStatusManagerItem( Uid uid )
     {
-	_pidUid = new Uid( uid ) ;
+    _pidUid = new Uid( uid ) ;
     }
 
     // Process Uid.

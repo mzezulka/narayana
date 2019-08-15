@@ -54,18 +54,18 @@ import com.arjuna.ats.jdbc.logging.jdbcLogger;
 public class ProvidedXADataSourceConnection extends BaseTransactionalDriverXAConnection implements ConnectionControl, TransactionalDriverXAConnection
 {
 
-	public ProvidedXADataSourceConnection (String dbName, String user,
-				      String passwd, XADataSource xaDatasource,
-				      ConnectionImple conn) throws SQLException
+    public ProvidedXADataSourceConnection (String dbName, String user,
+                      String passwd, XADataSource xaDatasource,
+                      ConnectionImple conn) throws SQLException
     {
-	if (jdbcLogger.logger.isTraceEnabled()) {
+    if (jdbcLogger.logger.isTraceEnabled()) {
         jdbcLogger.logger.trace("DirectRecoverableConnection.DirectRecoverableConnection( " + dbName + ", " + user + ", " + passwd + ", " + xaDatasource + " )");
     }
     _dbName = dbName;
-	_user = user;
-	_passwd = passwd;
-	_theDataSource = xaDatasource;
-	_theArjunaConnection = conn;
+    _user = user;
+    _passwd = passwd;
+    _theDataSource = xaDatasource;
+    _theArjunaConnection = conn;
     }
 
 }

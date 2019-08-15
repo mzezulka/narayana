@@ -46,12 +46,12 @@ public class Committing implements Status
 
     public static Committing instance ()
     {
-	return _instance;
+    return _instance;
     }
 
     public String toString ()
     {
-	return "Status.Committing";
+    return "Status.Committing";
     }
 
     private Committing ()

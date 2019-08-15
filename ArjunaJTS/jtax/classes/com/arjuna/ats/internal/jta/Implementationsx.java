@@ -55,21 +55,21 @@ public class Implementationsx
 
     public static synchronized boolean added ()
     {
-	return _added;
+    return _added;
     }
 
     public static synchronized void initialise ()
     {
-	if (!_added)
-	{
-	    /*
-	     * Now add various abstract records which crash recovery needs.
-	     */
+    if (!_added)
+    {
+        /*
+         * Now add various abstract records which crash recovery needs.
+         */
 
-	    RecordTypeManager.manager().add(new ExtendedXAResourceRecordMap());
+        RecordTypeManager.manager().add(new ExtendedXAResourceRecordMap());
 
-	    _added = true;
-	}
+        _added = true;
+    }
     }
 
     private Implementationsx ()
@@ -83,7 +83,7 @@ public class Implementationsx
      */
     static
     {
-	initialise();
+    initialise();
     }
 
 }

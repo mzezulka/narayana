@@ -40,44 +40,44 @@ public class ThreadObject3a extends Thread
 
 public ThreadObject3a (boolean doCommit)
     {
-	if (doCommit)
-	    _threadId = commitThreadId++;
-	else
-	    _threadId = abortThreadId++;
+    if (doCommit)
+        _threadId = commitThreadId++;
+    else
+        _threadId = abortThreadId++;
 
-	_commit = doCommit;
+    _commit = doCommit;
     }
 
 public void run ()
     {
-	CurrentImple current = OTSImpleManager.current();
+    CurrentImple current = OTSImpleManager.current();
 
-	try
-	{
-	    current.begin();
+    try
+    {
+        current.begin();
 
-	    Util.indent(_threadId, 0);
-	    System.out.println("begin");
+        Util.indent(_threadId, 0);
+        System.out.println("begin");
 
-	    AtomicWorker3.randomOperation(_threadId, 0);
-	    AtomicWorker3.randomOperation(_threadId, 0);
+        AtomicWorker3.randomOperation(_threadId, 0);
+        AtomicWorker3.randomOperation(_threadId, 0);
 
-	    if (_commit)
-		current.commit(false);
-	    else
-		current.rollback();
+        if (_commit)
+        current.commit(false);
+        else
+        current.rollback();
 
-	    Util.indent(_threadId, 0);
+        Util.indent(_threadId, 0);
 
-	    if (_commit)
-		System.out.println("end");
-	    else
-		System.out.println("abort");
-	}
-	catch (Exception e)
-	{
-	    System.err.println(e);
-	}
+        if (_commit)
+        System.out.println("end");
+        else
+        System.out.println("abort");
+    }
+    catch (Exception e)
+    {
+        System.err.println(e);
+    }
     }
 
 private int _threadId;

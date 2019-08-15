@@ -46,17 +46,17 @@ public class CompensateFailedException extends SystemException
 
     public CompensateFailedException ()
     {
-	super();
+    super();
     }
 
     public CompensateFailedException (String s)
     {
-	super(s);
+    super(s);
     }
 
     public CompensateFailedException (String s, int errorcode)
     {
-	super(s, errorcode);
+    super(s, errorcode);
     }
 
 }

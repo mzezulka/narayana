@@ -50,48 +50,48 @@ public class DemoDurableParticipant implements Durable2PCParticipant
 
     public DemoDurableParticipant ()
     {
-	_passed = false;
+    _passed = false;
     _prepared = false;
     _resolved = false;
     }
 
     public final boolean resolved ()
     {
-	return _resolved;
+    return _resolved;
     }
 
     public final boolean prepared ()
     {
-	return _prepared;
+    return _prepared;
     }
 
     public final boolean passed ()
     {
-	return _passed;
+    return _passed;
     }
 
     public Vote prepare () throws WrongStateException, SystemException
     {
-	System.out.println("DemoDurableParticipant.prepare for "+this);
+    System.out.println("DemoDurableParticipant.prepare for "+this);
 
     _prepared = true;
-	return new Prepared();
+    return new Prepared();
     }
 
     public void commit () throws WrongStateException, SystemException
     {
-	System.out.println("DemoDurableParticipant.commit for "+this);
+    System.out.println("DemoDurableParticipant.commit for "+this);
 
     _resolved = true;
-	_passed = true;
+    _passed = true;
     }
 
     public void rollback () throws WrongStateException, SystemException
     {
-	System.out.println("DemoDurableParticipant.rollback for "+this);
+    System.out.println("DemoDurableParticipant.rollback for "+this);
 
     _resolved = true;
-	_passed = false;
+    _passed = false;
     }
 
     public void unknown () throws SystemException
@@ -104,12 +104,12 @@ public class DemoDurableParticipant implements Durable2PCParticipant
 
     public String toString ()
     {
-	return identifier();
+    return identifier();
     }
 
     public String identifier ()
     {
-	return _id.stringForm();
+    return _id.stringForm();
     }
 
     private boolean _passed;

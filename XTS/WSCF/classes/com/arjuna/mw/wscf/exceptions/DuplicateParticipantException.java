@@ -47,17 +47,17 @@ public class DuplicateParticipantException extends WSASException
 
     public DuplicateParticipantException ()
     {
-	super();
+    super();
     }
 
     public DuplicateParticipantException (String s)
     {
-	super(s);
+    super(s);
     }
 
     public DuplicateParticipantException (String s, int errorcode)
     {
-	super(s, errorcode);
+    super(s, errorcode);
     }
 
 }

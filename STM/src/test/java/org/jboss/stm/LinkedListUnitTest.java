@@ -135,7 +135,7 @@ public class LinkedListUnitTest extends TestCase
                 _prev = null;
             else
             {
-            	Uid id = UidHelper.unpackFrom(os);
+                Uid id = UidHelper.unpackFrom(os);
                 _prev = theContainer.getHandle(id);
             }
 
@@ -145,7 +145,7 @@ public class LinkedListUnitTest extends TestCase
                 _next = null;
             else
             {
-            	Uid id = UidHelper.unpackFrom(os);
+                Uid id = UidHelper.unpackFrom(os);
                 _next = theContainer.getHandle(id);
             }
 

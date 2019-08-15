@@ -65,7 +65,7 @@ public class TransactionManagerService implements TransactionManagerServiceMBean
 
         // Associate transaction reaper with our context classloader.
         TransactionReaper.transactionReaper();
-	}
+    }
 
     public void destroy()
     {

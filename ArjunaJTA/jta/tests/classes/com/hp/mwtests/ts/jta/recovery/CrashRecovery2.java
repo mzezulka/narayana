@@ -82,52 +82,52 @@ public class CrashRecovery2 {
 
 
     @BMScript("fail2pc")
-	@Test
-	public void test() throws NotSupportedException, SystemException,
-			IllegalStateException, RollbackException, SecurityException,
-			HeuristicMixedException, HeuristicRollbackException,
-			NoSuchFieldException, IllegalArgumentException,
-			IllegalAccessException {
+    @Test
+    public void test() throws NotSupportedException, SystemException,
+            IllegalStateException, RollbackException, SecurityException,
+            HeuristicMixedException, HeuristicRollbackException,
+            NoSuchFieldException, IllegalArgumentException,
+            IllegalAccessException {
 
-	    recoveryPropertyManager.getRecoveryEnvironmentBean()
-				.setRecoveryBackoffPeriod(1);
+        recoveryPropertyManager.getRecoveryEnvironmentBean()
+                .setRecoveryBackoffPeriod(1);
 
-		// ok, now drive a TX to completion. the script should ensure that the
-		// recovery
+        // ok, now drive a TX to completion. the script should ensure that the
+        // recovery
 
-		TestXAResource firstResource = new TestXAResource();
-		TestXAResource secondResource = new TestXAResource();
+        TestXAResource firstResource = new TestXAResource();
+        TestXAResource secondResource = new TestXAResource();
 
-		javax.transaction.TransactionManager tm = com.arjuna.ats.jta.TransactionManager
-				.transactionManager();
+        javax.transaction.TransactionManager tm = com.arjuna.ats.jta.TransactionManager
+                .transactionManager();
 
-		tm.begin();
+        tm.begin();
 
-		javax.transaction.Transaction theTransaction = tm.getTransaction();
+        javax.transaction.Transaction theTransaction = tm.getTransaction();
 
-		theTransaction.enlistResource(firstResource);
-		theTransaction.enlistResource(secondResource);
+        theTransaction.enlistResource(firstResource);
+        theTransaction.enlistResource(secondResource);
 
-		tm.commit();
+        tm.commit();
 
-		TestXAResourceRecovery.setResources(firstResource, secondResource);
+        TestXAResourceRecovery.setResources(firstResource, secondResource);
 
-		assertEquals(0, firstResource.commitCount());
-		assertEquals(0, secondResource.commitCount());
-		assertEquals(0, firstResource.rollbackCount());
-		assertEquals(0, secondResource.rollbackCount());
+        assertEquals(0, firstResource.commitCount());
+        assertEquals(0, secondResource.commitCount());
+        assertEquals(0, firstResource.rollbackCount());
+        assertEquals(0, secondResource.rollbackCount());
 
-		RecoveryManager manager = RecoveryManager
-				.manager(RecoveryManager.DIRECT_MANAGEMENT);
-		manager.initialize();
+        RecoveryManager manager = RecoveryManager
+                .manager(RecoveryManager.DIRECT_MANAGEMENT);
+        manager.initialize();
 
-		manager.scan();
+        manager.scan();
 
-		assertEquals(0, firstResource.rollbackCount());
-		assertEquals(0, secondResource.rollbackCount());
-		assertEquals(1, firstResource.commitCount());
-		assertEquals(1, secondResource.commitCount());
-	}
+        assertEquals(0, firstResource.rollbackCount());
+        assertEquals(0, secondResource.rollbackCount());
+        assertEquals(1, firstResource.commitCount());
+        assertEquals(1, secondResource.commitCount());
+    }
 
     /**
      * Test of top-down recovery with serializable XAResource.

@@ -44,12 +44,12 @@ public class Created implements Status
 
     public static Created instance ()
     {
-	return _instance;
+    return _instance;
     }
 
     public String toString ()
     {
-	return "Status.Created";
+    return "Status.Created";
     }
 
     private Created ()

@@ -34,28 +34,28 @@ import javax.transaction.xa.XAResource;
  */
 public interface SerializableXAResourceDeserializer {
 
-	/**
-	 * Can this {@link SerializableXAResourceDeserializer} handle the specified
-	 * classname.
-	 *
-	 * @param className
-	 *            The name of the class to deserialize.
-	 *
-	 * @return A flag to indicate where the deserializer is aware of the
-	 *         Serializable XAResource.
-	 */
-	public boolean canDeserialze(String className);
+    /**
+     * Can this {@link SerializableXAResourceDeserializer} handle the specified
+     * classname.
+     *
+     * @param className
+     *            The name of the class to deserialize.
+     *
+     * @return A flag to indicate where the deserializer is aware of the
+     *         Serializable XAResource.
+     */
+    public boolean canDeserialze(String className);
 
-	/**
-	 * Deserialize the XAResource.
-	 *
-	 * @param ois
-	 *            The input stream to read from.
-	 * @throws IOException
-	 *             If the ObjectInputStream.readObject() fails.
-	 * @throws ClassNotFoundException
-	 *             If the ObjectInputStream.readObject() fails.
+    /**
+     * Deserialize the XAResource.
+     *
+     * @param ois
+     *            The input stream to read from.
+     * @throws IOException
+     *             If the ObjectInputStream.readObject() fails.
+     * @throws ClassNotFoundException
+     *             If the ObjectInputStream.readObject() fails.
      * @return An {@link XAResource}
-	 */
-	public XAResource deserialze(ObjectInputStream ois) throws IOException, ClassNotFoundException;
+     */
+    public XAResource deserialze(ObjectInputStream ois) throws IOException, ClassNotFoundException;
 }

@@ -55,17 +55,17 @@ public class ClientForwardInterceptor
     implements ClientRequestInterceptor
 {
     public ClientForwardInterceptor(org.omg.CORBA.ORB orb,
-				    org.omg.PortableInterceptor.Current _piCurrent,
-				    int _IndicatorSlotId)
+                    org.omg.PortableInterceptor.Current _piCurrent,
+                    int _IndicatorSlotId)
     {
 
-	if (jtsLogger.logger.isDebugEnabled()) {
+    if (jtsLogger.logger.isDebugEnabled()) {
         jtsLogger.logger.debug("Client Interceptor for RecoveryCoordinators created");
     }
 
-	piCurrent = _piCurrent;
-	IndicatorSlotId = _IndicatorSlotId;
-	_ourOrb = orb;
+    piCurrent = _piCurrent;
+    IndicatorSlotId = _IndicatorSlotId;
+    _ourOrb = orb;
 
     }
 
@@ -86,49 +86,49 @@ public class ClientForwardInterceptor
         throws ForwardRequest
     {
 
-	String objectIdString = null;
+    String objectIdString = null;
 
-	try  {
-	    RCobjectId = JavaIdlRCServiceInit._poa.reference_to_id(ri.effective_target());
-	    objectIdString = new String(RCobjectId);
+    try  {
+        RCobjectId = JavaIdlRCServiceInit._poa.reference_to_id(ri.effective_target());
+        objectIdString = new String(RCobjectId);
 
-	    if ( JavaIdlRCServiceInit.RC_ID.equals(objectIdString) )
-		{
-		    Any indicator = ri.get_slot(IndicatorSlotId);
-		    if (indicator.type().kind().equals(TCKind.tk_null))
-			{
-			    ri.add_request_service_context(RCctx, false);
-			}
-		}
-	}
-	catch(Exception ex) {
+        if ( JavaIdlRCServiceInit.RC_ID.equals(objectIdString) )
+        {
+            Any indicator = ri.get_slot(IndicatorSlotId);
+            if (indicator.type().kind().equals(TCKind.tk_null))
+            {
+                ri.add_request_service_context(RCctx, false);
+            }
+        }
+    }
+    catch(Exception ex) {
         jtsLogger.i18NLogger.warn_orbspecific_jacorb_recoverycoordinators_ClientForwardInterceptor_4(ex);
     }
 
 
-	if (!in_loop)
-	    {
-		in_loop = true;
-		if ( JavaIdlRCServiceInit.RC_ID.equals(objectIdString) ) {
+    if (!in_loop)
+        {
+        in_loop = true;
+        if ( JavaIdlRCServiceInit.RC_ID.equals(objectIdString) ) {
 
-		    if (ri.effective_target()._is_a(RecoveryCoordinatorHelper.id()))
-			{
-			    /*
-			     * Extract the substring of the ObjectId that contains the Uid and
-			     * the Process Id and pass it to the data of the service context
-			     */
-			    RCobjectId = extractObjectId(objectIdString).getBytes();
-			    RCctx = new ServiceContext(RecoveryContextId, RCobjectId);
-			    in_loop = false;
-			    throw new ForwardRequest( reco );
-			}
-		    else
-			{
-			    in_loop = false;
-			}
-		}
-		in_loop = false;
-	    }
+            if (ri.effective_target()._is_a(RecoveryCoordinatorHelper.id()))
+            {
+                /*
+                 * Extract the substring of the ObjectId that contains the Uid and
+                 * the Process Id and pass it to the data of the service context
+                 */
+                RCobjectId = extractObjectId(objectIdString).getBytes();
+                RCctx = new ServiceContext(RecoveryContextId, RCobjectId);
+                in_loop = false;
+                throw new ForwardRequest( reco );
+            }
+            else
+            {
+                in_loop = false;
+            }
+        }
+        in_loop = false;
+        }
 
     }
 
@@ -159,42 +159,42 @@ public class ClientForwardInterceptor
 
     private String extractObjectId(String encodedRCData)
     {
-	if (jtsLogger.logger.isDebugEnabled()) {
+    if (jtsLogger.logger.isDebugEnabled()) {
         jtsLogger.logger.debug("RecoveryCoordinatorId(" + encodedRCData + ")");
     }
 
-	String ObjectId2SvcCtx = null;
-	char delimiter = '#';
-	boolean ok = (encodedRCData != null);
+    String ObjectId2SvcCtx = null;
+    char delimiter = '#';
+    boolean ok = (encodedRCData != null);
 
-	if (ok)
-	{
-	    int index1 = encodedRCData.indexOf(delimiter);
+    if (ok)
+    {
+        int index1 = encodedRCData.indexOf(delimiter);
 
-	    if (index1 != -1)
-	    {
-		ObjectId2SvcCtx = encodedRCData.substring(0, index1);
-	    }
-	    else
-		ok = false;
+        if (index1 != -1)
+        {
+        ObjectId2SvcCtx = encodedRCData.substring(0, index1);
+        }
+        else
+        ok = false;
 
-	    if (ok)
-	    {
-		try
-		    {
-			String  RCDefaultObjectReference = encodedRCData.substring(index1 +1);
-			org.omg.CORBA.Object obj = _ourOrb.string_to_object(RCDefaultObjectReference) ;
-			reco = RecoveryCoordinatorHelper.narrow(obj);
-		    }
-		catch (Exception e) {
+        if (ok)
+        {
+        try
+            {
+            String  RCDefaultObjectReference = encodedRCData.substring(index1 +1);
+            org.omg.CORBA.Object obj = _ourOrb.string_to_object(RCDefaultObjectReference) ;
+            reco = RecoveryCoordinatorHelper.narrow(obj);
+            }
+        catch (Exception e) {
             jtsLogger.i18NLogger.warn_orbspecific_jacorb_recoverycoordinators_ClientForwardInterceptor_2(e);
         }
 
-	    }
+        }
 
-	}
+    }
 
-	return ObjectId2SvcCtx;
+    return ObjectId2SvcCtx;
 
     }
 

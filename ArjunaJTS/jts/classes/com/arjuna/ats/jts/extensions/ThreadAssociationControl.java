@@ -46,7 +46,7 @@ public class ThreadAssociationControl
 
     public final static void updateAssociation (ControlWrapper tx, int reason)
     {
-	ThreadAssociations.updateAssociation(tx, reason);
+    ThreadAssociations.updateAssociation(tx, reason);
     }
 
 }

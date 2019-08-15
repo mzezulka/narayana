@@ -53,58 +53,58 @@ public class SubordinateTestCase
     }
 
     @Test
-	public void testCleanupCommit () throws Exception
-	{
-		for (int i = 0; i < 1000; i++)
-		{
-			final SubordinateTransaction tm = createTransaction();
+    public void testCleanupCommit () throws Exception
+    {
+        for (int i = 0; i < 1000; i++)
+        {
+            final SubordinateTransaction tm = createTransaction();
 
-			assertEquals(TwoPhaseOutcome.PREPARE_READONLY, tm.doPrepare());
-			// don't call commit for read only case.
-		}
+            assertEquals(TwoPhaseOutcome.PREPARE_READONLY, tm.doPrepare());
+            // don't call commit for read only case.
+        }
 
-		assertEquals(ActionManager.manager().getNumberOfInflightTransactions(), 0);
-	}
-
-    @Test
-	public void testCleanupRollback () throws Exception
-	{
-		for (int i = 0; i < 1000; i++)
-		{
-			final SubordinateTransaction tm = createTransaction();
-
-			tm.doRollback();
-		}
-
-		assertEquals(ActionManager.manager().getNumberOfInflightTransactions(), 0);
-	}
+        assertEquals(ActionManager.manager().getNumberOfInflightTransactions(), 0);
+    }
 
     @Test
-	public void testCleanupSecondPhaseRollback () throws Exception
-	{
-		for (int i = 0; i < 1000; i++)
-		{
-			final SubordinateTransaction tm = createTransaction();
+    public void testCleanupRollback () throws Exception
+    {
+        for (int i = 0; i < 1000; i++)
+        {
+            final SubordinateTransaction tm = createTransaction();
 
-			assertEquals(TwoPhaseOutcome.PREPARE_READONLY, tm.doPrepare());
-			// don't call rollback for read only case
-		}
+            tm.doRollback();
+        }
 
-		assertEquals(ActionManager.manager().getNumberOfInflightTransactions(), 0);
-	}
+        assertEquals(ActionManager.manager().getNumberOfInflightTransactions(), 0);
+    }
 
     @Test
-	public void testCleanupOnePhaseCommit () throws Exception
-	{
-		for (int i = 0; i < 1000; i++)
-		{
-			final SubordinateTransaction tm = createTransaction();
+    public void testCleanupSecondPhaseRollback () throws Exception
+    {
+        for (int i = 0; i < 1000; i++)
+        {
+            final SubordinateTransaction tm = createTransaction();
 
-			tm.doOnePhaseCommit();
-		}
+            assertEquals(TwoPhaseOutcome.PREPARE_READONLY, tm.doPrepare());
+            // don't call rollback for read only case
+        }
 
-		assertEquals(ActionManager.manager().getNumberOfInflightTransactions(), 0);
-	}
+        assertEquals(ActionManager.manager().getNumberOfInflightTransactions(), 0);
+    }
+
+    @Test
+    public void testCleanupOnePhaseCommit () throws Exception
+    {
+        for (int i = 0; i < 1000; i++)
+        {
+            final SubordinateTransaction tm = createTransaction();
+
+            tm.doOnePhaseCommit();
+        }
+
+        assertEquals(ActionManager.manager().getNumberOfInflightTransactions(), 0);
+    }
 
     /////////////
 

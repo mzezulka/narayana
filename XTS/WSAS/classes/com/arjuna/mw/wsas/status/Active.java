@@ -44,12 +44,12 @@ public class Active implements Status
 
     public static Active instance ()
     {
-	return _instance;
+    return _instance;
     }
 
     public String toString ()
     {
-	return "Status.Active";
+    return "Status.Active";
     }
 
     private Active ()

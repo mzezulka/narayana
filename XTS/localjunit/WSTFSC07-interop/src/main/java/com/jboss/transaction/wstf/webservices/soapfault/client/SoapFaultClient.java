@@ -88,7 +88,7 @@ public class SoapFaultClient
         /*
          * we no longer have to add the JaxWS WSAddressingClientHandler because we can specify the WSAddressing feature
         List<Handler> customHandlerChain = new ArrayList<Handler>();
-		customHandlerChain.add(new WSAddressingClientHandler());
+        customHandlerChain.add(new WSAddressingClientHandler());
         bindingProvider.getBinding().setHandlerChain(customHandlerChain);
          */
 

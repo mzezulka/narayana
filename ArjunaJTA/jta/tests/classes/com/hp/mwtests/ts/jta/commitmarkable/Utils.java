@@ -36,7 +36,7 @@ import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
 public class Utils {
-	public static void createTables(Connection connection) throws SQLException {
+    public static void createTables(Connection connection) throws SQLException {
         try {
             String driverName = connection.getMetaData().getDriverName();
             int index = driverName.indexOf(' ');
@@ -154,125 +154,125 @@ public class Utils {
         } finally {
             connection.close();
         }
-	}
+    }
 
-	public static void createTables(XADataSource xaDataSource) {
-		try {
-			XAConnection xaConnection = xaDataSource.getXAConnection();
+    public static void createTables(XADataSource xaDataSource) {
+        try {
+            XAConnection xaConnection = xaDataSource.getXAConnection();
 
-			try {
-				XAResource xaResource = xaConnection.getXAResource();
-				Xid[] recover = xaResource.recover(XAResource.TMSTARTRSCAN);
-				for (int i = 0; i < recover.length; i++) {
-					xaResource.rollback(recover[i]);
-				}
-				xaResource.recover(XAResource.TMENDRSCAN);
-			} catch (XAException e) {
-				e.printStackTrace();
-			}
+            try {
+                XAResource xaResource = xaConnection.getXAResource();
+                Xid[] recover = xaResource.recover(XAResource.TMSTARTRSCAN);
+                for (int i = 0; i < recover.length; i++) {
+                    xaResource.rollback(recover[i]);
+                }
+                xaResource.recover(XAResource.TMENDRSCAN);
+            } catch (XAException e) {
+                e.printStackTrace();
+            }
 
-			Connection connection = xaConnection.getConnection();
-			Statement statement = connection.createStatement();
-			String driverName = connection.getMetaData().getDriverName();
-			int index = driverName.indexOf(' ');
-			if (index != -1)
-				driverName = driverName.substring(0, index);
-			driverName = driverName.replaceAll("-", "_");
-			driverName = driverName.toLowerCase();
+            Connection connection = xaConnection.getConnection();
+            Statement statement = connection.createStatement();
+            String driverName = connection.getMetaData().getDriverName();
+            int index = driverName.indexOf(' ');
+            if (index != -1)
+                driverName = driverName.substring(0, index);
+            driverName = driverName.replaceAll("-", "_");
+            driverName = driverName.toLowerCase();
 
-			if (driverName.equals("jconnect")) {
-				try {
-					statement
-							.execute("drop table " + Utils.getXAFooTableName());
-				} catch (SQLException ex) {
-					if (ex.getErrorCode() != 3701) {
-						throw ex;
-					}
-				}
-			} else if (driverName.equals("oracle")) {
-				try {
-					statement
-							.execute("drop table " + Utils.getXAFooTableName());
-				} catch (SQLException ex) {
-					if (!ex.getSQLState().equals("42000")
-							&& ex.getErrorCode() != 942) {
-						throw ex;
-					}
-				}
-			} else if (driverName.equals("ibm")) {
-				try {
-					statement
-							.execute("drop table " + Utils.getXAFooTableName());
-				} catch (SQLException ex) {
-					if (!ex.getSQLState().equals("42704")
-							&& ex.getErrorCode() != -204) {
-						throw ex;
-					}
-				}
-			} else if (driverName.equals("microsoft")) {
-				try {
-					statement
-							.execute("drop table " + Utils.getXAFooTableName());
-				} catch (SQLException ex) {
-					if (!ex.getSQLState().equals("S0005")
-							&& ex.getErrorCode() != 3701) {
-						throw ex;
-					}
-				}
-			} else {
-				statement.execute("drop table if exists "
-						+ Utils.getXAFooTableName());
-			}
-			statement.execute("create table " + Utils.getXAFooTableName()
-					+ " (bar int)");
-			statement.close();
-			connection.close();
-			xaConnection.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+            if (driverName.equals("jconnect")) {
+                try {
+                    statement
+                            .execute("drop table " + Utils.getXAFooTableName());
+                } catch (SQLException ex) {
+                    if (ex.getErrorCode() != 3701) {
+                        throw ex;
+                    }
+                }
+            } else if (driverName.equals("oracle")) {
+                try {
+                    statement
+                            .execute("drop table " + Utils.getXAFooTableName());
+                } catch (SQLException ex) {
+                    if (!ex.getSQLState().equals("42000")
+                            && ex.getErrorCode() != 942) {
+                        throw ex;
+                    }
+                }
+            } else if (driverName.equals("ibm")) {
+                try {
+                    statement
+                            .execute("drop table " + Utils.getXAFooTableName());
+                } catch (SQLException ex) {
+                    if (!ex.getSQLState().equals("42704")
+                            && ex.getErrorCode() != -204) {
+                        throw ex;
+                    }
+                }
+            } else if (driverName.equals("microsoft")) {
+                try {
+                    statement
+                            .execute("drop table " + Utils.getXAFooTableName());
+                } catch (SQLException ex) {
+                    if (!ex.getSQLState().equals("S0005")
+                            && ex.getErrorCode() != 3701) {
+                        throw ex;
+                    }
+                }
+            } else {
+                statement.execute("drop table if exists "
+                        + Utils.getXAFooTableName());
+            }
+            statement.execute("create table " + Utils.getXAFooTableName()
+                    + " (bar int)");
+            statement.close();
+            connection.close();
+            xaConnection.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	public static void createTables(Connection connection,
-			XADataSource xaDataSource) throws SQLException {
-		createTables(connection);
-		createTables(xaDataSource);
-	}
+    public static void createTables(Connection connection,
+            XADataSource xaDataSource) throws SQLException {
+        createTables(connection);
+        createTables(xaDataSource);
+    }
 
-	public static void removeRecursive(Path path) throws IOException {
-		Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
-			@Override
-			public FileVisitResult visitFile(Path file,
-					BasicFileAttributes attrs) throws IOException {
-				Files.delete(file);
-				return FileVisitResult.CONTINUE;
-			}
+    public static void removeRecursive(Path path) throws IOException {
+        Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path file,
+                    BasicFileAttributes attrs) throws IOException {
+                Files.delete(file);
+                return FileVisitResult.CONTINUE;
+            }
 
-			@Override
-			public FileVisitResult visitFileFailed(Path file, IOException exc)
-					throws IOException {
-				// try to delete the file anyway, even if its attributes
-				// could not be read, since delete-only access is
-				// theoretically possible
-				Files.delete(file);
-				return FileVisitResult.CONTINUE;
-			}
+            @Override
+            public FileVisitResult visitFileFailed(Path file, IOException exc)
+                    throws IOException {
+                // try to delete the file anyway, even if its attributes
+                // could not be read, since delete-only access is
+                // theoretically possible
+                Files.delete(file);
+                return FileVisitResult.CONTINUE;
+            }
 
-			@Override
-			public FileVisitResult postVisitDirectory(Path dir, IOException exc)
-					throws IOException {
-				if (exc == null) {
-					Files.delete(dir);
-					return FileVisitResult.CONTINUE;
-				} else {
-					// directory iteration failed; propagate exception
-					throw exc;
-				}
-			}
-		});
-	}
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc)
+                    throws IOException {
+                if (exc == null) {
+                    Files.delete(dir);
+                    return FileVisitResult.CONTINUE;
+                } else {
+                    // directory iteration failed; propagate exception
+                    throw exc;
+                }
+            }
+        });
+    }
 
-	public static String getXAFooTableName() {
-		return "foo2";
-	}
+    public static String getXAFooTableName() {
+        return "foo2";
+    }
 }

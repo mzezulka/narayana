@@ -200,7 +200,7 @@ public class CoordinatorCompletionParticipantEngine implements CoordinatorComple
             sendCompleted() ;
         }
         else if ((current == State.STATE_FAILING_ACTIVE) || (current == State.STATE_FAILING_CANCELING) ||
-        	 (current == State.STATE_FAILING_COMPLETING))
+             (current == State.STATE_FAILING_COMPLETING))
         {
             sendFail(current.getValue()) ;
         }
@@ -355,7 +355,7 @@ public class CoordinatorCompletionParticipantEngine implements CoordinatorComple
             sendCompleted() ;
         }
         else if ((current == State.STATE_FAILING_ACTIVE) || (current == State.STATE_FAILING_CANCELING) ||
-        	 (current == State.STATE_FAILING_COMPLETING) || (current == State.STATE_ENDED))
+             (current == State.STATE_FAILING_COMPLETING) || (current == State.STATE_ENDED))
         {
             sendFail(current.getValue()) ;
         }
@@ -479,7 +479,7 @@ public class CoordinatorCompletionParticipantEngine implements CoordinatorComple
             current = state ;
             if (current == State.STATE_NOT_COMPLETING)
             {
-        	ended() ;
+            ended() ;
             }
         }
     }
@@ -493,12 +493,12 @@ public class CoordinatorCompletionParticipantEngine implements CoordinatorComple
      */
     public void getStatus(final NotificationType getStatus, final MAP map, final ArjunaContext arjunaContext)
     {
-	final State current ;
-	synchronized(this)
-	{
-	    current = state ;
-	}
-	sendStatus(current) ;
+    final State current ;
+    synchronized(this)
+    {
+        current = state ;
+    }
+    sendStatus(current) ;
     }
 
     /**
@@ -746,11 +746,11 @@ public class CoordinatorCompletionParticipantEngine implements CoordinatorComple
             }
             else if (current == State.STATE_CANCELING)
             {
-        	changeState(State.STATE_FAILING_CANCELING) ;
+            changeState(State.STATE_FAILING_CANCELING) ;
             }
             else if (current == State.STATE_COMPLETING)
             {
-        	changeState(State.STATE_FAILING_COMPLETING) ;
+            changeState(State.STATE_FAILING_COMPLETING) ;
             }
             else if (current == State.STATE_COMPENSATING)
             {

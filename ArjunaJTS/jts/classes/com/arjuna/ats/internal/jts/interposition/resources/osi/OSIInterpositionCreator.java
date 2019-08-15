@@ -43,12 +43,12 @@ public class OSIInterpositionCreator implements FactoryCreator
 
 public ControlImple recreateLocal (PropagationContext ctx) throws SystemException
     {
-	return OSIInterposition.create(ctx);
+    return OSIInterposition.create(ctx);
     }
 
 public Control recreate (PropagationContext ctx) throws SystemException
     {
-	return recreateLocal(ctx).getControl();
+    return recreateLocal(ctx).getControl();
     }
 
 };

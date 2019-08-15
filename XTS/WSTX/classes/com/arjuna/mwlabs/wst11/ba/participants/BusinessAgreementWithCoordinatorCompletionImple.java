@@ -69,26 +69,26 @@ public class BusinessAgreementWithCoordinatorCompletionImple extends
         super();
     }
 
-	public void complete () throws InvalidParticipantException,
-			WrongStateException, SystemException
-	{
-		if (_resource != null)
-		{
-			try
-			{
-				((BusinessAgreementWithCoordinatorCompletionParticipant) _resource)
-						.complete();
-			}
-			catch (com.arjuna.wst.WrongStateException ex)
-			{
-				throw new WrongStateException(ex.toString());
-			}
-			catch (com.arjuna.wst.SystemException ex)
-			{
-				throw new SystemException(ex.toString());
-			}
-		}
-		else
-			throw new InvalidParticipantException();
-	}
+    public void complete () throws InvalidParticipantException,
+            WrongStateException, SystemException
+    {
+        if (_resource != null)
+        {
+            try
+            {
+                ((BusinessAgreementWithCoordinatorCompletionParticipant) _resource)
+                        .complete();
+            }
+            catch (com.arjuna.wst.WrongStateException ex)
+            {
+                throw new WrongStateException(ex.toString());
+            }
+            catch (com.arjuna.wst.SystemException ex)
+            {
+                throw new SystemException(ex.toString());
+            }
+        }
+        else
+            throw new InvalidParticipantException();
+    }
 }

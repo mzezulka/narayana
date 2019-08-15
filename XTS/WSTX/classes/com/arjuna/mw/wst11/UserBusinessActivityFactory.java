@@ -36,7 +36,7 @@ public class UserBusinessActivityFactory
     public static UserBusinessActivity userBusinessActivity ()
     {
         return UserBusinessActivity.getUserBusinessActivity() ;
-	}
+    }
 
     public static UserBusinessActivity userSubordinateBusinessActivity ()
     {

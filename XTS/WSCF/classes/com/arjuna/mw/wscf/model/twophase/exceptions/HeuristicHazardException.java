@@ -46,17 +46,17 @@ public class HeuristicHazardException extends SystemException
 
     public HeuristicHazardException ()
     {
-	super();
+    super();
     }
 
     public HeuristicHazardException (String s)
     {
-	super(s);
+    super(s);
     }
 
     public HeuristicHazardException (String s, int errorcode)
     {
-	super(s, errorcode);
+    super(s, errorcode);
     }
 
 }

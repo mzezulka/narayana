@@ -48,41 +48,41 @@ public class tranobject_i extends org.omg.CosTransactions.ResourcePOA
 
     public tranobject_i ()
     {
-	ORBManager.getPOA().objectIsReady(this);
+    ORBManager.getPOA().objectIsReady(this);
 
-	ref = ResourceHelper.narrow(ORBManager.getPOA().corbaReference(this));
+    ref = ResourceHelper.narrow(ORBManager.getPOA().corbaReference(this));
     }
 
     public Resource getReference ()
     {
-	return ref;
+    return ref;
     }
 
     public org.omg.CosTransactions.Vote prepare () throws SystemException
     {
-	System.out.println("TRANOBJECT : PREPARE");
+    System.out.println("TRANOBJECT : PREPARE");
 
-	return Vote.VoteCommit;
+    return Vote.VoteCommit;
     }
 
     public void rollback () throws SystemException, HeuristicCommit, HeuristicMixed, HeuristicHazard
     {
-	System.out.println("TRANOBJECT : ROLLBACK");
+    System.out.println("TRANOBJECT : ROLLBACK");
     }
 
     public void commit () throws SystemException, NotPrepared, HeuristicRollback, HeuristicMixed, HeuristicHazard
     {
-	System.out.println("TRANOBJECT : COMMIT");
+    System.out.println("TRANOBJECT : COMMIT");
     }
 
     public void forget () throws SystemException
     {
-	System.out.println("TRANOBJECT : FORGET");
+    System.out.println("TRANOBJECT : FORGET");
     }
 
     public void commit_one_phase () throws SystemException, HeuristicHazard
     {
-	System.out.println("TRANOBJECT : COMMIT_ONE_PHASE");
+    System.out.println("TRANOBJECT : COMMIT_ONE_PHASE");
     }
 
     private Resource ref;

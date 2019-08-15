@@ -495,7 +495,7 @@ public class ParticipantEngine implements ParticipantInboundEvents
             current = state ;
             if ((current == State.STATE_ACTIVE) || (current == State.STATE_PREPARING))
             {
-        	state = null ;
+            state = null ;
             }
         }
 
@@ -582,7 +582,7 @@ public class ParticipantEngine implements ParticipantInboundEvents
             {
                 if (state == State.STATE_COMMITTING)
                 {
-            	    state = State.STATE_PREPARED_SUCCESS ;
+                    state = State.STATE_PREPARED_SUCCESS ;
                 }
             }
 

@@ -63,9 +63,9 @@ public class ServerInitializer
     {
         try
         {
-	    org.omg.CORBA.ORB theORB = ((org.jacorb.orb.portableInterceptor.ORBInitInfoImpl)info).getORB();
+        org.omg.CORBA.ORB theORB = ((org.jacorb.orb.portableInterceptor.ORBInitInfoImpl)info).getORB();
 
-	    info.add_server_request_interceptor (new ServerRecoveryInterceptor(theORB));
+        info.add_server_request_interceptor (new ServerRecoveryInterceptor(theORB));
         }
         catch (Exception e) {
             jtsLogger.i18NLogger.warn_orbspecific_jacorb_recoverycoordinators_ServerInitializer_1(e);

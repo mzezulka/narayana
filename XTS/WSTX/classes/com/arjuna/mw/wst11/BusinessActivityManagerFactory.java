@@ -37,5 +37,5 @@ public class BusinessActivityManagerFactory
     public static BusinessActivityManager businessActivityManager ()
     {
         return BusinessActivityManager.getBusinessActivityManager() ;
-	}
+    }
 }

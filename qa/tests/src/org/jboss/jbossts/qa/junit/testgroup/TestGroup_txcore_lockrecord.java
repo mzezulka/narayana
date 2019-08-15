@@ -25,577 +25,577 @@ import org.junit.*;
 
 public class TestGroup_txcore_lockrecord extends TestGroupBase
 {
-	@Test public void LockRecord_Test001()
-	{
+    @Test public void LockRecord_Test001()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.Client001.class, "$(CALLS)", "1");
-	}
+    }
 
-	@Test public void LockRecord_Test002()
-	{
+    @Test public void LockRecord_Test002()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.Client001.class, "$(CALLS)", "2");
-	}
+    }
 
-	@Test public void LockRecord_Test003()
-	{
+    @Test public void LockRecord_Test003()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.Client001.class, "$(CALLS)", "5");
-	}
+    }
 
-	@Test public void LockRecord_Test004()
-	{
+    @Test public void LockRecord_Test004()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.Client001.class, "$(CALLS)", "10");
-	}
+    }
 
 
-	@Test public void LockRecord_Test005()
-	{
+    @Test public void LockRecord_Test005()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.Client002.class, "$(CALLS)", "1");
-	}
+    }
 
-	@Test public void LockRecord_Test006()
-	{
+    @Test public void LockRecord_Test006()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.Client002.class, "$(CALLS)", "2");
-	}
+    }
 
-	@Test public void LockRecord_Test007()
-	{
+    @Test public void LockRecord_Test007()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.Client002.class, "$(CALLS)", "5");
-	}
+    }
 
-	@Test public void LockRecord_Test008()
-	{
+    @Test public void LockRecord_Test008()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.Client002.class, "$(CALLS)", "10");
-	}
+    }
 
 
-	@Test public void LockRecord_Test009()
-	{
+    @Test public void LockRecord_Test009()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.Client003.class, "$(CALLS)", "1");
-	}
+    }
 
-	@Test public void LockRecord_Test010()
-	{
+    @Test public void LockRecord_Test010()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.Client003.class, "$(CALLS)", "2");
-	}
+    }
 
-	@Test public void LockRecord_Test011()
-	{
+    @Test public void LockRecord_Test011()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.Client003.class, "$(CALLS)", "5");
-	}
+    }
 
-	@Test public void LockRecord_Test012()
-	{
+    @Test public void LockRecord_Test012()
+    {
         Task client = createTask("client0", org.jboss.jbossts.qa.ArjunaCore.LockManager.client.Client003.class, Task.TaskType.EXPECT_PASS_FAIL, 960);
-		client.start("$(CALLS)", "10");
-		client.waitFor();
-	}
+        client.start("$(CALLS)", "10");
+        client.waitFor();
+    }
 
 
-	@Test public void LockRecord_Test013()
-	{
+    @Test public void LockRecord_Test013()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.Client004.class, "$(CALLS)", "1");
-	}
+    }
 
-	@Test public void LockRecord_Test014()
-	{
+    @Test public void LockRecord_Test014()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.Client004.class, "$(CALLS)", "2");
-	}
+    }
 
 
-	@Test public void LockRecord_Test015()
-	{
+    @Test public void LockRecord_Test015()
+    {
         Task client = createTask("client0", org.jboss.jbossts.qa.ArjunaCore.LockManager.client.Client004.class, Task.TaskType.EXPECT_PASS_FAIL, 960);
-		client.start("$(CALLS)", "5");
-		client.waitFor();
-	}
+        client.start("$(CALLS)", "5");
+        client.waitFor();
+    }
 
-	@Test public void LockRecord_Test016()
-	{
+    @Test public void LockRecord_Test016()
+    {
         Task client = createTask("client0", org.jboss.jbossts.qa.ArjunaCore.LockManager.client.Client004.class, Task.TaskType.EXPECT_PASS_FAIL, 960);
-		client.start("$(CALLS)", "10");
-		client.waitFor();
-	}
+        client.start("$(CALLS)", "10");
+        client.waitFor();
+    }
 
 
-	@Test public void LockRecord_Thread_Test001a()
-	{
+    @Test public void LockRecord_Thread_Test001a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient001.class, "$(CALLS)", "1", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test001b()
-	{
+    @Test public void LockRecord_Thread_Test001b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient001.class, "-newlock", "$(CALLS)", "1", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test002a()
-	{
+    @Test public void LockRecord_Thread_Test002a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient001.class, "$(CALLS)", "2", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test002b()
-	{
+    @Test public void LockRecord_Thread_Test002b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient001.class, "-newlock", "$(CALLS)", "2", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test003a()
-	{
+    @Test public void LockRecord_Thread_Test003a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient001.class, "$(CALLS)", "5", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test003b()
-	{
+    @Test public void LockRecord_Thread_Test003b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient001.class, "-newlock", "$(CALLS)", "5", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test004a()
-	{
+    @Test public void LockRecord_Thread_Test004a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient001.class, "$(CALLS)", "10", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test004b()
-	{
+    @Test public void LockRecord_Thread_Test004b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient001.class, "-newlock", "$(CALLS)", "10", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test005a()
-	{
+    @Test public void LockRecord_Thread_Test005a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient001.class, "$(CALLS)", "1", "5");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test005b()
-	{
+    @Test public void LockRecord_Thread_Test005b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient001.class, "-newlock", "$(CALLS)", "1", "5");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test006a()
-	{
+    @Test public void LockRecord_Thread_Test006a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient001.class, "$(CALLS)", "2", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test006b()
-	{
+    @Test public void LockRecord_Thread_Test006b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient001.class, "-newlock", "$(CALLS)", "2", "5");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test007a()
-	{
+    @Test public void LockRecord_Thread_Test007a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient001.class, "$(CALLS)", "5", "5");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test007b()
-	{
+    @Test public void LockRecord_Thread_Test007b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient001.class, "-newlock", "$(CALLS)", "5", "5");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test008a()
-	{
+    @Test public void LockRecord_Thread_Test008a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient001.class, "$(CALLS)", "10", "5");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test008b()
-	{
+    @Test public void LockRecord_Thread_Test008b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient001.class, "-newlock", "$(CALLS)", "10", "5");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test009a()
-	{
+    @Test public void LockRecord_Thread_Test009a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient001.class, "$(CALLS)", "1", "10");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test009b()
-	{
+    @Test public void LockRecord_Thread_Test009b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient001.class, "-newlock", "$(CALLS)", "1", "10");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test010a()
-	{
+    @Test public void LockRecord_Thread_Test010a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient001.class, "$(CALLS)", "2", "10");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test010b()
-	{
+    @Test public void LockRecord_Thread_Test010b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient001.class, "-newlock", "$(CALLS)", "2", "10");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test011a()
-	{
+    @Test public void LockRecord_Thread_Test011a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient001.class, "$(CALLS)", "5", "10");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test011b()
-	{
+    @Test public void LockRecord_Thread_Test011b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient001.class, "-newlock", "$(CALLS)", "5", "10");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test012a()
-	{
+    @Test public void LockRecord_Thread_Test012a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient001.class, "$(CALLS)", "10", "10");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test012b()
-	{
+    @Test public void LockRecord_Thread_Test012b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient001.class, "-newlock", "$(CALLS)", "10", "10");
-	}
+    }
 
 
-	@Test public void LockRecord_Thread_Test013a()
-	{
+    @Test public void LockRecord_Thread_Test013a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient002.class, "$(CALLS)", "1", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test013b()
-	{
+    @Test public void LockRecord_Thread_Test013b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient002.class, "-newlock", "$(CALLS)", "1", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test014a()
-	{
+    @Test public void LockRecord_Thread_Test014a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient002.class, "$(CALLS)", "2", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test014b()
-	{
+    @Test public void LockRecord_Thread_Test014b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient002.class, "-newlock", "$(CALLS)", "2", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test015a()
-	{
+    @Test public void LockRecord_Thread_Test015a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient002.class, "$(CALLS)", "5", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test015b()
-	{
+    @Test public void LockRecord_Thread_Test015b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient002.class, "-newlock", "$(CALLS)","5", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test016a()
-	{
+    @Test public void LockRecord_Thread_Test016a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient002.class, "$(CALLS)", "10", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test016b()
-	{
+    @Test public void LockRecord_Thread_Test016b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient002.class, "-newlock", "$(CALLS)", "10", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test017a()
-	{
+    @Test public void LockRecord_Thread_Test017a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient002.class, "$(CALLS)", "1", "5");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test017b()
-	{
+    @Test public void LockRecord_Thread_Test017b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient002.class, "-newlock", "$(CALLS)", "1", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test018a()
-	{
+    @Test public void LockRecord_Thread_Test018a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient002.class, "$(CALLS)", "2", "5");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test018b()
-	{
+    @Test public void LockRecord_Thread_Test018b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient002.class, "-newlock", "$(CALLS)", "2", "5");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test019a()
-	{
+    @Test public void LockRecord_Thread_Test019a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient002.class, "$(CALLS)", "5", "5");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test019b()
-	{
+    @Test public void LockRecord_Thread_Test019b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient002.class, "-newlock", "$(CALLS)", "5", "5");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test020a()
-	{
+    @Test public void LockRecord_Thread_Test020a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient002.class, "$(CALLS)", "10", "5");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test020b()
-	{
+    @Test public void LockRecord_Thread_Test020b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient002.class, "-newlock", "$(CALLS)", "10", "5");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test021a()
-	{
+    @Test public void LockRecord_Thread_Test021a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient002.class, "$(CALLS)", "1", "10");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test021b()
-	{
+    @Test public void LockRecord_Thread_Test021b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient002.class, "-newlock", "$(CALLS)", "1", "10");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test022a()
-	{
+    @Test public void LockRecord_Thread_Test022a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient002.class, "$(CALLS)", "2", "10");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test022b()
-	{
+    @Test public void LockRecord_Thread_Test022b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient002.class, "-newlock", "$(CALLS)", "2", "10");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test023a()
-	{
+    @Test public void LockRecord_Thread_Test023a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient002.class, "$(CALLS)", "5", "10");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test023b()
-	{
+    @Test public void LockRecord_Thread_Test023b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient002.class, "-newlock", "$(CALLS)", "5", "10");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test024a()
-	{
+    @Test public void LockRecord_Thread_Test024a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient002.class, "$(CALLS)", "10", "10");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test024b()
-	{
+    @Test public void LockRecord_Thread_Test024b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient002.class, "-newlock", "$(CALLS)", "10", "10");
-	}
+    }
 
 
-	@Test public void LockRecord_Thread_Test025a()
-	{
+    @Test public void LockRecord_Thread_Test025a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient003.class, "$(CALLS)", "1", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test025b()
-	{
+    @Test public void LockRecord_Thread_Test025b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient003.class, "-newlock", "$(CALLS)", "1", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test026a()
-	{
+    @Test public void LockRecord_Thread_Test026a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient003.class, "$(CALLS)", "2", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test026b()
+    @Test public void LockRecord_Thread_Test026b()
     {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient003.class, "-newlock", "$(CALLS)", "2", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test027a()
-	{
+    @Test public void LockRecord_Thread_Test027a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient003.class, "$(CALLS)", "5", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test027b()
-	{
+    @Test public void LockRecord_Thread_Test027b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient003.class, "-newlock", "$(CALLS)", "5", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test028a()
-	{
+    @Test public void LockRecord_Thread_Test028a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient003.class, "$(CALLS)", "10", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test028b()
-	{
+    @Test public void LockRecord_Thread_Test028b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient003.class, "-newlock", "$(CALLS)", "10", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test029a()
-	{
+    @Test public void LockRecord_Thread_Test029a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient003.class, "$(CALLS)", "1", "5");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test029b()
-	{
+    @Test public void LockRecord_Thread_Test029b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient003.class, "-newlock", "$(CALLS)", "1", "5");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test030a()
-	{
+    @Test public void LockRecord_Thread_Test030a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient003.class, "$(CALLS)", "2", "5");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test030b()
-	{
+    @Test public void LockRecord_Thread_Test030b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient003.class, "-newlock", "$(CALLS)", "2", "5");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test031a()
-	{
+    @Test public void LockRecord_Thread_Test031a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient003.class, "$(CALLS)", "5", "5");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test031b()
-	{
+    @Test public void LockRecord_Thread_Test031b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient003.class, "-newlock", "$(CALLS)", "5", "5");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test032a()
-	{
+    @Test public void LockRecord_Thread_Test032a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient003.class, "$(CALLS)", "10", "5");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test032b()
-	{
+    @Test public void LockRecord_Thread_Test032b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient003.class, "-newlock", "$(CALLS)", "10", "5");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test033a()
-	{
+    @Test public void LockRecord_Thread_Test033a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient003.class, "$(CALLS)", "1", "10");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test033b()
-	{
+    @Test public void LockRecord_Thread_Test033b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient003.class, "-newlock", "$(CALLS)", "1", "10");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test034a()
-	{
+    @Test public void LockRecord_Thread_Test034a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient003.class, "$(CALLS)", "2", "10");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test034b()
-	{
+    @Test public void LockRecord_Thread_Test034b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient003.class, "-newlock", "$(CALLS)", "2", "10");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test035a()
-	{
+    @Test public void LockRecord_Thread_Test035a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient003.class, "$(CALLS)", "5", "10");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test035b()
-	{
+    @Test public void LockRecord_Thread_Test035b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient003.class, "-newlock", "$(CALLS)", "5", "10");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test036a()
-	{
+    @Test public void LockRecord_Thread_Test036a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient003.class, "$(CALLS)", "10", "10");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test036b()
-	{
+    @Test public void LockRecord_Thread_Test036b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient003.class, "-newlock", "$(CALLS)", "10", "10");
-	}
+    }
 
 
-	@Test public void LockRecord_Thread_Test037a()
-	{
+    @Test public void LockRecord_Thread_Test037a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient004.class, "$(CALLS)", "1", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test037b()
-	{
+    @Test public void LockRecord_Thread_Test037b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient004.class, "$(CALLS)", "1", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test038a()
-	{
+    @Test public void LockRecord_Thread_Test038a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient004.class, "$(CALLS)", "2", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test038b()
-	{
+    @Test public void LockRecord_Thread_Test038b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient004.class, "-newlock", "$(CALLS)", "2", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test039a()
-	{
+    @Test public void LockRecord_Thread_Test039a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient004.class, "$(CALLS)", "5", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test039b()
-	{
+    @Test public void LockRecord_Thread_Test039b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient004.class, "-newlock", "$(CALLS)", "5", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test040a()
-	{
+    @Test public void LockRecord_Thread_Test040a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient004.class, "$(CALLS)", "10", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test040b()
-	{
+    @Test public void LockRecord_Thread_Test040b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient004.class, "-newlock", "$(CALLS)", "10", "2");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test041a()
-	{
+    @Test public void LockRecord_Thread_Test041a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient004.class, "$(CALLS)", "1", "5");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test041b()
-	{
+    @Test public void LockRecord_Thread_Test041b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient004.class, "-newlock", "$(CALLS)", "1", "5");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test042a()
-	{
+    @Test public void LockRecord_Thread_Test042a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient004.class, "$(CALLS)", "2", "5");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test042b()
-	{
+    @Test public void LockRecord_Thread_Test042b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient004.class, "-newlock", "$(CALLS)", "2", "5");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test043a()
-	{
+    @Test public void LockRecord_Thread_Test043a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient004.class, "$(CALLS)", "5", "5");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test043b()
-	{
+    @Test public void LockRecord_Thread_Test043b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient004.class, "-newlock", "$(CALLS)", "5", "5");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test044a()
-	{
+    @Test public void LockRecord_Thread_Test044a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient004.class, "$(CALLS)", "10", "5");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test044b()
-	{
+    @Test public void LockRecord_Thread_Test044b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient004.class, "-newlock", "$(CALLS)", "10", "5");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test045a()
-	{
+    @Test public void LockRecord_Thread_Test045a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient004.class, "$(CALLS)", "1", "10");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test045b()
-	{
+    @Test public void LockRecord_Thread_Test045b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient004.class, "-newlock", "$(CALLS)", "1", "10");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test046a()
-	{
+    @Test public void LockRecord_Thread_Test046a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient004.class, "$(CALLS)", "2", "10");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test046b()
-	{
+    @Test public void LockRecord_Thread_Test046b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient004.class, "-newlock", "$(CALLS)", "2", "10");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test047a()
-	{
+    @Test public void LockRecord_Thread_Test047a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient004.class, "$(CALLS)", "5", "10");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test047b()
-	{
+    @Test public void LockRecord_Thread_Test047b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient004.class, "-newlock", "$(CALLS)", "5", "10");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test048a()
-	{
+    @Test public void LockRecord_Thread_Test048a()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient004.class, "$(CALLS)", "10", "10");
-	}
+    }
 
-	@Test public void LockRecord_Thread_Test048b()
-	{
+    @Test public void LockRecord_Thread_Test048b()
+    {
         startAndWaitForClient(org.jboss.jbossts.qa.ArjunaCore.LockManager.client.WorkerClient004.class, "-newlock", "$(CALLS)", "10", "10");
-	}
+    }
 }

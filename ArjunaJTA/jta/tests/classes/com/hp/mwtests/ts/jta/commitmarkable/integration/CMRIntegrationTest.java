@@ -63,297 +63,297 @@ import com.hp.mwtests.ts.jta.commitmarkable.Utils;
 @RunWith(Arquillian.class)
 public class CMRIntegrationTest {
 
-	private static final String DEPENDENCIES = "Dependencies: com.h2database.h2, org.jboss.jts, org.jboss.jboss-transaction-spi\n";
+    private static final String DEPENDENCIES = "Dependencies: com.h2database.h2, org.jboss.jts, org.jboss.jboss-transaction-spi\n";
 
-	@Deployment
-	public static JavaArchive createTestArchive() {
-		return ShrinkWrap
-				.create(JavaArchive.class, "test.jar")
-				.addClasses(DummyXAResource.class, Utils.class)
-				.addPackage("io.narayana.connectableresource")
-				.addAsManifestResource(new StringAsset(DEPENDENCIES),
-						"MANIFEST.MF")
-				.addAsManifestResource(EmptyAsset.INSTANCE,
-						ArchivePaths.create("beans.xml"));
-	}
+    @Deployment
+    public static JavaArchive createTestArchive() {
+        return ShrinkWrap
+                .create(JavaArchive.class, "test.jar")
+                .addClasses(DummyXAResource.class, Utils.class)
+                .addPackage("io.narayana.connectableresource")
+                .addAsManifestResource(new StringAsset(DEPENDENCIES),
+                        "MANIFEST.MF")
+                .addAsManifestResource(EmptyAsset.INSTANCE,
+                        ArchivePaths.create("beans.xml"));
+    }
 
-	@Resource(mappedName = "java:jboss/datasources/ExampleDS")
-	private javax.sql.DataSource ds;
+    @Resource(mappedName = "java:jboss/datasources/ExampleDS")
+    private javax.sql.DataSource ds;
 
-	@Inject
-	private UserTransaction userTransaction;
+    @Inject
+    private UserTransaction userTransaction;
 
-	@Resource(mappedName = "java:jboss/TransactionManager")
-	private TransactionManager tm;
+    @Resource(mappedName = "java:jboss/TransactionManager")
+    private TransactionManager tm;
 
-	@Test
-	public void testCMR() throws Exception {
-		Utils.createTables(ds.getConnection());
+    @Test
+    public void testCMR() throws Exception {
+        Utils.createTables(ds.getConnection());
 
-		doTest(ds);
-	}
+        doTest(ds);
+    }
 
-	// @Test
-	public void testCMR1() throws Exception {
+    // @Test
+    public void testCMR1() throws Exception {
 
-		Utils.createTables(ds.getConnection());
+        Utils.createTables(ds.getConnection());
 
-		try {
-			userTransaction.begin();
+        try {
+            userTransaction.begin();
 
-			tm.getTransaction().enlistResource(new DummyXAResource());
+            tm.getTransaction().enlistResource(new DummyXAResource());
 
-			Connection connection = ds.getConnection();
-			Statement createStatement = connection.createStatement();
-			createStatement.execute("INSERT INTO foo (bar) VALUES (1)");
-			createStatement.close();
+            Connection connection = ds.getConnection();
+            Statement createStatement = connection.createStatement();
+            createStatement.execute("INSERT INTO foo (bar) VALUES (1)");
+            createStatement.close();
 
-			userTransaction.commit();
-		} catch (Exception e) {
-			System.out.printf("XXX txn excp: %s%n", e.getCause());
-		} finally {
-			try {
-				if (userTransaction.getStatus() == Status.STATUS_ACTIVE
-						|| userTransaction.getStatus() == Status.STATUS_MARKED_ROLLBACK)
-					userTransaction.rollback();
-			} catch (Throwable e) {
-				System.out.printf("XXX txn did not finish: %s%n", e.getCause());
-			}
-		}
-	}
+            userTransaction.commit();
+        } catch (Exception e) {
+            System.out.printf("XXX txn excp: %s%n", e.getCause());
+        } finally {
+            try {
+                if (userTransaction.getStatus() == Status.STATUS_ACTIVE
+                        || userTransaction.getStatus() == Status.STATUS_MARKED_ROLLBACK)
+                    userTransaction.rollback();
+            } catch (Throwable e) {
+                System.out.printf("XXX txn did not finish: %s%n", e.getCause());
+            }
+        }
+    }
 
-	private int threadCount = 5;
-	private int iterationCount = 20;
-	private int waiting;
-	private boolean go;
-	private final Object waitLock = new Object();
-	private AtomicInteger totalExecuted = new AtomicInteger();
+    private int threadCount = 5;
+    private int iterationCount = 20;
+    private int waiting;
+    private boolean go;
+    private final Object waitLock = new Object();
+    private AtomicInteger totalExecuted = new AtomicInteger();
 
-	public void doTest(final DataSource dataSource) throws Exception {
+    public void doTest(final DataSource dataSource) throws Exception {
 
-		// Test code
-		Thread[] threads = new Thread[threadCount];
-		for (int i = 0; i < threads.length; i++) {
-			threads[i] = new Thread(new Runnable() {
+        // Test code
+        Thread[] threads = new Thread[threadCount];
+        for (int i = 0; i < threads.length; i++) {
+            threads[i] = new Thread(new Runnable() {
 
-				public void run() {
-					synchronized (waitLock) {
-						waiting++;
-						waitLock.notify();
-					}
-					synchronized (CMRIntegrationTest.this) {
-						while (!go) {
-							try {
-								CMRIntegrationTest.this.wait();
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-								return;
-							}
-						}
-					}
+                public void run() {
+                    synchronized (waitLock) {
+                        waiting++;
+                        waitLock.notify();
+                    }
+                    synchronized (CMRIntegrationTest.this) {
+                        while (!go) {
+                            try {
+                                CMRIntegrationTest.this.wait();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                                return;
+                            }
+                        }
+                    }
 
-					int success = 0;
-					Connection connection = null;
-					int faultType = Integer.getInteger(
-					    "com.hp.mwtests.ts.jta.commitmarkable.integration.CMRIntegrationTest", 0);
+                    int success = 0;
+                    Connection connection = null;
+                    int faultType = Integer.getInteger(
+                        "com.hp.mwtests.ts.jta.commitmarkable.integration.CMRIntegrationTest", 0);
 
-					for (int i = 0; i < iterationCount; i++) {
-						try {
-							userTransaction.begin();
-							tm.getTransaction().enlistResource(
-									new DummyXAResource());
+                    for (int i = 0; i < iterationCount; i++) {
+                        try {
+                            userTransaction.begin();
+                            tm.getTransaction().enlistResource(
+                                    new DummyXAResource());
 
-							connection = dataSource.getConnection();
+                            connection = dataSource.getConnection();
 
-							Statement createStatement = connection
-									.createStatement();
-							createStatement
-									.execute("INSERT INTO foo (bar) VALUES (1)");
-							// System.out.printf("XXX txn close%n");
+                            Statement createStatement = connection
+                                    .createStatement();
+                            createStatement
+                                    .execute("INSERT INTO foo (bar) VALUES (1)");
+                            // System.out.printf("XXX txn close%n");
 
-							if (faultType == 1)
-								Runtime.getRuntime().halt(0);
+                            if (faultType == 1)
+                                Runtime.getRuntime().halt(0);
 
                             userTransaction.commit();
-							connection.close(); // This wouldn't work for a
-												// none-JCA code as commit has
-												// closed the connection - it
-												// helps us though as JCA seems
-												// to rely on finalize
+                            connection.close(); // This wouldn't work for a
+                                                // none-JCA code as commit has
+                                                // closed the connection - it
+                                                // helps us though as JCA seems
+                                                // to rely on finalize
 
-							// System.out
-							// .printf("committed txn iteration %d%n", i);
-							success++;
-						} catch (SQLException e) {
-							System.err.println("boom");
-							e.printStackTrace();
-							if (e.getCause() != null) {
-								e.getCause().printStackTrace();
-							}
-							SQLException nextException = e.getNextException();
-							while (nextException != null) {
-								nextException.printStackTrace();
-								nextException = nextException
-										.getNextException();
-							}
-							Throwable[] suppressed = e.getSuppressed();
-							for (int j = 0; j < suppressed.length; j++) {
-								suppressed[j].printStackTrace();
-							}
-							try {
-								userTransaction.rollback();
-							} catch (IllegalStateException | SecurityException
-									| SystemException e1) {
-								e1.printStackTrace();
-								fail("Problem with transaction");
-							}
-						} catch (NotSupportedException | SystemException
-								| IllegalStateException | RollbackException
-								| SecurityException | HeuristicMixedException
-								| HeuristicRollbackException e) {
-							e.printStackTrace();
-							fail("Problem with transaction");
-						} finally {
-							if (connection != null)
-								try {
-									connection.close();
-								} catch (SQLException e) {
-									e.printStackTrace(); // To change body of
-															// catch statement
-															// use File |
-															// Settings | File
-															// Templates.
-								}
-						}
+                            // System.out
+                            // .printf("committed txn iteration %d%n", i);
+                            success++;
+                        } catch (SQLException e) {
+                            System.err.println("boom");
+                            e.printStackTrace();
+                            if (e.getCause() != null) {
+                                e.getCause().printStackTrace();
+                            }
+                            SQLException nextException = e.getNextException();
+                            while (nextException != null) {
+                                nextException.printStackTrace();
+                                nextException = nextException
+                                        .getNextException();
+                            }
+                            Throwable[] suppressed = e.getSuppressed();
+                            for (int j = 0; j < suppressed.length; j++) {
+                                suppressed[j].printStackTrace();
+                            }
+                            try {
+                                userTransaction.rollback();
+                            } catch (IllegalStateException | SecurityException
+                                    | SystemException e1) {
+                                e1.printStackTrace();
+                                fail("Problem with transaction");
+                            }
+                        } catch (NotSupportedException | SystemException
+                                | IllegalStateException | RollbackException
+                                | SecurityException | HeuristicMixedException
+                                | HeuristicRollbackException e) {
+                            e.printStackTrace();
+                            fail("Problem with transaction");
+                        } finally {
+                            if (connection != null)
+                                try {
+                                    connection.close();
+                                } catch (SQLException e) {
+                                    e.printStackTrace(); // To change body of
+                                                            // catch statement
+                                                            // use File |
+                                                            // Settings | File
+                                                            // Templates.
+                                }
+                        }
 
-					}
+                    }
 
-					totalExecuted.addAndGet(success);
-				}
-			});
-			threads[i].start();
-		}
+                    totalExecuted.addAndGet(success);
+                }
+            });
+            threads[i].start();
+        }
 
-		synchronized (waitLock) {
-			while (waiting < threads.length) {
-				waitLock.wait();
-			}
-		}
-		long startTime = -1;
-		synchronized (CMRIntegrationTest.this) {
-			go = true;
-			CMRIntegrationTest.this.notifyAll();
-			startTime = System.currentTimeMillis();
-		}
+        synchronized (waitLock) {
+            while (waiting < threads.length) {
+                waitLock.wait();
+            }
+        }
+        long startTime = -1;
+        synchronized (CMRIntegrationTest.this) {
+            go = true;
+            CMRIntegrationTest.this.notifyAll();
+            startTime = System.currentTimeMillis();
+        }
 
-		for (int i = 0; i < threads.length; i++) {
-			threads[i].join();
-		}
+        for (int i = 0; i < threads.length; i++) {
+            threads[i].join();
+        }
 
-		long endTime = System.currentTimeMillis();
+        long endTime = System.currentTimeMillis();
 
-		System.out.println(new Date() + "  Number of transactions: "
-				+ totalExecuted.intValue());
+        System.out.println(new Date() + "  Number of transactions: "
+                + totalExecuted.intValue());
 
-		long additionalCleanuptime = 0L; // postRunCleanup(dataSource);
+        long additionalCleanuptime = 0L; // postRunCleanup(dataSource);
 
-		long timeInMillis = (endTime - startTime) + additionalCleanuptime;
-		System.out.printf("  Total time millis: %d%n", timeInMillis);
-		System.out.printf("  Average transaction time: %d%n", timeInMillis
-				/ totalExecuted.intValue());
-		System.out
-				.printf("  Transactions per second: %d%n",
-						Math.round((totalExecuted.intValue() / (timeInMillis / 1000d))));
+        long timeInMillis = (endTime - startTime) + additionalCleanuptime;
+        System.out.printf("  Total time millis: %d%n", timeInMillis);
+        System.out.printf("  Average transaction time: %d%n", timeInMillis
+                / totalExecuted.intValue());
+        System.out
+                .printf("  Transactions per second: %d%n",
+                        Math.round((totalExecuted.intValue() / (timeInMillis / 1000d))));
 
-		checkFooSize(dataSource);
-	}
+        checkFooSize(dataSource);
+    }
 
-	private void checkSize(String string, Statement statement, int expected)
-			throws SQLException {
-		ResultSet result = statement.executeQuery("select count(*) from "
-				+ string);
-		result.next();
-		int actual = result.getInt(1);
-		result.close();
-		assertEquals(expected, actual);
-	}
+    private void checkSize(String string, Statement statement, int expected)
+            throws SQLException {
+        ResultSet result = statement.executeQuery("select count(*) from "
+                + string);
+        result.next();
+        int actual = result.getInt(1);
+        result.close();
+        assertEquals(expected, actual);
+    }
 
-	public void checkFooSize(DataSource dataSource) throws SQLException,
-			HeuristicRollbackException, RollbackException,
-			HeuristicMixedException, SystemException, NotSupportedException {
-		userTransaction.begin();
-		Connection connection = dataSource.getConnection();
-		String tableToCheck = "foo";
-		Statement statement = connection.createStatement();
-		checkSize(tableToCheck, statement, threadCount * iterationCount);
-		statement.close();
-		userTransaction.commit();
-		connection.close();
-	}
+    public void checkFooSize(DataSource dataSource) throws SQLException,
+            HeuristicRollbackException, RollbackException,
+            HeuristicMixedException, SystemException, NotSupportedException {
+        userTransaction.begin();
+        Connection connection = dataSource.getConnection();
+        String tableToCheck = "foo";
+        Statement statement = connection.createStatement();
+        checkSize(tableToCheck, statement, threadCount * iterationCount);
+        statement.close();
+        userTransaction.commit();
+        connection.close();
+    }
 
-	private CommitMarkableResourceRecordRecoveryModule getCRRRM() {
-		CommitMarkableResourceRecordRecoveryModule crrrm = null;
-		RecoveryManager recMan = RecoveryManager.manager();
-		Vector recoveryModules = recMan.getModules();
+    private CommitMarkableResourceRecordRecoveryModule getCRRRM() {
+        CommitMarkableResourceRecordRecoveryModule crrrm = null;
+        RecoveryManager recMan = RecoveryManager.manager();
+        Vector recoveryModules = recMan.getModules();
 
-		if (recoveryModules != null) {
-			Enumeration modules = recoveryModules.elements();
+        if (recoveryModules != null) {
+            Enumeration modules = recoveryModules.elements();
 
-			while (modules.hasMoreElements()) {
-				RecoveryModule m = (RecoveryModule) modules.nextElement();
+            while (modules.hasMoreElements()) {
+                RecoveryModule m = (RecoveryModule) modules.nextElement();
 
-				if (m instanceof CommitMarkableResourceRecordRecoveryModule) {
-					return (CommitMarkableResourceRecordRecoveryModule) m;
-				}
-			}
-		}
+                if (m instanceof CommitMarkableResourceRecordRecoveryModule) {
+                    return (CommitMarkableResourceRecordRecoveryModule) m;
+                }
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	public long postRunCleanup(DataSource dataSource) throws SQLException,
-			ObjectStoreException {
+    public long postRunCleanup(DataSource dataSource) throws SQLException,
+            ObjectStoreException {
 
-		Connection connection = dataSource.getConnection();
-		CommitMarkableResourceRecordRecoveryModule crrrm = getCRRRM();
+        Connection connection = dataSource.getConnection();
+        CommitMarkableResourceRecordRecoveryModule crrrm = getCRRRM();
 
-		int expectedReapableConnectableResourceRecords = BeanPopulator
-				.getDefaultInstance(JTAEnvironmentBean.class)
-				.isPerformImmediateCleanupOfCommitMarkableResourceBranches() ? 0
-				: threadCount * iterationCount;
+        int expectedReapableConnectableResourceRecords = BeanPopulator
+                .getDefaultInstance(JTAEnvironmentBean.class)
+                .isPerformImmediateCleanupOfCommitMarkableResourceBranches() ? 0
+                : threadCount * iterationCount;
 
-		try {
-			Statement statement = connection.createStatement();
+        try {
+            Statement statement = connection.createStatement();
 
-			checkSize("xids", statement,
-					expectedReapableConnectableResourceRecords);
+            checkSize("xids", statement,
+                    expectedReapableConnectableResourceRecords);
 
-			if (expectedReapableConnectableResourceRecords > 0) {
-				// The recovery module has to perform lookups
-				// new InitialContext().rebind("connectableresource",
-				// recoveryDataSource);
-				long startTime = System.currentTimeMillis();
-				crrrm.periodicWorkFirstPass();
-				crrrm.periodicWorkSecondPass();
-				long endTime = System.currentTimeMillis();
+            if (expectedReapableConnectableResourceRecords > 0) {
+                // The recovery module has to perform lookups
+                // new InitialContext().rebind("connectableresource",
+                // recoveryDataSource);
+                long startTime = System.currentTimeMillis();
+                crrrm.periodicWorkFirstPass();
+                crrrm.periodicWorkSecondPass();
+                long endTime = System.currentTimeMillis();
 
-				checkSize("xids", statement, 0);
-				statement.close();
+                checkSize("xids", statement, 0);
+                statement.close();
 
-				System.out.println("  Total cleanup time: "
-						+ (endTime - startTime) + " Average cleanup time: "
-						+ (endTime - startTime)
-						/ expectedReapableConnectableResourceRecords);
+                System.out.println("  Total cleanup time: "
+                        + (endTime - startTime) + " Average cleanup time: "
+                        + (endTime - startTime)
+                        / expectedReapableConnectableResourceRecords);
 
-				return endTime - startTime;
-			} else {
-				statement.close();
-			}
-		} finally {
-			connection.close();
-		}
+                return endTime - startTime;
+            } else {
+                statement.close();
+            }
+        } finally {
+            connection.close();
+        }
 
-		return 0;
-	}
+        return 0;
+    }
 
 }

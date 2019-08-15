@@ -46,7 +46,7 @@ public class SubordinateActionBean extends JTAActionBean implements SubordinateA
             if (tsLogger.logger.isDebugEnabled()) {
                 BasicAction ba = ra.getAction();
 
-    		    tsLogger.logger.debug("unable to cast " + ba.toString() + e.getMessage());
+                tsLogger.logger.debug("unable to cast " + ba.toString() + e.getMessage());
             }
 
             return e.getMessage();
@@ -62,7 +62,7 @@ public class SubordinateActionBean extends JTAActionBean implements SubordinateA
             if (tsLogger.logger.isDebugEnabled()) {
                 BasicAction ba = ra.getAction();
 
-    		    tsLogger.logger.debug("unable to cast " + (ba == null ? "null" : ba.toString()) + ": " + e.getMessage());
+                tsLogger.logger.debug("unable to cast " + (ba == null ? "null" : ba.toString()) + ": " + e.getMessage());
             }
 
             return e.getMessage();

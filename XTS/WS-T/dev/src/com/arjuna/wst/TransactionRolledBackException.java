@@ -44,12 +44,12 @@ public class TransactionRolledBackException extends Exception
 
     public TransactionRolledBackException ()
     {
-	super();
+    super();
     }
 
     public TransactionRolledBackException (String s)
     {
-	super(s);
+    super(s);
     }
 
 }

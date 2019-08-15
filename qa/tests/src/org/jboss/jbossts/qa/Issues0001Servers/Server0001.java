@@ -65,30 +65,30 @@ import org.jboss.jbossts.qa.Utils.ServerIORStore;
 
 public class Server0001
 {
-	public static void main(String args[])
-	{
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+    public static void main(String args[])
+    {
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			CounterImpl0001 counterImpl = new CounterImpl0001();
-			CounterPOATie servant = new CounterPOATie(counterImpl);
+            CounterImpl0001 counterImpl = new CounterImpl0001();
+            CounterPOATie servant = new CounterPOATie(counterImpl);
 
-			OAInterface.objectIsReady(servant);
-			Counter counter = CounterHelper.narrow(OAInterface.corbaReference(servant));
+            OAInterface.objectIsReady(servant);
+            Counter counter = CounterHelper.narrow(OAInterface.corbaReference(servant));
 
-			ServerIORStore.storeIOR(args[args.length - 1], ORBInterface.orb().object_to_string(counter));
+            ServerIORStore.storeIOR(args[args.length - 1], ORBInterface.orb().object_to_string(counter));
 
-			System.out.println("Ready");
+            System.out.println("Ready");
 
-			ORBInterface.run();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Server0001.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
-	}
+            ORBInterface.run();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Server0001.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
+    }
 }
 

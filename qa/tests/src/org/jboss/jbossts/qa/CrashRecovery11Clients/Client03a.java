@@ -66,50 +66,50 @@ import org.omg.CORBA.IntHolder;
 
 public class Client03a
 {
-	public static void main(String[] args)
-	{
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+    public static void main(String[] args)
+    {
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			String serviceIOR = ServerIORStore.loadIOR(args[args.length - 1]);
-			AfterCrashService service = AfterCrashServiceHelper.narrow(ORBInterface.orb().string_to_object(serviceIOR));
+            String serviceIOR = ServerIORStore.loadIOR(args[args.length - 1]);
+            AfterCrashService service = AfterCrashServiceHelper.narrow(ORBInterface.orb().string_to_object(serviceIOR));
 
-			Thread.sleep(Delays.recoveryDelay());
+            Thread.sleep(Delays.recoveryDelay());
 
-			boolean correct = true;
+            boolean correct = true;
 
-			IntHolder valueHolder = new IntHolder();
-			service.get(valueHolder); // non-tx
+            IntHolder valueHolder = new IntHolder();
+            service.get(valueHolder); // non-tx
 
-			correct = correct && (valueHolder.value == 1);
+            correct = correct && (valueHolder.value == 1);
 
-			if (correct)
-			{
-				System.out.println("Passed");
-			}
-			else
-			{
-				System.out.println("Failed");
-			}
-		}
-		catch (Exception exception)
-		{
-			System.out.println("Failed");
-			System.err.println("Client03a.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
+            if (correct)
+            {
+                System.out.println("Passed");
+            }
+            else
+            {
+                System.out.println("Failed");
+            }
+        }
+        catch (Exception exception)
+        {
+            System.out.println("Failed");
+            System.err.println("Client03a.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
 
-		try
-		{
-			OAInterface.shutdownOA();
-			ORBInterface.shutdownORB();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Client03a.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
-	}
+        try
+        {
+            OAInterface.shutdownOA();
+            ORBInterface.shutdownORB();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Client03a.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
+    }
 }

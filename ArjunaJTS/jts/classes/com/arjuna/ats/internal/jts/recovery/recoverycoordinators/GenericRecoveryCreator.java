@@ -57,8 +57,8 @@ public class GenericRecoveryCreator extends RecoveryCreator
 
 private GenericRecoveryCreator (RcvCoManager specificManager)
     {
-	super();
-	_orbSpecificManager = specificManager;
+    super();
+    _orbSpecificManager = specificManager;
     }
 
 /**
@@ -68,9 +68,9 @@ private GenericRecoveryCreator (RcvCoManager specificManager)
  */
 public static void register(RcvCoManager theManager)
     {
-	RecoveryCreator theCreator = new GenericRecoveryCreator(theManager);
+    RecoveryCreator theCreator = new GenericRecoveryCreator(theManager);
 
-	RecoveryCreator.setCreator(theCreator);
+    RecoveryCreator.setCreator(theCreator);
     }
 
 
@@ -84,55 +84,55 @@ public static void register(RcvCoManager theManager)
 
     public RecoveryCoordinator create (Resource res, Object[] params) throws SystemException
     {
-	RecoveryCoordinator recoveryCoordinator = null;
+    RecoveryCoordinator recoveryCoordinator = null;
 
-	if (jtsLogger.logger.isDebugEnabled()) {
+    if (jtsLogger.logger.isDebugEnabled()) {
         jtsLogger.logger.debug("GenericRecoveryCreator.create()");
     }
 
-	// we dont use the res parameter in this version
-	if ((params != null) && (params[0] != null) )
-	{
-	    int index = 0;
+    // we dont use the res parameter in this version
+    if ((params != null) && (params[0] != null) )
+    {
+        int index = 0;
 
-	    ArjunaTransactionImple otsTransaction = (ArjunaTransactionImple) params[index++];
+        ArjunaTransactionImple otsTransaction = (ArjunaTransactionImple) params[index++];
 
-	    // Get the Uid of the top-level transaction. This will be
-	    // the top-level interposed transaction in the case of
-	    // interposition.
-	    BasicAction rootAction = otsTransaction;
+        // Get the Uid of the top-level transaction. This will be
+        // the top-level interposed transaction in the case of
+        // interposition.
+        BasicAction rootAction = otsTransaction;
 
-	    while ((rootAction.parent()) != null)
-		rootAction = rootAction.parent();
+        while ((rootAction.parent()) != null)
+        rootAction = rootAction.parent();
 
-	    Uid rootActionUid = rootAction.getSavingUid();
+        Uid rootActionUid = rootAction.getSavingUid();
 
-	    //Uid processUid = Utility.getProcessUid();
-	    Uid processUid = com.arjuna.ats.arjuna.utils.Utility.getProcessUid();
+        //Uid processUid = Utility.getProcessUid();
+        Uid processUid = com.arjuna.ats.arjuna.utils.Utility.getProcessUid();
 
-	    // Create a Uid for the new RecoveryCoordinator
-	    Uid RCUid = new Uid();
+        // Create a Uid for the new RecoveryCoordinator
+        Uid RCUid = new Uid();
 
-	    // Is this transaction a ServerTransaction?
-	    boolean isServerTransaction = (otsTransaction instanceof ServerTransaction);
+        // Is this transaction a ServerTransaction?
+        boolean isServerTransaction = (otsTransaction instanceof ServerTransaction);
 
-	    // Now ask the orb-specific bit to make the RecoveryCoordinator IOR
-	    //  (it may or may not actually make the RC itself)
-	    recoveryCoordinator = _orbSpecificManager.makeRC (RCUid, rootActionUid, processUid, isServerTransaction);
+        // Now ask the orb-specific bit to make the RecoveryCoordinator IOR
+        //  (it may or may not actually make the RC itself)
+        recoveryCoordinator = _orbSpecificManager.makeRC (RCUid, rootActionUid, processUid, isServerTransaction);
 
-	    // Tidy up
-	    otsTransaction = null;
-	    rootAction = null;
+        // Tidy up
+        otsTransaction = null;
+        rootAction = null;
 
-	    // Pass the RecoveryCoordinator Uid back
-	    params[0] = RCUid;
-	}
-	else {
+        // Pass the RecoveryCoordinator Uid back
+        params[0] = RCUid;
+    }
+    else {
 
         jtsLogger.i18NLogger.warn_recovery_recoverycoordinators_GenericRecoveryCreator_1();
 
     }
-	return recoveryCoordinator;
+    return recoveryCoordinator;
     }
 
     /**
@@ -142,8 +142,8 @@ public static void register(RcvCoManager theManager)
      */
 public void destroy (RecoveryCoordinator rc) throws SystemException
     {
-	// this depends on the orb - perhaps it isn't here anyway
-	_orbSpecificManager.destroy(rc);
+    // this depends on the orb - perhaps it isn't here anyway
+    _orbSpecificManager.destroy(rc);
     }
 
     /**
@@ -153,8 +153,8 @@ public void destroy (RecoveryCoordinator rc) throws SystemException
      */
 public void destroyAll (Object[] params) throws SystemException
     {
-	// this depends on the orb - perhaps it isn't here anyway
-	_orbSpecificManager.destroyAll(params);
+    // this depends on the orb - perhaps it isn't here anyway
+    _orbSpecificManager.destroyAll(params);
     }
 
     /**
@@ -164,13 +164,13 @@ public void destroyAll (Object[] params) throws SystemException
      */
 public static String getRecCoordServiceName ()
     {
-	// The following will be deleted
-	String tag = com.arjuna.ats.internal.jts.orbspecific.recovery.RecoveryEnablement.getRecoveryManagerTag();
-	if (tag != null) {
-	    return new String(_RecCoordServiceBaseName + tag);
-	} else {
-	    return null;
-	}
+    // The following will be deleted
+    String tag = com.arjuna.ats.internal.jts.orbspecific.recovery.RecoveryEnablement.getRecoveryManagerTag();
+    if (tag != null) {
+        return new String(_RecCoordServiceBaseName + tag);
+    } else {
+        return null;
+    }
     }
 
 private RcvCoManager _orbSpecificManager;

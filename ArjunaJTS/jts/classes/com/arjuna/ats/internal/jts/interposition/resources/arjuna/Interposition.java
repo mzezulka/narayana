@@ -62,18 +62,18 @@ public class Interposition
 
 public static ControlImple create (PropagationContext context) throws SystemException
     {
-	if (__list != null)
-	    return __list.setupHierarchy(context);
-	else
-	    return null;
+    if (__list != null)
+        return __list.setupHierarchy(context);
+    else
+        return null;
     }
 
 public static boolean destroy (Uid act)
     {
-	if (__list != null)
-	    return __list.removeHierarchy(act);
-	else
-	    return false;
+    if (__list != null)
+        return __list.removeHierarchy(act);
+    else
+        return false;
     }
 
     /*
@@ -86,37 +86,37 @@ public static boolean destroy (Uid act)
 
 public synchronized ControlImple setupHierarchy (PropagationContext context) throws SystemException
     {
-	ControlImple controlPtr = null;
-	Uid theUid = null;
-	ServerTopLevelAction proxyAction = null;
+    ControlImple controlPtr = null;
+    Uid theUid = null;
+    ServerTopLevelAction proxyAction = null;
 
-	if (context.parents.length == 0)
-	    theUid = Utility.otidToUid(context.current.otid);
-	else
-	    theUid = Utility.otidToUid(context.parents[context.parents.length-1].otid);
+    if (context.parents.length == 0)
+        theUid = Utility.otidToUid(context.current.otid);
+    else
+        theUid = Utility.otidToUid(context.parents[context.parents.length-1].otid);
 
-	proxyAction = present(theUid);
+    proxyAction = present(theUid);
 
-	if (proxyAction == null)
-	{
-	    /*
-	     * Create a new proxyAction element and return the
-	     * "current" transaction.
-	     */
+    if (proxyAction == null)
+    {
+        /*
+         * Create a new proxyAction element and return the
+         * "current" transaction.
+         */
 
-	    controlPtr = createHierarchy(context, theUid);
-	}
-	else
-	{
-	    /*
-	     * Check hierarchy of existing element.
-	     */
+        controlPtr = createHierarchy(context, theUid);
+    }
+    else
+    {
+        /*
+         * Check hierarchy of existing element.
+         */
 
-	    controlPtr = checkHierarchy(proxyAction, context);
-	    proxyAction = null;
-	}
+        controlPtr = checkHierarchy(proxyAction, context);
+        proxyAction = null;
+    }
 
-	return controlPtr;
+    return controlPtr;
     }
 
     protected final synchronized ServerTopLevelAction present (Uid actUid)
@@ -136,153 +136,153 @@ public synchronized ControlImple setupHierarchy (PropagationContext context) thr
 
 protected synchronized ControlImple createHierarchy (PropagationContext ctx, Uid tlUid) throws SystemException
     {
-	/*
-	 * Start at the parent and work our way down to "current". The current
-	 * transaction is not in the IDL sequence, but sent as separate field
-	 * of the propagation context. This tends to make the code more
-	 * complex than it would be if the entire hierarchy was represented in
-	 * one place.
-	 */
+    /*
+     * Start at the parent and work our way down to "current". The current
+     * transaction is not in the IDL sequence, but sent as separate field
+     * of the propagation context. This tends to make the code more
+     * complex than it would be if the entire hierarchy was represented in
+     * one place.
+     */
 
-	int depth = ctx.parents.length;
-	ServerResource action = null;
-	Coordinator tmpCoord = null;
-	Terminator tmpTerm = null;
+    int depth = ctx.parents.length;
+    ServerResource action = null;
+    Coordinator tmpCoord = null;
+    Terminator tmpTerm = null;
 
-	/*
-	 * First deal with top-level transaction, which may be
-	 * the current transaction.
-	 */
+    /*
+     * First deal with top-level transaction, which may be
+     * the current transaction.
+     */
 
-	if (depth == 0)
-	{
-	    tmpCoord = ctx.current.coord;
-	    tmpTerm = ctx.current.term;
-	}
-	else
-	{
-	    tmpCoord = ctx.parents[depth-1].coord;
-	    tmpTerm = ctx.parents[depth-1].term;
-	}
+    if (depth == 0)
+    {
+        tmpCoord = ctx.current.coord;
+        tmpTerm = ctx.current.term;
+    }
+    else
+    {
+        tmpCoord = ctx.parents[depth-1].coord;
+        tmpTerm = ctx.parents[depth-1].term;
+    }
 
-	if (tmpCoord == null)  // terminator may correctly be null
-	{
-	    return null;
-	}
+    if (tmpCoord == null)  // terminator may correctly be null
+    {
+        return null;
+    }
 
-	ServerControl control = ServerFactory.create_transaction(tlUid, null, null,
-								 tmpCoord, tmpTerm, ctx.timeout);
+    ServerControl control = ServerFactory.create_transaction(tlUid, null, null,
+                                 tmpCoord, tmpTerm, ctx.timeout);
 
-	action = new ServerTopLevelAction(control);
+    action = new ServerTopLevelAction(control);
 
-	if (!action.valid())
-	{
-	    try
-	    {
-		((ServerTopLevelAction) action).rollback();  // does dispose as well!
-	    }
-	    catch (Exception e)
-	    {
-	    }
+    if (!action.valid())
+    {
+        try
+        {
+        ((ServerTopLevelAction) action).rollback();  // does dispose as well!
+        }
+        catch (Exception e)
+        {
+        }
 
         if (((ServerTopLevelAction)action).isTransactionInactive()) {
             throw new TRANSACTION_UNAVAILABLE(jtsLogger.i18NLogger.get_transaction_was_inactive(), 1, CompletionStatus.COMPLETED_NO);
         } else {
             throw new TRANSACTION_ROLLEDBACK();
         }
-	}
+    }
 
-	ServerTopLevelAction newElement = (ServerTopLevelAction)action;
+    ServerTopLevelAction newElement = (ServerTopLevelAction)action;
 
-	_head.add(newElement);
+    _head.add(newElement);
 
-	if (depth > 0) // current is a nested transaction
-	{
-	    /*
-	     * Now deal with any nested transactions.
-	     * As we create, register with the original transactions.
-	     */
+    if (depth > 0) // current is a nested transaction
+    {
+        /*
+         * Now deal with any nested transactions.
+         * As we create, register with the original transactions.
+         */
 
-	    ServerResource nestedAction = null;
+        ServerResource nestedAction = null;
 
-	    for (int i = depth -2; i >= 0; i--)
-	    {
-		tmpCoord = ctx.parents[i].coord;
-		tmpTerm = ctx.parents[i].term;
+        for (int i = depth -2; i >= 0; i--)
+        {
+        tmpCoord = ctx.parents[i].coord;
+        tmpTerm = ctx.parents[i].term;
 
-		control = ServerFactory.create_subtransaction(Utility.otidToUid(ctx.parents[i].otid),
-								  tmpCoord, tmpTerm, control);
+        control = ServerFactory.create_subtransaction(Utility.otidToUid(ctx.parents[i].otid),
+                                  tmpCoord, tmpTerm, control);
 
-		nestedAction = new ServerNestedAction(control);
+        nestedAction = new ServerNestedAction(control);
 
-		if (!nestedAction.valid())
-		{
-		    /*
-		     * Just deal with current transaction. Others must have been
-		     * registered successfully, and will be deal with automatically
-		     * when the parent transaction terminates.
-		     */
+        if (!nestedAction.valid())
+        {
+            /*
+             * Just deal with current transaction. Others must have been
+             * registered successfully, and will be deal with automatically
+             * when the parent transaction terminates.
+             */
 
-		    try
-		    {
-			((ServerNestedAction) nestedAction).rollback_subtransaction();  // does dispose as well!
-			nestedAction = null;
-		    }
-		    catch (Exception e)
-		    {
-		    }
+            try
+            {
+            ((ServerNestedAction) nestedAction).rollback_subtransaction();  // does dispose as well!
+            nestedAction = null;
+            }
+            catch (Exception e)
+            {
+            }
 
-		    throw new TRANSACTION_ROLLEDBACK();
-		}
+            throw new TRANSACTION_ROLLEDBACK();
+        }
 
-		/*
-		 * Add transaction resource to list.
-		 */
+        /*
+         * Add transaction resource to list.
+         */
 
-		action.addChild((ServerNestedAction) nestedAction);
-		action = nestedAction;
-	    }
+        action.addChild((ServerNestedAction) nestedAction);
+        action = nestedAction;
+        }
 
-	    /*
-	     * Now deal with current transaction. If there is
-	     * only one transaction we do nothing.
-	     */
+        /*
+         * Now deal with current transaction. If there is
+         * only one transaction we do nothing.
+         */
 
-	    tmpCoord = ctx.current.coord;
-	    tmpTerm = ctx.current.term;
+        tmpCoord = ctx.current.coord;
+        tmpTerm = ctx.current.term;
 
-	    control = ServerFactory.create_subtransaction(Utility.otidToUid(ctx.current.otid),
-							      tmpCoord, tmpTerm, control);
+        control = ServerFactory.create_subtransaction(Utility.otidToUid(ctx.current.otid),
+                                  tmpCoord, tmpTerm, control);
 
-	    nestedAction = new ServerNestedAction(control);
+        nestedAction = new ServerNestedAction(control);
 
-	    if (!nestedAction.valid())
-	    {
-		/*
-		 * Just deal with current transaction. Others must have been
-		 * registered successfully, and will be deal with automatically
-		 * when the parent transaction terminates.
-		 */
+        if (!nestedAction.valid())
+        {
+        /*
+         * Just deal with current transaction. Others must have been
+         * registered successfully, and will be deal with automatically
+         * when the parent transaction terminates.
+         */
 
-		try
-		{
-		    ((ServerNestedAction) nestedAction).rollback_subtransaction();  // does dispose as well!
-		    nestedAction = null;
-		}
-		catch (Exception e)
-		{
-		}
+        try
+        {
+            ((ServerNestedAction) nestedAction).rollback_subtransaction();  // does dispose as well!
+            nestedAction = null;
+        }
+        catch (Exception e)
+        {
+        }
 
-		throw new TRANSACTION_ROLLEDBACK();
-	    }
+        throw new TRANSACTION_ROLLEDBACK();
+        }
 
-	    action.addChild((ServerNestedAction) nestedAction);
-	}
+        action.addChild((ServerNestedAction) nestedAction);
+    }
 
-	if (jtsLogger.logger.isTraceEnabled())
-	    compareHierarchies(ctx, newElement);
+    if (jtsLogger.logger.isTraceEnabled())
+        compareHierarchies(ctx, newElement);
 
-	return control;
+    return control;
     }
 
     /*
@@ -300,184 +300,184 @@ protected synchronized ControlImple createHierarchy (PropagationContext ctx, Uid
      */
 
 protected synchronized ControlImple checkHierarchy (ServerTopLevelAction hier,
-						   PropagationContext context) throws SystemException
+                           PropagationContext context) throws SystemException
     {
-	ServerControl control = null;
-	ServerResource currentAction = hier;  // top-level transaction
-	int depth = context.parents.length;
-	int differenceIndex = -1;  // index of the new transactions in the hierarchy
+    ServerControl control = null;
+    ServerResource currentAction = hier;  // top-level transaction
+    int depth = context.parents.length;
+    int differenceIndex = -1;  // index of the new transactions in the hierarchy
 
-	/*
-	 * Find the point at which our notion of the hierarchy deviates from
-	 * the one we have just received.
-	 *
-	 * To get here we have already checked the id of the parent
-	 * transaction, i.e., depth -1.
-	 *
-	 * Remember: the context hierarchy sequence *does not* include the
-	 * current transaction!
-	 */
+    /*
+     * Find the point at which our notion of the hierarchy deviates from
+     * the one we have just received.
+     *
+     * To get here we have already checked the id of the parent
+     * transaction, i.e., depth -1.
+     *
+     * Remember: the context hierarchy sequence *does not* include the
+     * current transaction!
+     */
 
-	if (depth == 0)
-	{
-	    /*
-	     * There are no transactions in the context other than the current
-	     * transaction, which must therefore be top-level. We already have
-	     * the control to return.
-	     */
+    if (depth == 0)
+    {
+        /*
+         * There are no transactions in the context other than the current
+         * transaction, which must therefore be top-level. We already have
+         * the control to return.
+         */
 
-	    control = hier.control();  // top-level transaction's control
-	}
-	else
-	{
-	    ServerResource nestedAction = null;
+        control = hier.control();  // top-level transaction's control
+    }
+    else
+    {
+        ServerResource nestedAction = null;
 
-	    /*
-	     * Start at -2 and work our way down the hierarchy. We
-	     * use -2 since the length gives us the *number* of elements,
-	     * which is 0 to n-1, and the n-1th element is the top-level
-	     * transaction, which we must deal with first!
-	     */
+        /*
+         * Start at -2 and work our way down the hierarchy. We
+         * use -2 since the length gives us the *number* of elements,
+         * which is 0 to n-1, and the n-1th element is the top-level
+         * transaction, which we must deal with first!
+         */
 
-	    for (int i = depth -2; i >= 0; i--)  // don't check depth-1 as it is current action!
-	    {
-		nestedAction = currentAction.getChild(Utility.otidToUid(context.parents[i].otid));
+        for (int i = depth -2; i >= 0; i--)  // don't check depth-1 as it is current action!
+        {
+        nestedAction = currentAction.getChild(Utility.otidToUid(context.parents[i].otid));
 
-		if (nestedAction == null)  // point of difference, so stop trawling hierarchy
-		{
-		    differenceIndex = i;   // remember for later so that we can add new actions.
-		    break;
-		}
-		else
-		{
-		    /*
-		     * currentAction *always* points to the last known
-		     * good transaction in our hierarchy.
-		     */
+        if (nestedAction == null)  // point of difference, so stop trawling hierarchy
+        {
+            differenceIndex = i;   // remember for later so that we can add new actions.
+            break;
+        }
+        else
+        {
+            /*
+             * currentAction *always* points to the last known
+             * good transaction in our hierarchy.
+             */
 
-		    currentAction = nestedAction;
-		}
-	    }
+            currentAction = nestedAction;
+        }
+        }
 
-	    /*
-	     * Do we have anything left in the sent hierarchy (other than
-	     * current)? If so, add it now.
-	     */
+        /*
+         * Do we have anything left in the sent hierarchy (other than
+         * current)? If so, add it now.
+         */
 
-	    if (differenceIndex != -1)
-	    {
-		control = currentAction.control();
+        if (differenceIndex != -1)
+        {
+        control = currentAction.control();
 
-		Coordinator tmpCoord;
-		Terminator tmpTerm;
+        Coordinator tmpCoord;
+        Terminator tmpTerm;
 
-		for (int j = differenceIndex; j >= 0; j--)
-		{
-		    tmpCoord = context.parents[j].coord;
-		    tmpTerm = context.parents[j].term;
+        for (int j = differenceIndex; j >= 0; j--)
+        {
+            tmpCoord = context.parents[j].coord;
+            tmpTerm = context.parents[j].term;
 
-		    control = ServerFactory.create_subtransaction(Utility.otidToUid(context.parents[j].otid),
-								      tmpCoord, tmpTerm, control);
-		    nestedAction = new ServerNestedAction(control);
+            control = ServerFactory.create_subtransaction(Utility.otidToUid(context.parents[j].otid),
+                                      tmpCoord, tmpTerm, control);
+            nestedAction = new ServerNestedAction(control);
 
-		    if (!nestedAction.valid())
-		    {
-			/*
-			 * Just deal with current transaction. Others must have been
-			 * registered successfully, and will be deal with automatically
-			 * when the parent transaction terminates.
-			 */
+            if (!nestedAction.valid())
+            {
+            /*
+             * Just deal with current transaction. Others must have been
+             * registered successfully, and will be deal with automatically
+             * when the parent transaction terminates.
+             */
 
-			try
-			{
-			    ((ServerNestedAction) nestedAction).rollback();  // does dispose as well!
-			    nestedAction = null;
-			}
-			catch (Exception e)
-			{
-			}
+            try
+            {
+                ((ServerNestedAction) nestedAction).rollback();  // does dispose as well!
+                nestedAction = null;
+            }
+            catch (Exception e)
+            {
+            }
 
-			throw new TRANSACTION_ROLLEDBACK();
-		    }
+            throw new TRANSACTION_ROLLEDBACK();
+            }
 
-		    currentAction.addChild((ServerNestedAction) nestedAction);
-		    currentAction = nestedAction;
-		}
-	    }
-	    else
-	    {
-		/*
-		 * Hierarchies may be identical.
-		 * Remember to check!
-		 */
-	    }
+            currentAction.addChild((ServerNestedAction) nestedAction);
+            currentAction = nestedAction;
+        }
+        }
+        else
+        {
+        /*
+         * Hierarchies may be identical.
+         * Remember to check!
+         */
+        }
 
-	    Uid currentUid = Utility.otidToUid(context.current.otid);
+        Uid currentUid = Utility.otidToUid(context.current.otid);
 
-	    /*
-	     * currentAction points to the parent of the 'current'
-	     * transaction, i.e., the last element in the TransIdentity
-	     * structure. So, ask it if the sent hierarchy's child is
-	     * one of its children.
-	     */
+        /*
+         * currentAction points to the parent of the 'current'
+         * transaction, i.e., the last element in the TransIdentity
+         * structure. So, ask it if the sent hierarchy's child is
+         * one of its children.
+         */
 
-	    nestedAction = currentAction.getChild(currentUid);
+        nestedAction = currentAction.getChild(currentUid);
 
-	    if (nestedAction == null)
-	    {
-		/*
-		 * Different notion of current in sent hierarchy.
-		 * So, add it to the hierarchy here.
-		 */
+        if (nestedAction == null)
+        {
+        /*
+         * Different notion of current in sent hierarchy.
+         * So, add it to the hierarchy here.
+         */
 
-		control = currentAction.control();
+        control = currentAction.control();
 
-		/*
-		 * Now deal with the current transaction.
-		 */
+        /*
+         * Now deal with the current transaction.
+         */
 
-		TransIdentity currentID = context.current;
+        TransIdentity currentID = context.current;
 
-		control = ServerFactory.create_subtransaction(currentUid,
-								  currentID.coord, currentID.term, control);
-		nestedAction = new ServerNestedAction(control);
+        control = ServerFactory.create_subtransaction(currentUid,
+                                  currentID.coord, currentID.term, control);
+        nestedAction = new ServerNestedAction(control);
 
-		if (!nestedAction.valid())
-		{
-		    /*
-		     * Just deal with current transaction. Others must have
-		     * been registered successfully, and will be deal with
-		     * automatically when the parent transaction terminates.
-		     */
+        if (!nestedAction.valid())
+        {
+            /*
+             * Just deal with current transaction. Others must have
+             * been registered successfully, and will be deal with
+             * automatically when the parent transaction terminates.
+             */
 
-		    try
-		    {
-			((ServerNestedAction) nestedAction).rollback();  // does dispose as well!
-			nestedAction = null;
-		    }
-		    catch (Exception e)
-		    {
-		    }
+            try
+            {
+            ((ServerNestedAction) nestedAction).rollback();  // does dispose as well!
+            nestedAction = null;
+            }
+            catch (Exception e)
+            {
+            }
 
-		    throw new TRANSACTION_ROLLEDBACK();
-		}
+            throw new TRANSACTION_ROLLEDBACK();
+        }
 
-		currentAction.addChild((ServerNestedAction) nestedAction);
-	    }
-	    else
-	    {
-		/*
-		 * Same current, so get its control and return it.
-		 */
+        currentAction.addChild((ServerNestedAction) nestedAction);
+        }
+        else
+        {
+        /*
+         * Same current, so get its control and return it.
+         */
 
-		control = nestedAction.control();
-	    }
-	}
+        control = nestedAction.control();
+        }
+    }
 
-	if (jtsLogger.logger.isTraceEnabled())
-	    compareHierarchies(context, hier);
+    if (jtsLogger.logger.isTraceEnabled())
+        compareHierarchies(context, hier);
 
-	return control;
+    return control;
     }
 
     protected final synchronized boolean removeHierarchy (Uid theUid)
@@ -501,72 +501,72 @@ protected synchronized ControlImple checkHierarchy (ServerTopLevelAction hier,
 
 protected final void compareHierarchies (PropagationContext ctx, ServerTopLevelAction action)
     {
-	int depth = ctx.parents.length;
-	Uid[] ctxHierarchy = new Uid [depth+1];
-	boolean printHierarchies = false;
+    int depth = ctx.parents.length;
+    Uid[] ctxHierarchy = new Uid [depth+1];
+    boolean printHierarchies = false;
 
-	for (int i = depth -1; i >= 0; i--)
-	{
-	    ctxHierarchy[i+1] = new Uid(Utility.otidToUid(ctx.parents[i].otid));
-	}
+    for (int i = depth -1; i >= 0; i--)
+    {
+        ctxHierarchy[i+1] = new Uid(Utility.otidToUid(ctx.parents[i].otid));
+    }
 
-	ctxHierarchy[0] = new Uid(Utility.otidToUid(ctx.current.otid));
+    ctxHierarchy[0] = new Uid(Utility.otidToUid(ctx.current.otid));
 
-	boolean problem = false;
+    boolean problem = false;
 
-	if (action != null)
-	{
-	    if (action.get_uid().notEquals(ctxHierarchy[depth])) {
+    if (action != null)
+    {
+        if (action.get_uid().notEquals(ctxHierarchy[depth])) {
             jtsLogger.i18NLogger.warn_interposition_resources_arjuna_iptl(action.get_uid(), ctxHierarchy[depth]);
 
             printHierarchies = true;
         }
-	    else
-	    {
-		if (depth > 0)
-		{
-		    ServerNestedAction child = action.getChild(ctxHierarchy[depth-1]);
+        else
+        {
+        if (depth > 0)
+        {
+            ServerNestedAction child = action.getChild(ctxHierarchy[depth-1]);
 
-		    if (child != null)
-		    {
-			int i = 0;
+            if (child != null)
+            {
+            int i = 0;
 
-			for (i = depth -2; (i >= 0) && (child != null); i--)
-			{
-			    child = child.getChild(ctxHierarchy[i]);
+            for (i = depth -2; (i >= 0) && (child != null); i--)
+            {
+                child = child.getChild(ctxHierarchy[i]);
 
-			    if (child == null)
-			    {
-				problem = true;
-				break;
-			    }
-			}
+                if (child == null)
+                {
+                problem = true;
+                break;
+                }
+            }
 
-			if (i != -1)
-			    problem = true;
-		    }
-		    else
-			problem = true;
-		}
+            if (i != -1)
+                problem = true;
+            }
+            else
+            problem = true;
+        }
 
-		if (problem) {
+        if (problem) {
             jtsLogger.i18NLogger.warn_interposition_resources_arjuna_ipnt();
 
             printHierarchies = true;
         }
-	    }
-	}
-	else {
+        }
+    }
+    else {
         jtsLogger.i18NLogger.warn_interposition_resources_arjuna_ipnull();
 
         printHierarchies = true;
     }
 
-	if (!printHierarchies)
-	    printHierarchies = jtsLogger.logger.isTraceEnabled();
+    if (!printHierarchies)
+        printHierarchies = jtsLogger.logger.isTraceEnabled();
 
-	if (printHierarchies)
-	{
+    if (printHierarchies)
+    {
         synchronized (jtsLogger.logger)
         {
             if (!problem)
@@ -582,18 +582,18 @@ protected final void compareHierarchies (PropagationContext ctx, ServerTopLevelA
                 jtsLogger.i18NLogger.warn_interposition_resources_arjuna_problemhierarchy(hierarchytoString(action));
             }
         }
-	}
+    }
 
-	if (ctxHierarchy != null)
-	{
-	    for (int i = 0; i < (int) depth; i++)
-	    {
-		if (ctxHierarchy[i] != null)
-		    ctxHierarchy[i] = null;
-	    }
+    if (ctxHierarchy != null)
+    {
+        for (int i = 0; i < (int) depth; i++)
+        {
+        if (ctxHierarchy[i] != null)
+            ctxHierarchy[i] = null;
+        }
 
-	    ctxHierarchy = null;
-	}
+        ctxHierarchy = null;
+    }
     }
 
     private final String hierarchytoString(ServerTopLevelAction action)

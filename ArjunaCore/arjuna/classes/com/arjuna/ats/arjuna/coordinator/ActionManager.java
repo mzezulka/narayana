@@ -46,47 +46,47 @@ import com.arjuna.ats.arjuna.common.Uid;
 public class ActionManager
 {
 
-	class Lifetime
-	{
-		public Lifetime (BasicAction act)
-		{
-			theAction = act;
-			timeAdded = System.currentTimeMillis();
-		}
+    class Lifetime
+    {
+        public Lifetime (BasicAction act)
+        {
+            theAction = act;
+            timeAdded = System.currentTimeMillis();
+        }
 
-		public BasicAction getAction ()
-		{
-			return theAction;
-		}
+        public BasicAction getAction ()
+        {
+            return theAction;
+        }
 
-		public long getTimeAdded ()
-		{
-			return timeAdded;
-		}
+        public long getTimeAdded ()
+        {
+            return timeAdded;
+        }
 
-		private BasicAction theAction;
-		private long timeAdded;
-	}
+        private BasicAction theAction;
+        private long timeAdded;
+    }
 
-	public static final ActionManager manager()
-	{
-		return _theManager;
-	}
+    public static final ActionManager manager()
+    {
+        return _theManager;
+    }
 
-	public void put(BasicAction act)
-	{
-		_allActions.put(act.get_uid(), new Lifetime(act));
-	}
+    public void put(BasicAction act)
+    {
+        _allActions.put(act.get_uid(), new Lifetime(act));
+    }
 
-	public BasicAction get(Uid id)
-	{
-		Lifetime lt = _allActions.get(id);
+    public BasicAction get(Uid id)
+    {
+        Lifetime lt = _allActions.get(id);
 
-		if (lt != null)
-			return lt.getAction();
-		else
-			return null;
-	}
+        if (lt != null)
+            return lt.getAction();
+        else
+            return null;
+    }
 
     /**
      * @deprecated this method no longer serves any useful purpose and will be removed in a future release
@@ -94,31 +94,31 @@ public class ActionManager
      * @return the time that the action was begun
      */
     @Deprecated
-	public long getTimeAdded (Uid id)
-	{
-		Lifetime lt = _allActions.get(id);
+    public long getTimeAdded (Uid id)
+    {
+        Lifetime lt = _allActions.get(id);
 
-		if (lt != null)
-			return lt.getTimeAdded();
-		else
-			return 0;
-	}
+        if (lt != null)
+            return lt.getTimeAdded();
+        else
+            return 0;
+    }
 
-	public void remove(Uid id)
-	{
-		_allActions.remove(id);
-	}
+    public void remove(Uid id)
+    {
+        _allActions.remove(id);
+    }
 
     public int getNumberOfInflightTransactions()
     {
         return _allActions.size();
     }
 
-	private ActionManager()
-	{
-	}
+    private ActionManager()
+    {
+    }
 
-	private static final ActionManager _theManager = new ActionManager();
+    private static final ActionManager _theManager = new ActionManager();
 
-	private static final Map<Uid, Lifetime> _allActions = new ConcurrentHashMap<Uid, Lifetime>();
+    private static final Map<Uid, Lifetime> _allActions = new ConcurrentHashMap<Uid, Lifetime>();
 }

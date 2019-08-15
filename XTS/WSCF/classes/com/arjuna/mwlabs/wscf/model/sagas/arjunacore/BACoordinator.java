@@ -81,46 +81,46 @@ public class BACoordinator extends TwoPhaseCoordinator
 
     private final static int FAILED = 2;
 
-	public BACoordinator()
-	{
-		super();
+    public BACoordinator()
+    {
+        super();
 
-		_theId = new CoordinatorIdImple(get_uid());
-	}
+        _theId = new CoordinatorIdImple(get_uid());
+    }
 
-	public BACoordinator(Uid recovery)
-	{
-		super(recovery);
+    public BACoordinator(Uid recovery)
+    {
+        super(recovery);
 
-		_theId = new CoordinatorIdImple(get_uid());
-	}
+        _theId = new CoordinatorIdImple(get_uid());
+    }
 
     /**
-	 * If the application requires and if the coordination protocol supports it,
-	 * then this method can be used to execute a coordination protocol on the
-	 * currently enlisted participants at any time prior to the termination of
-	 * the coordination scope.
-	 *
-	 * This implementation only supports coordination at the end of the
-	 * activity.
-	 *
-	 * @exception WrongStateException
-	 *                Thrown if the coordinator is in a state the does not allow
-	 *                coordination to occur.
-	 * @exception ProtocolViolationException
-	 *                Thrown if the protocol is violated in some manner during
-	 *                execution.
-	 * @exception SystemException
-	 *                Thrown if any other error occurs.
-	 *
-	 * @return The result of executing the protocol, or null.
-	 */
+     * If the application requires and if the coordination protocol supports it,
+     * then this method can be used to execute a coordination protocol on the
+     * currently enlisted participants at any time prior to the termination of
+     * the coordination scope.
+     *
+     * This implementation only supports coordination at the end of the
+     * activity.
+     *
+     * @exception WrongStateException
+     *                Thrown if the coordinator is in a state the does not allow
+     *                coordination to occur.
+     * @exception ProtocolViolationException
+     *                Thrown if the protocol is violated in some manner during
+     *                execution.
+     * @exception SystemException
+     *                Thrown if any other error occurs.
+     *
+     * @return The result of executing the protocol, or null.
+     */
 
-	public Outcome coordinate (CompletionStatus cs) throws WrongStateException,
-			ProtocolViolationException, SystemException
-	{
-		return null;
-	}
+    public Outcome coordinate (CompletionStatus cs) throws WrongStateException,
+            ProtocolViolationException, SystemException
+    {
+        return null;
+    }
 
     /**
      * ensure all ParticipantCompletion participants have completed and then send a complete message to
@@ -131,11 +131,11 @@ public class BACoordinator extends TwoPhaseCoordinator
      */
     public synchronized void complete () throws WrongStateException,
             SystemException
-	{
+    {
         int status = status();
 
         if (status == ActionStatus.RUNNING)
-		{
+        {
             // check that all ParticipantCompletion participants have completed
             // throwing a wobbly if not
 
@@ -165,8 +165,8 @@ public class BACoordinator extends TwoPhaseCoordinator
                     absRec = iter.iterate();
                 }
             }
-		}
-		else
+        }
+        else
         {
             throw new WrongStateException();
         }
@@ -201,60 +201,60 @@ public class BACoordinator extends TwoPhaseCoordinator
         return super.cancel();
     }
 
-	/**
-	 * Enrol the specified participant with the coordinator associated with the
-	 * current thread.
-	 *
-	 * @exception WrongStateException
-	 *                Thrown if the coordinator is not in a state that allows
-	 *                participants to be enrolled.
-	 * @exception DuplicateParticipantException
-	 *                Thrown if the participant has already been enrolled and
-	 *                the coordination protocol does not support multiple
-	 *                entries.
-	 * @exception InvalidParticipantException
-	 *                Thrown if the participant is invalid.
-	 * @exception SystemException
-	 *                Thrown if any other error occurs.
-	 */
+    /**
+     * Enrol the specified participant with the coordinator associated with the
+     * current thread.
+     *
+     * @exception WrongStateException
+     *                Thrown if the coordinator is not in a state that allows
+     *                participants to be enrolled.
+     * @exception DuplicateParticipantException
+     *                Thrown if the participant has already been enrolled and
+     *                the coordination protocol does not support multiple
+     *                entries.
+     * @exception InvalidParticipantException
+     *                Thrown if the participant is invalid.
+     * @exception SystemException
+     *                Thrown if any other error occurs.
+     */
 
-	public void enlistParticipant (Participant act) throws WrongStateException,
-			DuplicateParticipantException, InvalidParticipantException,
-			SystemException
-	{
-		if (act == null) throw new InvalidParticipantException();
+    public void enlistParticipant (Participant act) throws WrongStateException,
+            DuplicateParticipantException, InvalidParticipantException,
+            SystemException
+    {
+        if (act == null) throw new InvalidParticipantException();
 
-		AbstractRecord rec = new ParticipantRecord((Participant)act, new Uid());
+        AbstractRecord rec = new ParticipantRecord((Participant)act, new Uid());
 
-		if (add(rec) != AddOutcome.AR_ADDED) throw new WrongStateException();
-		else
-		{
-			/*
-			 * Presume nothing protocol, so we need to write the intentions list
-			 * every time a participant is added.
-			 */
-		}
-	}
+        if (add(rec) != AddOutcome.AR_ADDED) throw new WrongStateException();
+        else
+        {
+            /*
+             * Presume nothing protocol, so we need to write the intentions list
+             * every time a participant is added.
+             */
+        }
+    }
 
-	/**
-	 * Remove the specified participant from the coordinator's list. this is the target of the
-	 *
-	 * @exception InvalidParticipantException
-	 *                Thrown if the participant is not known of by the
-	 *                coordinator.
-	 * @exception WrongStateException
-	 *                Thrown if the state of the coordinator does not allow the
-	 *                participant to be removed
-	 * @exception SystemException
-	 *                Thrown if any other error occurs.
-	 */
+    /**
+     * Remove the specified participant from the coordinator's list. this is the target of the
+     *
+     * @exception InvalidParticipantException
+     *                Thrown if the participant is not known of by the
+     *                coordinator.
+     * @exception WrongStateException
+     *                Thrown if the state of the coordinator does not allow the
+     *                participant to be removed
+     * @exception SystemException
+     *                Thrown if any other error occurs.
+     */
 
-	public synchronized void delistParticipant (String participantId)
-			throws InvalidParticipantException, WrongStateException,
-			SystemException
-	{
-		if (participantId == null)
-			throw new SystemException(
+    public synchronized void delistParticipant (String participantId)
+            throws InvalidParticipantException, WrongStateException,
+            SystemException
+    {
+        if (participantId == null)
+            throw new SystemException(
                     wscfLogger.i18NLogger.get_model_sagas_arjunacore_BACoordinator_2());
 
         int status = status();
@@ -270,12 +270,12 @@ public class BACoordinator extends TwoPhaseCoordinator
         }
     }
 
-	public synchronized void participantCompleted (String participantId)
-			throws InvalidParticipantException, WrongStateException,
-			SystemException
-	{
-		if (participantId == null)
-			throw new SystemException(
+    public synchronized void participantCompleted (String participantId)
+            throws InvalidParticipantException, WrongStateException,
+            SystemException
+    {
+        if (participantId == null)
+            throw new SystemException(
                     wscfLogger.i18NLogger.get_model_sagas_arjunacore_BACoordinator_2());
 
         int status = status();
@@ -291,13 +291,13 @@ public class BACoordinator extends TwoPhaseCoordinator
                 throw new WrongStateException(
                         wscfLogger.i18NLogger.get_model_sagas_arjunacore_BACoordinator_3());
         }
-	}
+    }
 
-	public synchronized void participantFaulted (String participantId)
-			throws InvalidParticipantException, SystemException
-	{
-		if (participantId == null)
-			throw new SystemException(
+    public synchronized void participantFaulted (String participantId)
+            throws InvalidParticipantException, SystemException
+    {
+        if (participantId == null)
+            throw new SystemException(
                     wscfLogger.i18NLogger.get_model_sagas_arjunacore_BACoordinator_2());
 
         int status = status();
@@ -401,87 +401,87 @@ public class BACoordinator extends TwoPhaseCoordinator
                     wscfLogger.i18NLogger.get_model_sagas_arjunacore_BACoordinator_4());
     }
 
-	/**
-	 * @exception SystemException
-	 *                Thrown if any error occurs.
-	 *
-	 * @return the complete list of qualifiers that have been registered with
-	 *         the current coordinator.
-	 */
+    /**
+     * @exception SystemException
+     *                Thrown if any error occurs.
+     *
+     * @return the complete list of qualifiers that have been registered with
+     *         the current coordinator.
+     */
 
-	public Qualifier[] qualifiers () throws SystemException
-	{
-		return null;
-	}
+    public Qualifier[] qualifiers () throws SystemException
+    {
+        return null;
+    }
 
-	/**
-	 * @exception SystemException
-	 *                Thrown if any error occurs.
-	 *
-	 * @return The unique identity of the current coordinator.
-	 */
+    /**
+     * @exception SystemException
+     *                Thrown if any error occurs.
+     *
+     * @return The unique identity of the current coordinator.
+     */
 
-	public CoordinatorId identifier () throws SystemException
-	{
-		return _theId;
-	}
+    public CoordinatorId identifier () throws SystemException
+    {
+        return _theId;
+    }
 
     public String type ()
     {
         return "/StateManager/BasicAction/AtomicAction/Sagas/BACoordinator";
     }
 
-	private final void changeParticipantStatus (String participantId, int status)
-			throws InvalidParticipantException, SystemException
-	{
-		/*
-		 * Transaction is active, so we can look at the pendingList only.
-		 */
+    private final void changeParticipantStatus (String participantId, int status)
+            throws InvalidParticipantException, SystemException
+    {
+        /*
+         * Transaction is active, so we can look at the pendingList only.
+         */
 
-		// TODO allow transaction status to be changed during commit - exit
-		// could come in late
-		boolean found = false;
+        // TODO allow transaction status to be changed during commit - exit
+        // could come in late
+        boolean found = false;
 
-		if (pendingList != null)
-		{
-			RecordListIterator iter = new RecordListIterator(pendingList);
-			AbstractRecord absRec = iter.iterate();
+        if (pendingList != null)
+        {
+            RecordListIterator iter = new RecordListIterator(pendingList);
+            AbstractRecord absRec = iter.iterate();
 
-			try
-			{
-				while ((absRec != null) && !found)
-				{
-					if (absRec instanceof ParticipantRecord)
-					{
-						ParticipantRecord pr = (ParticipantRecord) absRec;
-						Participant participant = (Participant) pr.value();
+            try
+            {
+                while ((absRec != null) && !found)
+                {
+                    if (absRec instanceof ParticipantRecord)
+                    {
+                        ParticipantRecord pr = (ParticipantRecord) absRec;
+                        Participant participant = (Participant) pr.value();
 
-						if (participantId.equals(participant.id()))
-						{
-							found = true;
+                        if (participantId.equals(participant.id()))
+                        {
+                            found = true;
 
-							if (status == DELISTED) {
+                            if (status == DELISTED) {
                                 pr.delist(false);
                             } else if (status == FAILED) {
                                 pr.delist(true);
                             } else {
-								pr.completed();
+                                pr.completed();
                             }
                         }
-					}
+                    }
 
-					absRec = iter.iterate();
-				}
-			}
-			catch (Exception ex)
-			{
-				throw new SystemException(ex.toString());
-			}
-		}
+                    absRec = iter.iterate();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new SystemException(ex.toString());
+            }
+        }
 
-		if (!found) throw new InvalidParticipantException();
-	}
+        if (!found) throw new InvalidParticipantException();
+    }
 
-	private CoordinatorIdImple _theId;
+    private CoordinatorIdImple _theId;
 
 }

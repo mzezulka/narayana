@@ -63,110 +63,110 @@ public class LogWriteStateManager extends StateManager
 
     public boolean writeOptimisation ()
     {
-	return true;
+    return true;
     }
 
     protected LogWriteStateManager (Uid objUid)
     {
-	super(objUid);
+    super(objUid);
     }
 
     protected LogWriteStateManager (Uid objUid, int ot)
     {
-	super(objUid, ot, ObjectModel.SINGLE);
+    super(objUid, ot, ObjectModel.SINGLE);
     }
 
     protected LogWriteStateManager (Uid objUid, int ot, int om)
     {
-	super(objUid, ot, om);
+    super(objUid, ot, om);
     }
 
     protected LogWriteStateManager ()
     {
-	super(ObjectType.RECOVERABLE);
+    super(ObjectType.RECOVERABLE);
     }
 
     protected LogWriteStateManager (int ot)
     {
-	super(ot);
+    super(ot);
     }
 
     protected synchronized boolean modified ()
     {
-	if (tsLogger.logger.isTraceEnabled()) {
+    if (tsLogger.logger.isTraceEnabled()) {
         tsLogger.logger.trace("StateManager::modified() for object-id " + get_uid());
     }
 
-	if ((super.objectType() == ObjectType.RECOVERABLE) && (super.objectModel == ObjectModel.SINGLE))
-	    return super.modified();
+    if ((super.objectType() == ObjectType.RECOVERABLE) && (super.objectModel == ObjectModel.SINGLE))
+        return super.modified();
 
-	BasicAction action = BasicAction.Current();
+    BasicAction action = BasicAction.Current();
 
-	if ((super.objectType() == ObjectType.NEITHER) || (super.status() == ObjectStatus.DESTROYED)) /*  NEITHER => no recovery info */
-	{
-	    return true;
-	}
+    if ((super.objectType() == ObjectType.NEITHER) || (super.status() == ObjectStatus.DESTROYED)) /*  NEITHER => no recovery info */
+    {
+        return true;
+    }
 
-	if (super.status() == ObjectStatus.PASSIVE) {
+    if (super.status() == ObjectStatus.PASSIVE) {
         tsLogger.i18NLogger.warn_StateManager_10();
 
         activate();
     }
 
-	/*
-	 * Need not have gone through active if new object.
-	 */
+    /*
+     * Need not have gone through active if new object.
+     */
 
-	if (status() == ObjectStatus.PASSIVE_NEW)
-	    setStatus(ObjectStatus.ACTIVE_NEW);
+    if (status() == ObjectStatus.PASSIVE_NEW)
+        setStatus(ObjectStatus.ACTIVE_NEW);
 
-	if (action != null)
-	{
-	    /*
-	     * Check if this is the first call to modified in this action.
-	     * BasicList insert returns FALSE if the entry is already
-	     * present.
-	     */
+    if (action != null)
+    {
+        /*
+         * Check if this is the first call to modified in this action.
+         * BasicList insert returns FALSE if the entry is already
+         * present.
+         */
 
-	    createLists();
+        createLists();
 
-	    synchronized (modifyingActions)
-	    {
-		if ((modifyingActions.size() > 0) &&
-		    (modifyingActions.get(action.get_uid()) != null))
-		{
-		    return true;
-		}
-		else
-		    modifyingActions.put(action.get_uid(), action);
-	    }
+        synchronized (modifyingActions)
+        {
+        if ((modifyingActions.size() > 0) &&
+            (modifyingActions.get(action.get_uid()) != null))
+        {
+            return true;
+        }
+        else
+            modifyingActions.put(action.get_uid(), action);
+        }
 
-	    /* If here then its a new action */
+        /* If here then its a new action */
 
-	    OutputObjectState state = new OutputObjectState(objectUid, type());
-	    int rStatus = AddOutcome.AR_ADDED;
+        OutputObjectState state = new OutputObjectState(objectUid, type());
+        int rStatus = AddOutcome.AR_ADDED;
 
-	    if (save_state(state, ObjectType.RECOVERABLE))
-	    {
-		TxLogWritePersistenceRecord record = new TxLogWritePersistenceRecord(state, super.getStore(), this);
+        if (save_state(state, ObjectType.RECOVERABLE))
+        {
+        TxLogWritePersistenceRecord record = new TxLogWritePersistenceRecord(state, super.getStore(), this);
 
-		if ((rStatus = action.add(record)) != AddOutcome.AR_ADDED)
-		{
-		    synchronized(modifyingActions)
-		    {
-			modifyingActions.remove(action.get_uid());  // remember to unregister with action
-		    }
+        if ((rStatus = action.add(record)) != AddOutcome.AR_ADDED)
+        {
+            synchronized(modifyingActions)
+            {
+            modifyingActions.remove(action.get_uid());  // remember to unregister with action
+            }
 
-		    record = null;
+            record = null;
 
-		    return false;
-		}
-	    }
-	    else
-		return false;
-	}
+            return false;
+        }
+        }
+        else
+        return false;
+    }
 
-	return true;
+    return true;
     }
 
 }

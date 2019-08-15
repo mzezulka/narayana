@@ -45,45 +45,45 @@ public class DefaultTimeout
     @Test
     public void test()
     {
-	ORB myORB = null;
-	RootOA myOA = null;
+    ORB myORB = null;
+    RootOA myOA = null;
 
-	try
-	{
-	    myORB = ORB.getInstance("test");
-	    myOA = OA.getRootOA(myORB);
+    try
+    {
+        myORB = ORB.getInstance("test");
+        myOA = OA.getRootOA(myORB);
 
-	    myORB.initORB(new String[] {}, null);
-	    myOA.initOA();
+        myORB.initORB(new String[] {}, null);
+        myOA.initOA();
 
-	    ORBManager.setORB(myORB);
-	    ORBManager.setPOA(myOA);
+        ORBManager.setORB(myORB);
+        ORBManager.setPOA(myOA);
 
-	    int sleepTime = arjPropertyManager.getCoordinatorEnvironmentBean().getDefaultTimeout();
+        int sleepTime = arjPropertyManager.getCoordinatorEnvironmentBean().getDefaultTimeout();
 
-	    System.out.println("Thread "+Thread.currentThread()+" starting transaction.");
+        System.out.println("Thread "+Thread.currentThread()+" starting transaction.");
 
-	    OTSManager.get_current().begin();
+        OTSManager.get_current().begin();
 
-	    Thread.sleep(sleepTime*1000*2, 0);
+        Thread.sleep(sleepTime*1000*2, 0);
 
-	    System.out.println("Thread "+Thread.currentThread()+" committing transaction.");
+        System.out.println("Thread "+Thread.currentThread()+" committing transaction.");
 
-	    OTSManager.get_current().commit(false);
+        OTSManager.get_current().commit(false);
 
-	    System.out.println("Transaction committed. Timeout did not go off.");
-	    System.out.println("Test did not complete successfully.");
-	}
-	catch (Exception e)
-	{
-	    System.out.println("Caught exception: "+e);
-	    System.out.println("Timeout went off.");
+        System.out.println("Transaction committed. Timeout did not go off.");
+        System.out.println("Test did not complete successfully.");
+    }
+    catch (Exception e)
+    {
+        System.out.println("Caught exception: "+e);
+        System.out.println("Timeout went off.");
 
-	    System.out.println("Test completed successfully.");
-	}
+        System.out.println("Test completed successfully.");
+    }
 
-	myOA.destroy();
-	myORB.shutdown();
+    myOA.destroy();
+    myORB.shutdown();
     }
 
 }

@@ -55,8 +55,8 @@ public interface Transaction extends javax.transaction.Transaction
     public int getXAResourceState (XAResource xaRes);
 
     // Methods used to support JTA 1.1 TransactionSynchronizationRegistry implementation
-	public Object getTxLocalResource(Object key);
-	public void putTxLocalResource(Object key, Object value);
+    public Object getTxLocalResource(Object key);
+    public void putTxLocalResource(Object key, Object value);
     public boolean isAlive();
 
     Map<Uid, String> getSynchronizations();

@@ -66,45 +66,45 @@ import org.jboss.jbossts.qa.Utils.ServerIORStore;
 
 public class Server02
 {
-	public static void main(String args[])
-	{
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+    public static void main(String args[])
+    {
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			String profileName = args[args.length - 2];
+            String profileName = args[args.length - 2];
 
-			int numberOfDrivers = JDBCProfileStore.numberOfDrivers(profileName);
-			for (int index = 0; index < numberOfDrivers; index++)
-			{
-				String driver = JDBCProfileStore.driver(profileName, index);
+            int numberOfDrivers = JDBCProfileStore.numberOfDrivers(profileName);
+            for (int index = 0; index < numberOfDrivers; index++)
+            {
+                String driver = JDBCProfileStore.driver(profileName, index);
 
-				Class.forName(driver);
-			}
+                Class.forName(driver);
+            }
 
-			String databaseURL = JDBCProfileStore.databaseURL(profileName);
-			String databaseUser = JDBCProfileStore.databaseUser(profileName);
-			String databasePassword = JDBCProfileStore.databasePassword(profileName);
-			String databaseDynamicClass = JDBCProfileStore.databaseDynamicClass(profileName);
-			int databaseTimeout = JDBCProfileStore.timeout(profileName);
+            String databaseURL = JDBCProfileStore.databaseURL(profileName);
+            String databaseUser = JDBCProfileStore.databaseUser(profileName);
+            String databasePassword = JDBCProfileStore.databasePassword(profileName);
+            String databaseDynamicClass = JDBCProfileStore.databaseDynamicClass(profileName);
+            int databaseTimeout = JDBCProfileStore.timeout(profileName);
 
-			JDBCNumberTableImpl02 jdbcNumberTableImpl = new JDBCNumberTableImpl02(databaseURL, databaseUser, databasePassword, databaseDynamicClass, databaseTimeout);
-			NumberTablePOATie servant = new NumberTablePOATie(jdbcNumberTableImpl);
+            JDBCNumberTableImpl02 jdbcNumberTableImpl = new JDBCNumberTableImpl02(databaseURL, databaseUser, databasePassword, databaseDynamicClass, databaseTimeout);
+            NumberTablePOATie servant = new NumberTablePOATie(jdbcNumberTableImpl);
 
-			OAInterface.objectIsReady(servant);
-			NumberTable jdbcNumberTable = NumberTableHelper.narrow(OAInterface.corbaReference(servant));
+            OAInterface.objectIsReady(servant);
+            NumberTable jdbcNumberTable = NumberTableHelper.narrow(OAInterface.corbaReference(servant));
 
-			ServerIORStore.storeIOR(args[args.length - 1], ORBInterface.orb().object_to_string(jdbcNumberTable));
+            ServerIORStore.storeIOR(args[args.length - 1], ORBInterface.orb().object_to_string(jdbcNumberTable));
 
-			System.out.println("Ready");
+            System.out.println("Ready");
 
-			ORBInterface.run();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Server02.main: " + exception);
-		}
-	}
+            ORBInterface.run();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Server02.main: " + exception);
+        }
+    }
 }
 

@@ -46,28 +46,28 @@ import com.arjuna.mw.wsas.exceptions.SystemException;
 public class CleanupSynchronization implements Synchronization
 {
 
-	public CleanupSynchronization(String cleanupId, RegistrarImple theRegistrar)
-	{
-		_cleanupId = cleanupId;
-		_theRegistrar = theRegistrar;
-	}
+    public CleanupSynchronization(String cleanupId, RegistrarImple theRegistrar)
+    {
+        _cleanupId = cleanupId;
+        _theRegistrar = theRegistrar;
+    }
 
-	public void afterCompletion (int status) throws SystemException
-	{
-		try
-		{
-			_theRegistrar.disassociate(_cleanupId);
-		}
-		catch (Exception ex)
-		{
-			ex.printStackTrace();
+    public void afterCompletion (int status) throws SystemException
+    {
+        try
+        {
+            _theRegistrar.disassociate(_cleanupId);
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
 
-			throw new SystemException(ex.toString());
-		}
-	}
+            throw new SystemException(ex.toString());
+        }
+    }
 
-	private String _cleanupId;
+    private String _cleanupId;
 
-	private RegistrarImple _theRegistrar;
+    private RegistrarImple _theRegistrar;
 
 }

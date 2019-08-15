@@ -45,12 +45,12 @@ public class QATestNameRule implements MethodRule
         return groupName;
     }
 
-	/**
-	 * @return the name of the currently-running test method
-	 */
-	public String getMethodName() {
-		return methodName;
-	}
+    /**
+     * @return the name of the currently-running test method
+     */
+    public String getMethodName() {
+        return methodName;
+    }
 
     public Integer getParameterSetNumber()
     {

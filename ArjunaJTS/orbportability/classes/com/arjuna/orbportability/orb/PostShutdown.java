@@ -47,12 +47,12 @@ public abstract void work ();
 
 protected PostShutdown ()
     {
-	super("PostShutdown");
+    super("PostShutdown");
     }
 
 protected PostShutdown (String name)
     {
-	super(name);
+    super(name);
     }
 
 }

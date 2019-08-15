@@ -32,8 +32,8 @@
 *
 * The class is a copy of server01 but the remote object registered with
 * the ORB is impl04
-*						# Author P.Craddock
-*						# 09/08/01
+*                        # Author P.Craddock
+*                        # 09/08/01
 */
 package org.jboss.jbossts.qa.AITResources02Servers;
 
@@ -73,29 +73,29 @@ import org.jboss.jbossts.qa.Utils.ServerIORStore;
 
 public class Server11
 {
-	public static void main(String args[])
-	{
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+    public static void main(String args[])
+    {
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			AITCounterImpl04 aitCounterImpl = new AITCounterImpl04();
-			CounterPOATie servant = new CounterPOATie(aitCounterImpl);
+            AITCounterImpl04 aitCounterImpl = new AITCounterImpl04();
+            CounterPOATie servant = new CounterPOATie(aitCounterImpl);
 
-			OAInterface.objectIsReady(servant);
-			Counter aitCounter = CounterHelper.narrow(OAInterface.corbaReference(servant));
+            OAInterface.objectIsReady(servant);
+            Counter aitCounter = CounterHelper.narrow(OAInterface.corbaReference(servant));
 
-			ServerIORStore.storeIOR(args[args.length - 1], ORBInterface.orb().object_to_string(aitCounter));
+            ServerIORStore.storeIOR(args[args.length - 1], ORBInterface.orb().object_to_string(aitCounter));
 
-			System.out.println("Ready");
+            System.out.println("Ready");
 
-			ORBInterface.run();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Server01.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
-	}
+            ORBInterface.run();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Server01.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
+    }
 }

@@ -46,12 +46,12 @@ public class NoTransaction implements Status
 
     public static NoTransaction instance ()
     {
-	return _instance;
+    return _instance;
     }
 
     public String toString ()
     {
-	return "Status.NoTransaction";
+    return "Status.NoTransaction";
     }
 
     private NoTransaction ()

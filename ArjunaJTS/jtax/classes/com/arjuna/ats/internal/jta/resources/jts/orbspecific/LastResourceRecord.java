@@ -106,15 +106,15 @@ public class LastResourceRecord extends XAResourceRecord
     public Vote prepare()
         throws HeuristicMixed, HeuristicHazard, SystemException
     {
-    	try
-    	{
-	        commit_one_phase() ;
-	        return Vote.VoteCommit ;
-    	}
-    	catch (final TRANSACTION_ROLLEDBACK tr)
-    	{
-    		return Vote.VoteRollback ;
-    	}
+        try
+        {
+            commit_one_phase() ;
+            return Vote.VoteCommit ;
+        }
+        catch (final TRANSACTION_ROLLEDBACK tr)
+        {
+            return Vote.VoteRollback ;
+        }
     }
 
     /**
@@ -125,10 +125,10 @@ public class LastResourceRecord extends XAResourceRecord
         return "/CosTransactions/LastXAResourceRecord" ;
     }
 
-	public boolean saveRecord() throws SystemException
-	{
-		return false;
-	}
+    public boolean saveRecord() throws SystemException
+    {
+        return false;
+    }
 
     public boolean shouldAdd(OTSAbstractRecord record) throws SystemException
     {

@@ -63,7 +63,7 @@ public class RecoveryManagerImple
     public RecoveryManagerImple (boolean threaded)
     {
         // by default we do not use a socket based listener,
-	// but it can be turned on if not required.
+    // but it can be turned on if not required.
         boolean useListener = recoveryPropertyManager.getRecoveryEnvironmentBean().isRecoveryListener();
 
         /*

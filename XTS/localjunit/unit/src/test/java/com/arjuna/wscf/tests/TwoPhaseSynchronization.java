@@ -50,12 +50,12 @@ public class TwoPhaseSynchronization implements Synchronization
 
     public void beforeCompletion () throws SystemException
     {
-	System.out.println("TwoPhaseSynchronization.beforeCompletion");
+    System.out.println("TwoPhaseSynchronization.beforeCompletion");
     }
 
     public void afterCompletion (int status) throws SystemException
     {
-	System.out.println("TwoPhaseSynchronization.afterCompletion ( "+CoordinationResult.stringForm(status)+" )");
+    System.out.println("TwoPhaseSynchronization.afterCompletion ( "+CoordinationResult.stringForm(status)+" )");
     }
 
 }

@@ -46,7 +46,7 @@ public class ExpiredServerScanner extends ExpiredAssumedCompleteScanner
      */
     public ExpiredServerScanner ()
     {
-	super(AssumedCompleteServerTransaction.typeName(),StoreManager.getRecoveryStore());
+    super(AssumedCompleteServerTransaction.typeName(),StoreManager.getRecoveryStore());
 
     }
 }

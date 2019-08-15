@@ -233,16 +233,16 @@ public class XATerminatorImple implements javax.resource.spi.XATerminator, XATer
     public int prepare (Xid xid) throws XAException
     {
 
-    	// JBTM-927 this can happen if the transaction has been rolled back by the TransactionReaper
-		SubordinateTransaction tx = null;
-		try {
-			tx = SubordinationManager.getTransactionImporter().getImportedTransaction(xid);
-		} catch (XAException xae) {
-			if (xae.errorCode == XAException.XA_RBROLLBACK) {
-				SubordinationManager.getTransactionImporter().removeImportedTransaction(xid);
-			}
-			throw xae;
-		}
+        // JBTM-927 this can happen if the transaction has been rolled back by the TransactionReaper
+        SubordinateTransaction tx = null;
+        try {
+            tx = SubordinationManager.getTransactionImporter().getImportedTransaction(xid);
+        } catch (XAException xae) {
+            if (xae.errorCode == XAException.XA_RBROLLBACK) {
+                SubordinationManager.getTransactionImporter().removeImportedTransaction(xid);
+            }
+            throw xae;
+        }
         try
         {
 
@@ -380,7 +380,7 @@ public class XATerminatorImple implements javax.resource.spi.XATerminator, XATer
      * recovery invoked on them.
      *
      * @param nodeName
-     * 				Only recover transactions for this node (unless set to NodeNameXAResourceOrphanFilter.RECOVER_ALL_NODES)
+     *                 Only recover transactions for this node (unless set to NodeNameXAResourceOrphanFilter.RECOVER_ALL_NODES)
      * @throws XAException
      *             thrown if any error occurs.
      * @return a list of potentially indoubt transactions or <code>null</code>.
@@ -426,47 +426,47 @@ public class XATerminatorImple implements javax.resource.spi.XATerminator, XATer
 
                     if (uid.notEquals(Uid.nullUid()))
                     {
-						if (parentNodeName != null) {
-							SubordinateAtomicAction saa = new SubordinateAtomicAction(uid, true);
-							XidImple loadedXid = (XidImple) saa.getXid();
-							if (loadedXid != null && loadedXid.getFormatId() == XATxConverter.FORMAT_ID) {
-								String loadedXidSubordinateNodeName = XATxConverter.getSubordinateNodeName(loadedXid.getXID());
+                        if (parentNodeName != null) {
+                            SubordinateAtomicAction saa = new SubordinateAtomicAction(uid, true);
+                            XidImple loadedXid = (XidImple) saa.getXid();
+                            if (loadedXid != null && loadedXid.getFormatId() == XATxConverter.FORMAT_ID) {
+                                String loadedXidSubordinateNodeName = XATxConverter.getSubordinateNodeName(loadedXid.getXID());
                                 if ((loadedXidSubordinateNodeName == null && loadedXidSubordinateNodeName == TxControl.getXANodeName())
                                         || loadedXidSubordinateNodeName.equals(TxControl.getXANodeName())) {
 
-									if (parentNodeName.equals(saa.getParentNodeName())) {
-										if (jtaLogger.logger.isDebugEnabled()) {
-											jtaLogger.logger.debug("Found record for " + saa);
-										}
-//										TransactionImple tx = (TransactionImple) SubordinationManager.getTransactionImporter().recoverTransaction(uid);
+                                    if (parentNodeName.equals(saa.getParentNodeName())) {
+                                        if (jtaLogger.logger.isDebugEnabled()) {
+                                            jtaLogger.logger.debug("Found record for " + saa);
+                                        }
+//                                        TransactionImple tx = (TransactionImple) SubordinationManager.getTransactionImporter().recoverTransaction(uid);
 
-										values.push(loadedXid);
-									}
-								}
-							}
+                                        values.push(loadedXid);
+                                    }
+                                }
+                            }
 
-						} else if (xid == null) {
-							TransactionImple tx = (TransactionImple) SubordinationManager.getTransactionImporter().recoverTransaction(uid);
+                        } else if (xid == null) {
+                            TransactionImple tx = (TransactionImple) SubordinationManager.getTransactionImporter().recoverTransaction(uid);
 
-							if (tx != null)
-								values.push(tx.baseXid());
-						} else {
-							SubordinateAtomicAction saa = new SubordinateAtomicAction(uid, true);
-							XidImple loadedXid = (XidImple) saa.getXid();
-							if (loadedXid != null && loadedXid.getFormatId() == XATxConverter.FORMAT_ID) {
-								String loadedXidSubordinateNodeName = XATxConverter.getSubordinateNodeName(loadedXid.getXID());
-								if (XATxConverter.getSubordinateNodeName(new XidImple(xid).getXID()).equals(loadedXidSubordinateNodeName)) {
-									if (Arrays.equals(loadedXid.getGlobalTransactionId(), xid.getGlobalTransactionId())) {
-										if (jtaLogger.logger.isDebugEnabled()) {
-											jtaLogger.logger.debug("Found record for " + saa);
-										}
-										TransactionImple tx = (TransactionImple) SubordinationManager.getTransactionImporter().recoverTransaction(uid);
+                            if (tx != null)
+                                values.push(tx.baseXid());
+                        } else {
+                            SubordinateAtomicAction saa = new SubordinateAtomicAction(uid, true);
+                            XidImple loadedXid = (XidImple) saa.getXid();
+                            if (loadedXid != null && loadedXid.getFormatId() == XATxConverter.FORMAT_ID) {
+                                String loadedXidSubordinateNodeName = XATxConverter.getSubordinateNodeName(loadedXid.getXID());
+                                if (XATxConverter.getSubordinateNodeName(new XidImple(xid).getXID()).equals(loadedXidSubordinateNodeName)) {
+                                    if (Arrays.equals(loadedXid.getGlobalTransactionId(), xid.getGlobalTransactionId())) {
+                                        if (jtaLogger.logger.isDebugEnabled()) {
+                                            jtaLogger.logger.debug("Found record for " + saa);
+                                        }
+                                        TransactionImple tx = (TransactionImple) SubordinationManager.getTransactionImporter().recoverTransaction(uid);
 
-										values.push(loadedXid);
-									}
-								}
-							}
-						}
+                                        values.push(loadedXid);
+                                    }
+                                }
+                            }
+                        }
 
                     }
                     else
@@ -513,18 +513,18 @@ public class XATerminatorImple implements javax.resource.spi.XATerminator, XATer
 
     public void rollback (Xid xid) throws XAException
     {
-		// JBTM-927 this can happen if the transaction has been rolled back by
-		// the TransactionReaper
-		SubordinateTransaction tx = null;
-		try {
-			tx = SubordinationManager.getTransactionImporter().getImportedTransaction(xid);
-		} catch (XAException xae) {
-			if (xae.errorCode == XAException.XA_RBROLLBACK) {
-				SubordinationManager.getTransactionImporter().removeImportedTransaction(xid);
-				return;
-			}
-			throw xae;
-		}
+        // JBTM-927 this can happen if the transaction has been rolled back by
+        // the TransactionReaper
+        SubordinateTransaction tx = null;
+        try {
+            tx = SubordinationManager.getTransactionImporter().getImportedTransaction(xid);
+        } catch (XAException xae) {
+            if (xae.errorCode == XAException.XA_RBROLLBACK) {
+                SubordinationManager.getTransactionImporter().removeImportedTransaction(xid);
+                return;
+            }
+            throw xae;
+        }
         try
         {
 
@@ -615,15 +615,15 @@ public class XATerminatorImple implements javax.resource.spi.XATerminator, XATer
         }
     }
 
-	public Transaction getTransaction(Xid xid) throws XAException {
-		// first see if the xid is a root coordinator
-		Transaction transaction = TransactionImple.getTransaction(new XidImple(xid).getTransactionUid());
-		// second see if the xid is a subordinate txn
-		if(transaction == null) {
-		    transaction = SubordinationManager.getTransactionImporter().getImportedTransaction(xid);
-		}
-		return transaction;
-	}
+    public Transaction getTransaction(Xid xid) throws XAException {
+        // first see if the xid is a root coordinator
+        Transaction transaction = TransactionImple.getTransaction(new XidImple(xid).getTransactionUid());
+        // second see if the xid is a subordinate txn
+        if(transaction == null) {
+            transaction = SubordinationManager.getTransactionImporter().getImportedTransaction(xid);
+        }
+        return transaction;
+    }
 
     public TransactionImportResult importTransaction(Xid xid, int timeoutIfNew) throws XAException {
         return SubordinationManager.getTransactionImporter().importRemoteTransaction(xid, timeoutIfNew);

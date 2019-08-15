@@ -50,17 +50,17 @@ public class LockResult
 
     public static String stringForm (int l)
     {
-	switch (l)
-	{
-	case GRANTED:
-	    return "LockResult.GRANTED";
-	case REFUSED:
-	    return "LockResult.REFUSED";
-	case RELEASED:
-	    return "LockResult.RELEASED";
-	default:
-	    return "Unknown";
-	}
+    switch (l)
+    {
+    case GRANTED:
+        return "LockResult.GRANTED";
+    case REFUSED:
+        return "LockResult.REFUSED";
+    case RELEASED:
+        return "LockResult.RELEASED";
+    default:
+        return "Unknown";
+    }
     }
 
     /**
@@ -69,7 +69,7 @@ public class LockResult
 
     public static void print (PrintWriter strm, int l)
     {
-	strm.print(stringForm(l));
+    strm.print(stringForm(l));
     }
 
 }

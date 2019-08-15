@@ -402,7 +402,7 @@ public class XMLEnvHandler extends DefaultHandler {
                 if (attsLocalName.equals("name")) {
                     serviceName = atts.getValue(i);
                     String serviceServer = (String) prop.get("blacktie." + serviceName + ".server");
-		    String type = (String) prop.get("blacktie." + serviceName + ".type");
+            String type = (String) prop.get("blacktie." + serviceName + ".type");
                     if (serviceServer != null && !type.equals("topic")) {
                         log.warn("service " + serviceName + " has already been defined in " + serviceName);
                         throw new SAXException("Can not define the same service: " + serviceName);

@@ -118,11 +118,11 @@ public class PseudoControlWrapper
                     return false;
                 }
             } else {
-				/*
-				 * Trying to compare two non-local controls -- assuming the previous implementation was correct we
-				 * need to do a full comparison of this control's coordinator against the wrapper control's coordinator
-				 * TODO why can't we just get the two UIDs and compare them?
-				 */
+                /*
+                 * Trying to compare two non-local controls -- assuming the previous implementation was correct we
+                 * need to do a full comparison of this control's coordinator against the wrapper control's coordinator
+                 * TODO why can't we just get the two UIDs and compare them?
+                 */
                 try {
                     // make sure we have our coordinator
                     if (_coordinator == null) {

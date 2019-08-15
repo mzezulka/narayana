@@ -57,72 +57,72 @@ public class DemoArjunaResource extends com.arjuna.ArjunaOTS.OTSAbstractRecordPO
 
     public DemoArjunaResource ()
     {
-	ORBManager.getPOA().objectIsReady(this);
+    ORBManager.getPOA().objectIsReady(this);
 
-	ref = ArjunaSubtranAwareResourceHelper.narrow(ORBManager.getPOA().corbaReference(this));
+    ref = ArjunaSubtranAwareResourceHelper.narrow(ORBManager.getPOA().corbaReference(this));
     }
 
     public ArjunaSubtranAwareResource getReference ()
     {
-	return ref;
+    return ref;
     }
 
     public void registerResource (boolean registerSubtran) throws Unavailable, Inactive, NotSubtransaction, SystemException
     {
-	CurrentImple current = OTSImpleManager.current();
-	Control myControl = current.get_control();
-	Coordinator coord = myControl.get_coordinator();
+    CurrentImple current = OTSImpleManager.current();
+    Control myControl = current.get_control();
+    Coordinator coord = myControl.get_coordinator();
 
-	if (registerSubtran)
-	    coord.register_subtran_aware(ref);
-	else
-	    coord.register_resource(ref);
+    if (registerSubtran)
+        coord.register_subtran_aware(ref);
+    else
+        coord.register_resource(ref);
 
-	System.out.println("Registered DemoArjunaResource");
+    System.out.println("Registered DemoArjunaResource");
     }
 
     public org.omg.CosTransactions.Vote prepare_subtransaction () throws SystemException
     {
-	System.out.println("DEMOARJUNARESOURCE : PREPARE_SUBTRANSACTION");
+    System.out.println("DEMOARJUNARESOURCE : PREPARE_SUBTRANSACTION");
 
-	return Vote.VoteCommit;
+    return Vote.VoteCommit;
     }
 
     public void commit_subtransaction (Coordinator parent) throws SystemException
     {
-	System.out.println("DEMOARJUNARESOURCE : COMMIT_SUBTRANSACTION");
+    System.out.println("DEMOARJUNARESOURCE : COMMIT_SUBTRANSACTION");
     }
 
     public void rollback_subtransaction () throws SystemException
     {
-	System.out.println("DEMOARJUNARESOURCE : ROLLBACK_SUBTRANSACTION");
+    System.out.println("DEMOARJUNARESOURCE : ROLLBACK_SUBTRANSACTION");
     }
 
     public org.omg.CosTransactions.Vote prepare () throws SystemException
     {
-	System.out.println("DEMOARJUNARESOURCE : PREPARE");
+    System.out.println("DEMOARJUNARESOURCE : PREPARE");
 
-	return Vote.VoteCommit;
+    return Vote.VoteCommit;
     }
 
     public void rollback () throws SystemException, HeuristicCommit, HeuristicMixed, HeuristicHazard
     {
-	System.out.println("DEMOARJUNARESOURCE : ROLLBACK");
+    System.out.println("DEMOARJUNARESOURCE : ROLLBACK");
     }
 
     public void commit () throws SystemException, NotPrepared, HeuristicRollback, HeuristicMixed, HeuristicHazard
     {
-	System.out.println("DEMOARJUNARESOURCE : COMMIT");
+    System.out.println("DEMOARJUNARESOURCE : COMMIT");
     }
 
     public void forget () throws SystemException
     {
-	System.out.println("DEMOARJUNARESOURCE : FORGET");
+    System.out.println("DEMOARJUNARESOURCE : FORGET");
     }
 
     public void commit_one_phase () throws SystemException, HeuristicHazard
     {
-	System.out.println("DEMOARJUNARESOURCE : COMMIT_ONE_PHASE");
+    System.out.println("DEMOARJUNARESOURCE : COMMIT_ONE_PHASE");
     }
 
     public void alter (OTSAbstractRecord arg0)

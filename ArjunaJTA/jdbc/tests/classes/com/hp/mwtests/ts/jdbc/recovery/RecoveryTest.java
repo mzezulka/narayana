@@ -85,69 +85,69 @@ public class RecoveryTest {
         }
     }
 
-	@Test
-	@BMRule(
+    @Test
+    @BMRule(
         name = "throw lang error exception",
         targetClass = "org.h2.jdbcx.JdbcXAConnection",
         targetMethod = "commit",
         action = "throw new java.lang.Error()",
         targetLocation = "AT ENTRY"
     )
-	public void test() throws Exception {
-		String url = "jdbc:arjuna:";
-		Properties p = System.getProperties();
-		p.put("jdbc.drivers", Driver.class.getName());
+    public void test() throws Exception {
+        String url = "jdbc:arjuna:";
+        Properties p = System.getProperties();
+        p.put("jdbc.drivers", Driver.class.getName());
 
-		System.setProperties(p);
-		transactionalDriver = new TransactionalDriver();
-		DriverManager.registerDriver(transactionalDriver);
+        System.setProperties(p);
+        transactionalDriver = new TransactionalDriver();
+        DriverManager.registerDriver(transactionalDriver);
 
-		Properties dbProperties = new Properties();
+        Properties dbProperties = new Properties();
 
-		final JdbcDataSource ds = new JdbcDataSource();
-		ds.setURL("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
-		dbProperties.put(TransactionalDriver.XADataSource, ds);
+        final JdbcDataSource ds = new JdbcDataSource();
+        ds.setURL("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
+        dbProperties.put(TransactionalDriver.XADataSource, ds);
 
-		step0_setupTables(url, dbProperties);
+        step0_setupTables(url, dbProperties);
 
         // We need to do this in a different thread as otherwise the transaction would still be associated with the connection due to the java.lang.Error
-	    // RMFAIL on it's own will cause H2 to close connection and that seems to discard the indoubt transactions
-		step1_leaveXidsInDbTable(url, dbProperties);
+        // RMFAIL on it's own will cause H2 to close connection and that seems to discard the indoubt transactions
+        step1_leaveXidsInDbTable(url, dbProperties);
 
 
-		step2_checkDbIsNotCommitted(url, dbProperties);
+        step2_checkDbIsNotCommitted(url, dbProperties);
 
-		// 3. Perform recovery
-		{
-			XARecoveryModule xarm = new XARecoveryModule();
-			xarm.addXAResourceRecoveryHelper(new XAResourceRecoveryHelper() {
+        // 3. Perform recovery
+        {
+            XARecoveryModule xarm = new XARecoveryModule();
+            xarm.addXAResourceRecoveryHelper(new XAResourceRecoveryHelper() {
 
-				@Override
-				public boolean initialise(String p) throws Exception {
-					return false;
-				}
+                @Override
+                public boolean initialise(String p) throws Exception {
+                    return false;
+                }
 
-				@Override
-				public XAResource[] getXAResources() throws Exception {
+                @Override
+                public XAResource[] getXAResources() throws Exception {
 
-					return new XAResource[] { ds.getXAConnection()
-							.getXAResource() };
-				}
-			});
+                    return new XAResource[] { ds.getXAConnection()
+                            .getXAResource() };
+                }
+            });
 
-			RecoveryManager manager = RecoveryManager.manager();
-			manager.removeAllModules(true);
-			manager.addModule(xarm);
-			AtomicActionRecoveryModule aarm = new AtomicActionRecoveryModule();
+            RecoveryManager manager = RecoveryManager.manager();
+            manager.removeAllModules(true);
+            manager.addModule(xarm);
+            AtomicActionRecoveryModule aarm = new AtomicActionRecoveryModule();
 
-			aarm.periodicWorkFirstPass();
-			Transformer.disableTriggers(true);
-			aarm.periodicWorkSecondPass();
-			Transformer.enableTriggers(true);
-		}
+            aarm.periodicWorkFirstPass();
+            Transformer.disableTriggers(true);
+            aarm.periodicWorkSecondPass();
+            Transformer.enableTriggers(true);
+        }
 
-		step4_finalDbCommitCheck(url, dbProperties);
-	}
+        step4_finalDbCommitCheck(url, dbProperties);
+    }
 
     @Test
     @BMRule(
@@ -196,10 +196,10 @@ public class RecoveryTest {
     }
 
 
-	/**
-	 * 0. Setup tables
-	 */
-	private void step0_setupTables(String url, Properties dbProperties) throws Exception {
+    /**
+     * 0. Setup tables
+     */
+    private void step0_setupTables(String url, Properties dbProperties) throws Exception {
         Connection conn = DriverManager.getConnection(url, dbProperties);
         log.debugf("conn step0: %s, db props %s", conn, dbProperties);
 
@@ -216,12 +216,12 @@ public class RecoveryTest {
             stmt.close();
             conn.close();
         }
-	}
+    }
 
-	/**
-	 * 1. Leave a Xid in the DB
-	 */
-	private void step1_leaveXidsInDbTable(String url, Properties dbProperties) throws Exception {
+    /**
+     * 1. Leave a Xid in the DB
+     */
+    private void step1_leaveXidsInDbTable(String url, Properties dbProperties) throws Exception {
         Thread thread = new Thread(() -> {
             try {
                 Uid[] uid = new Uid[1];
@@ -258,12 +258,12 @@ public class RecoveryTest {
         });
         thread.start();
         thread.join();
-	}
+    }
 
     /**
      * 2. Check its not in the DB already
      */
-	private void step2_checkDbIsNotCommitted(String url, Properties dbProperties) throws Exception {
+    private void step2_checkDbIsNotCommitted(String url, Properties dbProperties) throws Exception {
         Connection conn = DriverManager.getConnection(url, dbProperties);
         log.debugf("conn step2: %s, db props %s", conn, dbProperties);
         Statement stmt = conn.createStatement(); // non-tx statement
@@ -287,7 +287,7 @@ public class RecoveryTest {
     /**
      * 4. See if its there now
      */
-	private void step4_finalDbCommitCheck(String url, Properties dbProperties) throws Exception {
+    private void step4_finalDbCommitCheck(String url, Properties dbProperties) throws Exception {
         Connection conn = DriverManager.getConnection(url, dbProperties);
         log.debugf("conn step4: %s, db props %s", conn, dbProperties);
         Statement stmt = conn.createStatement(); // non-tx statement

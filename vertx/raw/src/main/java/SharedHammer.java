@@ -45,13 +45,13 @@ public class SharedHammer
 
             System.out.println("Object created with id: "+HammerThreadedObject.object);
 
-	    try
-	    {
-		Thread.sleep(5000);  // time to get other server(s) running
-	    }
-	    catch (final Throwable ex)
-	    {
-	    }
+        try
+        {
+        Thread.sleep(5000);  // time to get other server(s) running
+        }
+        catch (final Throwable ex)
+        {
+        }
         }
         else
             HammerThreadedObject.object = new AtomicObject(id, ObjectModel.MULTIPLE);

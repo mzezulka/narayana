@@ -36,73 +36,73 @@ import java.util.Properties;
 
 public class FileServerIORStore implements ServerIORStorePlugin
 {
-	public void initialise() throws Exception
-	{
-		// Ignore
-	}
+    public void initialise() throws Exception
+    {
+        // Ignore
+    }
 
-	public void storeIOR(String serverName, String serverIOR) throws Exception
-	{
-		Properties serverIORs = new Properties();
+    public void storeIOR(String serverName, String serverIOR) throws Exception
+    {
+        Properties serverIORs = new Properties();
 
-		try
-		{
-			FileInputStream serverIORsFileInputStream = new FileInputStream("ServerIORs");
-			serverIORs.load(serverIORsFileInputStream);
-			serverIORsFileInputStream.close();
-		}
-		catch (Exception exception)
-		{
-		}
+        try
+        {
+            FileInputStream serverIORsFileInputStream = new FileInputStream("ServerIORs");
+            serverIORs.load(serverIORsFileInputStream);
+            serverIORsFileInputStream.close();
+        }
+        catch (Exception exception)
+        {
+        }
 
-		serverIORs.put(serverName, serverIOR);
+        serverIORs.put(serverName, serverIOR);
 
-		FileOutputStream serverIORsFileOutputStream = new FileOutputStream("ServerIORs");
-		serverIORs.store(serverIORsFileOutputStream, "Server IORs");
-		serverIORsFileOutputStream.close();
-	}
+        FileOutputStream serverIORsFileOutputStream = new FileOutputStream("ServerIORs");
+        serverIORs.store(serverIORsFileOutputStream, "Server IORs");
+        serverIORsFileOutputStream.close();
+    }
 
-	public void removeIOR(String serverName) throws Exception
-	{
-		Properties serverIORs = new Properties();
+    public void removeIOR(String serverName) throws Exception
+    {
+        Properties serverIORs = new Properties();
 
-		FileInputStream serverIORsFileInputStream = new FileInputStream("ServerIORs");
-		serverIORs.load(serverIORsFileInputStream);
-		serverIORsFileInputStream.close();
+        FileInputStream serverIORsFileInputStream = new FileInputStream("ServerIORs");
+        serverIORs.load(serverIORsFileInputStream);
+        serverIORsFileInputStream.close();
 
-		serverIORs.remove(serverName);
+        serverIORs.remove(serverName);
 
-		FileOutputStream serverIORsFileOutputStream = new FileOutputStream("ServerIORs");
-		serverIORs.store(serverIORsFileOutputStream, "Server IORs");
-		serverIORsFileOutputStream.close();
-	}
+        FileOutputStream serverIORsFileOutputStream = new FileOutputStream("ServerIORs");
+        serverIORs.store(serverIORsFileOutputStream, "Server IORs");
+        serverIORsFileOutputStream.close();
+    }
 
-	public String loadIOR(String serverName) throws Exception
-	{
-		String serverIOR = null;
+    public String loadIOR(String serverName) throws Exception
+    {
+        String serverIOR = null;
 
-		Properties serverIORs = new Properties();
+        Properties serverIORs = new Properties();
 
-		FileInputStream serverIORsFileInputStream = new FileInputStream("ServerIORs");
-		serverIORs.load(serverIORsFileInputStream);
-		serverIORsFileInputStream.close();
+        FileInputStream serverIORsFileInputStream = new FileInputStream("ServerIORs");
+        serverIORs.load(serverIORsFileInputStream);
+        serverIORsFileInputStream.close();
 
-		serverIOR = (String) serverIORs.get(serverName);
+        serverIOR = (String) serverIORs.get(serverName);
 
-		return serverIOR;
-	}
+        return serverIOR;
+    }
 
-	public void remove()
-	{
-		try
-		{
-			File file = new File("ServerIORs");
+    public void remove()
+    {
+        try
+        {
+            File file = new File("ServerIORs");
 
-			file.delete();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Failed to remove \"ServerIORs\": " + exception);
-		}
-	}
+            file.delete();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Failed to remove \"ServerIORs\": " + exception);
+        }
+    }
 }

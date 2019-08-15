@@ -34,113 +34,113 @@ public class CompletionCoordinatorRPCImple implements CompletionCoordinatorParti
 
     public void commit () throws TransactionRolledBackException, UnknownTransactionException, SystemException
     {
-	try
-	{
-	    if (_hier != null)
-		_cm.resume(_hier);
+    try
+    {
+        if (_hier != null)
+        _cm.resume(_hier);
 
-	    _cm.confirm();
-	}
-	catch (com.arjuna.mw.wsas.exceptions.InvalidActivityException ex)
-	{
-	    throw new UnknownTransactionException();
-	}
-	catch (com.arjuna.mw.wsas.exceptions.WrongStateException ex)
-	{
-	    throw new SystemException(ex.toString());
-	}
-	catch (com.arjuna.mw.wsas.exceptions.ProtocolViolationException ex)
-	{
-	    //	    throw new HeuristicHazardException();
+        _cm.confirm();
+    }
+    catch (com.arjuna.mw.wsas.exceptions.InvalidActivityException ex)
+    {
+        throw new UnknownTransactionException();
+    }
+    catch (com.arjuna.mw.wsas.exceptions.WrongStateException ex)
+    {
+        throw new SystemException(ex.toString());
+    }
+    catch (com.arjuna.mw.wsas.exceptions.ProtocolViolationException ex)
+    {
+        //        throw new HeuristicHazardException();
 
-	    throw new SystemException(ex.toString());
-	}
-	catch (com.arjuna.mw.wscf.exceptions.NoCoordinatorException ex)
-	{
-	    throw new UnknownTransactionException();
-	}
-	catch (com.arjuna.mw.wscf.model.twophase.exceptions.CoordinatorCancelledException ex)
-	{
-	    throw new TransactionRolledBackException();
-	}
-	catch (com.arjuna.mw.wscf.model.twophase.exceptions.HeuristicMixedException ex)
-	{
-	    //	    throw new HeuristicMixedException();
+        throw new SystemException(ex.toString());
+    }
+    catch (com.arjuna.mw.wscf.exceptions.NoCoordinatorException ex)
+    {
+        throw new UnknownTransactionException();
+    }
+    catch (com.arjuna.mw.wscf.model.twophase.exceptions.CoordinatorCancelledException ex)
+    {
+        throw new TransactionRolledBackException();
+    }
+    catch (com.arjuna.mw.wscf.model.twophase.exceptions.HeuristicMixedException ex)
+    {
+        //        throw new HeuristicMixedException();
 
-	    throw new SystemException(ex.toString());
-	}
-	catch (com.arjuna.mw.wscf.model.twophase.exceptions.HeuristicHazardException ex)
-	{
-	    //	    throw new HeuristicHazardException();
+        throw new SystemException(ex.toString());
+    }
+    catch (com.arjuna.mw.wscf.model.twophase.exceptions.HeuristicHazardException ex)
+    {
+        //        throw new HeuristicHazardException();
 
-	    throw new SystemException(ex.toString());
+        throw new SystemException(ex.toString());
 
-	}
-	catch (com.arjuna.mw.wsas.exceptions.NoPermissionException ex)
-	{
-	    throw new SystemException(ex.toString());
-	}
-	catch (com.arjuna.mw.wsas.exceptions.SystemException ex)
-	{
-	    throw new SystemException(ex.toString());
-	}
-	finally
-	{
-	    if (deactivate)
-	        CompletionCoordinatorRPCProcessor.getProcessor().deactivateParticipant(this);
-	}
+    }
+    catch (com.arjuna.mw.wsas.exceptions.NoPermissionException ex)
+    {
+        throw new SystemException(ex.toString());
+    }
+    catch (com.arjuna.mw.wsas.exceptions.SystemException ex)
+    {
+        throw new SystemException(ex.toString());
+    }
+    finally
+    {
+        if (deactivate)
+            CompletionCoordinatorRPCProcessor.getProcessor().deactivateParticipant(this);
+    }
     }
 
     public void rollback () throws UnknownTransactionException, SystemException
     {
-	try
-	{
-	    if (_hier != null)
-		_cm.resume(_hier);
+    try
+    {
+        if (_hier != null)
+        _cm.resume(_hier);
 
-	    _cm.cancel();
-	}
-	catch (com.arjuna.mw.wsas.exceptions.InvalidActivityException ex)
-	{
-	    throw new UnknownTransactionException();
-	}
-	catch (com.arjuna.mw.wsas.exceptions.WrongStateException ex)
-	{
-	    throw new SystemException(ex.toString());
-	}
-	catch (com.arjuna.mw.wsas.exceptions.ProtocolViolationException ex)
-	{
-	    throw new SystemException();
-	}
-	catch (com.arjuna.mw.wscf.exceptions.NoCoordinatorException ex)
-	{
-	    throw new UnknownTransactionException();
-	}
-	catch (com.arjuna.mw.wscf.model.twophase.exceptions.CoordinatorConfirmedException ex)
-	{
-	    throw new SystemException();
-	}
-	catch (com.arjuna.mw.wscf.model.twophase.exceptions.HeuristicMixedException ex)
-	{
-	    throw new SystemException(ex.toString());
-	}
-	catch (com.arjuna.mw.wscf.model.twophase.exceptions.HeuristicHazardException ex)
-	{
-	    throw new SystemException(ex.toString());
-	}
-	catch (com.arjuna.mw.wsas.exceptions.NoPermissionException ex)
-	{
-	    throw new SystemException(ex.toString());
-	}
-	catch (com.arjuna.mw.wsas.exceptions.SystemException ex)
-	{
-	    throw new SystemException(ex.toString());
-	}
-	finally
-	{
+        _cm.cancel();
+    }
+    catch (com.arjuna.mw.wsas.exceptions.InvalidActivityException ex)
+    {
+        throw new UnknownTransactionException();
+    }
+    catch (com.arjuna.mw.wsas.exceptions.WrongStateException ex)
+    {
+        throw new SystemException(ex.toString());
+    }
+    catch (com.arjuna.mw.wsas.exceptions.ProtocolViolationException ex)
+    {
+        throw new SystemException();
+    }
+    catch (com.arjuna.mw.wscf.exceptions.NoCoordinatorException ex)
+    {
+        throw new UnknownTransactionException();
+    }
+    catch (com.arjuna.mw.wscf.model.twophase.exceptions.CoordinatorConfirmedException ex)
+    {
+        throw new SystemException();
+    }
+    catch (com.arjuna.mw.wscf.model.twophase.exceptions.HeuristicMixedException ex)
+    {
+        throw new SystemException(ex.toString());
+    }
+    catch (com.arjuna.mw.wscf.model.twophase.exceptions.HeuristicHazardException ex)
+    {
+        throw new SystemException(ex.toString());
+    }
+    catch (com.arjuna.mw.wsas.exceptions.NoPermissionException ex)
+    {
+        throw new SystemException(ex.toString());
+    }
+    catch (com.arjuna.mw.wsas.exceptions.SystemException ex)
+    {
+        throw new SystemException(ex.toString());
+    }
+    finally
+    {
         if (deactivate)
             CompletionCoordinatorRPCProcessor.getProcessor().deactivateParticipant(this);
-	}
+    }
     }
 
     public W3CEndpointReference getParticipant()

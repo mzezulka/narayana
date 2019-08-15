@@ -64,32 +64,32 @@ import org.omg.CosTransactions.*;
 
 public class ResourceImpl01 implements ResourceOperations
 {
-	public ResourceImpl01()
-	{
-	}
+    public ResourceImpl01()
+    {
+    }
 
-	public Vote prepare()
-			throws HeuristicMixed, HeuristicHazard
-	{
-		return Vote.VoteCommit;
-	}
+    public Vote prepare()
+            throws HeuristicMixed, HeuristicHazard
+    {
+        return Vote.VoteCommit;
+    }
 
-	public void rollback()
-			throws HeuristicCommit, HeuristicMixed, HeuristicHazard
-	{
-	}
+    public void rollback()
+            throws HeuristicCommit, HeuristicMixed, HeuristicHazard
+    {
+    }
 
-	public void commit()
-			throws NotPrepared, HeuristicRollback, HeuristicMixed, HeuristicHazard
-	{
-	}
+    public void commit()
+            throws NotPrepared, HeuristicRollback, HeuristicMixed, HeuristicHazard
+    {
+    }
 
-	public void commit_one_phase()
-			throws HeuristicHazard
-	{
-	}
+    public void commit_one_phase()
+            throws HeuristicHazard
+    {
+    }
 
-	public void forget()
-	{
-	}
+    public void forget()
+    {
+    }
 }

@@ -67,54 +67,54 @@ import org.omg.CosTransactions.TransactionFactoryHelper;
 
 public class Client01
 {
-	public static void main(String[] args)
-	{
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+    public static void main(String[] args)
+    {
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			TransactionFactory transactionFactory = null;
-
-
-			String[] transactionFactoryParams = new String[1];
-			transactionFactoryParams[0] = ORBServices.otsKind;
-
-			transactionFactory = TransactionFactoryHelper.narrow(ORBServices.getService(ORBServices.transactionService, transactionFactoryParams));
+            TransactionFactory transactionFactory = null;
 
 
-			boolean correct = true;
-			Control control = transactionFactory.create(0);
+            String[] transactionFactoryParams = new String[1];
+            transactionFactoryParams[0] = ORBServices.otsKind;
 
-			correct = correct && (control.get_coordinator().get_status() == Status.StatusActive);
+            transactionFactory = TransactionFactoryHelper.narrow(ORBServices.getService(ORBServices.transactionService, transactionFactoryParams));
 
-			control.get_terminator().commit(true);
 
-			if (correct)
-			{
-				System.out.println("Passed");
-			}
-			else
-			{
-				System.out.println("Failed");
-			}
-		}
-		catch (Exception exception)
-		{
-			System.out.println("Failed");
-			System.err.println("Client01.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
+            boolean correct = true;
+            Control control = transactionFactory.create(0);
 
-		try
-		{
-			OAInterface.shutdownOA();
-			ORBInterface.shutdownORB();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Client01.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
-	}
+            correct = correct && (control.get_coordinator().get_status() == Status.StatusActive);
+
+            control.get_terminator().commit(true);
+
+            if (correct)
+            {
+                System.out.println("Passed");
+            }
+            else
+            {
+                System.out.println("Failed");
+            }
+        }
+        catch (Exception exception)
+        {
+            System.out.println("Failed");
+            System.err.println("Client01.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
+
+        try
+        {
+            OAInterface.shutdownOA();
+            ORBInterface.shutdownORB();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Client01.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
+    }
 }

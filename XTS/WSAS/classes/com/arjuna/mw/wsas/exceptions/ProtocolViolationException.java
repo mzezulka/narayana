@@ -52,17 +52,17 @@ public class ProtocolViolationException extends WSASException
 
     public ProtocolViolationException ()
     {
-	super();
+    super();
     }
 
     public ProtocolViolationException (String s)
     {
-	super(s);
+    super(s);
     }
 
     public ProtocolViolationException (String s, int errorcode)
     {
-	super(s, errorcode);
+    super(s, errorcode);
     }
 
 }

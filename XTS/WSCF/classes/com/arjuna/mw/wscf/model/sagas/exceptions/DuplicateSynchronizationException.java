@@ -47,17 +47,17 @@ public class DuplicateSynchronizationException extends SystemException
 
     public DuplicateSynchronizationException()
     {
-	super();
+    super();
     }
 
     public DuplicateSynchronizationException(String s)
     {
-	super(s);
+    super(s);
     }
 
     public DuplicateSynchronizationException(String s, int errorcode)
     {
-	super(s, errorcode);
+    super(s, errorcode);
     }
 
 }

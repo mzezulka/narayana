@@ -44,12 +44,12 @@ public class FaultedException extends Exception
 
     public FaultedException ()
     {
-	super();
+    super();
     }
 
     public FaultedException (String s)
     {
-	super(s);
+    super(s);
     }
 
 }

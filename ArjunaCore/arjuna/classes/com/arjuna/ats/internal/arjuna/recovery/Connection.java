@@ -62,7 +62,7 @@ public class Connection extends Thread
 
       try
       {
-	  _server_socket.setSoTimeout(0);
+      _server_socket.setSoTimeout(0);
       }
       catch (java.net.SocketException ex) {
           tsLogger.i18NLogger.warn_recovery_Connection_2();

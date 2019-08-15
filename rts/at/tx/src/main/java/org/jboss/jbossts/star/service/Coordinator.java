@@ -420,14 +420,14 @@ public class Coordinator
         if (!currentStatus.isRunning() && !currentStatus.isRollbackOnly())
             return Response.status(HttpURLConnection.HTTP_PRECON_FAILED).build();
 
-		/*
-			ABORT_ONLY is not in the spec for the same reasons as it's not in the WS-TX and WS-CAF where
-			it is assumed that only the txn originator can end the tx:
-			- simply register a synchronization in the transaction that prevented a commit from happening;
-			and I haven't implemented synchronisations yet.
-			It is unclear why allowing similar functionality via synchronisations doesn't open up a similar
-			security hole.
-		*/
+        /*
+            ABORT_ONLY is not in the spec for the same reasons as it's not in the WS-TX and WS-CAF where
+            it is assumed that only the txn originator can end the tx:
+            - simply register a synchronization in the transaction that prevented a commit from happening;
+            and I haven't implemented synchronisations yet.
+            It is unclear why allowing similar functionality via synchronisations doesn't open up a similar
+            security hole.
+        */
         TxStatus txStatus = TxStatus.fromStatus(how);
         tx.setFault(fault);
         AtomicAction.resume(tx);

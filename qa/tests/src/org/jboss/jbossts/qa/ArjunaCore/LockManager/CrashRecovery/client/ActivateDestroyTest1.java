@@ -38,53 +38,53 @@ import com.arjuna.ats.arjuna.common.arjPropertyManager;
 
 public class ActivateDestroyTest1 extends BaseTestClient
 {
-	public static void main(String[] args)
-	{
+    public static void main(String[] args)
+    {
         /*
         * Default intentions list is to order by Uid (improves
         * performance). But for this test we need to order by type.
         */
         arjPropertyManager.getCoordinatorEnvironmentBean().setAlternativeRecordOrdering(true);
 
-		ActivateDestroyTest1 test = new ActivateDestroyTest1(args);
-	}
+        ActivateDestroyTest1 test = new ActivateDestroyTest1(args);
+    }
 
-	private ActivateDestroyTest1(String[] args)
-	{
-		super(args);
-	}
+    private ActivateDestroyTest1(String[] args)
+    {
+        super(args);
+    }
 
-	public void Test()
-	{
-		/** Set argument relative positions **/
-		setNumberOfCalls(2);
-		setNumberOfResources(1);
+    public void Test()
+    {
+        /** Set argument relative positions **/
+        setNumberOfCalls(2);
+        setNumberOfResources(1);
 
-		try
-		{
+        try
+        {
 
-			BasicLockRecord basicRecord = new BasicLockRecord();
+            BasicLockRecord basicRecord = new BasicLockRecord();
 
-			System.out.println("created object " + basicRecord.get_uid());
+            System.out.println("created object " + basicRecord.get_uid());
 
-			this.startTx();
+            this.startTx();
 
-			System.out.println("basicRecord.increase()");
-			basicRecord.increase(1, 0);
+            System.out.println("basicRecord.increase()");
+            basicRecord.increase(1, 0);
 
-			System.out.println("basicRecord.destroy()");
-			basicRecord.destroy();
+            System.out.println("basicRecord.destroy()");
+            basicRecord.destroy();
 
-			CrashAbstractRecord crashRecord = new CrashAbstractRecord(1, 0);
-			this.add(crashRecord);
+            CrashAbstractRecord crashRecord = new CrashAbstractRecord(1, 0);
+            this.add(crashRecord);
 
-			this.commit();
+            this.commit();
 
-			this.Fail();
-		}
-		catch (Exception e)
-		{
-			Fail("Error doing work", e);
-		}
-	}
+            this.Fail();
+        }
+        catch (Exception e)
+        {
+            Fail("Error doing work", e);
+        }
+    }
 }

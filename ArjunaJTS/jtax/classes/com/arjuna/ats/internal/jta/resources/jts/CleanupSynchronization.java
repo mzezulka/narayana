@@ -48,7 +48,7 @@ public class CleanupSynchronization implements javax.transaction.Synchronization
 {
     public CleanupSynchronization (TransactionImple tx)
     {
-	_tx = tx;
+    _tx = tx;
     }
 
     public void beforeCompletion ()
@@ -57,7 +57,7 @@ public class CleanupSynchronization implements javax.transaction.Synchronization
 
     public void afterCompletion (int status)
     {
-	_tx.shutdown();
+    _tx.shutdown();
     }
 
     private TransactionImple _tx;

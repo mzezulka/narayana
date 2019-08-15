@@ -46,53 +46,53 @@ import javax.transaction.Transaction;
 public class WorkSynchronization implements javax.transaction.Synchronization
 {
 
-	public WorkSynchronization (Transaction current)
-	{
-		_current = current;
-	}
+    public WorkSynchronization (Transaction current)
+    {
+        _current = current;
+    }
 
-	/**
-	 * If the current transaction still has work associated with it, then we need to
-	 * throw an exception. This will cause the current transaction to rollback.
-	 */
+    /**
+     * If the current transaction still has work associated with it, then we need to
+     * throw an exception. This will cause the current transaction to rollback.
+     */
 
-	public void beforeCompletion ()
-	{
-		// check no work associated with transaction
+    public void beforeCompletion ()
+    {
+        // check no work associated with transaction
 
-		try
-		{
-			if (TxWorkManager.hasWork(_current))
-			{
-				/*
-				 * JBoss way of doing things is broken: they
-				 * throw IllegalStateException in an invalid manner
-				 * (see JTA spec.) and don't force the transaction to
-				 * rollback.
-				 */
+        try
+        {
+            if (TxWorkManager.hasWork(_current))
+            {
+                /*
+                 * JBoss way of doing things is broken: they
+                 * throw IllegalStateException in an invalid manner
+                 * (see JTA spec.) and don't force the transaction to
+                 * rollback.
+                 */
 
-				throw new IllegalStateException();
-			}
-		}
-		catch (IllegalStateException ex)
-		{
-			throw ex;
-		}
-		finally
-		{
-			_current = null;
-		}
-	}
+                throw new IllegalStateException();
+            }
+        }
+        catch (IllegalStateException ex)
+        {
+            throw ex;
+        }
+        finally
+        {
+            _current = null;
+        }
+    }
 
-	/**
-	 * A null-op.
-	 */
+    /**
+     * A null-op.
+     */
 
-	public void afterCompletion (int status)
-	{
-		// do nothing
-	}
+    public void afterCompletion (int status)
+    {
+        // do nothing
+    }
 
-	private Transaction _current;
+    private Transaction _current;
 
 }

@@ -39,11 +39,11 @@ public class ServerRecoveryTopLevelAction extends ServerTopLevelAction
 
     public ServerRecoveryTopLevelAction (ServerControl control)
     {
-	super();
+    super();
 
-	_theControl = control;
+    _theControl = control;
 
-	if (jtsLogger.logger.isDebugEnabled()) {
+    if (jtsLogger.logger.isDebugEnabled()) {
         jtsLogger.logger.debug("ServerRecoveryTopLevelAction::ServerRecoveryTopLevelAction ( " + _theUid + " )");
     }
     }
@@ -57,10 +57,10 @@ public class ServerRecoveryTopLevelAction extends ServerTopLevelAction
 
     protected synchronized void destroyResource ()
     {
-	if (!_destroyed)
-	{
-	    _destroyed = true;
-	}
+    if (!_destroyed)
+    {
+        _destroyed = true;
+    }
     }
 
 }

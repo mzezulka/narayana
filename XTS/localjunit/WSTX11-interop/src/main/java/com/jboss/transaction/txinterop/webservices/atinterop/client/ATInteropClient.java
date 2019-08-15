@@ -98,7 +98,7 @@ public class ATInteropClient {
         /*
          * we have to add the JaxWS WSAddressingClientHandler because we cannot specify the WSAddressing feature
         List<Handler> customHandlerChain = new ArrayList<Handler>();
-		customHandlerChain.add(new WSAddressingClientHandler());
+        customHandlerChain.add(new WSAddressingClientHandler());
         bindingProvider.getBinding().setHandlerChain(customHandlerChain);
          */
         Map<String, Object> requestContext = bindingProvider.getRequestContext();
@@ -125,9 +125,9 @@ public class ATInteropClient {
         customHandlerChain.add(new CoordinationContextHandler());
         /*
          * we no longer have to add the JaxWS WSAddressingClientHandler because we can specify the WSAddressing feature
-		customHandlerChain.add(new WSAddressingClientHandler());
+        customHandlerChain.add(new WSAddressingClientHandler());
          */
-		bindingProvider.getBinding().setHandlerChain(customHandlerChain);
+        bindingProvider.getBinding().setHandlerChain(customHandlerChain);
         Map<String, Object> requestContext = bindingProvider.getRequestContext();
 
         map.setAction(action);

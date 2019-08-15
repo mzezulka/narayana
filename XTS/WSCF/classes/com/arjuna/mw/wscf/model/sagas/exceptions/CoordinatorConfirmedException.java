@@ -46,17 +46,17 @@ public class CoordinatorConfirmedException extends SystemException
 
     public CoordinatorConfirmedException ()
     {
-	super();
+    super();
     }
 
     public CoordinatorConfirmedException (String s)
     {
-	super(s);
+    super(s);
     }
 
     public CoordinatorConfirmedException (String s, int errorcode)
     {
-	super(s, errorcode);
+    super(s, errorcode);
     }
 
 }

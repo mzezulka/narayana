@@ -17,14 +17,14 @@ import com.arjuna.wsas.tests.arq.WarDeployment;
 @RunWith(Arquillian.class)
 public class SuspendTest {
 
-	@Deployment
-	public static WebArchive createDeployment() {
-		return WarDeployment.getDeployment(
-				WSASTestUtils.class);
-	}
+    @Deployment
+    public static WebArchive createDeployment() {
+        return WarDeployment.getDeployment(
+                WSASTestUtils.class);
+    }
 
-	@Test
-	public void testSuspend()
+    @Test
+    public void testSuspend()
             throws Exception
     {
         UserActivity ua = UserActivityFactory.userActivity();

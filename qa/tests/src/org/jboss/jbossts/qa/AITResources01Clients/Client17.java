@@ -76,161 +76,161 @@ import org.jboss.jbossts.qa.Utils.*;
 
 public class Client17
 {
-	public static void main(String[] args)
-	{
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+    public static void main(String[] args)
+    {
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			String counterIOR = ServerIORStore.loadIOR(args[args.length - 5]);
-			Counter counter = CounterHelper.narrow(ORBInterface.orb().string_to_object(counterIOR));
+            String counterIOR = ServerIORStore.loadIOR(args[args.length - 5]);
+            Counter counter = CounterHelper.narrow(ORBInterface.orb().string_to_object(counterIOR));
 
-			int numberOfWorkers = Integer.parseInt(args[args.length - 4]);
-			int numberOfCalls = Integer.parseInt(args[args.length - 3]);
+            int numberOfWorkers = Integer.parseInt(args[args.length - 4]);
+            int numberOfCalls = Integer.parseInt(args[args.length - 3]);
 
-			float clientIncreaseThreshold;
-			float serverIncreaseThreshold;
+            float clientIncreaseThreshold;
+            float serverIncreaseThreshold;
 
-			// If no threshold value then use default.
-			if (MemoryTestProfileStore.getNoThresholdValue().equals(args[args.length - 2]))
-			{
-				clientIncreaseThreshold = Float.parseFloat(MemoryTestProfileStore.getDefaultClientIncreaseThreshold());
-			}
-			else // Use passed threshold
-			{
-				clientIncreaseThreshold = Float.parseFloat(args[args.length - 2]);
-			}
+            // If no threshold value then use default.
+            if (MemoryTestProfileStore.getNoThresholdValue().equals(args[args.length - 2]))
+            {
+                clientIncreaseThreshold = Float.parseFloat(MemoryTestProfileStore.getDefaultClientIncreaseThreshold());
+            }
+            else // Use passed threshold
+            {
+                clientIncreaseThreshold = Float.parseFloat(args[args.length - 2]);
+            }
 
-			// If no threshold value then use default.
-			if (MemoryTestProfileStore.getNoThresholdValue().equals(args[args.length - 1]))
-			{
-				serverIncreaseThreshold = Float.parseFloat(MemoryTestProfileStore.getDefaultServerIncreaseThreshold());
-			}
-			else // Use passed threshold
-			{
-				serverIncreaseThreshold = Float.parseFloat(args[args.length - 1]);
-			}
+            // If no threshold value then use default.
+            if (MemoryTestProfileStore.getNoThresholdValue().equals(args[args.length - 1]))
+            {
+                serverIncreaseThreshold = Float.parseFloat(MemoryTestProfileStore.getDefaultServerIncreaseThreshold());
+            }
+            else // Use passed threshold
+            {
+                serverIncreaseThreshold = Float.parseFloat(args[args.length - 1]);
+            }
 
-			AtomicTransaction atomicTransaction = new AtomicTransaction();
+            AtomicTransaction atomicTransaction = new AtomicTransaction();
 
-			atomicTransaction.begin();
-			counter.increase();
-			atomicTransaction.commit(true);
+            atomicTransaction.begin();
+            counter.increase();
+            atomicTransaction.commit(true);
 
-			int clientMemory0 = (int) JVMStats.getMemory();
-			int serverMemory0 = counter.getMemory();
+            int clientMemory0 = (int) JVMStats.getMemory();
+            int serverMemory0 = counter.getMemory();
 
-			Worker[] workers = new Worker[numberOfWorkers];
+            Worker[] workers = new Worker[numberOfWorkers];
 
-			for (int index = 0; index < workers.length; index++)
-			{
-				workers[index] = new Worker(numberOfCalls, counter);
-			}
+            for (int index = 0; index < workers.length; index++)
+            {
+                workers[index] = new Worker(numberOfCalls, counter);
+            }
 
-			for (int index = 0; index < workers.length; index++)
-			{
-				workers[index].start();
-			}
+            for (int index = 0; index < workers.length; index++)
+            {
+                workers[index].start();
+            }
 
-			boolean correct = true;
+            boolean correct = true;
 
-			for (int index = 0; index < workers.length; index++)
-			{
-				workers[index].join();
-				correct = correct && workers[index].isCorrect();
-				workers[index] = null;
-			}
-			workers = null;
+            for (int index = 0; index < workers.length; index++)
+            {
+                workers[index].join();
+                correct = correct && workers[index].isCorrect();
+                workers[index] = null;
+            }
+            workers = null;
 
-			int clientMemory1 = (int) JVMStats.getMemory();
-			int serverMemory1 = counter.getMemory();
+            int clientMemory1 = (int) JVMStats.getMemory();
+            int serverMemory1 = counter.getMemory();
 
-			float clientMemoryIncrease = ((float) (clientMemory1 - clientMemory0)) / ((float) clientMemory0);
-			float serverMemoryIncrease = ((float) (serverMemory1 - serverMemory0)) / ((float) serverMemory0);
+            float clientMemoryIncrease = ((float) (clientMemory1 - clientMemory0)) / ((float) clientMemory0);
+            float serverMemoryIncrease = ((float) (serverMemory1 - serverMemory0)) / ((float) serverMemory0);
 
-			System.err.println("Client memory increase threshold : " + (float) (100.0 * clientIncreaseThreshold) + "%");
-			System.err.println("Server memory increase threshold : " + (float) (100.0 * serverIncreaseThreshold) + "%");
+            System.err.println("Client memory increase threshold : " + (float) (100.0 * clientIncreaseThreshold) + "%");
+            System.err.println("Server memory increase threshold : " + (float) (100.0 * serverIncreaseThreshold) + "%");
 
-			System.err.println("Client percentage memory increase: " + (float) (100.0 * clientMemoryIncrease) + "%");
-			System.err.println("Client memory increase per call  : " + (clientMemory1 - clientMemory0) / (numberOfCalls * numberOfWorkers));
-			System.err.println("Server percentage memory increase: " + (float) (100.0 * serverMemoryIncrease) + "%");
-			System.err.println("Server memory increase per call  : " + (serverMemory1 - serverMemory0) / (numberOfCalls * numberOfWorkers));
+            System.err.println("Client percentage memory increase: " + (float) (100.0 * clientMemoryIncrease) + "%");
+            System.err.println("Client memory increase per call  : " + (clientMemory1 - clientMemory0) / (numberOfCalls * numberOfWorkers));
+            System.err.println("Server percentage memory increase: " + (float) (100.0 * serverMemoryIncrease) + "%");
+            System.err.println("Server memory increase per call  : " + (serverMemory1 - serverMemory0) / (numberOfCalls * numberOfWorkers));
 
-			if ((clientMemoryIncrease < clientIncreaseThreshold) && (serverMemoryIncrease < serverIncreaseThreshold))
-			{
-				System.out.println("Passed");
-			}
-			else
-			{
-				System.out.println("Failed");
-			}
-		}
-		catch (Exception exception)
-		{
-			System.out.println("Failed");
-			System.err.println("Client17.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
+            if ((clientMemoryIncrease < clientIncreaseThreshold) && (serverMemoryIncrease < serverIncreaseThreshold))
+            {
+                System.out.println("Passed");
+            }
+            else
+            {
+                System.out.println("Failed");
+            }
+        }
+        catch (Exception exception)
+        {
+            System.out.println("Failed");
+            System.err.println("Client17.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
 
-		try
-		{
-			OAInterface.shutdownOA();
-			ORBInterface.shutdownORB();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Client17.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
-	}
+        try
+        {
+            OAInterface.shutdownOA();
+            ORBInterface.shutdownORB();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Client17.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
+    }
 
-	private static class Worker extends Thread
-	{
-		public Worker(int numberOfCalls, Counter counter)
-		{
-			_numberOfCalls = numberOfCalls;
-			_counter = counter;
-		}
+    private static class Worker extends Thread
+    {
+        public Worker(int numberOfCalls, Counter counter)
+        {
+            _numberOfCalls = numberOfCalls;
+            _counter = counter;
+        }
 
-		public void run()
-		{
-			try
-			{
-				int index = 0;
-				while (index < _numberOfCalls)
-				{
-					AtomicTransaction atomicTransaction = new AtomicTransaction();
+        public void run()
+        {
+            try
+            {
+                int index = 0;
+                while (index < _numberOfCalls)
+                {
+                    AtomicTransaction atomicTransaction = new AtomicTransaction();
 
-					atomicTransaction.begin();
+                    atomicTransaction.begin();
 
-					try
-					{
-						_counter.increase();
-						index++;
-						atomicTransaction.commit(true);
-					}
-					catch (InvocationException invocationException)
-					{
-						atomicTransaction.rollback();
-					}
-				}
-			}
-			catch (Exception exception)
-			{
-				System.err.println("Client17.Worker.run: " + exception);
-				exception.printStackTrace(System.err);
-				_correct = false;
-			}
-		}
+                    try
+                    {
+                        _counter.increase();
+                        index++;
+                        atomicTransaction.commit(true);
+                    }
+                    catch (InvocationException invocationException)
+                    {
+                        atomicTransaction.rollback();
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                System.err.println("Client17.Worker.run: " + exception);
+                exception.printStackTrace(System.err);
+                _correct = false;
+            }
+        }
 
-		public boolean isCorrect()
-		{
-			return _correct;
-		}
+        public boolean isCorrect()
+        {
+            return _correct;
+        }
 
-		private boolean _correct = true;
-		private int _numberOfCalls;
-		private Counter _counter = null;
-	}
+        private boolean _correct = true;
+        private int _numberOfCalls;
+        private Counter _counter = null;
+    }
 }

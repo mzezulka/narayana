@@ -52,22 +52,22 @@ import java.util.*;
 public class ProtocolManager
 {
 
-	/**
+    /**
      * @param     protocolName The name of the protocol.
-	 *
-	 * @exception com.arjuna.mw.wscf.exceptions.ProtocolNotRegisteredException
-	 *                Thrown if the requested coordination protocol has not been
-	 *                registered.
-	 * @exception IllegalArgumentException
-	 *                Thrown if the parameter is invalid.
-	 *
-	 * @return The class that implements the specified coordination protocol.
-	 *
-	 */
+     *
+     * @exception com.arjuna.mw.wscf.exceptions.ProtocolNotRegisteredException
+     *                Thrown if the requested coordination protocol has not been
+     *                registered.
+     * @exception IllegalArgumentException
+     *                Thrown if the parameter is invalid.
+     *
+     * @return The class that implements the specified coordination protocol.
+     *
+     */
 
-	public Object getProtocolImplementation (String protocolName)
-			throws ProtocolNotRegisteredException, IllegalArgumentException
-	{
+    public Object getProtocolImplementation (String protocolName)
+            throws ProtocolNotRegisteredException, IllegalArgumentException
+    {
         synchronized (this)
         {
             if (protocolName == null)
@@ -83,19 +83,19 @@ public class ProtocolManager
             }
             return object;
         }
-	}
+    }
 
-	/*
-	 * install all registered protocol implementations which should be either context factories
-	 * or high level services
-	 */
+    /*
+     * install all registered protocol implementations which should be either context factories
+     * or high level services
+     */
 
-	public synchronized final void initialise ()
-	{
-		if (_initialised)
-			return;
-		else
-			_initialised = true;
+    public synchronized final void initialise ()
+    {
+        if (_initialised)
+            return;
+        else
+            _initialised = true;
 
         WSCFEnvironmentBean wscfEnvironmentBean = XTSPropertyManager.getWSCFEnvironmentBean();
         List<String> protocolImplementations = wscfEnvironmentBean.getProtocolImplementations();
@@ -109,9 +109,9 @@ public class ProtocolManager
 
         // look for protocol implementations
 
-		while (iterator.hasNext())
-		{
-			String className = (String) iterator.next();
+        while (iterator.hasNext())
+        {
+            String className = (String) iterator.next();
             Class<?> clazz = null;
 
             try {
@@ -149,7 +149,7 @@ public class ProtocolManager
             } catch (IllegalAccessException iae) {
                 wscfLogger.i18NLogger.error_protocols_ProtocolManager_5(className, iae);
             }
-		}
+        }
 
         for (Class<?> clazz : contextProviderClasses) {
             String className = clazz.getName();
@@ -169,9 +169,9 @@ public class ProtocolManager
                 wscfLogger.i18NLogger.error_protocols_ProtocolManager_5(className, iae);
                 iae.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
-		}
-	}
+        }
+    }
 
-	private HashMap _protocols = new HashMap();
-	private boolean _initialised = false;
+    private HashMap _protocols = new HashMap();
+    private boolean _initialised = false;
 }

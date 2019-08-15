@@ -61,8 +61,8 @@ public class SynchronizationRecord implements com.arjuna.ats.arjuna.coordinator.
 
     public SynchronizationRecord (Synchronization theResource, Uid id)
     {
-	_resourceHandle = theResource;
-	_id = new CoordinatorIdImple(id);
+    _resourceHandle = theResource;
+    _id = new CoordinatorIdImple(id);
 
         if (_resourceHandle == null)
             wscfLogger.i18NLogger.warn_model_twophase_arjunacore_SynchronizationRecord_1(_id);
@@ -70,37 +70,37 @@ public class SynchronizationRecord implements com.arjuna.ats.arjuna.coordinator.
 
     public boolean beforeCompletion ()
     {
-	if (_resourceHandle != null)
-	{
-	    try
-	    {
-		_resourceHandle.beforeCompletion();
+    if (_resourceHandle != null)
+    {
+        try
+        {
+        _resourceHandle.beforeCompletion();
 
-		return true;
-	    }
-	    catch (Exception ex)
-	    {
-		wscfLogger.i18NLogger.warn_model_twophase_arjunacore_SynchronizationRecord_2(ex);
-		return false;
-	    }
-	}
-	else
-	    return false;
+        return true;
+        }
+        catch (Exception ex)
+        {
+        wscfLogger.i18NLogger.warn_model_twophase_arjunacore_SynchronizationRecord_2(ex);
+        return false;
+        }
+    }
+    else
+        return false;
     }
 
     public boolean afterCompletion (int status)
     {
-	if (_resourceHandle != null)
-	{
-	    try
-	    {
-		_resourceHandle.afterCompletion(convertStatus(status));
-	    }
-	    catch (Exception ex)
-	    {
-	    }
+    if (_resourceHandle != null)
+    {
+        try
+        {
+        _resourceHandle.afterCompletion(convertStatus(status));
+        }
+        catch (Exception ex)
+        {
+        }
 
-	    return true;
+        return true;
         }
 
         return false;
@@ -113,7 +113,7 @@ public class SynchronizationRecord implements com.arjuna.ats.arjuna.coordinator.
 
     public Uid get_uid ()
     {
-	return _id;
+    return _id;
     }
 
     public int compareTo(Object o) {
@@ -127,16 +127,16 @@ public class SynchronizationRecord implements com.arjuna.ats.arjuna.coordinator.
 
     private final int convertStatus (int result)
     {
-	switch (result)
-	{
-	case ActionStatus.COMMITTED:
-	case ActionStatus.COMMITTING:
-	    return CoordinationResult.CONFIRMED;
-	case ActionStatus.ABORTED:
-	case ActionStatus.ABORTING:
-	default:
-	    return CoordinationResult.CANCELLED;
-	}
+    switch (result)
+    {
+    case ActionStatus.COMMITTED:
+    case ActionStatus.COMMITTING:
+        return CoordinationResult.CONFIRMED;
+    case ActionStatus.ABORTED:
+    case ActionStatus.ABORTING:
+    default:
+        return CoordinationResult.CANCELLED;
+    }
     }
 
     private Synchronization    _resourceHandle;

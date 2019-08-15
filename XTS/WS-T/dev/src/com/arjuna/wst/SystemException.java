@@ -45,12 +45,12 @@ public class SystemException extends Exception
 
     public SystemException ()
     {
-	super();
+    super();
     }
 
     public SystemException (String s)
     {
-	super(s);
+    super(s);
     }
 
 }

@@ -48,8 +48,8 @@ abstract class InitLoader
 
 protected InitLoader (String name, String attrName, Object obj)
     {
-	initName = name;
-	propertyName = attrName;
+    initName = name;
+    propertyName = attrName;
         initObj = obj;
     }
 
@@ -68,13 +68,13 @@ protected InitLoader (String name, String attrName, Object obj)
 
 private void createInstance (String attrName, String className)
     {
-	if (className == null)
-	{
+    if (className == null)
+    {
         opLogger.i18NLogger.warn_internal_utils_InitLoader_initfailed(initName, attrName);
 
-	    return;
-	}
-	else
+        return;
+    }
+    else
     {
         opLogger.logger.debugf("Loading %s class - %s", initName, className);
 

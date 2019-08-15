@@ -40,41 +40,41 @@ import java.io.File;
 
 public class RegisterOTSServer2
 {
-	public final static String NAME_SERVICE_BIND_NAME_PROPERTY = "ots.server.bindname";
+    public final static String NAME_SERVICE_BIND_NAME_PROPERTY = "ots.server.bindname";
 
-	public static void main(String[] args)
-	{
-		String bindName = System.getProperty(NAME_SERVICE_BIND_NAME_PROPERTY);
+    public static void main(String[] args)
+    {
+        String bindName = System.getProperty(NAME_SERVICE_BIND_NAME_PROPERTY);
 
-		if (bindName != null)
-		{
-			System.out.println("Registering OTS Server '" + bindName + "'");
+        if (bindName != null)
+        {
+            System.out.println("Registering OTS Server '" + bindName + "'");
 
-			try
-			{
-				ORBInterface.initORB(args, null);
+            try
+            {
+                ORBInterface.initORB(args, null);
 
-				String[] transactionFactoryParams = new String[1];
-				transactionFactoryParams[0] = ORBServices.otsKind;
+                String[] transactionFactoryParams = new String[1];
+                transactionFactoryParams[0] = ORBServices.otsKind;
 
-				TransactionFactory transactionFactory = TransactionFactoryHelper.narrow(ORBServices.getService(ORBServices.transactionService, transactionFactoryParams));
+                TransactionFactory transactionFactory = TransactionFactoryHelper.narrow(ORBServices.getService(ORBServices.transactionService, transactionFactoryParams));
 
-				registerService(bindName, ORBInterface.orb().object_to_string(transactionFactory));
+                registerService(bindName, ORBInterface.orb().object_to_string(transactionFactory));
 
                 System.out.println("Ready");
             }
-			catch (Exception e)
-			{
-				e.printStackTrace(System.err);
-				System.out.println("Failed");
-			}
-		}
-		else
-		{
-			System.out.println("Bind name '" + NAME_SERVICE_BIND_NAME_PROPERTY + "' not specified");
-			System.out.println("Failed");
-		}
-	}
+            catch (Exception e)
+            {
+                e.printStackTrace(System.err);
+                System.out.println("Failed");
+            }
+        }
+        else
+        {
+            System.out.println("Bind name '" + NAME_SERVICE_BIND_NAME_PROPERTY + "' not specified");
+            System.out.println("Failed");
+        }
+    }
 
     public static void registerService(String name, String ior) throws IOException
     {

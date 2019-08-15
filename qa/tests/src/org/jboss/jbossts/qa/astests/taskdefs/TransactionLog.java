@@ -52,8 +52,8 @@ public class TransactionLog
 
     private void init(String storeDir, String impleType)
     {
-		ObjectStoreEnvironmentBean objectStoreEnvironmentBean = arjPropertyManager.getObjectStoreEnvironmentBean();
-		objectStoreEnvironmentBean.setObjectStoreDir(storeDir);
+        ObjectStoreEnvironmentBean objectStoreEnvironmentBean = arjPropertyManager.getObjectStoreEnvironmentBean();
+        objectStoreEnvironmentBean.setObjectStoreDir(storeDir);
 
         if (impleType != null)
         {

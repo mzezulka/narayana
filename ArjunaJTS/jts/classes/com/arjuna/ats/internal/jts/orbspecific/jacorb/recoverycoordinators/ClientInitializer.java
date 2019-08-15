@@ -62,21 +62,21 @@ public class ClientInitializer
     {
         try
         {
-	    // Obtain the Orb reference having requested this initilization
-	    org.omg.CORBA.ORB theORB = ((org.jacorb.orb.portableInterceptor.ORBInitInfoImpl)info).getORB();
+        // Obtain the Orb reference having requested this initilization
+        org.omg.CORBA.ORB theORB = ((org.jacorb.orb.portableInterceptor.ORBInitInfoImpl)info).getORB();
 
-	    /*
+        /*
             NamingContextExt nc = NamingContextExtHelper.narrow
                 (info.resolve_initial_references("NameService"));
-	    */
+        */
 
-	    org.omg.PortableInterceptor.Current piCurrent = org.omg.PortableInterceptor.CurrentHelper.narrow
-		(info.resolve_initial_references("PICurrent"));
+        org.omg.PortableInterceptor.Current piCurrent = org.omg.PortableInterceptor.CurrentHelper.narrow
+        (info.resolve_initial_references("PICurrent"));
 
-	    int outSlotId = info.allocate_slot_id();
+        int outSlotId = info.allocate_slot_id();
 
             info.add_client_request_interceptor
-		(new ClientForwardInterceptor(theORB, piCurrent, outSlotId));
+        (new ClientForwardInterceptor(theORB, piCurrent, outSlotId));
         }
         catch (Exception e) {
             jtsLogger.i18NLogger.warn_orbspecific_jacorb_recoverycoordinators_ClientInitializer_1(e);

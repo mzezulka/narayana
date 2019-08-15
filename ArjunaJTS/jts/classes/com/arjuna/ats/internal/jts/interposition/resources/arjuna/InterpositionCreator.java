@@ -43,12 +43,12 @@ public class InterpositionCreator implements FactoryCreator
 
 public ControlImple recreateLocal (PropagationContext ctx) throws SystemException
     {
-	return Interposition.create(ctx);
+    return Interposition.create(ctx);
     }
 
 public Control recreate (PropagationContext ctx) throws SystemException
     {
-	return recreateLocal(ctx).getControl();
+    return recreateLocal(ctx).getControl();
     }
 
 }

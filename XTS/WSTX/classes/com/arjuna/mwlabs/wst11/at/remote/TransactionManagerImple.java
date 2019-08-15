@@ -29,93 +29,93 @@ import javax.xml.ws.wsaddressing.W3CEndpointReferenceBuilder;
 
 public class TransactionManagerImple extends TransactionManager
 {
-	public TransactionManagerImple()
-	{
-	}
-
-	public void enlistForDurableTwoPhase (Durable2PCParticipant tpp, String id)
-			throws WrongStateException, UnknownTransactionException, SystemException
+    public TransactionManagerImple()
     {
-		try
-		{
+    }
+
+    public void enlistForDurableTwoPhase (Durable2PCParticipant tpp, String id)
+            throws WrongStateException, UnknownTransactionException, SystemException
+    {
+        try
+        {
             final W3CEndpointReference participant = getParticipant(id, isCurrentContextSecure());
-			final W3CEndpointReference coordinator = registerParticipant(participant, AtomicTransactionConstants.WSAT_SUB_PROTOCOL_DURABLE_2PC);
+            final W3CEndpointReference coordinator = registerParticipant(participant, AtomicTransactionConstants.WSAT_SUB_PROTOCOL_DURABLE_2PC);
 
-			ParticipantProcessor.getProcessor().activateParticipant(new ParticipantEngine(tpp, id, coordinator), id) ;
-		}
-		catch (com.arjuna.wsc.InvalidProtocolException ex)
-		{
-			throw new SystemException(ex.toString());
-		}
-		catch (com.arjuna.wsc.InvalidStateException ex)
-		{
-			throw new WrongStateException();
-		}
-		catch (com.arjuna.wsc.CannotRegisterException ex)
-		{
+            ParticipantProcessor.getProcessor().activateParticipant(new ParticipantEngine(tpp, id, coordinator), id) ;
+        }
+        catch (com.arjuna.wsc.InvalidProtocolException ex)
+        {
+            throw new SystemException(ex.toString());
+        }
+        catch (com.arjuna.wsc.InvalidStateException ex)
+        {
+            throw new WrongStateException();
+        }
+        catch (com.arjuna.wsc.CannotRegisterException ex)
+        {
             // cause could actually be no activity or already registered
-			throw new UnknownTransactionException();
-		}
-	}
+            throw new UnknownTransactionException();
+        }
+    }
 
-	public void enlistForVolatileTwoPhase (Volatile2PCParticipant tpp, String id)
-			throws WrongStateException, UnknownTransactionException, SystemException
-	{
-		try
-		{
+    public void enlistForVolatileTwoPhase (Volatile2PCParticipant tpp, String id)
+            throws WrongStateException, UnknownTransactionException, SystemException
+    {
+        try
+        {
             final W3CEndpointReference participant = getParticipant(id, isCurrentContextSecure());
-			final W3CEndpointReference coordinator = registerParticipant(participant, AtomicTransactionConstants.WSAT_SUB_PROTOCOL_VOLATILE_2PC);
+            final W3CEndpointReference coordinator = registerParticipant(participant, AtomicTransactionConstants.WSAT_SUB_PROTOCOL_VOLATILE_2PC);
 
-			ParticipantProcessor.getProcessor().activateParticipant(new ParticipantEngine(tpp, id, coordinator), id) ;
-		}
-		catch (com.arjuna.wsc.InvalidProtocolException ex)
-		{
-			throw new SystemException(ex.toString());
-		}
-		catch (com.arjuna.wsc.InvalidStateException ex)
-		{
-			throw new WrongStateException();
-		}
-		catch (com.arjuna.wsc.CannotRegisterException ex)
-		{
+            ParticipantProcessor.getProcessor().activateParticipant(new ParticipantEngine(tpp, id, coordinator), id) ;
+        }
+        catch (com.arjuna.wsc.InvalidProtocolException ex)
+        {
+            throw new SystemException(ex.toString());
+        }
+        catch (com.arjuna.wsc.InvalidStateException ex)
+        {
+            throw new WrongStateException();
+        }
+        catch (com.arjuna.wsc.CannotRegisterException ex)
+        {
             // cause could actually be no activity or already registered
-			ex.printStackTrace();
+            ex.printStackTrace();
 
-			throw new UnknownTransactionException();
-		}
-	}
+            throw new UnknownTransactionException();
+        }
+    }
 
-	/*
-	 * TODO
-	 *
-	 * Have participant interfaces in WSTX have url method and services use
-	 * those. The ones in WS-T are message oriented and we translate to/from.
-	 *
-	 */
+    /*
+     * TODO
+     *
+     * Have participant interfaces in WSTX have url method and services use
+     * those. The ones in WS-T are message oriented and we translate to/from.
+     *
+     */
 
-	public int replay () throws SystemException
-	{
-		throw new SystemException(
+    public int replay () throws SystemException
+    {
+        throw new SystemException(
                 wstxLogger.i18NLogger.get_mwlabs_wst_at_remote_Transaction11ManagerImple_1());
-	}
+    }
 
-	public TxContext suspend () throws SystemException
-	{
-		return _ctxManager.suspend();
-	}
+    public TxContext suspend () throws SystemException
+    {
+        return _ctxManager.suspend();
+    }
 
-	// resume overwrites. Should we check first a la JTA?
+    // resume overwrites. Should we check first a la JTA?
 
-	public void resume (TxContext tx) throws UnknownTransactionException,
-			SystemException
-	{
-		_ctxManager.resume(tx);
-	}
+    public void resume (TxContext tx) throws UnknownTransactionException,
+            SystemException
+    {
+        _ctxManager.resume(tx);
+    }
 
-	public TxContext currentTransaction () throws SystemException
-	{
-		return _ctxManager.currentTransaction();
-	}
+    public TxContext currentTransaction () throws SystemException
+    {
+        return _ctxManager.currentTransaction();
+    }
 
     private boolean isCurrentContextSecure()  throws SystemException
     {
@@ -130,7 +130,7 @@ public class TransactionManagerImple extends TransactionManager
     {
         final QName serviceName = AtomicTransactionConstants.PARTICIPANT_SERVICE_QNAME;
         final QName endpointName = AtomicTransactionConstants.PARTICIPANT_PORT_QNAME;
-		final ServiceRegistry serviceRegistry = PrivilegedServiceRegistryFactory.getInstance().getServiceRegistry();
+        final ServiceRegistry serviceRegistry = PrivilegedServiceRegistryFactory.getInstance().getServiceRegistry();
         final String address = serviceRegistry.getServiceURI(AtomicTransactionConstants.PARTICIPANT_SERVICE_NAME, isSecure);
         W3CEndpointReferenceBuilder builder = new W3CEndpointReferenceBuilder();
         builder.serviceName(serviceName);
@@ -140,31 +140,31 @@ public class TransactionManagerImple extends TransactionManager
         return builder.build();
     }
 
-	final W3CEndpointReference registerParticipant (final W3CEndpointReference participant, final String protocol)
-			throws InvalidProtocolException, InvalidStateException, CannotRegisterException, SystemException
-	{
-		TxContextImple currentTx = null;
+    final W3CEndpointReference registerParticipant (final W3CEndpointReference participant, final String protocol)
+            throws InvalidProtocolException, InvalidStateException, CannotRegisterException, SystemException
+    {
+        TxContextImple currentTx = null;
 
-		try
-		{
-			currentTx = (TxContextImple) _ctxManager.suspend();
+        try
+        {
+            currentTx = (TxContextImple) _ctxManager.suspend();
 
-			if (currentTx == null)
-				throw new CannotRegisterException();
+            if (currentTx == null)
+                throw new CannotRegisterException();
 
             final CoordinationContextType coordinationContext = currentTx.context().getCoordinationContext() ;
             final String messageId = MessageId.getMessageId() ;
 
             return com.arjuna.wsc11.RegistrationCoordinator.register(coordinationContext, messageId, participant, protocol) ;
         }
-		catch (final SoapFault sf)
-		{
-			throw new SystemException(sf.getMessage());
-		}
-		catch (final CannotRegisterException cre)
-		{
-			throw cre ;
-		}
+        catch (final SoapFault sf)
+        {
+            throw new SystemException(sf.getMessage());
+        }
+        catch (final CannotRegisterException cre)
+        {
+            throw cre ;
+        }
         catch (final InvalidStateException ise)
         {
             throw ise ;
@@ -173,24 +173,24 @@ public class TransactionManagerImple extends TransactionManager
         {
             throw ipe ;
         }
-		catch (final Exception ex)
-		{
-			throw new SystemException(ex.toString());
-		}
-		finally
-		{
-			try
-			{
-				if (currentTx != null)
-					_ctxManager.resume(currentTx);
-			}
-			catch (Exception ex)
-			{
-				ex.printStackTrace();
-			}
-		}
-	}
+        catch (final Exception ex)
+        {
+            throw new SystemException(ex.toString());
+        }
+        finally
+        {
+            try
+            {
+                if (currentTx != null)
+                    _ctxManager.resume(currentTx);
+            }
+            catch (Exception ex)
+            {
+                ex.printStackTrace();
+            }
+        }
+    }
 
-	private ContextManager _ctxManager = new ContextManager();
+    private ContextManager _ctxManager = new ContextManager();
 
 }

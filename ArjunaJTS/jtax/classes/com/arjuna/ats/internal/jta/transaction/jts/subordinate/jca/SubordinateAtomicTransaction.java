@@ -46,36 +46,36 @@ import com.arjuna.ats.internal.jts.orbspecific.interposition.ServerControl;
 public class SubordinateAtomicTransaction extends com.arjuna.ats.internal.jta.transaction.jts.subordinate.SubordinateAtomicTransaction
 {
 
-	public SubordinateAtomicTransaction (Uid actId, Xid xid, int timeout)
-	{
-		super(new ServerControlWrapper(new ServerControl(new ServerTransaction(actId, xid))));
+    public SubordinateAtomicTransaction (Uid actId, Xid xid, int timeout)
+    {
+        super(new ServerControlWrapper(new ServerControl(new ServerTransaction(actId, xid))));
 
-		// add this transaction to the reaper list.
+        // add this transaction to the reaper list.
 
-		if (timeout > 0)
-		{
-			TransactionReaper reaper = TransactionReaper.transactionReaper();
+        if (timeout > 0)
+        {
+            TransactionReaper reaper = TransactionReaper.transactionReaper();
 
-			reaper.insert(super.getControlWrapper(), timeout);
-		}
-	}
+            reaper.insert(super.getControlWrapper(), timeout);
+        }
+    }
 
-	/**
-	 * Failure recovery constructor.
-	 *
-	 * @param actId transaction to be recovered.
-	 */
+    /**
+     * Failure recovery constructor.
+     *
+     * @param actId transaction to be recovered.
+     */
 
-	public SubordinateAtomicTransaction (Uid actId)
-	{
-		super(new ServerControlWrapper(new ServerControl(new ServerTransaction(actId))));
-	}
+    public SubordinateAtomicTransaction (Uid actId)
+    {
+        super(new ServerControlWrapper(new ServerControl(new ServerTransaction(actId))));
+    }
 
-	public final Xid getXid ()
-	{
-		try
-		{
-			ServerTransaction tx = (ServerTransaction) super._theAction.getImple().getImplHandle();
+    public final Xid getXid ()
+    {
+        try
+        {
+            ServerTransaction tx = (ServerTransaction) super._theAction.getImple().getImplHandle();
 
             // could be null if activation failed.
             if (tx != null) {
@@ -83,13 +83,13 @@ public class SubordinateAtomicTransaction extends com.arjuna.ats.internal.jta.tr
             } else {
                 return null;
             }
-		}
-		catch (Exception ex)
-		{
-			ex.printStackTrace();
-		}
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
 
-		return null;
-	}
+        return null;
+    }
 
 }

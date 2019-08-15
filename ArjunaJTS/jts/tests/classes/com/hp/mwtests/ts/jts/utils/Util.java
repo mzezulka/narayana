@@ -41,18 +41,18 @@ public class Util
 
     public static void indent (char thr, int level)
     {
-	System.out.print(thr+" ");
+    System.out.print(thr+" ");
 
-	for (int i = 0; i < level; i++)
-	    System.out.print(" ");
+    for (int i = 0; i < level; i++)
+        System.out.print(" ");
     }
 
     public static void indent (int thr, int level)
     {
-	System.out.print(thr+" ");
+    System.out.print(thr+" ");
 
-	for (int i = 0; i < level; i++)
-	    System.out.print(" ");
+    for (int i = 0; i < level; i++)
+        System.out.print(" ");
     }
 
     public static void lowProbYield () {
@@ -65,7 +65,7 @@ public class Util
 
     public static void highProbYield ()
     {
-	while ((rand.nextInt() % 4) != 0) {
+    while ((rand.nextInt() % 4) != 0) {
         logger.trace("high Yielding");
         Thread.yield();
         logger.trace("Yielded");

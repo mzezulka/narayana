@@ -37,31 +37,31 @@ import com.arjuna.ats.arjuna.common.CoreEnvironmentBeanException;
 
 public interface LocalServer {
 
-	public void initialise(LookupProvider lookupProvider, String nodeName, int portOffset, String[] clusterBuddies, ClassLoader classLoaderForTransactionManager)
-			throws CoreEnvironmentBeanException, IOException, SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException;
+    public void initialise(LookupProvider lookupProvider, String nodeName, int portOffset, String[] clusterBuddies, ClassLoader classLoaderForTransactionManager)
+            throws CoreEnvironmentBeanException, IOException, SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException;
 
-	public ClassLoader getClassLoader();
+    public ClassLoader getClassLoader();
 
-	public String getNodeName();
+    public String getNodeName();
 
-	public TransactionManager getTransactionManager() throws NotSupportedException, SystemException;
+    public TransactionManager getTransactionManager() throws NotSupportedException, SystemException;
 
-	public void doRecoveryManagerScan(boolean shortenSafetyInterval);
+    public void doRecoveryManagerScan(boolean shortenSafetyInterval);
 
-	public long getTimeLeftBeforeTransactionTimeout() throws RollbackException;
+    public long getTimeLeftBeforeTransactionTimeout() throws RollbackException;
 
-	public Xid locateOrImportTransactionThenResumeIt(int remainingTimeout, Xid toImport) throws XAException, InvalidTransactionException,
-			IllegalStateException, SystemException, IOException;
+    public Xid locateOrImportTransactionThenResumeIt(int remainingTimeout, Xid toImport) throws XAException, InvalidTransactionException,
+            IllegalStateException, SystemException, IOException;
 
-	public RemoteServer connectTo();
+    public RemoteServer connectTo();
 
-	public XAResource generateProxyXAResource(String remoteServerName, Xid xid) throws SystemException, IOException;
+    public XAResource generateProxyXAResource(String remoteServerName, Xid xid) throws SystemException, IOException;
 
-	public Synchronization generateProxySynchronization(String remoteServerName, Xid toRegisterAgainst);
+    public Synchronization generateProxySynchronization(String remoteServerName, Xid toRegisterAgainst);
 
-	public Xid getCurrentXid() throws SystemException;
+    public Xid getCurrentXid() throws SystemException;
 
-	public void shutdown() throws Exception;
+    public void shutdown() throws Exception;
 
     public XAResource generateProxyXAResource(String nextServerNodeName, Xid proxyRequired, boolean handleError) throws SystemException, IOException;
 }

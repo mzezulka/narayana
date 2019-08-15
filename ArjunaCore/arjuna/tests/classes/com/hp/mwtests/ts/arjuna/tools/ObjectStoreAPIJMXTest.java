@@ -42,11 +42,11 @@ import com.arjuna.ats.arjuna.tools.osb.api.proxy.RecoveryStoreProxy;
 import com.arjuna.ats.arjuna.tools.osb.api.proxy.StoreManagerProxy;
 
 public class ObjectStoreAPIJMXTest {
-	private RecoveryStoreBean rsb;
-	private ParticipantStoreBean psb;
+    private RecoveryStoreBean rsb;
+    private ParticipantStoreBean psb;
 
-	private RecoveryStoreProxy prs;
-	private ParticipantStoreProxy pps;
+    private RecoveryStoreProxy prs;
+    private ParticipantStoreProxy pps;
     private boolean notified;
 
     private NotificationListener listener = new NotificationListener() {
@@ -55,46 +55,46 @@ public class ObjectStoreAPIJMXTest {
         }
     };
 
-	@Before
-	public void setUp () throws Exception
-	{
+    @Before
+    public void setUp () throws Exception
+    {
         notified = false;
 
-		// create MBeans representing the ObjectStore
-		rsb = new RecoveryStoreBean();
-		psb = new ParticipantStoreBean();
+        // create MBeans representing the ObjectStore
+        rsb = new RecoveryStoreBean();
+        psb = new ParticipantStoreBean();
 
-		// and register them with the local MBean Server
-		rsb.start();
-		psb.start();
+        // and register them with the local MBean Server
+        rsb.start();
+        psb.start();
 
-		// obtain (JMX) proxies for the recovery and participant stores
-		prs = StoreManagerProxy.getRecoveryStore(listener);
-		pps = StoreManagerProxy.getParticipantStore(listener);
-	}
+        // obtain (JMX) proxies for the recovery and participant stores
+        prs = StoreManagerProxy.getRecoveryStore(listener);
+        pps = StoreManagerProxy.getParticipantStore(listener);
+    }
 
-	@After
-	public void tearDown () throws Exception
-	{
-		// Unregister MBeans
-		rsb.stop();
-		psb.stop();
+    @After
+    public void tearDown () throws Exception
+    {
+        // Unregister MBeans
+        rsb.stop();
+        psb.stop();
         StoreManagerProxy.releaseProxy();
-	}
+    }
 
-	@Test
-	public void testRecoveryStoreBean() throws Exception {
-		com.arjuna.common.tests.simple.EnvironmentBeanTest.testBeanByReflection(new RecoveryStoreBean());
-	}
+    @Test
+    public void testRecoveryStoreBean() throws Exception {
+        com.arjuna.common.tests.simple.EnvironmentBeanTest.testBeanByReflection(new RecoveryStoreBean());
+    }
 
-	@Test
-	public void testParticipantStoreBean() throws Exception {
-		com.arjuna.common.tests.simple.EnvironmentBeanTest.testBeanByReflection(new ParticipantStoreBean());
-	}
+    @Test
+    public void testParticipantStoreBean() throws Exception {
+        com.arjuna.common.tests.simple.EnvironmentBeanTest.testBeanByReflection(new ParticipantStoreBean());
+    }
 
-	@Test
-	public void testShadowNoFileLockStore () throws Exception
-	{
+    @Test
+    public void testShadowNoFileLockStore () throws Exception
+    {
         final OutputObjectState buff = new OutputObjectState();
         final String tn = "/StateManager/junit";
 
@@ -155,7 +155,7 @@ public class ObjectStoreAPIJMXTest {
     }
 
     @Test
-	public void testNotification() throws Exception {
+    public void testNotification() throws Exception {
         // calling stop on the MBean should generate a notification
         rsb.stop();
 

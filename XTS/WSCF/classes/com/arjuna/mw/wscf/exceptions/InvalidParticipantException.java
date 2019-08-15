@@ -46,17 +46,17 @@ public class InvalidParticipantException extends WSASException
 
     public InvalidParticipantException ()
     {
-	super();
+    super();
     }
 
     public InvalidParticipantException (String s)
     {
-	super(s);
+    super(s);
     }
 
     public InvalidParticipantException (String s, int errorcode)
     {
-	super(s, errorcode);
+    super(s, errorcode);
     }
 
 }

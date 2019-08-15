@@ -55,7 +55,7 @@ public class ContextManager
 
     public ContextManager ()
     {
-	_manager = ActivityManagerFactory.activityManager();
+    _manager = ActivityManagerFactory.activityManager();
     }
 
     /**

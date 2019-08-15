@@ -66,66 +66,66 @@ import org.omg.CORBA.TRANSACTION_ROLLEDBACK;
 
 public class Client006
 {
-	public static void main(String[] args)
-	{
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+    public static void main(String[] args)
+    {
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			String serviceIOR = ServerIORStore.loadIOR(args[args.length - 1]);
-			Service service = ServiceHelper.narrow(ORBInterface.orb().string_to_object(serviceIOR));
+            String serviceIOR = ServerIORStore.loadIOR(args[args.length - 1]);
+            Service service = ServiceHelper.narrow(ORBInterface.orb().string_to_object(serviceIOR));
 
-			boolean correct = true;
+            boolean correct = true;
 
-			OTS.current().begin();
+            OTS.current().begin();
 
-			OTS.current().begin();
+            OTS.current().begin();
 
-			service.oper(1, OTS.current().get_control());
+            service.oper(1, OTS.current().get_control());
 
-			OTS.current().rollback_only();
+            OTS.current().rollback_only();
 
-			try
-			{
-				OTS.current().commit(false);
-				correct = false;
-			}
-			catch (TRANSACTION_ROLLEDBACK transactionRolledback)
-			{
-			}
+            try
+            {
+                OTS.current().commit(false);
+                correct = false;
+            }
+            catch (TRANSACTION_ROLLEDBACK transactionRolledback)
+            {
+            }
 
-			OTS.current().commit(true);
+            OTS.current().commit(true);
 
-			correct = correct && service.is_correct();
+            correct = correct && service.is_correct();
 
-			correct = correct && (service.get_subtransaction_aware_resource_trace(0) == SubtransactionAwareResourceTrace.SubtransactionAwareResourceTraceRollbackSubtransaction);
+            correct = correct && (service.get_subtransaction_aware_resource_trace(0) == SubtransactionAwareResourceTrace.SubtransactionAwareResourceTraceRollbackSubtransaction);
 
-			if (correct)
-			{
-				System.out.println("Passed");
-			}
-			else
-			{
-				System.out.println("Failed");
-			}
-		}
-		catch (Exception exception)
-		{
-			System.out.println("Failed");
-			System.err.println("Client006.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
+            if (correct)
+            {
+                System.out.println("Passed");
+            }
+            else
+            {
+                System.out.println("Failed");
+            }
+        }
+        catch (Exception exception)
+        {
+            System.out.println("Failed");
+            System.err.println("Client006.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
 
-		try
-		{
-			OAInterface.shutdownOA();
-			ORBInterface.shutdownORB();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Client006.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
-	}
+        try
+        {
+            OAInterface.shutdownOA();
+            ORBInterface.shutdownORB();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Client006.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
+    }
 }

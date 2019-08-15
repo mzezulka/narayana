@@ -30,11 +30,11 @@ import com.arjuna.ats.arjuna.objectstore.TxLog;
  * abstract implementation of the TxLog MBean
  */
 public abstract class TxLogBean extends BaseStoreBean implements TxLogBeanMBean {
-	private TxLog store;
+    private TxLog store;
 
-	public TxLogBean(TxLog store) {
+    public TxLogBean(TxLog store) {
         super(store);
-		this.store = store;
+        this.store = store;
     }
 
     protected TxLog getStore() {
@@ -45,15 +45,15 @@ public abstract class TxLogBean extends BaseStoreBean implements TxLogBeanMBean 
     protected abstract ObjectName getMBeanName();
 
     public void sync () throws java.io.SyncFailedException, ObjectStoreException {
-		store.sync ();
-	}
+        store.sync ();
+    }
 
-	public boolean write_committed (Uid u, String tn, OutputObjectStateWrapper buff) throws ObjectStoreException {
-		return store.write_committed (u, tn, buff.getOOS());
-	}
+    public boolean write_committed (Uid u, String tn, OutputObjectStateWrapper buff) throws ObjectStoreException {
+        return store.write_committed (u, tn, buff.getOOS());
+    }
 
-	public boolean remove_committed (Uid u, String tn) throws ObjectStoreException {
-		return store.remove_committed(u, tn);
-	}
+    public boolean remove_committed (Uid u, String tn) throws ObjectStoreException {
+        return store.remove_committed(u, tn);
+    }
 
 }

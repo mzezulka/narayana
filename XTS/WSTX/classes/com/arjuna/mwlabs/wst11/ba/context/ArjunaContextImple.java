@@ -68,9 +68,9 @@ public class ArjunaContextImple implements SOAPContext
 
     public ArjunaContextImple(BACoordinator currentCoordinator)
     {
-    	_context = null;
+        _context = null;
 
-    	initialiseContext(currentCoordinator);
+        initialiseContext(currentCoordinator);
     }
 
     /**
@@ -87,28 +87,28 @@ public class ArjunaContextImple implements SOAPContext
 
     public void initialiseContext(Object param)
     {
-    	try
-    	{
-    	    BACoordinator currentCoordinator = (BACoordinator) param;
+        try
+        {
+            BACoordinator currentCoordinator = (BACoordinator) param;
 
-    	    ActivityHierarchy hier = null;
+            ActivityHierarchy hier = null;
 
-    	    try
-    	    {
-    	        hier = UserActivityFactory.userActivity().currentActivity();
-    	    }
-    	    catch (SystemException ex)
-    	    {
-    	        ex.printStackTrace();
-    	    }
+            try
+            {
+                hier = UserActivityFactory.userActivity().currentActivity();
+            }
+            catch (SystemException ex)
+            {
+                ex.printStackTrace();
+            }
 
-    	    if ((currentCoordinator != null) && (hier != null))
-    	    {
-        		/*
-        		 * Do the manditory stuff first.
-        		 */
+            if ((currentCoordinator != null) && (hier != null))
+            {
+                /*
+                 * Do the manditory stuff first.
+                 */
 
-        		ActionHierarchy txHier = currentCoordinator.getHierarchy();
+                ActionHierarchy txHier = currentCoordinator.getHierarchy();
                 final int depth = txHier.depth() ;
                 _identifierValues = new String[depth] ;
                 _expiresValues = new int[depth] ;
@@ -116,20 +116,20 @@ public class ArjunaContextImple implements SOAPContext
                 _identifierValues[0] = txHier.getDeepestActionUid().stringForm() ;
                 _expiresValues[0] = hier.activity(hier.size()-1).getTimeout() ;
 
-        		/*
-        		 * Now let's do the optional stuff.
-        		 */
+                /*
+                 * Now let's do the optional stuff.
+                 */
                 for(int count = 1, index = 0 ; count < depth ; count++, index++)
                 {
                     _identifierValues[count] = txHier.getActionUid(index).stringForm() ;
                     _expiresValues[count] = hier.activity(index).getTimeout() ;
                 }
             }
-    	}
-    	catch (ClassCastException ex)
-    	{
-    	    throw new IllegalArgumentException();
-    	}
+        }
+        catch (ClassCastException ex)
+        {
+            throw new IllegalArgumentException();
+        }
     }
 
     /**

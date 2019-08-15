@@ -46,17 +46,17 @@ public class NoCoordinatorException extends SystemException
 
     public NoCoordinatorException ()
     {
-	super();
+    super();
     }
 
     public NoCoordinatorException (String s)
     {
-	super(s);
+    super(s);
     }
 
     public NoCoordinatorException (String s, int errorcode)
     {
-	super(s, errorcode);
+    super(s, errorcode);
     }
 
 }

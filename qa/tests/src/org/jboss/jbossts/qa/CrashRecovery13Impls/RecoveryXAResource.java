@@ -42,73 +42,73 @@ import javax.transaction.xa.Xid;
 public class RecoveryXAResource implements XAResource
 {
 
-	public RecoveryXAResource()
-	{
-		if (xids == null)
-		{
-			xids = new Xid[2];
+    public RecoveryXAResource()
+    {
+        if (xids == null)
+        {
+            xids = new Xid[2];
 
-			AtomicAction a = new AtomicAction();
+            AtomicAction a = new AtomicAction();
 
-			xids[0] = new XidImple(a);
+            xids[0] = new XidImple(a);
 
-			String c = com.arjuna.ats.arjuna.coordinator.TxControl.getXANodeName();
+            String c = com.arjuna.ats.arjuna.coordinator.TxControl.getXANodeName();
 
-			String b = "2";
+            String b = "2";
 
-			com.arjuna.ats.arjuna.coordinator.TxControl.setXANodeName(b);
+            com.arjuna.ats.arjuna.coordinator.TxControl.setXANodeName(b);
 
-			xids[1] = new XidImple(new Uid());
+            xids[1] = new XidImple(new Uid());
 
-			com.arjuna.ats.arjuna.coordinator.TxControl.setXANodeName(c);
-		}
-	}
+            com.arjuna.ats.arjuna.coordinator.TxControl.setXANodeName(c);
+        }
+    }
 
-	public void commit(Xid xid, boolean onePhase) throws XAException
-	{
-	}
+    public void commit(Xid xid, boolean onePhase) throws XAException
+    {
+    }
 
-	public void end(Xid xid, int flags) throws XAException
-	{
-	}
+    public void end(Xid xid, int flags) throws XAException
+    {
+    }
 
-	public void forget(Xid xid) throws XAException
-	{
-	}
+    public void forget(Xid xid) throws XAException
+    {
+    }
 
-	public int getTransactionTimeout() throws XAException
-	{
-		return 0;
-	}
+    public int getTransactionTimeout() throws XAException
+    {
+        return 0;
+    }
 
-	public int prepare(Xid xid) throws XAException
-	{
-		return XAResource.XA_OK;
-	}
+    public int prepare(Xid xid) throws XAException
+    {
+        return XAResource.XA_OK;
+    }
 
-	public Xid[] recover(int flag) throws XAException
-	{
-		return xids;
-	}
+    public Xid[] recover(int flag) throws XAException
+    {
+        return xids;
+    }
 
-	public void rollback(Xid xid) throws XAException
-	{
-	}
+    public void rollback(Xid xid) throws XAException
+    {
+    }
 
-	public boolean setTransactionTimeout(int seconds) throws XAException
-	{
-		return true;
-	}
+    public boolean setTransactionTimeout(int seconds) throws XAException
+    {
+        return true;
+    }
 
-	public void start(Xid xid, int flags) throws XAException
-	{
-	}
+    public void start(Xid xid, int flags) throws XAException
+    {
+    }
 
-	public boolean isSameRM(XAResource xares) throws XAException
-	{
-		return (xares == this);
-	}
+    public boolean isSameRM(XAResource xares) throws XAException
+    {
+        return (xares == this);
+    }
 
-	private static Xid[] xids = null;
+    private static Xid[] xids = null;
 
 }

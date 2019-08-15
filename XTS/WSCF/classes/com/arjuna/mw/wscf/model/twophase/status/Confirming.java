@@ -48,12 +48,12 @@ public class Confirming implements Status
 
     public static Confirming instance ()
     {
-	return _instance;
+    return _instance;
     }
 
     public String toString ()
     {
-	return "org.w3c.wscf.twophase.status.Confirming";
+    return "org.w3c.wscf.twophase.status.Confirming";
     }
 
     private Confirming ()

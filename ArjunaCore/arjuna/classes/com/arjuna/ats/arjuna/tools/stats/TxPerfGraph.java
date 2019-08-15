@@ -141,7 +141,7 @@ public class TxPerfGraph extends javax.swing.JPanel { //JFrame {
 
         periodSelectSlider.setMajorTickSpacing(10);
         periodSelectSlider.setToolTipText(
-			"Select the number of (" + POLL_PERIOD + "ms) time slices over which to show the pie chart");
+            "Select the number of (" + POLL_PERIOD + "ms) time slices over which to show the pie chart");
 
         SpinnerModel sm1 = new SpinnerNumberModel(POLL_PERIOD / 1000, 1, 10000, 1);
         SpinnerModel sm2 = new SpinnerNumberModel(NUMBER_OF_SAMPLES, 10, 1000, 1);
@@ -155,8 +155,8 @@ public class TxPerfGraph extends javax.swing.JPanel { //JFrame {
         sampleSizeSpinner.setVisible(false);
         enableStatsCB.setSelected(false);
         resetStatsBtn.setVisible(false);
-	pollIntervalBtn.setVisible(false);
-	sampleSizeBtn1.setVisible(false);
+    pollIntervalBtn.setVisible(false);
+    sampleSizeBtn1.setVisible(false);
 
         taskPerformer = new ActionListener() {
             public void actionPerformed(ActionEvent evt) {

@@ -46,17 +46,17 @@ public class CoordinatorCancelledException extends SystemException
 
     public CoordinatorCancelledException ()
     {
-	super();
+    super();
     }
 
     public CoordinatorCancelledException (String s)
     {
-	super(s);
+    super(s);
     }
 
     public CoordinatorCancelledException (String s, int errorcode)
     {
-	super(s, errorcode);
+    super(s, errorcode);
     }
 
 }

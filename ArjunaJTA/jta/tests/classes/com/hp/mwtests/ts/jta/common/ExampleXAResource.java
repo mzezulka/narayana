@@ -38,311 +38,311 @@ import javax.transaction.xa.Xid;
 public abstract class ExampleXAResource implements XAResource
 {
 
-	public ExampleXAResource ()
-	{
-		/*
-		 * Add this instance to a reaper, such that if it is still active when
-		 * the timeout goes off, the reaper will roll back the work.
-		 */
-	}
+    public ExampleXAResource ()
+    {
+        /*
+         * Add this instance to a reaper, such that if it is still active when
+         * the timeout goes off, the reaper will roll back the work.
+         */
+    }
 
-	public void start (Xid xid, int flags) throws XAException
-	{
-		if (!validXid(xid))
-			throw new XAException(XAException.XAER_NOTA);
+    public void start (Xid xid, int flags) throws XAException
+    {
+        if (!validXid(xid))
+            throw new XAException(XAException.XAER_NOTA);
 
-		switch (flags)
-		{
-		case XAResource.TMNOFLAGS:
-			associateNewUniqueTransaction(xid);
-			break;
-		case XAResource.TMJOIN:
-			joinExistingTransaction(xid);
-			break;
-		case XAResource.TMRESUME:
-			resumeOldTransaction(xid);
-			break;
-		default:
-			throw new XAException(XAException.XAER_PROTO);
-		}
-	}
+        switch (flags)
+        {
+        case XAResource.TMNOFLAGS:
+            associateNewUniqueTransaction(xid);
+            break;
+        case XAResource.TMJOIN:
+            joinExistingTransaction(xid);
+            break;
+        case XAResource.TMRESUME:
+            resumeOldTransaction(xid);
+            break;
+        default:
+            throw new XAException(XAException.XAER_PROTO);
+        }
+    }
 
-	public void end (Xid xid, int flags) throws XAException
-	{
-		if (!validXid(xid))
-			throw new XAException(XAException.XAER_NOTA);
+    public void end (Xid xid, int flags) throws XAException
+    {
+        if (!validXid(xid))
+            throw new XAException(XAException.XAER_NOTA);
 
-		switch (flags)
-		{
-		case XAResource.TMSUSPEND:
-			temporarilySuspendBranch(xid);
-			break;
-		case XAResource.TMFAIL:
-			endAssociationAndRollback(xid);
-			break;
-		case XAResource.TMSUCCESS:
-			endAssociation(xid);
-			break;
-		default:
-			throw new XAException(XAException.XAER_PROTO);
-		}
-	}
+        switch (flags)
+        {
+        case XAResource.TMSUSPEND:
+            temporarilySuspendBranch(xid);
+            break;
+        case XAResource.TMFAIL:
+            endAssociationAndRollback(xid);
+            break;
+        case XAResource.TMSUCCESS:
+            endAssociation(xid);
+            break;
+        default:
+            throw new XAException(XAException.XAER_PROTO);
+        }
+    }
 
-	public int prepare (Xid xid) throws XAException
-	{
-		if (!validXid(xid))
-			throw new XAException(XAException.XAER_NOTA);
+    public int prepare (Xid xid) throws XAException
+    {
+        if (!validXid(xid))
+            throw new XAException(XAException.XAER_NOTA);
 
-		if (!validResourceManager(xid))
-			throw new XAException(XAException.XAER_RMFAIL);
+        if (!validResourceManager(xid))
+            throw new XAException(XAException.XAER_RMFAIL);
 
-		return resourceManagerPrepare(xid);
-	}
+        return resourceManagerPrepare(xid);
+    }
 
-	public void commit (Xid xid, boolean onePhase) throws XAException
-	{
-		if (!validXid(xid))
-			throw new XAException(XAException.XAER_NOTA);
+    public void commit (Xid xid, boolean onePhase) throws XAException
+    {
+        if (!validXid(xid))
+            throw new XAException(XAException.XAER_NOTA);
 
-		if (!validResourceManager(xid))
-			throw new XAException(XAException.XAER_RMFAIL);
+        if (!validResourceManager(xid))
+            throw new XAException(XAException.XAER_RMFAIL);
 
-		if (!onePhase && !resourceManagerPrepared(xid))
-			throw new XAException(XAException.XAER_PROTO);
+        if (!onePhase && !resourceManagerPrepared(xid))
+            throw new XAException(XAException.XAER_PROTO);
 
-		resourceManagerCommit(xid, onePhase);
-	}
+        resourceManagerCommit(xid, onePhase);
+    }
 
-	public void rollback (Xid xid) throws XAException
-	{
-		if (!validXid(xid))
-			throw new XAException(XAException.XAER_NOTA);
+    public void rollback (Xid xid) throws XAException
+    {
+        if (!validXid(xid))
+            throw new XAException(XAException.XAER_NOTA);
 
-		if (!validResourceManager(xid))
-			throw new XAException(XAException.XAER_RMFAIL);
+        if (!validResourceManager(xid))
+            throw new XAException(XAException.XAER_RMFAIL);
 
-		resourceManagerRollback(xid);
-	}
+        resourceManagerRollback(xid);
+    }
 
-	public void forget (Xid xid) throws XAException
-	{
-		if (!validXid(xid))
-			throw new XAException(XAException.XAER_NOTA);
+    public void forget (Xid xid) throws XAException
+    {
+        if (!validXid(xid))
+            throw new XAException(XAException.XAER_NOTA);
 
-		if (!validResourceManager(xid))
-			throw new XAException(XAException.XAER_RMFAIL);
+        if (!validResourceManager(xid))
+            throw new XAException(XAException.XAER_RMFAIL);
 
-		if (!resourceManagerPrepared(xid))
-			throw new XAException(XAException.XAER_PROTO);
+        if (!resourceManagerPrepared(xid))
+            throw new XAException(XAException.XAER_PROTO);
 
-		resourceManagerForget(xid);
-	}
+        resourceManagerForget(xid);
+    }
 
-	public Xid[] recover (int flag) throws XAException
-	{
-		switch (flag)
-		{
-		case XAResource.TMNOFLAGS:
-		{
-			if (recoveryScanStarted())
-			{
-				return indoubtTransactions();
-			}
-			else
-				throw new XAException(XAException.XAER_PROTO);
-		}
-		case XAResource.TMSTARTRSCAN:
-		{
-			if (recoveryScanStarted())
-				throw new XAException(XAException.XAER_PROTO);
-			else
-				startRecoveryScan();
-		}
-			break;
-		case XAResource.TMENDRSCAN:
-		{
-			if (recoveryScanStarted())
-				endRecoveryScan();
-			else
-				throw new XAException(XAException.XAER_PROTO);
-		}
-			break;
-		default:
-		{
-			if ((flag & XAResource.TMSTARTRSCAN & XAResource.TMENDRSCAN) != 0)
-			{
-				if (recoveryScanStarted())
-					throw new XAException(XAException.XAER_PROTO);
-				else
-				{
-					startRecoveryScan();
+    public Xid[] recover (int flag) throws XAException
+    {
+        switch (flag)
+        {
+        case XAResource.TMNOFLAGS:
+        {
+            if (recoveryScanStarted())
+            {
+                return indoubtTransactions();
+            }
+            else
+                throw new XAException(XAException.XAER_PROTO);
+        }
+        case XAResource.TMSTARTRSCAN:
+        {
+            if (recoveryScanStarted())
+                throw new XAException(XAException.XAER_PROTO);
+            else
+                startRecoveryScan();
+        }
+            break;
+        case XAResource.TMENDRSCAN:
+        {
+            if (recoveryScanStarted())
+                endRecoveryScan();
+            else
+                throw new XAException(XAException.XAER_PROTO);
+        }
+            break;
+        default:
+        {
+            if ((flag & XAResource.TMSTARTRSCAN & XAResource.TMENDRSCAN) != 0)
+            {
+                if (recoveryScanStarted())
+                    throw new XAException(XAException.XAER_PROTO);
+                else
+                {
+                    startRecoveryScan();
 
-					Xid[] indoubts = indoubtTransactions();
+                    Xid[] indoubts = indoubtTransactions();
 
-					endRecoveryScan();
+                    endRecoveryScan();
 
-					return indoubts;
-				}
-			}
-			else
-				throw new XAException(XAException.XAER_PROTO);
-		}
-		}
+                    return indoubts;
+                }
+            }
+            else
+                throw new XAException(XAException.XAER_PROTO);
+        }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	public int getTransactionTimeout () throws XAException
-	{
-		return timeout;
-	}
+    public int getTransactionTimeout () throws XAException
+    {
+        return timeout;
+    }
 
-	public boolean setTransactionTimeout (int seconds) throws XAException
-	{
-		if (seconds >= 0)
-		{
-			timeout = seconds;
+    public boolean setTransactionTimeout (int seconds) throws XAException
+    {
+        if (seconds >= 0)
+        {
+            timeout = seconds;
 
-			return true;
-		}
-		else
-			return false;
-	}
+            return true;
+        }
+        else
+            return false;
+    }
 
-	public boolean isSameRM (XAResource xares) throws XAException
-	{
-		return (xares == this);
-	}
+    public boolean isSameRM (XAResource xares) throws XAException
+    {
+        return (xares == this);
+    }
 
-	/*
-	 * Determine whether or not this is an Xid instance we can deal with.
-	 */
+    /*
+     * Determine whether or not this is an Xid instance we can deal with.
+     */
 
-	protected abstract boolean validXid (Xid xid);
+    protected abstract boolean validXid (Xid xid);
 
-	/*
-	 * Ensure that this Xid is unique within the context of this RM. If it is
-	 * then associate the RM (and thread) with the transaction identified by the
-	 * Xid, such that all work performed on the RM is transactional.
-	 */
+    /*
+     * Ensure that this Xid is unique within the context of this RM. If it is
+     * then associate the RM (and thread) with the transaction identified by the
+     * Xid, such that all work performed on the RM is transactional.
+     */
 
-	protected abstract void associateNewUniqueTransaction (Xid xid)
-			throws XAException;
+    protected abstract void associateNewUniqueTransaction (Xid xid)
+            throws XAException;
 
-	/*
-	 * Ensure that this Xid is one we have seen before and is still active. If
-	 * it is, then associate the RM as before. If the thread is already
-	 * associated with a transaction, then throw an appropriate XAException.
-	 */
+    /*
+     * Ensure that this Xid is one we have seen before and is still active. If
+     * it is, then associate the RM as before. If the thread is already
+     * associated with a transaction, then throw an appropriate XAException.
+     */
 
-	protected abstract void joinExistingTransaction (Xid xid)
-			throws XAException;
+    protected abstract void joinExistingTransaction (Xid xid)
+            throws XAException;
 
-	/*
-	 * Ensure that this Xid is one we have seen before and have previously
-	 * suspended. If it isn't then throw an XAException. If it is, then resume
-	 * the association.
-	 */
+    /*
+     * Ensure that this Xid is one we have seen before and have previously
+     * suspended. If it isn't then throw an XAException. If it is, then resume
+     * the association.
+     */
 
-	protected abstract void resumeOldTransaction (Xid xid) throws XAException;
+    protected abstract void resumeOldTransaction (Xid xid) throws XAException;
 
-	/*
-	 * Ensure that this Xid is one we know about. If it isn't then throw an
-	 * XAException. If it is, then suspend the association of the RM (and
-	 * thread) with the transaction. Suspend is different to ending, because the
-	 * association can be (should be) resumed later or ended.
-	 */
+    /*
+     * Ensure that this Xid is one we know about. If it isn't then throw an
+     * XAException. If it is, then suspend the association of the RM (and
+     * thread) with the transaction. Suspend is different to ending, because the
+     * association can be (should be) resumed later or ended.
+     */
 
-	protected abstract void temporarilySuspendBranch (Xid xid)
-			throws XAException;
+    protected abstract void temporarilySuspendBranch (Xid xid)
+            throws XAException;
 
-	/*
-	 * Ensure that this Xid is one we know about. If it isn't then it's a
-	 * protocol error and we should throw an appropriate XAException. If it is,
-	 * then end the association with the RM.
-	 */
+    /*
+     * Ensure that this Xid is one we know about. If it isn't then it's a
+     * protocol error and we should throw an appropriate XAException. If it is,
+     * then end the association with the RM.
+     */
 
-	protected abstract void endAssociation (Xid xid) throws XAException;
+    protected abstract void endAssociation (Xid xid) throws XAException;
 
-	/*
-	 * Ensure that this Xid is one we know about. If it isn't then it's a
-	 * protocol error and we should throw an appropriate XAException. If it is,
-	 * then end the association with the RM and roll back the work performed by
-	 * the RM in the scope of that transaction.
-	 */
+    /*
+     * Ensure that this Xid is one we know about. If it isn't then it's a
+     * protocol error and we should throw an appropriate XAException. If it is,
+     * then end the association with the RM and roll back the work performed by
+     * the RM in the scope of that transaction.
+     */
 
-	protected abstract void endAssociationAndRollback (Xid xid)
-			throws XAException;
+    protected abstract void endAssociationAndRollback (Xid xid)
+            throws XAException;
 
-	/*
-	 * Is there a valid RM associated with this transaction?
-	 */
+    /*
+     * Is there a valid RM associated with this transaction?
+     */
 
-	protected abstract boolean validResourceManager (Xid xid);
+    protected abstract boolean validResourceManager (Xid xid);
 
-	/*
-	 * Find the RM associated with this transaction and ask it to prepare the
-	 * work done in the scope of the transaction. Returns either OK or READ
-	 * ONLY.
-	 */
+    /*
+     * Find the RM associated with this transaction and ask it to prepare the
+     * work done in the scope of the transaction. Returns either OK or READ
+     * ONLY.
+     */
 
-	protected abstract int resourceManagerPrepare (Xid xid) throws XAException;
+    protected abstract int resourceManagerPrepare (Xid xid) throws XAException;
 
-	/*
-	 * Find the RM associated with this transaction and ask it to commit the
-	 * work done in the scope of the transaction.
-	 */
+    /*
+     * Find the RM associated with this transaction and ask it to commit the
+     * work done in the scope of the transaction.
+     */
 
-	protected abstract void resourceManagerCommit (Xid xid, boolean onePhase)
-			throws XAException;
+    protected abstract void resourceManagerCommit (Xid xid, boolean onePhase)
+            throws XAException;
 
-	/*
-	 * Find the RM associated with this transaction and ask it to roll back the
-	 * work done in the scope of the transaction.
-	 */
+    /*
+     * Find the RM associated with this transaction and ask it to roll back the
+     * work done in the scope of the transaction.
+     */
 
-	protected abstract void resourceManagerRollback (Xid xid)
-			throws XAException;
+    protected abstract void resourceManagerRollback (Xid xid)
+            throws XAException;
 
-	/*
-	 * Find the RM associated with this transaction and ask it to forget any
-	 * heuristic information on behalf of the transaction.
-	 */
+    /*
+     * Find the RM associated with this transaction and ask it to forget any
+     * heuristic information on behalf of the transaction.
+     */
 
-	protected abstract void resourceManagerForget (Xid xid) throws XAException;
+    protected abstract void resourceManagerForget (Xid xid) throws XAException;
 
-	/*
-	 * Find the RM associated with this transaction and determine if it has been
-	 * prepared.
-	 */
+    /*
+     * Find the RM associated with this transaction and determine if it has been
+     * prepared.
+     */
 
-	protected abstract boolean resourceManagerPrepared (Xid xid)
-			throws XAException;
+    protected abstract boolean resourceManagerPrepared (Xid xid)
+            throws XAException;
 
-	/*
-	 * Has the recovery scan begun?
-	 */
+    /*
+     * Has the recovery scan begun?
+     */
 
-	protected abstract boolean recoveryScanStarted () throws XAException;
+    protected abstract boolean recoveryScanStarted () throws XAException;
 
-	/*
-	 * Return the list of indoubt (and heuristic) transactions.
-	 */
+    /*
+     * Return the list of indoubt (and heuristic) transactions.
+     */
 
-	protected abstract Xid[] indoubtTransactions () throws XAException;
+    protected abstract Xid[] indoubtTransactions () throws XAException;
 
-	/*
-	 * Start the recovery scan.
-	 */
+    /*
+     * Start the recovery scan.
+     */
 
-	protected abstract void startRecoveryScan () throws XAException;
+    protected abstract void startRecoveryScan () throws XAException;
 
-	/*
-	 * End the recovery scan.
-	 */
+    /*
+     * End the recovery scan.
+     */
 
-	protected abstract void endRecoveryScan () throws XAException;
+    protected abstract void endRecoveryScan () throws XAException;
 
-	private int timeout = 0;
+    private int timeout = 0;
 
 }

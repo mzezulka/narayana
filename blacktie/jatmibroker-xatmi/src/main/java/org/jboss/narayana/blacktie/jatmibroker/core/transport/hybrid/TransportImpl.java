@@ -184,7 +184,7 @@ public class TransportImpl implements Transport {
             log.error("Already closed");
             throw new ConnectionException(Connection.TPEPROTO, "Already closed");
         }
-	return null;
+    return null;
     }
 
     public Receiver createReceiver(Sender sender) throws ConnectionException {

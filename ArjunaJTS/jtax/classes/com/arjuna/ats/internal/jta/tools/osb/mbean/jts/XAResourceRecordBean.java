@@ -67,16 +67,16 @@ public class XAResourceRecordBean extends LogRecordWrapper implements XAResource
         init(rec);
     }
 
-	private void init(AbstractRecord rec) {
-		jndiName = getUid().stringForm();
-		className = "unavailable";
-		eisProductName = "unavailable";
-		eisProductVersion = "unavailable";
-		timeout = 0;
+    private void init(AbstractRecord rec) {
+        jndiName = getUid().stringForm();
+        className = "unavailable";
+        eisProductName = "unavailable";
+        eisProductVersion = "unavailable";
+        timeout = 0;
         xares = new JTSXAResourceRecordWrapper(rec, getUid());
         xidImple = xares.xidImple;
         heuristic = xares.heuristic;
-	}
+    }
 
     public String getClassName() { return className; }
     public String getEisProductName() { return eisProductName; }

@@ -53,10 +53,10 @@ public class WSASException extends Exception
 
     public WSASException ()
     {
-	super();
+    super();
 
-	_errorCode = 0;
-	_data = null;
+    _errorCode = 0;
+    _data = null;
     }
 
     /**
@@ -68,10 +68,10 @@ public class WSASException extends Exception
 
     public WSASException (String reason)
     {
-	super(reason);
+    super(reason);
 
-	_errorCode = 0;
-	_data = null;
+    _errorCode = 0;
+    _data = null;
     }
 
     /**
@@ -84,10 +84,10 @@ public class WSASException extends Exception
 
     public WSASException (String reason, int errorcode)
     {
-	super(reason);
+    super(reason);
 
-	_errorCode = errorcode;
-	_data = null;
+    _errorCode = errorcode;
+    _data = null;
     }
 
     /**
@@ -97,10 +97,10 @@ public class WSASException extends Exception
 
     public WSASException (String reason, Object obj)
     {
-	super(reason);
+    super(reason);
 
-	_errorCode = 0;
-	_data = obj;
+    _errorCode = 0;
+    _data = obj;
     }
 
     /**
@@ -109,10 +109,10 @@ public class WSASException extends Exception
 
     public WSASException (Object obj)
     {
-	super();
+    super();
 
-	_errorCode = 0;
-	_data = obj;
+    _errorCode = 0;
+    _data = obj;
     }
 
     /**
@@ -121,7 +121,7 @@ public class WSASException extends Exception
 
     public final int getErrorCode ()
     {
-	return _errorCode;
+    return _errorCode;
     }
 
     /**
@@ -130,7 +130,7 @@ public class WSASException extends Exception
 
     public final Object getData ()
     {
-	return _data;
+    return _data;
     }
 
     private int    _errorCode;

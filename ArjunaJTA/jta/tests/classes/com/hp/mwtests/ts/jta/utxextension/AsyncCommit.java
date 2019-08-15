@@ -47,10 +47,10 @@ public class AsyncCommit
     @Test
     public void test() throws Exception
     {
-    	UserTransactionImple ut = new UserTransactionImple();
-    	ut.begin();
+        UserTransactionImple ut = new UserTransactionImple();
+        ut.begin();
 
-    	TransactionImple current = TransactionImple.getTransaction();
+        TransactionImple current = TransactionImple.getTransaction();
 
         TestResource res1, res2;
         current.enlistResource( res1 = new TestResource() );

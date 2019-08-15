@@ -24,19 +24,19 @@ package com.arjuna.ats.jta.distributed;
 import javax.transaction.Synchronization;
 
 public class TestSynchronization implements Synchronization {
-	private String serverId;
+    private String serverId;
 
-	public TestSynchronization(String serverId) {
-		this.serverId = serverId;
-	}
+    public TestSynchronization(String serverId) {
+        this.serverId = serverId;
+    }
 
-	@Override
-	public void beforeCompletion() {
-		System.out.println(" TestSynchronization (" + serverId + ")      beforeCompletion");
-	}
+    @Override
+    public void beforeCompletion() {
+        System.out.println(" TestSynchronization (" + serverId + ")      beforeCompletion");
+    }
 
-	@Override
-	public void afterCompletion(int status) {
-		System.out.println(" TestSynchronization (" + serverId + ")      afterCompletion");
-	}
+    @Override
+    public void afterCompletion(int status) {
+        System.out.println(" TestSynchronization (" + serverId + ")      afterCompletion");
+    }
 }

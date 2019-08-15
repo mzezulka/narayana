@@ -29,5 +29,5 @@ import com.arjuna.ats.arjuna.tools.osb.mbean.ActionBeanMBean;
 @Deprecated // in order to provide a better separation between public and internal classes.
 public interface RecoverConnectableAtomicActionBeanMBean extends ActionBeanMBean {
     @MXBeanPropertyDescription("A unique id for this transaction")
-	String toDo();
+    String toDo();
 }

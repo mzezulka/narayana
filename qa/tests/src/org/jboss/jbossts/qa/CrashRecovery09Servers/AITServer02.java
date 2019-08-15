@@ -67,32 +67,32 @@ import org.jboss.jbossts.qa.Utils.ServerIORStore;
 
 public class AITServer02
 {
-	public static void main(String args[])
-	{
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+    public static void main(String args[])
+    {
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			Uid uid = ObjectUidStore.loadUid(args[args.length - 2]);
+            Uid uid = ObjectUidStore.loadUid(args[args.length - 2]);
 
-			AITServiceImpl01 aitServiceImpl = new AITServiceImpl01(uid);
-			ServicePOATie servant = new ServicePOATie(aitServiceImpl);
+            AITServiceImpl01 aitServiceImpl = new AITServiceImpl01(uid);
+            ServicePOATie servant = new ServicePOATie(aitServiceImpl);
 
-			OAInterface.objectIsReady(servant);
-			Service service = ServiceHelper.narrow(OAInterface.corbaReference(servant));
+            OAInterface.objectIsReady(servant);
+            Service service = ServiceHelper.narrow(OAInterface.corbaReference(servant));
 
-			ServerIORStore.storeIOR(args[args.length - 1], ORBInterface.orb().object_to_string(service));
+            ServerIORStore.storeIOR(args[args.length - 1], ORBInterface.orb().object_to_string(service));
 
-			System.out.println("Ready");
+            System.out.println("Ready");
 
-			ORBInterface.run();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("AITServer02.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
-	}
+            ORBInterface.run();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("AITServer02.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
+    }
 }
 

@@ -36,13 +36,13 @@ import org.omg.CosTransactions.Current;
 
 public class OTS
 {
-	public static Current current()
-	{
-		return OTSManager.get_current();
-	}
+    public static Current current()
+    {
+        return OTSManager.get_current();
+    }
 
-	public static Current get_current()
-	{
-		return OTSManager.get_current();
-	}
+    public static Current get_current()
+    {
+        return OTSManager.get_current();
+    }
 }

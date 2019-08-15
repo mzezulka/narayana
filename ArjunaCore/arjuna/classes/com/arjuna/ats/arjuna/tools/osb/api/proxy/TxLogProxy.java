@@ -31,10 +31,10 @@ import com.arjuna.ats.arjuna.tools.osb.api.mbeans.TxLogBeanMBean;
  * Remote proxy to a TxLog Store
  */
 public class TxLogProxy implements TxLog {
-	private TxLogBeanMBean txLogProxy;
+    private TxLogBeanMBean txLogProxy;
 
-	public TxLogProxy(TxLogBeanMBean txLogProxy) {
-		this.txLogProxy = txLogProxy;
+    public TxLogProxy(TxLogBeanMBean txLogProxy) {
+        this.txLogProxy = txLogProxy;
     }
 
     // TxLog methods

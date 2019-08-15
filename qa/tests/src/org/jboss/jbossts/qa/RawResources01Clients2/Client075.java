@@ -66,88 +66,88 @@ import org.omg.CosTransactions.HeuristicHazard;
 
 public class Client075
 {
-	public static void main(String[] args)
-	{
-		try
-		{
-			ORBInterface.initORB(args, null);
-			OAInterface.initOA();
+    public static void main(String[] args)
+    {
+        try
+        {
+            ORBInterface.initORB(args, null);
+            OAInterface.initOA();
 
-			String serviceIOR1 = ServerIORStore.loadIOR(args[args.length - 2]);
-			Service service1 = ServiceHelper.narrow(ORBInterface.orb().string_to_object(serviceIOR1));
+            String serviceIOR1 = ServerIORStore.loadIOR(args[args.length - 2]);
+            Service service1 = ServiceHelper.narrow(ORBInterface.orb().string_to_object(serviceIOR1));
 
-			String serviceIOR2 = ServerIORStore.loadIOR(args[args.length - 1]);
-			Service service2 = ServiceHelper.narrow(ORBInterface.orb().string_to_object(serviceIOR2));
+            String serviceIOR2 = ServerIORStore.loadIOR(args[args.length - 1]);
+            Service service2 = ServiceHelper.narrow(ORBInterface.orb().string_to_object(serviceIOR2));
 
-			ResourceBehavior[] resourceBehaviors1 = new ResourceBehavior[1];
-			resourceBehaviors1[0] = new ResourceBehavior();
-			resourceBehaviors1[0].prepare_behavior = PrepareBehavior.PrepareBehaviorReturnVoteRollback;
-			resourceBehaviors1[0].rollback_behavior = RollbackBehavior.RollbackBehaviorRaiseHeuristicHazard;
-			resourceBehaviors1[0].commit_behavior = CommitBehavior.CommitBehaviorReturn;
-			resourceBehaviors1[0].commitonephase_behavior = CommitOnePhaseBehavior.CommitOnePhaseBehaviorReturn;
+            ResourceBehavior[] resourceBehaviors1 = new ResourceBehavior[1];
+            resourceBehaviors1[0] = new ResourceBehavior();
+            resourceBehaviors1[0].prepare_behavior = PrepareBehavior.PrepareBehaviorReturnVoteRollback;
+            resourceBehaviors1[0].rollback_behavior = RollbackBehavior.RollbackBehaviorRaiseHeuristicHazard;
+            resourceBehaviors1[0].commit_behavior = CommitBehavior.CommitBehaviorReturn;
+            resourceBehaviors1[0].commitonephase_behavior = CommitOnePhaseBehavior.CommitOnePhaseBehaviorReturn;
 
-			ResourceBehavior[] resourceBehaviors2 = new ResourceBehavior[1];
-			resourceBehaviors2[0] = new ResourceBehavior();
-			resourceBehaviors2[0].prepare_behavior = PrepareBehavior.PrepareBehaviorReturnVoteRollback;
-			resourceBehaviors2[0].rollback_behavior = RollbackBehavior.RollbackBehaviorRaiseHeuristicCommit;
-			resourceBehaviors2[0].commit_behavior = CommitBehavior.CommitBehaviorReturn;
-			resourceBehaviors2[0].commitonephase_behavior = CommitOnePhaseBehavior.CommitOnePhaseBehaviorReturn;
+            ResourceBehavior[] resourceBehaviors2 = new ResourceBehavior[1];
+            resourceBehaviors2[0] = new ResourceBehavior();
+            resourceBehaviors2[0].prepare_behavior = PrepareBehavior.PrepareBehaviorReturnVoteRollback;
+            resourceBehaviors2[0].rollback_behavior = RollbackBehavior.RollbackBehaviorRaiseHeuristicCommit;
+            resourceBehaviors2[0].commit_behavior = CommitBehavior.CommitBehaviorReturn;
+            resourceBehaviors2[0].commitonephase_behavior = CommitOnePhaseBehavior.CommitOnePhaseBehaviorReturn;
 
-			boolean correct = true;
+            boolean correct = true;
 
-			OTS.current().begin();
+            OTS.current().begin();
 
-			service1.oper(resourceBehaviors1);
+            service1.oper(resourceBehaviors1);
 
-			service2.oper(resourceBehaviors2);
+            service2.oper(resourceBehaviors2);
 
-			try
-			{
-				OTS.current().commit(true);
-				System.err.println("Commit succeeded when it shouldn't");
-				correct = false;
-			}
-			catch (HeuristicHazard heuristicHazard)
-			{
-			}
+            try
+            {
+                OTS.current().commit(true);
+                System.err.println("Commit succeeded when it shouldn't");
+                correct = false;
+            }
+            catch (HeuristicHazard heuristicHazard)
+            {
+            }
 
-			correct = correct && service1.is_correct() && service2.is_correct();
-			if (!correct)
-			{
-				System.err.println("service1.is_correct() or service2.is_correct() returned false");
-			}
+            correct = correct && service1.is_correct() && service2.is_correct();
+            if (!correct)
+            {
+                System.err.println("service1.is_correct() or service2.is_correct() returned false");
+            }
 
-			ResourceTrace resourceTrace1 = service1.get_resource_trace(0);
-			ResourceTrace resourceTrace2 = service2.get_resource_trace(0);
+            ResourceTrace resourceTrace1 = service1.get_resource_trace(0);
+            ResourceTrace resourceTrace2 = service2.get_resource_trace(0);
 
-			correct = correct && ((resourceTrace1 == ResourceTrace.ResourceTracePrepareRollbackForget) || (resourceTrace1 == ResourceTrace.ResourceTraceRollback));
-			correct = correct && ((resourceTrace2 == ResourceTrace.ResourceTracePrepareRollbackForget) || (resourceTrace2 == ResourceTrace.ResourceTraceRollback));
+            correct = correct && ((resourceTrace1 == ResourceTrace.ResourceTracePrepareRollbackForget) || (resourceTrace1 == ResourceTrace.ResourceTraceRollback));
+            correct = correct && ((resourceTrace2 == ResourceTrace.ResourceTracePrepareRollbackForget) || (resourceTrace2 == ResourceTrace.ResourceTraceRollback));
 
-			if (correct)
-			{
-				System.out.println("Passed");
-			}
-			else
-			{
-				System.out.println("Failed");
-			}
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Client075.main: " + exception);
-			exception.printStackTrace(System.err);
-			System.out.println("Failed");
-		}
+            if (correct)
+            {
+                System.out.println("Passed");
+            }
+            else
+            {
+                System.out.println("Failed");
+            }
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Client075.main: " + exception);
+            exception.printStackTrace(System.err);
+            System.out.println("Failed");
+        }
 
-		try
-		{
-			OAInterface.shutdownOA();
-			ORBInterface.shutdownORB();
-		}
-		catch (Exception exception)
-		{
-			System.err.println("Client075.main: " + exception);
-			exception.printStackTrace(System.err);
-		}
-	}
+        try
+        {
+            OAInterface.shutdownOA();
+            ORBInterface.shutdownORB();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("Client075.main: " + exception);
+            exception.printStackTrace(System.err);
+        }
+    }
 }

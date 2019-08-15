@@ -24,14 +24,14 @@ public class CompletionStub implements
     private W3CEndpointReference _completionCoordinator = null;
     private String _id;
 
-	public CompletionStub(final String id, final W3CEndpointReference completionCoordinator)
-			throws Exception
-	{
-		_completionCoordinator = completionCoordinator;
-		_id = id;
-	}
+    public CompletionStub(final String id, final W3CEndpointReference completionCoordinator)
+            throws Exception
+    {
+        _completionCoordinator = completionCoordinator;
+        _id = id;
+    }
 
-	public void commit () throws TransactionRolledBackException,
+    public void commit () throws TransactionRolledBackException,
             UnknownTransactionException, SystemException
     {
         final MAP map = AddressingHelper.createNotificationContext(MessageId.getMessageId()) ;
@@ -72,10 +72,10 @@ public class CompletionStub implements
         }
 
         throw new SystemException() ;
-	}
+    }
 
-	public void rollback () throws UnknownTransactionException, SystemException
-	{
+    public void rollback () throws UnknownTransactionException, SystemException
+    {
         final MAP map = AddressingHelper.createNotificationContext(MessageId.getMessageId()) ;
 
         final CompletionStub.RequestCallback callback = new CompletionStub.RequestCallback() ;
@@ -110,7 +110,7 @@ public class CompletionStub implements
         }
 
         throw new SystemException() ;
-	}
+    }
 
     private static class RequestCallback extends CompletionInitiatorCallback
     {

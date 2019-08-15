@@ -54,7 +54,7 @@ public void run ()
          }
 
         for (;;)
-    	{
+        {
              // wait for the reaper thread to queue some TXs for
              // this thread to cancel
 
@@ -80,13 +80,13 @@ public void run ()
             // check for shutdown before we wait again
 
             if (_shutdown)
-    	        return;
+                return;
         }
     }
 
     public void shutdown ()
     {
-	_shutdown = true;
+    _shutdown = true;
     }
 
     private TransactionReaper _theReaper;

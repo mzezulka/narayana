@@ -46,12 +46,12 @@ public class HeuristicMixed implements Status
 
     public static HeuristicMixed instance ()
     {
-	return _instance;
+    return _instance;
     }
 
     public String toString ()
     {
-	return "org.w3c.wscf.twophase.status.HeuristicMixed";
+    return "org.w3c.wscf.twophase.status.HeuristicMixed";
     }
 
     private HeuristicMixed ()

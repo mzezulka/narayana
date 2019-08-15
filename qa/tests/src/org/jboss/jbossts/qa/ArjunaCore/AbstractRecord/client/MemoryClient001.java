@@ -27,60 +27,60 @@ import org.jboss.jbossts.qa.ArjunaCore.Utils.qautil;
 
 public class MemoryClient001 extends BaseTestClient
 {
-	public static void main(String[] args)
-	{
-		MemoryClient001 test = new MemoryClient001(args);
-	}
+    public static void main(String[] args)
+    {
+        MemoryClient001 test = new MemoryClient001(args);
+    }
 
-	private MemoryClient001(String[] args)
-	{
-		super(args);
-	}
+    private MemoryClient001(String[] args)
+    {
+        super(args);
+    }
 
-	public void Test()
-	{
-		try
-		{
-			setNumberOfCalls(3);
-			setNumberOfResources(2);
-			getClientThreshold(1);
+    public void Test()
+    {
+        try
+        {
+            setNumberOfCalls(3);
+            setNumberOfResources(2);
+            getClientThreshold(1);
 
-			BasicAbstractRecord[] mAbstractRecordList = new BasicAbstractRecord[mNumberOfResources];
-			//set up abstract records
-			for (int i = 0; i < mNumberOfResources; i++)
-			{
-				mAbstractRecordList[i] = new BasicAbstractRecord();
-			}
+            BasicAbstractRecord[] mAbstractRecordList = new BasicAbstractRecord[mNumberOfResources];
+            //set up abstract records
+            for (int i = 0; i < mNumberOfResources; i++)
+            {
+                mAbstractRecordList[i] = new BasicAbstractRecord();
+            }
 
-			//create container
-			Service01 mService = new Service01(mNumberOfResources);
+            //create container
+            Service01 mService = new Service01(mNumberOfResources);
 
-			startTx();
-			mService.setupOper();
-			mService.doWork(mMaxIteration);
-			//comit transaction
-			commit();
+            startTx();
+            mService.setupOper();
+            mService.doWork(mMaxIteration);
+            //comit transaction
+            commit();
 
-			//get first memory reading.
-			getFirstReading();
+            //get first memory reading.
+            getFirstReading();
 
-			mService = new Service01(mNumberOfResources);
+            mService = new Service01(mNumberOfResources);
 
-			//start new AtomicAction
-			startTx();
-			mService.setupOper();
-			mService.doWork(mMaxIteration);
-			//abort transaction
-			abort();
+            //start new AtomicAction
+            startTx();
+            mService.setupOper();
+            mService.doWork(mMaxIteration);
+            //abort transaction
+            abort();
 
-			getSecondReading();
+            getSecondReading();
 
-			qaMemoryAssert();
-		}
-		catch (Exception e)
-		{
-			Fail("Error in MemoryClient001.test() :", e);
-		}
-	}
+            qaMemoryAssert();
+        }
+        catch (Exception e)
+        {
+            Fail("Error in MemoryClient001.test() :", e);
+        }
+    }
 
 }

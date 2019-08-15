@@ -51,14 +51,14 @@ public class JacOrbRecoveryInit
 {
     public JacOrbRecoveryInit ()
     {
-	// make a orbix-style manager for the RC IOR creation
-	RcvCoManager theManager = new JacOrbRCManager();
+    // make a orbix-style manager for the RC IOR creation
+    RcvCoManager theManager = new JacOrbRCManager();
 
-	// and register it (which will cause creation of a GenericRecoveryCreator
-	// and it's registration with CosTransactions)
-	GenericRecoveryCreator.register(theManager);
+    // and register it (which will cause creation of a GenericRecoveryCreator
+    // and it's registration with CosTransactions)
+    GenericRecoveryCreator.register(theManager);
 
-	if (jtsLogger.logger.isDebugEnabled()) {
+    if (jtsLogger.logger.isDebugEnabled()) {
         jtsLogger.logger.debug("JacOrb RecoveryCoordinator creator setup");
     }
     }

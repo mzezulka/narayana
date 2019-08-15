@@ -54,13 +54,13 @@ public class StoreManagerProxy {
     private static Map<String, StoreManagerProxy> proxies = Collections.synchronizedMap(new HashMap<String, StoreManagerProxy>());
     private static JMXConnectorServer jmxCServer;
 
-    private MBeanServerConnection mbsc;	// MBean server implementing the object store MBeans
+    private MBeanServerConnection mbsc;    // MBean server implementing the object store MBeans
 
     private JMXConnector jmxc;
-    private RecoveryStoreProxy rsProxy;	// proxy for the recovery store
-    private ParticipantStoreProxy psProxy;	// proxy for the participant store
-    private ObjectName recoveryStoreON;	// object name of the recover store MBean
-    private ObjectName participantStoreON;	// object name of the participant store MBean
+    private RecoveryStoreProxy rsProxy;    // proxy for the recovery store
+    private ParticipantStoreProxy psProxy;    // proxy for the participant store
+    private ObjectName recoveryStoreON;    // object name of the recover store MBean
+    private ObjectName participantStoreON;    // object name of the participant store MBean
     private NotificationListener recoveryListener = null;
     private NotificationListener participantListener = null;
 

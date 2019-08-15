@@ -75,7 +75,7 @@ public class TransactionManagerDelegate extends BaseTransactionManagerDelegate i
         // see JBAS-5081, JBTM-371 and http://www.jboss.com/index.html?module=bb&op=viewtopic&t=132128
 
         try
-    	{
+        {
             switch(getStatus())
             {
                 case Status.STATUS_MARKED_ROLLBACK:
@@ -104,14 +104,14 @@ public class TransactionManagerDelegate extends BaseTransactionManagerDelegate i
                 default:
                     break;
             }
-    	}
-    	catch (final SystemException se)
-    	{
-    		RollbackException rollbackException = new RollbackException(
+        }
+        catch (final SystemException se)
+        {
+            RollbackException rollbackException = new RollbackException(
                     jbossatxLogger.i18NLogger.get_jts_TransactionManagerDelegate_getTimeLeftBeforeTransactionTimeout_2()) ;
             rollbackException.initCause(se);
             throw rollbackException;
-    	}
+        }
         return -1 ;
     }
 

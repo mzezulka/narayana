@@ -51,19 +51,19 @@ public class ActivityHierarchyImple implements ActivityHierarchy
 
     public ActivityHierarchyImple (ActivityImple current)
     {
-	_hierarchy = new Stack();
+    _hierarchy = new Stack();
 
-	if (current != null)
-	{
-	    ActivityImple[] hierarchy = current.hierarchy();
+    if (current != null)
+    {
+        ActivityImple[] hierarchy = current.hierarchy();
 
-	    for (int i = 0; i < hierarchy.length; i++)
-		_hierarchy.push(new ActivityHandleImple(hierarchy[i]));
+        for (int i = 0; i < hierarchy.length; i++)
+        _hierarchy.push(new ActivityHandleImple(hierarchy[i]));
 
-	    _valid = true;
-	}
-	else
-	    _valid = false;
+        _valid = true;
+    }
+    else
+        _valid = false;
     }
 
     /**
@@ -72,7 +72,7 @@ public class ActivityHierarchyImple implements ActivityHierarchy
 
     public int size ()
     {
-	return _hierarchy.size();
+    return _hierarchy.size();
     }
 
     /**
@@ -82,7 +82,7 @@ public class ActivityHierarchyImple implements ActivityHierarchy
 
     public boolean valid ()
     {
-	return _valid;
+    return _valid;
     }
 
     /**
@@ -94,14 +94,14 @@ public class ActivityHierarchyImple implements ActivityHierarchy
 
     public ActivityHandle activity (int index) throws IndexOutOfBoundsException
     {
-	try
-	{
-	    return (ActivityHandle) _hierarchy.elementAt(index);
-	}
-	catch (ArrayIndexOutOfBoundsException ex)
-	{
-	    throw new IndexOutOfBoundsException();
-	}
+    try
+    {
+        return (ActivityHandle) _hierarchy.elementAt(index);
+    }
+    catch (ArrayIndexOutOfBoundsException ex)
+    {
+        throw new IndexOutOfBoundsException();
+    }
     }
 
     /**
@@ -110,14 +110,14 @@ public class ActivityHierarchyImple implements ActivityHierarchy
 
     public ActivityHandle current ()
     {
-	try
-	{
-	    return (ActivityHandle) _hierarchy.peek();
-	}
-	catch (Exception ex)
-	{
-	    return null;
-	}
+    try
+    {
+        return (ActivityHandle) _hierarchy.peek();
+    }
+    catch (Exception ex)
+    {
+        return null;
+    }
     }
 
     /**
@@ -130,7 +130,7 @@ public class ActivityHierarchyImple implements ActivityHierarchy
 
     public ActivityHierarchy copy ()
     {
-	return new ActivityHierarchyImple(this);
+    return new ActivityHierarchyImple(this);
     }
 
     /**
@@ -141,35 +141,35 @@ public class ActivityHierarchyImple implements ActivityHierarchy
 
     public boolean equals (Object obj)
     {
-	if (obj != null)
-	{
-	    if (obj == this)
-		return true;
-	    else
-	    {
-		if (obj instanceof ActivityHierarchyImple)
-		{
-		    ActivityHierarchyImple compare = (ActivityHierarchyImple) obj;
+    if (obj != null)
+    {
+        if (obj == this)
+        return true;
+        else
+        {
+        if (obj instanceof ActivityHierarchyImple)
+        {
+            ActivityHierarchyImple compare = (ActivityHierarchyImple) obj;
 
-		    if (_hierarchy.size() == compare._hierarchy.size())
-		    {
-			for (int i = 0; i < _hierarchy.size(); i++)
-			{
-			    if (!_hierarchy.elementAt(i).equals(compare._hierarchy.elementAt(i)))
-			    {
-				return false;
-			    }
-			}
+            if (_hierarchy.size() == compare._hierarchy.size())
+            {
+            for (int i = 0; i < _hierarchy.size(); i++)
+            {
+                if (!_hierarchy.elementAt(i).equals(compare._hierarchy.elementAt(i)))
+                {
+                return false;
+                }
+            }
 
-			return true;
-		    }
-		}
-		else
-		    return true;
-	    }
-	}
+            return true;
+            }
+        }
+        else
+            return true;
+        }
+    }
 
-	return false;
+    return false;
     }
 
     /**
@@ -181,49 +181,49 @@ public class ActivityHierarchyImple implements ActivityHierarchy
 
     public int hashCode ()
     {
-	return _hierarchy.hashCode();
+    return _hierarchy.hashCode();
     }
 
     public String toString ()
     {
-	String toReturn = "Activity context:";
+    String toReturn = "Activity context:";
 
-	if ((_hierarchy == null) || (_hierarchy.size() == 0))
-	    toReturn += " null";
-	else
-	{
-	    for (int i = 0; i < _hierarchy.size(); i++)
-		toReturn += " "+_hierarchy.elementAt(i);
-	}
+    if ((_hierarchy == null) || (_hierarchy.size() == 0))
+        toReturn += " null";
+    else
+    {
+        for (int i = 0; i < _hierarchy.size(); i++)
+        toReturn += " "+_hierarchy.elementAt(i);
+    }
 
-	return toReturn;
+    return toReturn;
     }
 
     protected ActivityHierarchyImple (ActivityHierarchyImple toCopy)
     {
-	_hierarchy = null;
-	_valid = false;
+    _hierarchy = null;
+    _valid = false;
 
-	if (toCopy != null)
-	{
-	    int copySize = toCopy._hierarchy.size();
+    if (toCopy != null)
+    {
+        int copySize = toCopy._hierarchy.size();
 
-	    if (copySize > 0)
-	    {
-		_hierarchy = new Stack();
+        if (copySize > 0)
+        {
+        _hierarchy = new Stack();
 
-		for (int i = 0; i < copySize; i++)
-		{
-		    /*
-		     * Do we want to create copies of the elements?
-		     */
+        for (int i = 0; i < copySize; i++)
+        {
+            /*
+             * Do we want to create copies of the elements?
+             */
 
-		    _hierarchy.push(toCopy._hierarchy.elementAt(i));
-		}
+            _hierarchy.push(toCopy._hierarchy.elementAt(i));
+        }
 
-		_valid = true;
-	    }
-	}
+        _valid = true;
+        }
+    }
     }
 
     private Stack   _hierarchy;

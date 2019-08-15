@@ -94,13 +94,13 @@ public class UserActivityImple implements UserActivity
 
     public void start (String serviceType) throws WrongStateException, SystemException
     {
-	try
-	{
-	    start(serviceType, getTimeout());
-	}
-	catch (InvalidTimeoutException ex)
-	{
-	}
+    try
+    {
+        start(serviceType, getTimeout());
+    }
+    catch (InvalidTimeoutException ex)
+    {
+    }
     }
 
     /**
@@ -250,9 +250,9 @@ public class UserActivityImple implements UserActivity
         }
 
         /*
-	if (currentActivity.parent() != null)
-	    throw new ActiveChildException();
-	*/
+    if (currentActivity.parent() != null)
+        throw new ActiveChildException();
+    */
 
         Outcome res = null;
         String serviceType = currentActivity.serviceType();
@@ -296,12 +296,12 @@ public class UserActivityImple implements UserActivity
 
     public void setCompletionStatus (CompletionStatus endStatus) throws NoActivityException, WrongStateException, SystemException
     {
-	ActivityImple curr = current();
+    ActivityImple curr = current();
 
-	if (curr == null)
-	    throw new NoActivityException();
+    if (curr == null)
+        throw new NoActivityException();
 
-	curr.setCompletionStatus(endStatus);
+    curr.setCompletionStatus(endStatus);
     }
 
     /**
@@ -316,12 +316,12 @@ public class UserActivityImple implements UserActivity
 
     public CompletionStatus getCompletionStatus () throws NoActivityException, SystemException
     {
-	ActivityImple curr = current();
+    ActivityImple curr = current();
 
-	if (curr == null)
-	    throw new NoActivityException();
-	else
-	    return curr.getCompletionStatus();
+    if (curr == null)
+        throw new NoActivityException();
+    else
+        return curr.getCompletionStatus();
     }
 
     /**
@@ -335,13 +335,13 @@ public class UserActivityImple implements UserActivity
 
     public int getTimeout () throws SystemException
     {
-	Integer t = (Integer) _timeouts.get();
-	int val = _defaultTimeout;
+    Integer t = (Integer) _timeouts.get();
+    int val = _defaultTimeout;
 
-	if (t != null)
-	    val = t.intValue();
+    if (t != null)
+        val = t.intValue();
 
-	return val;
+    return val;
     }
 
     /**
@@ -361,10 +361,10 @@ public class UserActivityImple implements UserActivity
 
     public void setTimeout (int timeout) throws InvalidTimeoutException, SystemException
     {
-	if (timeout < 0)
-	    throw new InvalidTimeoutException();
+    if (timeout < 0)
+        throw new InvalidTimeoutException();
 
-	_timeouts.set(new Integer(timeout));
+    _timeouts.set(new Integer(timeout));
     }
 
     /**
@@ -379,12 +379,12 @@ public class UserActivityImple implements UserActivity
 
     public com.arjuna.mw.wsas.status.Status status () throws SystemException
     {
-	ActivityImple curr = current();
+    ActivityImple curr = current();
 
-	if (curr == null)
-	    return NoActivity.instance();
-	else
-	    return curr.status();
+    if (curr == null)
+        return NoActivity.instance();
+    else
+        return curr.status();
     }
 
     /**
@@ -400,22 +400,22 @@ public class UserActivityImple implements UserActivity
 
     public String activityName () throws NoActivityException, SystemException
     {
-	ActivityImple curr = current();
+    ActivityImple curr = current();
 
-	if (curr == null)
-	    throw new NoActivityException();  // or return null?
-	else
-	    return curr.activityName();
+    if (curr == null)
+        throw new NoActivityException();  // or return null?
+    else
+        return curr.activityName();
     }
 
     public GlobalId activityId () throws NoActivityException, SystemException
     {
-	ActivityImple curr = current();
+    ActivityImple curr = current();
 
-	if (curr == null)
-	    throw new NoActivityException();  // or return null?
-	else
-	    return curr.getGlobalId();
+    if (curr == null)
+        throw new NoActivityException();  // or return null?
+    else
+        return curr.getGlobalId();
     }
 
     /**
@@ -510,7 +510,7 @@ public class UserActivityImple implements UserActivity
         HLS hls = HLSManager.getHighLevelService(serviceType);
 
         if (hls != null) {
-            try	{
+            try    {
                 hls.resumed();
             } catch (SystemException ex) {
                 wsasLogger.i18NLogger.warn_UserActivityImple_5(ex);
@@ -520,12 +520,12 @@ public class UserActivityImple implements UserActivity
 
     public ActivityHierarchy currentActivity () throws SystemException
     {
-	ActivityImple curr = current();
+    ActivityImple curr = current();
 
-	if (curr != null)
-	    return new ActivityHierarchyImple(curr);
-	else
-	    return null;
+    if (curr != null)
+        return new ActivityHierarchyImple(curr);
+    else
+        return null;
     }
 
     public String serviceType() throws NoActivityException, SystemException {
@@ -538,77 +538,77 @@ public class UserActivityImple implements UserActivity
 
     public final ActivityImple current ()
     {
-	Stack hier = (Stack) _threadAxData.get();
-	ActivityImple currentActivity = null;
+    Stack hier = (Stack) _threadAxData.get();
+    ActivityImple currentActivity = null;
 
-	if (hier != null)
-	{
-	    try
-	    {
-		currentActivity = (ActivityImple) hier.peek();
-	    }
-	    catch (EmptyStackException ex)
-	    {
-	    }
-	}
+    if (hier != null)
+    {
+        try
+        {
+        currentActivity = (ActivityImple) hier.peek();
+        }
+        catch (EmptyStackException ex)
+        {
+        }
+    }
 
-	return currentActivity;
+    return currentActivity;
     }
 
     private final void push (ActivityImple currentActivity)
     {
-	Stack hier = (Stack) _threadAxData.get();
+    Stack hier = (Stack) _threadAxData.get();
 
-	if (hier == null)
-	{
-	    hier = new Stack();
+    if (hier == null)
+    {
+        hier = new Stack();
 
-	    _threadAxData.set(hier);
-	}
+        _threadAxData.set(hier);
+    }
 
-	hier.push(currentActivity);
+    hier.push(currentActivity);
     }
 
     private final ActivityImple pop ()
     {
-	Stack hier = (Stack) _threadAxData.get();
-	ActivityImple currentActivity = null;
+    Stack hier = (Stack) _threadAxData.get();
+    ActivityImple currentActivity = null;
 
-	if (hier != null)
-	{
-	    try
-	    {
-		currentActivity = (ActivityImple) hier.pop();
+    if (hier != null)
+    {
+        try
+        {
+        currentActivity = (ActivityImple) hier.pop();
 
-		if (hier.size() == 0)
-		    _threadAxData.set(null);
-	    }
-	    catch (EmptyStackException ex)
-	    {
-	    }
-	}
+        if (hier.size() == 0)
+            _threadAxData.set(null);
+        }
+        catch (EmptyStackException ex)
+        {
+        }
+    }
 
-	return currentActivity;
+    return currentActivity;
     }
 
     private final ActivityImple purge ()
     {
-	Stack hier = (Stack) _threadAxData.get();
-	ActivityImple currentActivity = null;
+    Stack hier = (Stack) _threadAxData.get();
+    ActivityImple currentActivity = null;
 
-	if (hier != null)
-	{
-	    _threadAxData.set(null) ;
-	    try
-	    {
-		currentActivity = (ActivityImple) hier.peek();
-	    }
-	    catch (EmptyStackException ex)
-	    {
-	    }
-	}
+    if (hier != null)
+    {
+        _threadAxData.set(null) ;
+        try
+        {
+        currentActivity = (ActivityImple) hier.peek();
+        }
+        catch (EmptyStackException ex)
+        {
+        }
+    }
 
-	return currentActivity;
+    return currentActivity;
     }
 
     private static ThreadLocal _threadAxData = new ThreadLocal() ;

@@ -30,81 +30,81 @@ import org.jboss.jbossts.qa.Utils.ServerIORStore;
 
 public class Client001a extends BaseTestClient
 {
-	public static void main(String[] args)
-	{
-		@SuppressWarnings("unused")
+    public static void main(String[] args)
+    {
+        @SuppressWarnings("unused")
         Client001a test = new Client001a(args);
-	}
+    }
 
-	private Client001a(String[] args)
-	{
-		super(args);
-	}
+    private Client001a(String[] args)
+    {
+        super(args);
+    }
 
-	public void Test()
-	{
-		try
-		{
-			setNumberOfCalls(3);
-			setNumberOfResources(2);
-			setUniquePrefix(1);
+    public void Test()
+    {
+        try
+        {
+            setNumberOfCalls(3);
+            setNumberOfResources(2);
+            setUniquePrefix(1);
 
-			String txId = null;
+            String txId = null;
 
-			try
-			{
-				/*
-				  for(int i = 0; i < mNumberOfResources; i++)
-				  {
-					  String s = ServerIORStore.loadIOR(getResourceName("resource_" + i));
-					  ServerIORStore.removeIOR(getResourceName("resource_"+i));
-					  if(s != null && !s.equals("restored"))
-					  {
-						  Debug("Error checking resource " + i + " value  = " + s);
-						  mCorrect = false;
-					  }
-				  }
-		  */
+            try
+            {
+                /*
+                  for(int i = 0; i < mNumberOfResources; i++)
+                  {
+                      String s = ServerIORStore.loadIOR(getResourceName("resource_" + i));
+                      ServerIORStore.removeIOR(getResourceName("resource_"+i));
+                      if(s != null && !s.equals("restored"))
+                      {
+                          Debug("Error checking resource " + i + " value  = " + s);
+                          mCorrect = false;
+                      }
+                  }
+          */
 
-				txId = ServerIORStore.loadIOR("CrashAbstractRecord");
-			}
-			catch (Exception e)
-			{
-				Fail("Exception whilst checking resource", e);
+                txId = ServerIORStore.loadIOR("CrashAbstractRecord");
+            }
+            catch (Exception e)
+            {
+                Fail("Exception whilst checking resource", e);
 
-				mCorrect = false;
-			}
+                mCorrect = false;
+            }
 
-			if (mCorrect)
-			{
-				RecoveryTransaction tx = new RecoveryTransaction(new Uid(txId));
-				BasicAbstractRecord bar = new BasicAbstractRecord();
+            if (mCorrect)
+            {
+                RecoveryTransaction tx = new RecoveryTransaction(new Uid(txId));
+                BasicAbstractRecord bar = new BasicAbstractRecord();
 
-				tx.doCommit();
+                tx.doCommit();
 
-				if (bar.getValue() == mMaxIteration * mNumberOfResources)
-				{
-					tx = new RecoveryTransaction(new Uid(txId));
+                if (bar.getValue() == mMaxIteration * mNumberOfResources)
+                {
+                    tx = new RecoveryTransaction(new Uid(txId));
 
-					if (tx.activate())  // should generate a warning message
-					{
-						Debug("Error transaction log is still available!");
+                    if (tx.activate())  // should generate a warning message
+                    {
+                        Debug("Error transaction log is still available!");
 
-						mCorrect = false;
-					}
-				}
-				else
-				{
-					Debug("Error restored state is " + bar.getValue());
-				}
-			}
+                        mCorrect = false;
+                    }
+                }
+                else
+                {
+                    Debug("Error restored state is " + bar.getValue());
+                }
+            }
 
-			qaAssert(mCorrect);
-		}
-		catch (Exception e)
-		{
-			Fail("Error in Client001a.test() :", e);
-		}
-	}
+            qaAssert(mCorrect);
+        }
+        catch (Exception e)
+        {
+            Fail("Error in Client001a.test() :", e);
+        }
+    }
 
 }

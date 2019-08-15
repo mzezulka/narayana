@@ -34,13 +34,13 @@ public class TestBase
 {
     @Before
     public void setUp()
-	{
+    {
         emptyObjectStore();
-	}
+    }
 
-	@After
+    @After
     public void tearDown()
-	{
+    {
         emptyObjectStore();
     }
 

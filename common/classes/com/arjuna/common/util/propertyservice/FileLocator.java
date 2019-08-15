@@ -155,7 +155,7 @@ class FileLocator
     /*
     * Check the file separator to see if we're on a Windows platform.
     *
-    * @return	boolean True if the platform is Windows, false otherwise.
+    * @return    boolean True if the platform is Windows, false otherwise.
     */
     private static boolean platformIsWindows()
     {
