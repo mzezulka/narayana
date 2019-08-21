@@ -1318,6 +1318,8 @@ public class BasicAction extends StateManager {
             }
 
             return actionStatus;
+        } finally {
+            TracingUtils.finishActiveSpan();
         }
     }
 
@@ -1430,7 +1432,7 @@ public class BasicAction extends StateManager {
         }
 
         TracingUtils.log("this is the place where we want to close the whole transaction");
-        TracingUtils.finishScope(get_uid().toString());
+        TracingUtils.finishRootScope(get_uid().toString());
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.tracef("BasicAction::End() result for action-id (%s) is (%s) node id: (%s)", get_uid(),
                     TwoPhaseOutcome.stringForm(heuristicDecision),
@@ -1571,6 +1573,8 @@ public class BasicAction extends StateManager {
             }
 
             return actionStatus;
+        } finally {
+            TracingUtils.finishActiveSpan();
         }
     }
 
@@ -1804,6 +1808,8 @@ public class BasicAction extends StateManager {
                 }
 
             }
+        } finally {
+            TracingUtils.finishActiveSpan();
         }
     }
 
@@ -1875,6 +1881,8 @@ public class BasicAction extends StateManager {
                     TxStats.getInstance().incrementResourceRollbacks();
                 TxStats.getInstance().incrementAbortedTransactions();
             }
+        } finally {
+            TracingUtils.finishActiveSpan();
         }
     }
 
@@ -2180,6 +2188,8 @@ public class BasicAction extends StateManager {
                 return TwoPhaseOutcome.PREPARE_READONLY;
             else
                 return TwoPhaseOutcome.PREPARE_OK;
+        } finally {
+            TracingUtils.finishActiveSpan();
         }
     }
 

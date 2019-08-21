@@ -15,8 +15,10 @@ import io.opentracing.tag.Tags;
 /**
  * Create a new span and activate it under new active scope.
  * <pre>
- * <code>try (Scope _ignored = new ScopeBuilder(SpanName.TX_BEGIN).start()) {
- *     // scope of the _ignored
+ * <code>try (Scope s = new ScopeBuilder(SpanName.TX_BEGIN).start()) {
+ *     // this is where 's' is active
+ * } finally {
+ *     TracingUtils.finishActiveSpan();
  * }
  * </code>
  * </pre>
@@ -27,7 +29,7 @@ public final class ScopeBuilder {
     private static final Map<String, Span> TX_UID_TO_SPAN_MAP = new HashMap<>();
 
     /**
-     * @param name   name of the span which will be activated in the scope
+     * @param name name of the span which will be activated in the scope
      */
     public ScopeBuilder(SpanName name) {
         this.spanBldr = prepareSpan(name);
@@ -53,14 +55,9 @@ public final class ScopeBuilder {
         return this;
     }
 
-//    public Scope start() {
-//        return getTracer().scopeManager().activate(spanBldr.withTag(Tags.COMPONENT, "narayana").start(), true);
-//    }
-
     public Scope start(String txUid) {
         spanBldr.asChildOf(TX_UID_TO_SPAN_MAP.get(txUid));
-        Span span = spanBldr.withTag(Tags.COMPONENT, "narayana").start();
-        return getTracer().scopeManager().activate(span, true);
+        return getTracer().scopeManager().activate(spanBldr.withTag(Tags.COMPONENT, "narayana").start());
     }
 
     public static void finish(String txUid) {

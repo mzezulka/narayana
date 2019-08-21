@@ -77,6 +77,7 @@ import com.arjuna.common.internal.util.ClassloadingUtility;
 import io.narayana.tracing.ScopeBuilder;
 import io.narayana.tracing.SpanName;
 import io.narayana.tracing.TagName;
+import io.narayana.tracing.TracingUtils;
 import io.opentracing.Scope;
 
 /**
@@ -259,6 +260,8 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
                 removeConnection();
 
             return TwoPhaseOutcome.PREPARE_NOTOK;
+        } finally {
+            TracingUtils.finishActiveSpan();
         }
     }
 
@@ -496,6 +499,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
                     return TwoPhaseOutcome.FINISH_ERROR;
                 } finally {
                     removeConnection();
+                    TracingUtils.finishActiveSpan();
                 }
             } else {
                 jtaLogger.i18NLogger.warn_resources_arjunacore_noresource(XAHelper.xidToString(_tranID));

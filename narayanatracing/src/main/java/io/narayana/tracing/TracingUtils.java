@@ -46,8 +46,12 @@ public class TracingUtils {
         activeSpan().ifPresent(s -> s.log(Collections.singletonMap(fld, value)));
     }
 
-    public static void finishScope(String txUid) {
+    public static void finishRootScope(String txUid) {
         ScopeBuilder.finish(txUid);
+    }
+
+    public static void finishActiveSpan() {
+        activeSpan().ifPresent(s -> s.finish());
     }
 
     private static Optional<Span> activeSpan() {
