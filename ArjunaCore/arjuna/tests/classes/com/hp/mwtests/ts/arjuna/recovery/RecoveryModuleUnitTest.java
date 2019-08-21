@@ -24,11 +24,9 @@ import org.junit.Test;
 
 import com.arjuna.ats.internal.arjuna.recovery.AtomicActionRecoveryModule;
 
-public class RecoveryModuleUnitTest
-{
+public class RecoveryModuleUnitTest {
     @Test
-    public void testAA () throws Exception
-    {
+    public void testAA() throws Exception {
         AtomicActionRecoveryModule aarm = new AtomicActionRecoveryModule();
 
         aarm.periodicWorkFirstPass();

@@ -34,11 +34,9 @@ import com.arjuna.ats.arjuna.state.OutputObjectState;
 import com.arjuna.ats.internal.arjuna.abstractrecords.RecoveryRecord;
 import com.hp.mwtests.ts.arjuna.resources.ExtendedObject;
 
-public class RecoveryRecordUnitTest
-{
+public class RecoveryRecordUnitTest {
     @Test
-    public void test ()
-    {
+    public void test() {
         RecoveryRecord cr = new RecoveryRecord(new OutputObjectState(), new ExtendedObject());
 
         assertFalse(cr.propagateOnAbort());

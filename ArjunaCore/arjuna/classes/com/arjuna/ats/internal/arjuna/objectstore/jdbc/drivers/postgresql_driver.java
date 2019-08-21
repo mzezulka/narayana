@@ -39,8 +39,7 @@ public class postgresql_driver extends JDBCImple_driver {
     }
 
     @Override
-    protected void checkDropTableException(Connection connection,
-            SQLException ex) throws SQLException {
+    protected void checkDropTableException(Connection connection, SQLException ex) throws SQLException {
         if (!ex.getSQLState().equals("42P01")) {
             throw ex;
         } else {

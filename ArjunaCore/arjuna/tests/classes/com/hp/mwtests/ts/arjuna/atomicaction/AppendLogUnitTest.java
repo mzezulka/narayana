@@ -24,11 +24,9 @@ import org.junit.Test;
 
 import com.arjuna.ats.internal.arjuna.coordinator.AppendLogTransaction;
 
-public class AppendLogUnitTest
-{
+public class AppendLogUnitTest {
     @Test
-    public void test() throws Exception
-    {
+    public void test() throws Exception {
         AppendLogTransaction alog1 = new AppendLogTransaction();
         AppendLogTransaction alog2 = new AppendLogTransaction();
 

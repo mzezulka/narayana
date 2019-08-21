@@ -13,7 +13,7 @@ public enum SpanName {
      */
     TX_BEGIN("Transaction start"),
 
-    RESOURCE_ENLISTMENT("Enlistment of resource"),
+    RESOURCE_ENLISTMENT("Resource enlistment"),
 
     GLOBAL_PRE_2PC("Pre 2PC"),
     GLOBAL_BEGIN("TX - begin"),

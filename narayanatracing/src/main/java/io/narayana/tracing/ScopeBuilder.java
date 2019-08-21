@@ -1,25 +1,30 @@
 package io.narayana.tracing;
 
+import static io.narayana.tracing.TracingUtils.getTracer;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import io.opentracing.Scope;
+import io.opentracing.Span;
 import io.opentracing.Tracer.SpanBuilder;
 import io.opentracing.tag.Tag;
 import io.opentracing.tag.Tags;
 
-import static io.narayana.tracing.TracingUtils.getTracer;
-
 /**
  * Create a new span and activate it under new active scope.
- *
- *
- * Note: it is important to call the Scope.close() method (Scope implements
- * java.io.Closeable, so it is highly recommended to use the try-with-resources
- * idiom whenever possible)
+ * <pre>
+ * <code>try (Scope _ignored = new ScopeBuilder(SpanName.TX_BEGIN).start()) {
+ *     // scope of the _ignored
+ * }
+ * </code>
+ * </pre>
  */
 public final class ScopeBuilder {
 
     private SpanBuilder spanBldr;
+    private static final Map<String, Span> TX_UID_TO_SPAN_MAP = new HashMap<>();
 
     /**
      * @param name   name of the span which will be activated in the scope
@@ -28,9 +33,6 @@ public final class ScopeBuilder {
         this.spanBldr = prepareSpan(name);
     }
 
-    /**
-     * Construct a span with a special Narayana-specific component tag "narayana"
-     */
     private static SpanBuilder prepareSpan(SpanName name) {
         Objects.requireNonNull(name, "Name of the span cannot be null");
         return getTracer().buildSpan(name.toString());
@@ -51,11 +53,23 @@ public final class ScopeBuilder {
         return this;
     }
 
-    public Scope start() {
-        return getTracer().scopeManager().activate(spanBldr.withTag(Tags.COMPONENT, "narayana").start(), true);
+//    public Scope start() {
+//        return getTracer().scopeManager().activate(spanBldr.withTag(Tags.COMPONENT, "narayana").start(), true);
+//    }
+
+    public Scope start(String txUid) {
+        spanBldr.asChildOf(TX_UID_TO_SPAN_MAP.get(txUid));
+        Span span = spanBldr.withTag(Tags.COMPONENT, "narayana").start();
+        return getTracer().scopeManager().activate(span, true);
     }
 
-    public Scope startButDontFinish() {
-        return getTracer().scopeManager().activate(spanBldr.withTag(Tags.COMPONENT, "narayana").start());
+    public static void finish(String txUid) {
+        TX_UID_TO_SPAN_MAP.get(txUid).finish();
+    }
+
+    public Scope startWithoutSpanFinish(String txUid) {
+        Span span = spanBldr.withTag(Tags.COMPONENT, "narayana").start();
+        TX_UID_TO_SPAN_MAP.put(txUid, span);
+        return getTracer().scopeManager().activate(span);
     }
 }

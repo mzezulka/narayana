@@ -56,8 +56,7 @@ public class ObjectStoreAPIJMXTest {
     };
 
     @Before
-    public void setUp () throws Exception
-    {
+    public void setUp() throws Exception {
         notified = false;
 
         // create MBeans representing the ObjectStore
@@ -74,8 +73,7 @@ public class ObjectStoreAPIJMXTest {
     }
 
     @After
-    public void tearDown () throws Exception
-    {
+    public void tearDown() throws Exception {
         // Unregister MBeans
         rsb.stop();
         psb.stop();
@@ -93,15 +91,13 @@ public class ObjectStoreAPIJMXTest {
     }
 
     @Test
-    public void testShadowNoFileLockStore () throws Exception
-    {
+    public void testShadowNoFileLockStore() throws Exception {
         final OutputObjectState buff = new OutputObjectState();
         final String tn = "/StateManager/junit";
 
         System.out.println("Testing shadow file store");
 
-        for (int i = 0; i < 10; i++)
-        {
+        for (int i = 0; i < 10; i++) {
             Uid u = new Uid();
 
             pps.write_uncommitted(u, tn, buff);
@@ -129,10 +125,9 @@ public class ObjectStoreAPIJMXTest {
         }
     }
 
-    //@Test
-    //TODO this test only works on an initially empty store
-    public void testIterator () throws Exception
-    {
+    // @Test
+    // TODO this test only works on an initially empty store
+    public void testIterator() throws Exception {
         Uid u1 = new Uid();
         Uid u2 = new Uid();
 

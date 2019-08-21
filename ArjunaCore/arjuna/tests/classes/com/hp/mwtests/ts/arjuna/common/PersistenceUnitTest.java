@@ -27,11 +27,9 @@ import org.junit.Test;
 import com.arjuna.ats.arjuna.common.Uid;
 import com.hp.mwtests.ts.arjuna.resources.BasicObject;
 
-public class PersistenceUnitTest
-{
+public class PersistenceUnitTest {
     @Test
-    public void testSaveRestore()
-    {
+    public void testSaveRestore() {
         final BasicObject obj = new BasicObject();
         final Uid objUid = obj.get_uid();
 

@@ -53,8 +53,9 @@ import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
  * @author Mike Musgrove
  */
 /**
- * @deprecated as of 5.0.5.Final In a subsequent release we will change packages names in order to
- * provide a better separation between public and internal classes.
+ * @deprecated as of 5.0.5.Final In a subsequent release we will change packages
+ *             names in order to provide a better separation between public and
+ *             internal classes.
  */
 @Deprecated // in order to provide a better separation between public and internal classes.
 public class ExposeAllLogsTest {
@@ -62,19 +63,16 @@ public class ExposeAllLogsTest {
     private static final String osMBeanName = "jboss.jta:type=ObjectStore";
 
     @Test
-    public void test1() throws Exception
-    {
+    public void test1() throws Exception {
         test(true);
     }
 
     @Test
-    public void test2() throws Exception
-    {
+    public void test2() throws Exception {
         test(false);
     }
 
-    private void test(boolean exposeAllLogsViaJMX) throws Exception
-    {
+    private void test(boolean exposeAllLogsViaJMX) throws Exception {
         RecoveryStore store = StoreManager.getRecoveryStore();
         Set<Uid> uids;
         Map<Uid, ObjectName> uids2 = new HashMap<Uid, ObjectName>();

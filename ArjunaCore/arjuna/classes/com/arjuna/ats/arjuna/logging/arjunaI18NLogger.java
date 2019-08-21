@@ -23,8 +23,8 @@ package com.arjuna.ats.arjuna.logging;
 import static org.jboss.logging.Logger.Level.ERROR;
 import static org.jboss.logging.Logger.Level.FATAL;
 import static org.jboss.logging.Logger.Level.INFO;
-import static org.jboss.logging.Logger.Level.WARN;
 import static org.jboss.logging.Logger.Level.TRACE;
+import static org.jboss.logging.Logger.Level.WARN;
 import static org.jboss.logging.annotations.Message.Format.MESSAGE_FORMAT;
 
 import org.jboss.logging.annotations.Cause;
@@ -43,10 +43,10 @@ import com.arjuna.ats.arjuna.common.Uid;
 public interface arjunaI18NLogger {
 
     /*
-        Message IDs are unique and non-recyclable.
-        Don't change the purpose of existing messages.
-          (tweak the message text or params for clarification if you like).
-        Allocate new messages by following instructions at the bottom of the file.
+     * Message IDs are unique and non-recyclable. Don't change the purpose of
+     * existing messages. (tweak the message text or params for clarification if you
+     * like). Allocate new messages by following instructions at the bottom of the
+     * file.
      */
 
     @Message(id = 12001, value = "ActivationRecord::set_value() called illegally", format = MESSAGE_FORMAT)
@@ -1124,29 +1124,34 @@ public interface arjunaI18NLogger {
 //    public void warn_objectstore_ShadowingStore_5(String arg0);
 
     /*
-     * NOTE re-used old message id and signature in case we ever need to resurrect the above warning.
+     * NOTE re-used old message id and signature in case we ever need to resurrect
+     * the above warning.
      */
 
     @Message(id = 12280, value = "ShadowingStore::read_state() - openAndLock failed for {0}", format = MESSAGE_FORMAT)
-        @LogMessage(level = WARN)
-        public void warn_objectstore_ShadowingStore_5(String arg0);
+    @LogMessage(level = WARN)
+    public void warn_objectstore_ShadowingStore_5(String arg0);
 
 //    @Message(id = 12281, value = "ShadowingStore.read_state - store invalid!", format = MESSAGE_FORMAT)
 //    @LogMessage(level = WARN)
 //    public void warn_objectstore_ShadowingStore_6();
 
     /*
-         * NOTE re-used old message id and signature in case we ever need to resurrect the above warning.
-         */
+     * NOTE re-used old message id and signature in case we ever need to resurrect
+     * the above warning.
+     */
 
     /*
      * This should not be a warning message!
      * https://issues.jboss.org/browse/JBTM-2593
      *
-        @Message(id = 12281, value = "ShadowingStore::read_state() - no state found for object instance {0}", format = MESSAGE_FORMAT)
-        @LogMessage(level = WARN)
-        public void warn_objectstore_ShadowingStore_6(String arg0);
-        */
+     * @Message(id = 12281, value =
+     * "ShadowingStore::read_state() - no state found for object instance {0}",
+     * format = MESSAGE_FORMAT)
+     *
+     * @LogMessage(level = WARN) public void
+     * warn_objectstore_ShadowingStore_6(String arg0);
+     */
 
     @Message(id = 12282, value = "ShadowingStore::read_state() failed", format = MESSAGE_FORMAT)
     @LogMessage(level = WARN)
@@ -1489,8 +1494,7 @@ public interface arjunaI18NLogger {
 
     @Message(id = 12371, value = "Image size {0} is greater than max allowed {1}", format = MESSAGE_FORMAT)
     @LogMessage(level = WARN)
-    public void warn_objectstore_JDBCImple_over_max_image_size(int imageSize,
-            int maxStateSize);
+    public void warn_objectstore_JDBCImple_over_max_image_size(int imageSize, int maxStateSize);
 
     @Message(id = 12372, value = "The node identifier {0} was too long {1}, aborting initialization", format = MESSAGE_FORMAT)
     @LogMessage(level = FATAL)
@@ -1567,16 +1571,14 @@ public interface arjunaI18NLogger {
     public String init_StoreManager_instantiate_class_failure(String name, String type);
 
     /*
-        Allocate new messages directly above this notice.
-          - id: use the next id number in numeric sequence. Don't reuse ids.
-          The first two digits of the id(XXyyy) denote the module
-            all message in this file should have the same prefix.
-          - value: default (English) version of the log message.
-          - level: according to severity semantics defined at http://docspace.corp.redhat.com/docs/DOC-30217
-          Debug and trace don't get i18n. Everything else MUST be i18n.
-          By convention methods with String return type have prefix get_,
-            all others are log methods and have prefix <level>_
+     * Allocate new messages directly above this notice. - id: use the next id
+     * number in numeric sequence. Don't reuse ids. The first two digits of the
+     * id(XXyyy) denote the module all message in this file should have the same
+     * prefix. - value: default (English) version of the log message. - level:
+     * according to severity semantics defined at
+     * http://docspace.corp.redhat.com/docs/DOC-30217 Debug and trace don't get
+     * i18n. Everything else MUST be i18n. By convention methods with String return
+     * type have prefix get_, all others are log methods and have prefix <level>_
      */
-
 
 }

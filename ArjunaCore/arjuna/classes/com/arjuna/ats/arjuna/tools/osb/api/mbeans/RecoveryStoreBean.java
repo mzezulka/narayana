@@ -43,8 +43,10 @@ public class RecoveryStoreBean extends TxLogBean implements RecoveryStoreBeanMBe
         super(StoreManager.getRecoveryStore());
         rs = (RecoveryStore) getStore();
     }
+
     /**
      * Construct an MBean corresponding to the given store
+     *
      * @param rs the RecoveryStore that is wrapped by this MBean
      */
     public RecoveryStoreBean(RecoveryStore rs) {
@@ -66,13 +68,13 @@ public class RecoveryStoreBean extends TxLogBean implements RecoveryStoreBeanMBe
 
     public ObjectStateWrapper allObjUids(String type, int m) throws ObjectStoreException {
         InputObjectState ios = new InputObjectState();
-        boolean ok = rs.allObjUids (type, ios, m);
+        boolean ok = rs.allObjUids(type, ios, m);
         return new ObjectStateWrapper(ios, ok);
     }
 
     public ObjectStateWrapper allObjUids(String type) throws ObjectStoreException {
         InputObjectState ios = new InputObjectState();
-        boolean ok = rs.allObjUids (type, ios);
+        boolean ok = rs.allObjUids(type, ios);
         return new ObjectStateWrapper(ios, ok);
     }
 
@@ -82,24 +84,24 @@ public class RecoveryStoreBean extends TxLogBean implements RecoveryStoreBeanMBe
         return new ObjectStateWrapper(ios, ok);
     }
 
-    public int currentState (Uid u, String tn) throws ObjectStoreException {
-        return rs.currentState (u, tn);
+    public int currentState(Uid u, String tn) throws ObjectStoreException {
+        return rs.currentState(u, tn);
     }
 
-    public boolean hide_state (Uid u, String tn) throws ObjectStoreException {
-        return rs.hide_state (u, tn);
+    public boolean hide_state(Uid u, String tn) throws ObjectStoreException {
+        return rs.hide_state(u, tn);
     }
 
-    public boolean reveal_state (Uid u, String tn) throws ObjectStoreException {
-        return rs.reveal_state (u, tn);
+    public boolean reveal_state(Uid u, String tn) throws ObjectStoreException {
+        return rs.reveal_state(u, tn);
     }
 
-    public ObjectStateWrapper read_committed (Uid u, String tn) throws ObjectStoreException {
-        InputObjectState ios = rs.read_committed (u, tn);
+    public ObjectStateWrapper read_committed(Uid u, String tn) throws ObjectStoreException {
+        InputObjectState ios = rs.read_committed(u, tn);
         return new ObjectStateWrapper(ios);
     }
 
-    public boolean isType (Uid u, String tn, int st) throws ObjectStoreException {
-        return rs.isType (u, tn, st);
+    public boolean isType(Uid u, String tn, int st) throws ObjectStoreException {
+        return rs.isType(u, tn, st);
     }
 }

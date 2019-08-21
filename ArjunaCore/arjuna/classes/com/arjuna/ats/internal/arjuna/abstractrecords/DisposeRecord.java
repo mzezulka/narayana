@@ -51,161 +51,134 @@ import com.arjuna.ats.arjuna.state.InputObjectState;
 import com.arjuna.ats.arjuna.state.OutputObjectState;
 import com.arjuna.ats.internal.arjuna.common.UidHelper;
 
-public class DisposeRecord extends CadaverRecord
-{
+public class DisposeRecord extends CadaverRecord {
 
-    public DisposeRecord (ParticipantStore participantStore, StateManager sm)
-    {
-    super(null, participantStore, sm);
+    public DisposeRecord(ParticipantStore participantStore, StateManager sm) {
+        super(null, participantStore, sm);
 
-    this.targetParticipantStore = participantStore;
+        this.targetParticipantStore = participantStore;
 
-    if (sm != null)
-    {
-        objectUid = sm.get_uid();
-        typeName = sm.type();
-    }
-    else
-    {
-        objectUid = Uid.nullUid();
-        typeName = null;
-    }
+        if (sm != null) {
+            objectUid = sm.get_uid();
+            typeName = sm.type();
+        } else {
+            objectUid = Uid.nullUid();
+            typeName = null;
+        }
 
-    if (tsLogger.logger.isTraceEnabled()) {
-        tsLogger.logger.trace("DisposeRecord::DisposeRecord(" + participantStore + ", " + objectUid + ")");
-    }
+        if (tsLogger.logger.isTraceEnabled()) {
+            tsLogger.logger.trace("DisposeRecord::DisposeRecord(" + participantStore + ", " + objectUid + ")");
+        }
     }
 
-    public boolean propagateOnAbort ()
-    {
-    return false;
+    public boolean propagateOnAbort() {
+        return false;
     }
 
-    public int typeIs ()
-    {
-    return RecordType.DISPOSE;
+    public int typeIs() {
+        return RecordType.DISPOSE;
     }
 
-    public int nestedAbort ()
-    {
-    if (tsLogger.logger.isTraceEnabled()) {
-        tsLogger.logger.trace("DisposeRecord::nestedAbort() for " + order());
+    public int nestedAbort() {
+        if (tsLogger.logger.isTraceEnabled()) {
+            tsLogger.logger.trace("DisposeRecord::nestedAbort() for " + order());
+        }
+
+        return TwoPhaseOutcome.FINISH_OK;
     }
 
-    return TwoPhaseOutcome.FINISH_OK;
+    public int nestedCommit() {
+        if (tsLogger.logger.isTraceEnabled()) {
+            tsLogger.logger.trace("DisposeRecord::nestedCommit() for " + order());
+        }
+
+        return TwoPhaseOutcome.FINISH_OK;
     }
 
-    public int nestedCommit ()
-    {
-    if (tsLogger.logger.isTraceEnabled()) {
-        tsLogger.logger.trace("DisposeRecord::nestedCommit() for " + order());
+    public int nestedPrepare() {
+        if (tsLogger.logger.isTraceEnabled()) {
+            tsLogger.logger.trace("DisposeRecord::nestedPrepare() for " + order());
+        }
+
+        if ((targetParticipantStore != null) && (objectUid.notEquals(Uid.nullUid())))
+            return TwoPhaseOutcome.PREPARE_OK;
+        else
+            return TwoPhaseOutcome.PREPARE_NOTOK;
     }
 
-    return TwoPhaseOutcome.FINISH_OK;
-    }
+    public int topLevelAbort() {
+        if (tsLogger.logger.isTraceEnabled()) {
+            tsLogger.logger.trace("DisposeRecord::topLevelAbort() for " + order());
+        }
 
-    public int nestedPrepare ()
-    {
-    if (tsLogger.logger.isTraceEnabled()) {
-        tsLogger.logger.trace("DisposeRecord::nestedPrepare() for " + order());
-    }
-
-    if ((targetParticipantStore != null) && (objectUid.notEquals(Uid.nullUid())))
-        return TwoPhaseOutcome.PREPARE_OK;
-    else
-        return TwoPhaseOutcome.PREPARE_NOTOK;
-    }
-
-    public int topLevelAbort ()
-    {
-    if (tsLogger.logger.isTraceEnabled()) {
-        tsLogger.logger.trace("DisposeRecord::topLevelAbort() for " + order());
-    }
-
-    return TwoPhaseOutcome.FINISH_OK;
+        return TwoPhaseOutcome.FINISH_OK;
     }
 
     /**
      * At topLevelCommit we remove the state from the object participantStore.
      */
 
-    public int topLevelCommit ()
-    {
-    if (tsLogger.logger.isTraceEnabled()) {
-        tsLogger.logger.trace("DisposeRecord::topLevelCommit() for " + order());
-    }
+    public int topLevelCommit() {
+        if (tsLogger.logger.isTraceEnabled()) {
+            tsLogger.logger.trace("DisposeRecord::topLevelCommit() for " + order());
+        }
 
-    if ((targetParticipantStore != null) && (objectUid.notEquals(Uid.nullUid())))
-    {
-        try
-        {
-        if (targetParticipantStore.remove_committed(objectUid, typeName))
-        {
-            // only valid if not doing recovery
+        if ((targetParticipantStore != null) && (objectUid.notEquals(Uid.nullUid()))) {
+            try {
+                if (targetParticipantStore.remove_committed(objectUid, typeName)) {
+                    // only valid if not doing recovery
 
-            if (super.objectAddr != null)
-            {
-                StateManagerFriend.destroyed(super.objectAddr);
-            //super.objectAddr.destroyed();
+                    if (super.objectAddr != null) {
+                        StateManagerFriend.destroyed(super.objectAddr);
+                        // super.objectAddr.destroyed();
+                    }
+
+                    return TwoPhaseOutcome.FINISH_OK;
+                }
+            } catch (final Throwable e) {
+                tsLogger.i18NLogger.warn_DisposeRecord_5(e);
             }
+        }
 
-            return TwoPhaseOutcome.FINISH_OK;
-        }
-        }
-        catch (final Throwable e) {
-            tsLogger.i18NLogger.warn_DisposeRecord_5(e);
-        }
+        return TwoPhaseOutcome.FINISH_ERROR;
     }
 
-    return TwoPhaseOutcome.FINISH_ERROR;
-    }
-
-    public int topLevelPrepare ()
-    {
+    public int topLevelPrepare() {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("DisposeRecord::topLevelPrepare() for " + order());
         }
 
-        if ((targetParticipantStore != null) && (objectUid.notEquals(Uid.nullUid())))
-        {
+        if ((targetParticipantStore != null) && (objectUid.notEquals(Uid.nullUid()))) {
             // force PersistenceRecord.save_state to ignore topLevelState:
             shadowForced();
             return TwoPhaseOutcome.PREPARE_OK;
-        }
-        else
+        } else
             return TwoPhaseOutcome.PREPARE_NOTOK;
     }
 
-    public void print (PrintWriter strm)
-    {
-    strm.println("Dispose for:");
-    super.print(strm);
+    public void print(PrintWriter strm) {
+        strm.println("Dispose for:");
+        super.print(strm);
     }
 
-    public boolean doSave ()
-    {
-    return true;
+    public boolean doSave() {
+        return true;
     }
 
-    public boolean save_state (OutputObjectState os, int ot)
-    {
+    public boolean save_state(OutputObjectState os, int ot) {
         boolean res = true;
 
-        if ((targetParticipantStore != null) && (objectUid.notEquals(Uid.nullUid())))
-        {
-            try
-            {
+        if ((targetParticipantStore != null) && (objectUid.notEquals(Uid.nullUid()))) {
+            try {
                 UidHelper.packInto(objectUid, os);
                 os.packString(typeName);
 
                 res = (res && super.save_state(os, ot));
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 tsLogger.i18NLogger.warn_DisposeRecord_2();
                 res = false;
             }
-        }
-        else {
+        } else {
             tsLogger.i18NLogger.warn_DisposeRecord_3();
 
             res = false;
@@ -214,61 +187,50 @@ public class DisposeRecord extends CadaverRecord
         return res;
     }
 
-    public boolean restore_state (InputObjectState os, int ot)
-    {
+    public boolean restore_state(InputObjectState os, int ot) {
         boolean res = true;
 
-        try
-        {
+        try {
             objectUid = UidHelper.unpackFrom(os);
             typeName = os.unpackString();
 
             res = (res && super.restore_state(os, ot));
 
-        }
-        catch (final Exception e)
-        {
+        } catch (final Exception e) {
             res = false;
         }
 
         return res;
     }
 
-    public String type ()
-    {
-    return "/StateManager/AbstractRecord/RecoveryRecord/PersistenceRecord/CadaverRecord/DisposeRecord";
+    public String type() {
+        return "/StateManager/AbstractRecord/RecoveryRecord/PersistenceRecord/CadaverRecord/DisposeRecord";
     }
 
-    public boolean shouldAdd (AbstractRecord a)
-    {
-    return false;
+    public boolean shouldAdd(AbstractRecord a) {
+        return false;
     }
 
-    public boolean shouldMerge (AbstractRecord a)
-    {
-    return false;
+    public boolean shouldMerge(AbstractRecord a) {
+        return false;
     }
 
-    public boolean shouldReplace (AbstractRecord a)
-    {
-    return false;
+    public boolean shouldReplace(AbstractRecord a) {
+        return false;
     }
 
-    public boolean shouldAlter (AbstractRecord a)
-    {
-    return false;
+    public boolean shouldAlter(AbstractRecord a) {
+        return false;
     }
 
-    public DisposeRecord ()
-    {
-    super();
+    public DisposeRecord() {
+        super();
 
-    objectUid = new Uid(Uid.nullUid());
-    typeName = null;
-    targetParticipantStore = null;
+        objectUid = new Uid(Uid.nullUid());
+        typeName = null;
+        targetParticipantStore = null;
     }
 
-    private Uid         objectUid;
-    private String      typeName;
+    private Uid objectUid;
+    private String typeName;
 }
-

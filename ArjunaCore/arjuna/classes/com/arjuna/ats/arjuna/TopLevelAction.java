@@ -44,11 +44,9 @@ import com.arjuna.ats.arjuna.coordinator.ActionType;
  * @since JTS 1.0.
  */
 
-public class TopLevelAction extends AtomicAction
-{
+public class TopLevelAction extends AtomicAction {
 
-    public TopLevelAction()
-    {
+    public TopLevelAction() {
         super(ActionType.TOP_LEVEL);
     }
 

@@ -50,24 +50,19 @@ import com.hp.mwtests.ts.arjuna.resources.BasicRecord;
  * with other tests.
  */
 
-class MyAtomicAction extends AtomicAction
-{
-    public String type ()
-    {
+class MyAtomicAction extends AtomicAction {
+    public String type() {
         return "/StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction/MyAtomicAction";
     }
 }
 
-class StressWorker extends Thread
-{
-    public StressWorker(int iters, int thread)
-    {
+class StressWorker extends Thread {
+    public StressWorker(int iters, int thread) {
         _iters = iters;
         _thread = thread;
     }
 
-    public void run()
-    {
+    public void run() {
         for (int i = 0; i < _iters; i++) {
             try {
                 MyAtomicAction A = new MyAtomicAction();
@@ -77,8 +72,7 @@ class StressWorker extends Thread
                 A.add(new BasicRecord());
 
                 A.commit();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -90,11 +84,9 @@ class StressWorker extends Thread
     private int _thread;
 }
 
-public class LogStressTest
-{
+public class LogStressTest {
     @Test
-    public void test()
-    {
+    public void test() {
         int threads = 10;
         int work = 100;
 
@@ -102,7 +94,7 @@ public class LogStressTest
         arjPropertyManager.getObjectStoreEnvironmentBean().setObjectStoreType(LogStore.class.getName());
 
         // the byteman script will manage this
-        //System.setProperty(Environment.TRANSACTION_LOG_PURGE_TIME, "10000");
+        // System.setProperty(Environment.TRANSACTION_LOG_PURGE_TIME, "10000");
 
         StressWorker[] workers = new StressWorker[threads];
 
@@ -115,8 +107,7 @@ public class LogStressTest
         for (int j = 0; j < threads; j++) {
             try {
                 workers[j].join();
-            }
-            catch (final Exception ex) {
+            } catch (final Exception ex) {
             }
         }
 
@@ -133,8 +124,7 @@ public class LogStressTest
             if (tempUid.equals(Uid.nullUid())) {
                 passed = true;
             }
-        }
-        catch (final Exception ex) {
+        } catch (final Exception ex) {
         }
 
         assertTrue(passed);

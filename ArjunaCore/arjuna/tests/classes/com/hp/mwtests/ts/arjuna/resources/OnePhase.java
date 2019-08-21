@@ -38,8 +38,7 @@ import com.arjuna.ats.arjuna.coordinator.TwoPhaseOutcome;
 import com.arjuna.ats.arjuna.state.InputObjectState;
 import com.arjuna.ats.arjuna.state.OutputObjectState;
 
-public class OnePhase implements OnePhaseResource
-{
+public class OnePhase implements OnePhaseResource {
 
     public static final int PREPARED = 0;
     public static final int COMMITTED = 1;
@@ -49,8 +48,7 @@ public class OnePhase implements OnePhaseResource
      * Return values from TwoPhaseOutcome to indicate success or failure.
      */
 
-    public int commit()
-    {
+    public int commit() {
         if (_status == ROLLEDBACK) {
             return TwoPhaseOutcome.FINISH_ERROR;
         }
@@ -63,8 +61,7 @@ public class OnePhase implements OnePhaseResource
      * Return values from TwoPhaseOutcome to indicate success or failure.
      */
 
-    public int rollback()
-    {
+    public int rollback() {
         if (_status == COMMITTED) {
             return TwoPhaseOutcome.FINISH_ERROR;
         }
@@ -73,16 +70,13 @@ public class OnePhase implements OnePhaseResource
         return TwoPhaseOutcome.FINISH_OK;
     }
 
-    public void pack(OutputObjectState os) throws IOException
-    {
+    public void pack(OutputObjectState os) throws IOException {
     }
 
-    public void unpack(InputObjectState os) throws IOException
-    {
+    public void unpack(InputObjectState os) throws IOException {
     }
 
-    public final int status()
-    {
+    public final int status() {
         return _status;
     }
 

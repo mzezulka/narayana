@@ -38,7 +38,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.arjuna.ats.arjuna.AtomicAction;
 import com.arjuna.ats.arjuna.common.arjPropertyManager;
 import com.arjuna.ats.arjuna.coordinator.listener.ReaperMonitor;
 import com.arjuna.ats.arjuna.logging.tsLogger;
@@ -46,9 +45,6 @@ import com.arjuna.ats.internal.arjuna.coordinator.ReaperElement;
 import com.arjuna.ats.internal.arjuna.coordinator.ReaperElementManager;
 import com.arjuna.ats.internal.arjuna.coordinator.ReaperThread;
 import com.arjuna.ats.internal.arjuna.coordinator.ReaperWorkerThread;
-
-import io.narayana.tracing.TracingUtils;
-import io.opentracing.log.Fields;
 
 /**
  * Class to record transactions with non-zero timeout values, and class to
@@ -559,7 +555,7 @@ public class TransactionReaper {
             while (newCheckTime < oldCheckTime) {
                 if (nextDynamicCheckTime.compareAndSet(oldCheckTime, newCheckTime)) {
                     notifyAll(); // force recalc of next wakeup time, taking into account the newly inserted
-                                    // element(s)
+                                 // element(s)
                 } else {
                     oldCheckTime = nextDynamicCheckTime.get();
                 }

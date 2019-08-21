@@ -49,10 +49,8 @@ import com.arjuna.ats.arjuna.exceptions.ObjectStoreException;
  * @since JTS 2.1.
  */
 
-public class HashedActionStore extends HashedStore
-{
-    public HashedActionStore(ObjectStoreEnvironmentBean objectStoreEnvironmentBean) throws ObjectStoreException
-    {
+public class HashedActionStore extends HashedStore {
+    public HashedActionStore(ObjectStoreEnvironmentBean objectStoreEnvironmentBean) throws ObjectStoreException {
         super(objectStoreEnvironmentBean);
 
         // overrides parents use of isObjectStoreSync

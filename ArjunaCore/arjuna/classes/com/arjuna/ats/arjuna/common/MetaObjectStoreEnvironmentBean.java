@@ -21,15 +21,16 @@
  */
 package com.arjuna.ats.arjuna.common;
 
-import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
+
 /**
- * Implements an ObjectStoreEnvironmentBean instance that propagates all ObjectStoreEnvironmentBean
- * updates to all named instances of ObjectStoreEnvironmentBean. An instance of this class is
- * returned from a call to {@link arjPropertyManager#getObjectStoreEnvironmentBean()}
+ * Implements an ObjectStoreEnvironmentBean instance that propagates all
+ * ObjectStoreEnvironmentBean updates to all named instances of
+ * ObjectStoreEnvironmentBean. An instance of this class is returned from a call
+ * to {@link arjPropertyManager#getObjectStoreEnvironmentBean()}
  */
 public class MetaObjectStoreEnvironmentBean extends ObjectStoreEnvironmentBean {
     private ObjectStoreEnvironmentBean actionStoreEnvironmentBean;

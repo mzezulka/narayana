@@ -121,12 +121,9 @@ import com.arjuna.ats.internal.arjuna.objectstore.LogInstance.TransactionData;
  *
  */
 
-class LogInstance
-{
-    public class TransactionData
-    {
-        TransactionData (final Uid tx, final long off, final LogInstance parent)
-        {
+class LogInstance {
+    public class TransactionData {
+        TransactionData(final Uid tx, final long off, final LogInstance parent) {
             txId = tx;
             offset = off;
             container = parent;
@@ -137,8 +134,7 @@ class LogInstance
         public final LogInstance container;
     }
 
-    public LogInstance(String tn, long size)
-    {
+    public LogInstance(String tn, long size) {
         _logName = new Uid();
         _typeName = tn;
         _frozen = false;
@@ -146,97 +142,80 @@ class LogInstance
     }
 
     /*
-      * Once frozen we will not use the log again except for recovery and
-      * pruning.
-      *
-      * We could consider another algorithm that reuses the log once it has
-      * dropped below a threshold size. Probably not worth it at the moment.
-      */
+     * Once frozen we will not use the log again except for recovery and pruning.
+     *
+     * We could consider another algorithm that reuses the log once it has dropped
+     * below a threshold size. Probably not worth it at the moment.
+     */
 
-    public final boolean isFrozen()
-    {
+    public final boolean isFrozen() {
         return _frozen;
     }
 
-    public final void freeze() // one way operation.
-    {
+    // one way operation
+    public final void freeze() {
         _frozen = true;
     }
 
-    public final int numberOfUsers()
-    {
+    public final int numberOfUsers() {
         return _transactions.size();
     }
 
-    public final Uid getName()
-    {
+    public final Uid getName() {
         return _logName;
     }
 
-    public final String getTypeName()
-    {
+    public final String getTypeName() {
         return _typeName;
     }
 
-    public final InputObjectState allObjUids () throws ObjectStoreException
-    {
+    public final InputObjectState allObjUids() throws ObjectStoreException {
         OutputObjectState state = new OutputObjectState();
         Iterator<Uid> iter = _ids.keySet().iterator();
 
-        try
-        {
-            while (iter.hasNext())
-            {
+        try {
+            while (iter.hasNext()) {
                 UidHelper.packInto(iter.next(), state);
             }
 
             // don't forget to null terminate
 
             UidHelper.packInto(Uid.nullUid(), state);
-        }
-        catch (final IOException ex)
-        {
+        } catch (final IOException ex) {
             throw new ObjectStoreException(ex);
         }
 
         return new InputObjectState(state);
     }
 
-    public final boolean present(Uid id)
-    {
+    public final boolean present(Uid id) {
         return _ids.containsKey(id);
     }
 
-    public final TransactionData getTxId (Uid txId)
-    {
+    public final TransactionData getTxId(Uid txId) {
         return new TransactionData(txId, _used, this);
     }
 
-    public final TransactionData addTxId (Uid txId, long size)
-    {
+    public final TransactionData addTxId(Uid txId, long size) {
         TransactionData td = new TransactionData(txId, _used, this);
 
-        _transactions.add(td);  // allow multiple entries in the same log
+        _transactions.add(td); // allow multiple entries in the same log
         _ids.put(txId, txId);
         _used += size;
 
         return td;
     }
 
-    public final long remaining()
-    {
+    public final long remaining() {
         return _totalSize - _used;
     }
 
-    public final void resize (long size)
-    {
+    public final void resize(long size) {
         _totalSize = size;
     }
 
-    public String toString()
-    {
-        return "LogInstance < " + _logName + ", " + _typeName + ", "
-                + numberOfUsers() + ", " + remaining() + " >";
+    public String toString() {
+        return "LogInstance < " + _logName + ", " + _typeName + ", " + numberOfUsers() + ", " + remaining() + " >";
     }
 
     private Uid _logName;
@@ -253,14 +232,13 @@ class LogInstance
  * entries that need to be added.
  */
 
-class LogPurger extends Thread
-{
-    private enum Status {ACTIVE, PASSIVE, TERMINATED};
+class LogPurger extends Thread {
+    private enum Status {
+        ACTIVE, PASSIVE, TERMINATED
+    };
 
-    class LogElement
-    {
-        public LogElement(final String t, final Uid u, final int s)
-        {
+    class LogElement {
+        public LogElement(final String t, final Uid u, final int s) {
             tn = t;
             uid = u;
             state = s;
@@ -272,63 +250,48 @@ class LogPurger extends Thread
     };
 
     /*
-      * Purge every N seconds.
-      *
-      * TODO purge after number of logs > M
-      */
+     * Purge every N seconds.
+     *
+     * TODO purge after number of logs > M
+     */
 
     public static final long DEFAULT_PURGE_TIME = 100000; // 100 seconds
 
-    public LogPurger(LogStore instance)
-    {
+    public LogPurger(LogStore instance) {
         this(instance, DEFAULT_PURGE_TIME);
     }
 
-    public LogPurger(LogStore instance, long purgeTime)
-    {
+    public LogPurger(LogStore instance, long purgeTime) {
         super("Log Purger");
         _objStore = instance;
         _purgeTime = purgeTime;
     }
 
-    public void addRemovedState(final Uid u, final String tn, final int state)
-    {
-        synchronized (_entries)
-        {
+    public void addRemovedState(final Uid u, final String tn, final int state) {
+        synchronized (_entries) {
             _entries.put(u, new LogElement(tn, u, state));
         }
     }
 
-    public void purge()
-    {
-        try
-        {
+    public void purge() {
+        try {
             _objStore.truncateLogs(true);
-        }
-        catch (final Exception ex)
-        {
+        } catch (final Exception ex) {
         }
     }
 
-    public void writeRemovalEntries()
-    {
-        synchronized (_entries)
-        {
-            if (_entries.size() > 0)
-            {
+    public void writeRemovalEntries() {
+        synchronized (_entries) {
+            if (_entries.size() > 0) {
                 Collection<LogElement> entries = _entries.values();
                 Iterator<LogElement> iter = entries.iterator();
 
-                while (iter.hasNext())
-                {
+                while (iter.hasNext()) {
                     LogElement val = iter.next();
 
-                    try
-                    {
+                    try {
                         _objStore.removeState(val.uid, val.tn, val.state);
-                    }
-                    catch (final Exception ex)
-                    {
+                    } catch (final Exception ex) {
                         // TODO log warning, but there's nothing else we can do.
                     }
                 }
@@ -339,55 +302,43 @@ class LogPurger extends Thread
     }
 
     /**
-     * Poke the thread into doing some work even if it normally
-     * would not.
+     * Poke the thread into doing some work even if it normally would not.
      */
 
-    public void trigger ()
-    {
-        synchronized (_lock)
-        {
+    public void trigger() {
+        synchronized (_lock) {
             if (_status == Status.PASSIVE)
                 _lock.notify();
         }
     }
 
-    public void run()
-    {
-        for (;;)
-        {
+    public void run() {
+        for (;;) {
             // TODO activate thread during read and get it to write deleted states
 
-            try
-            {
-                synchronized (_lock)
-                {
+            try {
+                synchronized (_lock) {
                     _status = Status.PASSIVE;
 
                     _lock.wait(_purgeTime);
                 }
-            }
-            catch (final Exception ex)
-            {
+            } catch (final Exception ex) {
                 _status = Status.ACTIVE;
             }
 
             /*
-                * Write any asynchronous delete records.
-                */
+             * Write any asynchronous delete records.
+             */
 
             writeRemovalEntries();
 
             /*
-                * Now truncate any logs we've been working on.
-                */
+             * Now truncate any logs we've been working on.
+             */
 
-            try
-            {
+            try {
                 _objStore.truncateLogs();
-            }
-            catch (final Exception ex)
-            {
+            } catch (final Exception ex) {
             }
         }
 
@@ -401,15 +352,12 @@ class LogPurger extends Thread
     private Object _lock = new Object();
 }
 
-class PurgeShutdownHook extends Thread
-{
-    public PurgeShutdownHook(LogPurger purger)
-    {
+class PurgeShutdownHook extends Thread {
+    public PurgeShutdownHook(LogPurger purger) {
         _purger = purger;
     }
 
-    public void run()
-    {
+    public void run() {
         _purger.writeRemovalEntries(); // flush everything in the cache first.
         _purger.purge();
     }
@@ -423,45 +371,36 @@ class PurgeShutdownHook extends Thread
  * we can simply derive from the HashedActionStore.
  */
 
-public class LogStore extends FileSystemStore
-{
-    public static final long LOG_SIZE = 10 * 1024 * 1024;  // default maximum log size in bytes
+public class LogStore extends FileSystemStore {
+    public static final long LOG_SIZE = 10 * 1024 * 1024; // default maximum log size in bytes
 
     private static final String FILE_MODE = "rwd";
 
     /**
-     * Normally returns the current state of the log entry. However, this is
-     * never called during normal (non-recovery) execution. Therefore, the
-     * overhead of having to scan all of the logs (if it's not one we're using)
-     * is minimal.
+     * Normally returns the current state of the log entry. However, this is never
+     * called during normal (non-recovery) execution. Therefore, the overhead of
+     * having to scan all of the logs (if it's not one we're using) is minimal.
      */
 
-    public int currentState(Uid objUid, String tName)
-            throws ObjectStoreException
-    {
+    public int currentState(Uid objUid, String tName) throws ObjectStoreException {
         InputObjectState ios = new InputObjectState();
 
         /*
-           * TODO
-           *
-           * It's possible that the entry has been marked to be deleted but
-           * that the removal entry hasn't been written yet. We could check the
-           * async cache. However, since we really only care about this during
-           * recovery, it's not going to cause us  problems anyway.
-           */
+         * TODO
+         *
+         * It's possible that the entry has been marked to be deleted but that the
+         * removal entry hasn't been written yet. We could check the async cache.
+         * However, since we really only care about this during recovery, it's not going
+         * to cause us problems anyway.
+         */
 
-        if (allObjUids(tName, ios, StateStatus.OS_UNKNOWN))
-        {
+        if (allObjUids(tName, ios, StateStatus.OS_UNKNOWN)) {
             Uid tempUid = new Uid(Uid.nullUid());
 
-            do
-            {
-                try
-                {
+            do {
+                try {
                     tempUid = UidHelper.unpackFrom(ios);
-                }
-                catch (final Exception ex)
-                {
+                } catch (final Exception ex) {
                     ex.printStackTrace();
 
                     return StateStatus.OS_UNKNOWN;
@@ -473,25 +412,21 @@ public class LogStore extends FileSystemStore
             } while (tempUid.notEquals(Uid.nullUid()));
 
             return StateStatus.OS_UNKNOWN;
-        }
-        else
+        } else
             return StateStatus.OS_UNKNOWN;
     }
 
     /**
      * Commit a previous write_state operation which was made with the SHADOW
-     * StateType argument. This is achieved by renaming the shadow and removing
-     * the hidden version.
+     * StateType argument. This is achieved by renaming the shadow and removing the
+     * hidden version.
      */
 
-    public boolean commit_state(Uid objUid, String tName)
-            throws ObjectStoreException
-    {
+    public boolean commit_state(Uid objUid, String tName) throws ObjectStoreException {
         return true;
     }
 
-    public boolean hide_state(Uid u, String tn) throws ObjectStoreException
-    {
+    public boolean hide_state(Uid u, String tn) throws ObjectStoreException {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("LogStore.hide_state(" + u + ", " + tn + ")");
         }
@@ -499,8 +434,7 @@ public class LogStore extends FileSystemStore
         return false;
     }
 
-    public boolean reveal_state(Uid u, String tn) throws ObjectStoreException
-    {
+    public boolean reveal_state(Uid u, String tn) throws ObjectStoreException {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("LogStore.reveal_state(" + u + ", " + tn + ")");
         }
@@ -508,9 +442,7 @@ public class LogStore extends FileSystemStore
         return false;
     }
 
-    public InputObjectState read_uncommitted(Uid u, String tn)
-            throws ObjectStoreException
-    {
+    public InputObjectState read_uncommitted(Uid u, String tn) throws ObjectStoreException {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("LogStore.read_uncommitted(" + u + ", " + tn + ")");
         }
@@ -518,9 +450,7 @@ public class LogStore extends FileSystemStore
         return null;
     }
 
-    public boolean remove_uncommitted(Uid u, String tn)
-            throws ObjectStoreException
-    {
+    public boolean remove_uncommitted(Uid u, String tn) throws ObjectStoreException {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("LogStore.remove_uncommitted(" + u + ", " + tn + ")");
         }
@@ -528,113 +458,93 @@ public class LogStore extends FileSystemStore
         return false;
     }
 
-    public boolean write_committed(Uid storeUid, String tName,
-                                   OutputObjectState state) throws ObjectStoreException
-    {
+    public boolean write_committed(Uid storeUid, String tName, OutputObjectState state) throws ObjectStoreException {
         if (tsLogger.logger.isTraceEnabled()) {
-            tsLogger.logger.trace("LogStore.write_committed(" + storeUid + ", "
-                    + tName + ")");
+            tsLogger.logger.trace("LogStore.write_committed(" + storeUid + ", " + tName + ")");
         }
 
-        try
-        {
+        try {
             return super.write_committed(storeUid, tName, state);
-        }
-        catch (ObjectStoreException ex)
-        {
+        } catch (ObjectStoreException ex) {
             removeFromLog(storeUid);
 
             throw ex;
         }
     }
 
-    public boolean write_uncommitted(Uid u, String tn, OutputObjectState s)
-            throws ObjectStoreException
-    {
+    public boolean write_uncommitted(Uid u, String tn, OutputObjectState s) throws ObjectStoreException {
         if (tsLogger.logger.isTraceEnabled()) {
-            tsLogger.logger.trace("LogStore.write_uncommitted(" + u + ", " + tn + ", " + s
-                    + ")");
+            tsLogger.logger.trace("LogStore.write_uncommitted(" + u + ", " + tn + ", " + s + ")");
         }
 
         return false;
     }
 
-    public boolean allLogUids (String tName, InputObjectState state, int match) throws ObjectStoreException
-    {
+    public boolean allLogUids(String tName, InputObjectState state, int match) throws ObjectStoreException {
         return super.allObjUids(tName, state, match);
     }
 
     /**
      * This is a recovery-only method and should not be called during normal
-     * execution. As such we need to load in all of the logs we can find that
-     * aren't already loaded (or activated).
+     * execution. As such we need to load in all of the logs we can find that aren't
+     * already loaded (or activated).
      */
 
-    public boolean allObjUids(String tName, InputObjectState state, int match)
-            throws ObjectStoreException
-    {
+    public boolean allObjUids(String tName, InputObjectState state, int match) throws ObjectStoreException {
         /*
-           * match will always be OS_COMMITTED since that's all we ever write for
-           * the logs.
-           */
+         * match will always be OS_COMMITTED since that's all we ever write for the
+         * logs.
+         */
 
         // in case of asynchronous removals trigger the purger now.
 
         _purger.trigger();
 
         /*
-           * Get a list of logs. Load them in to memory if we aren't already
-           * working on them/it. But we can prune the entry once we're
-           * finished or the memory footprint will grow. We should do this
-           * for all frozen entries eventually too.
-           */
+         * Get a list of logs. Load them in to memory if we aren't already working on
+         * them/it. But we can prune the entry once we're finished or the memory
+         * footprint will grow. We should do this for all frozen entries eventually too.
+         */
 
         InputObjectState logs = new InputObjectState();
         OutputObjectState objUids = new OutputObjectState();
 
         /*
-           * We never call this method except during recovery. As such we shouldn't
-           * need to worry about optimizations such as checking whether or not the
-           * log is in current working memory.
-           */
+         * We never call this method except during recovery. As such we shouldn't need
+         * to worry about optimizations such as checking whether or not the log is in
+         * current working memory.
+         */
 
         if (!super.allObjUids(tName, logs, match))
             return false;
-        else
-        {
+        else {
             /*
-                * Now we have all of the log names let's attach to each one
-                * and locate the committed instances (not deleted.)
-                */
+             * Now we have all of the log names let's attach to each one and locate the
+             * committed instances (not deleted.)
+             */
 
             Uid logName = new Uid(Uid.nullUid());
 
-            try
-            {
-                do
-                {
+            try {
+                do {
                     logName = UidHelper.unpackFrom(logs);
 
-                    if (logName.notEquals(Uid.nullUid()))
-                    {
+                    if (logName.notEquals(Uid.nullUid())) {
                         /*
-                               * Could check to see if log is in current working memory.
-                               */
+                         * Could check to see if log is in current working memory.
+                         */
 
                         /*
-                               * TODO
-                               *
-                               * First purge the log if we can, but we need to know that
-                               * we're not playing with an instance that is being manipulated
-                               * from another VM instance.
-                               */
+                         * TODO
+                         *
+                         * First purge the log if we can, but we need to know that we're not playing
+                         * with an instance that is being manipulated from another VM instance.
+                         */
 
                         ArrayList<InputObjectState> txs = scanLog(logName, tName);
 
-                        if (txs.size() > 0)
-                        {
-                            for (int i = 0; i < txs.size(); i++)
-                            {
+                        if (txs.size() > 0) {
+                            for (int i = 0; i < txs.size(); i++) {
                                 UidHelper.packInto(txs.get(i).stateUid(), objUids);
                             }
                         }
@@ -646,9 +556,7 @@ public class LogStore extends FileSystemStore
                 UidHelper.packInto(Uid.nullUid(), objUids);
 
                 state.setBuffer(objUids.buffer());
-            }
-            catch (final IOException ex)
-            {
+            } catch (final IOException ex) {
                 ex.printStackTrace();
 
                 return false;
@@ -658,8 +566,7 @@ public class LogStore extends FileSystemStore
         }
     }
 
-    public LogStore(ObjectStoreEnvironmentBean objectStoreEnvironmentBean) throws ObjectStoreException
-    {
+    public LogStore(ObjectStoreEnvironmentBean objectStoreEnvironmentBean) throws ObjectStoreException {
         super(objectStoreEnvironmentBean);
 
         // overrides parents use of isObjectStoreSync
@@ -680,25 +587,21 @@ public class LogStore extends FileSystemStore
     }
 
     /**
-     * Unlock and close the file. Note that if the unlock fails we set the
-     * return value to false to indicate an error but rely on the close to
-     * really do the unlock.
+     * Unlock and close the file. Note that if the unlock fails we set the return
+     * value to false to indicate an error but rely on the close to really do the
+     * unlock.
      */
 
-    protected boolean unlockAndClose(File fd, RandomAccessFile rf)
-    {
+    protected boolean unlockAndClose(File fd, RandomAccessFile rf) {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("RandomAccessFile.unlockAndClose(" + fd + ", " + rf + ")");
         }
 
         boolean closedOk = unlock(fd);
 
-        try
-        {
+        try {
             rf.close();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             closedOk = false;
         }
 
@@ -706,37 +609,34 @@ public class LogStore extends FileSystemStore
     }
 
     /**
-     * write_state saves the ObjectState in a file named by the type and Uid of
-     * the ObjectState. If the second argument is SHADOW, then the file name is
-     * different so that a subsequent commit_state invocation will rename the
-     * file.
+     * write_state saves the ObjectState in a file named by the type and Uid of the
+     * ObjectState. If the second argument is SHADOW, then the file name is
+     * different so that a subsequent commit_state invocation will rename the file.
      *
-     * We need to make sure that each entry is written to the next empty location
-     * in the log even if there's already an entry for this tx.
+     * We need to make sure that each entry is written to the next empty location in
+     * the log even if there's already an entry for this tx.
      */
 
-    protected boolean write_state(Uid objUid, String tName,
-                                  OutputObjectState state, int ft) throws ObjectStoreException
-    {
+    protected boolean write_state(Uid objUid, String tName, OutputObjectState state, int ft)
+            throws ObjectStoreException {
         if (tsLogger.logger.isTraceEnabled()) {
-            tsLogger.logger.trace("ShadowingStore.write_state(" + objUid + ", " + tName
-                    + ", " + StateType.stateTypeString(ft) + ")");
+            tsLogger.logger.trace(
+                    "ShadowingStore.write_state(" + objUid + ", " + tName + ", " + StateType.stateTypeString(ft) + ")");
         }
 
         String fname = null;
         File fd = null;
 
-        if (tName != null)
-        {
+        if (tName != null) {
             int imageSize = (int) state.length();
             byte[] uidString = objUid.stringForm().getBytes(StandardCharsets.UTF_8);
-            int buffSize = _redzone.length + uidString.length + imageSize + 8;  // don't put in endOfLog since we keep overwriting that.
+            int buffSize = _redzone.length + uidString.length + imageSize + 8; // don't put in endOfLog since we keep
+                                                                               // overwriting that.
             RandomAccessFile ofile = null;
             java.nio.channels.FileLock lock = null;
 
-            if (imageSize > 0)
-            {
-                TransactionData theLogEntry = getLogName(objUid, tName, buffSize);        // always adds entry to log
+            if (imageSize > 0) {
+                TransactionData theLogEntry = getLogName(objUid, tName, buffSize); // always adds entry to log
                 LogInstance theLog = theLogEntry.container;
 
                 if (theLog == null)
@@ -753,20 +653,15 @@ public class LogStore extends FileSystemStore
 
                 boolean setLength = !fd.exists();
 
-                try
-                {
+                try {
                     ofile = new RandomAccessFile(fd, FILE_MODE);
 
-                    if (setLength)
-                    {
+                    if (setLength) {
                         ofile.setLength(_maxFileSize);
-                    }
-                    else
-                    {
+                    } else {
                         // may have to resize file if we keep updating this transaction info
 
-                        if (theLog.remaining() < buffSize)
-                        {
+                        if (theLog.remaining() < buffSize) {
                             long size = ofile.length() + buffSize - theLog.remaining();
 
                             ofile.setLength(size);
@@ -783,50 +678,35 @@ public class LogStore extends FileSystemStore
                     buff.putInt(imageSize);
                     buff.put(state.buffer());
 
-                    synchronized (_lock)
-                    {
+                    synchronized (_lock) {
                         ofile.seek(theLogEntry.offset);
 
                         ofile.write(buff.array());
                     }
-                }
-                catch (SyncFailedException e)
-                {
+                } catch (SyncFailedException e) {
                     unlockAndClose(fd, ofile);
 
-                    throw new ObjectStoreException(
-                            "ShadowingStore::write_state() - write failed to sync for "
-                                    + fname, e);
-                }
-                catch (FileNotFoundException e)
-                {
+                    throw new ObjectStoreException("ShadowingStore::write_state() - write failed to sync for " + fname,
+                            e);
+                } catch (FileNotFoundException e) {
                     unlockAndClose(fd, ofile);
 
                     e.printStackTrace();
 
                     throw new ObjectStoreException(
-                            "ShadowingStore::write_state() - write failed to locate file "
-                                    + fname + ": " + e, e);
-                }
-                catch (IOException e)
-                {
+                            "ShadowingStore::write_state() - write failed to locate file " + fname + ": " + e, e);
+                } catch (IOException e) {
                     unlockAndClose(fd, ofile);
 
                     e.printStackTrace();
 
                     throw new ObjectStoreException(
-                            "ShadowingStore::write_state() - write failed for "
-                                    + fname + ": " + e, e);
-                }
-                finally
-                {
-                    try
-                    {
+                            "ShadowingStore::write_state() - write failed for " + fname + ": " + e, e);
+                } finally {
+                    try {
                         if (lock != null)
                             lock.release();
-                    }
-                    catch (IOException ex)
-                    {
+                    } catch (IOException ex) {
                         ex.printStackTrace();
                     }
                 }
@@ -839,37 +719,31 @@ public class LogStore extends FileSystemStore
             super.addToCache(fname);
 
             return true;
-        }
-        else
+        } else
             throw new ObjectStoreException(
-                    "ShadowStore::write_state - "
-                            + tsLogger.i18NLogger.get_objectstore_notypenameuid()
-                            + objUid);
+                    "ShadowStore::write_state - " + tsLogger.i18NLogger.get_objectstore_notypenameuid() + objUid);
     }
 
     /**
      * Shouldn't be called during normal execution only during recovery.
      */
 
-    protected InputObjectState read_state(Uid u, String tn, int s)
-            throws ObjectStoreException
-    {
+    protected InputObjectState read_state(Uid u, String tn, int s) throws ObjectStoreException {
         /*
-           * In case of asynchronous removals of state, let's trigger the purger
-           * thread to flush its cache now. Try to avoid false positives during
-           * recovery wherever possible!
-           */
+         * In case of asynchronous removals of state, let's trigger the purger thread to
+         * flush its cache now. Try to avoid false positives during recovery wherever
+         * possible!
+         */
 
         _purger.trigger();
 
         /*
-           * It's possible that recovery got hold of a state id while it was
-           * being deleted (marker written and pruning thread not yet active).
-           * In which case when it comes to do a read it's not going to find
-           * the state there any longer. Conversely it's possible that it could do
-           * a read on a state that is about to be deleted. Recovery should be
-           * able to cope with these edge cases.
-           */
+         * It's possible that recovery got hold of a state id while it was being deleted
+         * (marker written and pruning thread not yet active). In which case when it
+         * comes to do a read it's not going to find the state there any longer.
+         * Conversely it's possible that it could do a read on a state that is about to
+         * be deleted. Recovery should be able to cope with these edge cases.
+         */
 
         TransactionData td = getLogName(u, tn, -1);
 
@@ -881,15 +755,14 @@ public class LogStore extends FileSystemStore
         if ((states == null) || (states.size() == 0))
             return null;
 
-        for (int i = 0; i < states.size(); i++)
-        {
+        for (int i = 0; i < states.size(); i++) {
             if (states.get(i).stateUid().equals(u))
                 return states.get(i);
         }
 
         /*
-           * Not in the log, so probably removed by now.
-           */
+         * Not in the log, so probably removed by now.
+         */
 
         return null;
     }
@@ -899,76 +772,60 @@ public class LogStore extends FileSystemStore
      * behalf of this transaction.
      */
 
-    protected boolean remove_state(Uid u, String tn, int s)
-            throws ObjectStoreException
-    {
+    protected boolean remove_state(Uid u, String tn, int s) throws ObjectStoreException {
         // maybe write a removal entry into the log.
 
-        try
-        {
+        try {
             /*
-                * If we don't add a removal entry then recovery has to work a
-                * little harder to figure things out. But it has to cater for the
-                * situation where a removal record write fails anyway, so this
-                * shouldn't be a big deal. On the up side it improves performance
-                * by 30% for this implementation, which is a 40% improvement over
-                * the basic file-based log!
-                */
+             * If we don't add a removal entry then recovery has to work a little harder to
+             * figure things out. But it has to cater for the situation where a removal
+             * record write fails anyway, so this shouldn't be a big deal. On the up side it
+             * improves performance by 30% for this implementation, which is a 40%
+             * improvement over the basic file-based log!
+             */
 
             /*
-                * If we write a removal record as a separate entity to the original
-                * data item then we cannot ensure that they will go into the same
-                * log with a pre-set size for the log. Therefore, we have two
-                * options:
-                *
-                * (i) find the old entry in the log and mark it as deleted.
-                * (ii) increase the size of the log to accommodate the removal entry.
-                *
-                * We currently go for option (ii) as this is the quickest.
-                */
+             * If we write a removal record as a separate entity to the original data item
+             * then we cannot ensure that they will go into the same log with a pre-set size
+             * for the log. Therefore, we have two options:
+             *
+             * (i) find the old entry in the log and mark it as deleted. (ii) increase the
+             * size of the log to accommodate the removal entry.
+             *
+             * We currently go for option (ii) as this is the quickest.
+             */
 
-            if (_synchronousRemoval)
-            {
+            if (_synchronousRemoval) {
                 OutputObjectState removalState = new OutputObjectState(u, tn);
 
                 removalState.packBytes(_removedState);
 
                 if (!write_state(u, tn, removalState, s))
                     throw new ObjectStoreException();
-            }
-            else
+            } else
                 _purger.addRemovedState(u, tn, s);
-        }
-        catch (IOException ex)
-        {
+        } catch (IOException ex) {
             throw new ObjectStoreException(ex.toString(), ex);
-        }
-        catch (final Throwable ex)
-        {
+        } catch (final Throwable ex) {
             ex.printStackTrace();
 
             throw new ObjectStoreException(ex.toString(), ex);
-        }
-        finally
-        {
+        } finally {
             removeFromLog(u);
         }
 
         return true;
     }
 
-    protected boolean lock(File fd, int lmode, boolean create)
-    {
+    protected boolean lock(File fd, int lmode, boolean create) {
         return true;
     }
 
-    protected boolean unlock(File fd)
-    {
+    protected boolean unlock(File fd) {
         return true;
     }
 
-    protected String genPathName (Uid objUid, String tName, int ft) throws ObjectStoreException
-    {
+    protected String genPathName(Uid objUid, String tName, int ft) throws ObjectStoreException {
         String fname = super.genPathName(objUid, tName, ft);
 
         if (ft == StateStatus.OS_UNCOMMITTED)
@@ -977,55 +834,44 @@ public class LogStore extends FileSystemStore
         return fname;
     }
 
-    boolean removeState(Uid u, String tn, int s) throws ObjectStoreException
-    {
-        try
-        {
+    boolean removeState(Uid u, String tn, int s) throws ObjectStoreException {
+        try {
             OutputObjectState removalState = new OutputObjectState(u, tn);
 
             removalState.packBytes(_removedState);
 
             if (!write_state(u, tn, removalState, s))
                 throw new ObjectStoreException();
-        }
-        catch (IOException ex)
-        {
+        } catch (IOException ex) {
             throw new ObjectStoreException(ex.toString(), ex);
         }
 
         return true;
     }
 
-    boolean truncateLogs () throws ObjectStoreException
-    {
+    boolean truncateLogs() throws ObjectStoreException {
         return truncateLogs(false);
     }
 
-    boolean truncateLogs (boolean force) throws ObjectStoreException
-    {
-        synchronized (_logNames)
-        {
+    boolean truncateLogs(boolean force) throws ObjectStoreException {
+        synchronized (_logNames) {
             Iterator<LogInstance> iter = _logNames.iterator();
 
             /*
-                * Only do this for logs that are full to save time,
-                * except if we are terminating.
-                */
+             * Only do this for logs that are full to save time, except if we are
+             * terminating.
+             */
 
-            while (iter.hasNext())
-            {
+            while (iter.hasNext()) {
                 boolean delete = false;
                 LogInstance log = null;
 
-                try
-                {
+                try {
                     log = iter.next();
 
                     if (log.isFrozen() || force)
                         delete = truncateLog(log, force);
-                }
-                catch (final Exception ex)
-                {
+                } catch (final Exception ex) {
                     // TODO log
                 }
 
@@ -1038,40 +884,33 @@ public class LogStore extends FileSystemStore
     }
 
     /*
-      * Return true if the log needs to be deleted.
-      */
+     * Return true if the log needs to be deleted.
+     */
 
-    private final boolean truncateLog(final LogInstance log, boolean force) throws ObjectStoreException
-    {
+    private final boolean truncateLog(final LogInstance log, boolean force) throws ObjectStoreException {
         boolean delete = false;
 
-        synchronized (_lock)
-        {
+        synchronized (_lock) {
             File fd = new File(genPathName(log.getName(), log.getTypeName(), StateStatus.OS_COMMITTED));
 
-            try
-            {
+            try {
                 /*
-                     * Create a list of ObjectState entries.
-                     */
+                 * Create a list of ObjectState entries.
+                 */
 
                 ArrayList<InputObjectState> objectStates = scanLog(log.getName(), log.getTypeName());
 
                 /*
-                     * At this stage we should now have a list of unique
-                     * entries. Write them back to the log. Do this
-                     * atomically! If the list is empty then delete the
-                     * file!
-                     */
+                 * At this stage we should now have a list of unique entries. Write them back to
+                 * the log. Do this atomically! If the list is empty then delete the file!
+                 */
 
-                if ((objectStates != null) && (objectStates.size() > 0))
-                {
+                if ((objectStates != null) && (objectStates.size() > 0)) {
                     /*
-                          * If we are terminating then we can truncate the log to the
-                          * real size needed to contain the existing entries since we
-                          * will not use it again within another VM except for
-                          * recovery purposes.
-                          */
+                     * If we are terminating then we can truncate the log to the real size needed to
+                     * contain the existing entries since we will not use it again within another VM
+                     * except for recovery purposes.
+                     */
 
                     String fname = genPathName(log.getName(), log.getTypeName(), StateStatus.OS_UNCOMMITTED);
                     File fd2 = openAndLock(fname, FileLock.F_WRLCK, true);
@@ -1080,24 +919,20 @@ public class LogStore extends FileSystemStore
 
                     oFile.setLength(_maxFileSize);
 
-                    for (int i = 0; i < objectStates.size(); i++)
-                    {
+                    for (int i = 0; i < objectStates.size(); i++) {
                         byte[] uidString = objectStates.get(i).stateUid().stringForm().getBytes(StandardCharsets.UTF_8);
                         int buffSize = _redzone.length + uidString.length + objectStates.get(i).buffer().length + 8;
                         java.nio.ByteBuffer buff = java.nio.ByteBuffer.allocate(buffSize);
 
                         size += buffSize;
 
-                        try
-                        {
+                        try {
                             buff.put(_redzone);
                             buff.putInt(uidString.length);
                             buff.put(uidString);
                             buff.putInt(objectStates.get(i).buffer().length);
-                            buff.put(objectStates.get(i).buffer(),0, objectStates.get(i).buffer().length);
-                        }
-                        catch (final Exception ex)
-                        {
+                            buff.put(objectStates.get(i).buffer(), 0, objectStates.get(i).buffer().length);
+                        } catch (final Exception ex) {
                             ex.printStackTrace();
 
                             // TODO log
@@ -1110,56 +945,43 @@ public class LogStore extends FileSystemStore
                         }
                     }
 
-                    try
-                    {
-                        if (force)
-                        {
+                    try {
+                        if (force) {
                             oFile.setLength(size);
 
                             log.freeze();
                         }
 
                         fd2.renameTo(fd);
-                    }
-                    catch (final Exception ex)
-                    {
+                    } catch (final Exception ex) {
                         ex.printStackTrace();
 
                         // TODO log
 
                         throw new ObjectStoreException(ex.toString(), ex);
-                    }
-                    finally
-                    {
+                    } finally {
                         unlockAndClose(fd2, oFile);
                     }
-                }
-                else
-                {
+                } else {
                     /*
-                          * Delete the log if there are no states in it. We could
-                          * keep the file around and reuse it, but the advantage of
-                          * this is small compared to having to cope with reusing old
-                          * log instances.
-                          */
+                     * Delete the log if there are no states in it. We could keep the file around
+                     * and reuse it, but the advantage of this is small compared to having to cope
+                     * with reusing old log instances.
+                     */
 
                     fd.delete();
 
                     /*
-                          * Remember to remove the information from the memory cache.
-                          */
+                     * Remember to remove the information from the memory cache.
+                     */
 
                     delete = true;
                 }
-            }
-            catch (final ObjectStoreException ex)
-            {
+            } catch (final ObjectStoreException ex) {
                 ex.printStackTrace();
 
                 throw ex;
-            }
-            catch (final Exception ex)
-            {
+            } catch (final Exception ex) {
                 ex.printStackTrace();
 
                 throw new ObjectStoreException(ex.toString(), ex);
@@ -1169,50 +991,43 @@ public class LogStore extends FileSystemStore
         return delete;
     }
 
-    private final ArrayList<InputObjectState> scanLog (final Uid logName, final String typeName) throws ObjectStoreException
-    {
+    private final ArrayList<InputObjectState> scanLog(final Uid logName, final String typeName)
+            throws ObjectStoreException {
         /*
-           * Make sure no new entries can be created while we scan.
-           */
+         * Make sure no new entries can be created while we scan.
+         */
 
-        synchronized (_lock)
-        {
-            try
-            {
+        synchronized (_lock) {
+            try {
                 String fname = genPathName(logName, typeName, StateStatus.OS_COMMITTED);
                 File fd = openAndLock(fname, FileLock.F_WRLCK, true);
                 RandomAccessFile iFile = new RandomAccessFile(fd, FILE_MODE);
                 // iFile.getChannel().lock();
 
-                try
-                {
+                try {
                     /*
-                          * Create a list of ObjectState entries.
-                          */
+                     * Create a list of ObjectState entries.
+                     */
 
                     ArrayList<InputObjectState> objectStates = new ArrayList<InputObjectState>();
 
                     iFile.seek(0); // make sure we're at the start
 
-                    while (iFile.getFilePointer() < iFile.length())
-                    {
+                    while (iFile.getFilePointer() < iFile.length()) {
                         byte[] buff = new byte[_redzone.length];
 
                         iFile.read(buff);
 
-                        if (!redzoneProtected(buff))
-                        {
+                        if (!redzoneProtected(buff)) {
                             // end
 
                             break;
 
                             /*
-                                    * TODO add an end-of-log entry and check for that. Currently just assume
-                                    * that no RZ means end, rather than corruption.
-                                    */
-                        }
-                        else
-                        {
+                             * TODO add an end-of-log entry and check for that. Currently just assume that
+                             * no RZ means end, rather than corruption.
+                             */
+                        } else {
                             int uidSize = iFile.readInt();
                             byte[] uidString = new byte[uidSize];
 
@@ -1224,15 +1039,11 @@ public class LogStore extends FileSystemStore
 
                             iFile.read(imageState);
 
-                            try
-                            {
-                                InputObjectState state = new InputObjectState(
-                                        txId, "", imageState);
+                            try {
+                                InputObjectState state = new InputObjectState(txId, "", imageState);
 
                                 objectStates.add(state);
-                            }
-                            catch (final Exception ex)
-                            {
+                            } catch (final Exception ex) {
                                 ex.printStackTrace();
 
                                 throw new ObjectStoreException(ex.toString(), ex);
@@ -1244,82 +1055,67 @@ public class LogStore extends FileSystemStore
                     iFile = null;
 
                     /*
-                          * At this stage we now have a list of ObjectState entries.
-                          * Now we need to go through and prune the list. This is
-                          * complicated by the fact that there can be 1.. entries for
-                          * a specific transaction since we continually update the
-                          * log as we drive recovery. If an entry hasn't been deleted
-                          * then we will keep the latest one we find.
-                          */
+                     * At this stage we now have a list of ObjectState entries. Now we need to go
+                     * through and prune the list. This is complicated by the fact that there can be
+                     * 1.. entries for a specific transaction since we continually update the log as
+                     * we drive recovery. If an entry hasn't been deleted then we will keep the
+                     * latest one we find.
+                     */
 
                     /*
-                          * First search for those entries that have been deleted.
-                          */
+                     * First search for those entries that have been deleted.
+                     */
 
                     ArrayList<InputObjectState> deletedLogs = new ArrayList<InputObjectState>();
 
-                    for (int i = 0; i < objectStates.size(); i++)
-                    {
+                    for (int i = 0; i < objectStates.size(); i++) {
                         InputObjectState curr = objectStates.get(i);
 
-                        try
-                        {
-                            if (Arrays.equals(curr.unpackBytes(), _removedState))
-                            {
+                        try {
+                            if (Arrays.equals(curr.unpackBytes(), _removedState)) {
                                 deletedLogs.add(curr);
-                            }
-                            else
-                                curr.reread();  // don't forget to reset the read pointer!
-                        }
-                        catch (final Exception ex)
-                        {
+                            } else
+                                curr.reread(); // don't forget to reset the read pointer!
+                        } catch (final Exception ex) {
                             // if not a delete record then the first entry won't
                             // be an the defined byte array.
-                            curr.reread();  // don't forget to reset the read pointer!
+                            curr.reread(); // don't forget to reset the read pointer!
                         }
                     }
 
-                    if (deletedLogs.size() > 0)
-                    {
+                    if (deletedLogs.size() > 0) {
                         /*
-                               * make sure we remove them from the first list to save time.
-                               */
+                         * make sure we remove them from the first list to save time.
+                         */
 
                         objectStates.removeAll(deletedLogs);
 
                         deleteEntries(objectStates, deletedLogs);
 
                         /*
-                               * At this stage we should only have entries that refer
-                               * to in-flight transactions. Go through the list and
-                               * remove N-1 references for each transaction id.
-                               */
+                         * At this stage we should only have entries that refer to in-flight
+                         * transactions. Go through the list and remove N-1 references for each
+                         * transaction id.
+                         */
 
                         pruneEntries(objectStates);
 
                         /*
-                               * Now return the list of committed entries.
-                               */
+                         * Now return the list of committed entries.
+                         */
 
                         return objectStates;
-                    }
-                    else
+                    } else
                         return objectStates;
-                }
-                finally
-                {
+                } finally {
                     if (iFile != null)
                         unlockAndClose(fd, iFile);
                 }
-            }
-            catch (final ObjectStoreException ex)
-            {
+            } catch (final ObjectStoreException ex) {
                 ex.printStackTrace();
 
                 throw ex;
-            }
-            catch (final Exception ex)
-            {
+            } catch (final Exception ex) {
                 ex.printStackTrace();
 
                 throw new ObjectStoreException(ex.toString(), ex);
@@ -1327,10 +1123,8 @@ public class LogStore extends FileSystemStore
         }
     }
 
-    private final boolean redzoneProtected(final byte[] buff)
-    {
-        for (int i = 0; i < _redzone.length; i++)
-        {
+    private final boolean redzoneProtected(final byte[] buff) {
+        for (int i = 0; i < _redzone.length; i++) {
             if (buff[i] != _redzone[i])
                 return false;
         }
@@ -1338,19 +1132,15 @@ public class LogStore extends FileSystemStore
         return true;
     }
 
-    private final void deleteEntries(ArrayList<InputObjectState> allStates,
-                                     ArrayList<InputObjectState> deletedStates)
-    {
+    private final void deleteEntries(ArrayList<InputObjectState> allStates, ArrayList<InputObjectState> deletedStates) {
         /*
-           * Look through the remaining states for entries that have been deleted.
-           */
+         * Look through the remaining states for entries that have been deleted.
+         */
 
-        for (int i = 0; i < deletedStates.size(); i++)
-        {
+        for (int i = 0; i < deletedStates.size(); i++) {
             Uid txId = deletedStates.get(i).stateUid();
 
-            for (int j = 0; j < allStates.size(); j++)
-            {
+            for (int j = 0; j < allStates.size(); j++) {
                 if (allStates.get(j).stateUid().equals(txId))
                     allStates.remove(j);
             }
@@ -1359,18 +1149,15 @@ public class LogStore extends FileSystemStore
         deletedStates.clear();
     }
 
-    private final void pruneEntries(ArrayList<InputObjectState> allStates)
-    {
+    private final void pruneEntries(ArrayList<InputObjectState> allStates) {
         /*
-           * The ArrayList is ordered with the earliest entries first.
-           */
+         * The ArrayList is ordered with the earliest entries first.
+         */
 
-        for (int j = allStates.size() - 1; j >= 0; j--)
-        {
+        for (int j = allStates.size() - 1; j >= 0; j--) {
             Uid txId = allStates.get(j).stateUid();
 
-            for (int i = 0; i < j; i++)
-            {
+            for (int i = 0; i < j; i++) {
                 if (allStates.get(i).stateUid().equals(txId))
                     allStates.remove(i);
             }
@@ -1378,42 +1165,35 @@ public class LogStore extends FileSystemStore
     }
 
     /*
-      * We maintain a list of log identifiers and the number of threads using
-      * them. If a log size goes over the maximum allowed, then we swap all
-      * threads to a new log with the exception of those that are currently using
-      * the old log.
-      *
-      * We always add a new entry to the log even if one already exists.
-      *
-      * Because normally we are writing to the log we pass in the size that we need to
-      * accommodate. However, during recovery we need to read the state yet still
-      * need the log name. So if we pass a size of -1 this signifies only to
-      * return the log data and not allocate space for a new instance.
-      */
+     * We maintain a list of log identifiers and the number of threads using them.
+     * If a log size goes over the maximum allowed, then we swap all threads to a
+     * new log with the exception of those that are currently using the old log.
+     *
+     * We always add a new entry to the log even if one already exists.
+     *
+     * Because normally we are writing to the log we pass in the size that we need
+     * to accommodate. However, during recovery we need to read the state yet still
+     * need the log name. So if we pass a size of -1 this signifies only to return
+     * the log data and not allocate space for a new instance.
+     */
 
-    private final TransactionData getLogName (Uid txid, String tName, long size)
-            throws ObjectStoreException
-    {
-        synchronized (_logNames)
-        {
+    private final TransactionData getLogName(Uid txid, String tName, long size) throws ObjectStoreException {
+        synchronized (_logNames) {
             Iterator<LogInstance> iter = _logNames.iterator();
             LogInstance entry = null;
 
             /*
-             * First check to see if the TxId is in an existing log. Always
-             * return the same log instance for the same txid so we can
-             * keep all data in the same location. This may mean that we have
-             * to extend the size of the log over time to accommodate situations
-             * where the log is modified but not deleted for a while, e.g., during
-             * recovery.
+             * First check to see if the TxId is in an existing log. Always return the same
+             * log instance for the same txid so we can keep all data in the same location.
+             * This may mean that we have to extend the size of the log over time to
+             * accommodate situations where the log is modified but not deleted for a while,
+             * e.g., during recovery.
              */
 
-            while (iter.hasNext())
-            {
+            while (iter.hasNext()) {
                 entry = (LogInstance) iter.next();
 
-                if (entry.present(txid))
-                {
+                if (entry.present(txid)) {
                     if (size == -1) // we are reading only
                         return entry.getTxId(txid);
                     else
@@ -1422,35 +1202,28 @@ public class LogStore extends FileSystemStore
             }
 
             /*
-             * If we get here then this TxId isn't in one of the
-             * logs we are maintaining currently. So go back through
-             * the list of logs and find one that is small enough
-             * for us to use. The first one with room will do.
+             * If we get here then this TxId isn't in one of the logs we are maintaining
+             * currently. So go back through the list of logs and find one that is small
+             * enough for us to use. The first one with room will do.
              */
 
             iter = _logNames.iterator();
 
-            while (iter.hasNext())
-            {
+            while (iter.hasNext()) {
                 entry = (LogInstance) iter.next();
 
-                if (!entry.isFrozen())
-                {
-                    if (entry.remaining() > size)
-                    {
+                if (!entry.isFrozen()) {
+                    if (entry.remaining() > size) {
                         return entry.addTxId(txid, size);
-                    }
-                    else
-                    {
+                    } else {
                         /*
-                               * TODO
-                               *
-                               * When can we remove the information about this
-                               * log from memory? If we do it too soon then it's possible
-                               * that delete entries will not go into the right log. If we
-                               * leave it too late then the memory footprint increases. Prune
-                               * the entry when we prune the log from disk?
-                               */
+                         * TODO
+                         *
+                         * When can we remove the information about this log from memory? If we do it
+                         * too soon then it's possible that delete entries will not go into the right
+                         * log. If we leave it too late then the memory footprint increases. Prune the
+                         * entry when we prune the log from disk?
+                         */
 
                         entry.freeze();
                     }
@@ -1466,22 +1239,17 @@ public class LogStore extends FileSystemStore
         }
     }
 
-    private final void removeFromLog(Uid txid)
-    {
-        if (_synchronousRemoval)
-        {
-            synchronized (_logNames)
-            {
+    private final void removeFromLog(Uid txid) {
+        if (_synchronousRemoval) {
+            synchronized (_logNames) {
                 Iterator<LogInstance> iter = _logNames.iterator();
                 LogInstance entry = null;
 
-                while (iter.hasNext())
-                {
+                while (iter.hasNext()) {
                     entry = (LogInstance) iter.next();
 
-                    if (entry.present(txid))
-                    {
-                        //entry.removeTxId(txid);
+                    if (entry.present(txid)) {
+                        // entry.removeTxId(txid);
                         break;
                     }
                 }

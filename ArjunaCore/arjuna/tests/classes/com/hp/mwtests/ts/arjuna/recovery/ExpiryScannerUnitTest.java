@@ -26,11 +26,9 @@ import org.junit.Test;
 
 import com.arjuna.ats.internal.arjuna.recovery.ExpiredTransactionStatusManagerScanner;
 
-public class ExpiryScannerUnitTest
-{
+public class ExpiryScannerUnitTest {
     @Test
-    public void test () throws Exception
-    {
+    public void test() throws Exception {
         ExpiredTransactionStatusManagerScanner et = new ExpiredTransactionStatusManagerScanner();
 
         assertTrue(et.toBeUsed());

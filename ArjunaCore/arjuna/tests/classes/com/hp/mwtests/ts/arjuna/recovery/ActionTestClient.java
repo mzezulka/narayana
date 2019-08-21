@@ -56,10 +56,8 @@ import com.arjuna.ats.arjuna.utils.Utility;
 import com.arjuna.ats.internal.arjuna.recovery.Listener;
 import com.arjuna.ats.internal.arjuna.recovery.TransactionStatusConnector;
 
-class ActionTestClientTestService implements Service
-{
-    private void test1()
-    {
+class ActionTestClientTestService implements Service {
+    private void test1() {
         System.err.println("test1");
 
         try {
@@ -94,26 +92,21 @@ class ActionTestClientTestService implements Service
             _out.println("OK");
             _out.flush();
 
-            if ((test_status1 == ActionStatus.ABORTED) &&
-                    (test_status2 == ActionStatus.ABORTED) &&
-                    (test_status3 == ActionStatus.RUNNING) &&
-                    (test_status4 == ActionStatus.RUNNING) &&
-                    (test_status5 == ActionStatus.COMMITTED) &&
-                    (test_status6 == ActionStatus.COMMITTED)) {
+            if ((test_status1 == ActionStatus.ABORTED) && (test_status2 == ActionStatus.ABORTED)
+                    && (test_status3 == ActionStatus.RUNNING) && (test_status4 == ActionStatus.RUNNING)
+                    && (test_status5 == ActionStatus.COMMITTED) && (test_status6 == ActionStatus.COMMITTED)) {
                 System.err.println("test1: passed");
                 _tests_passed++;
             } else {
                 System.err.println("test1: failed");
                 _tests_failed++;
             }
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             System.err.println("test1: failed " + ex);
         }
     }
 
-    private void test2()
-    {
+    private void test2() {
         try {
             String test_tran_type_2 = _in.readLine();
             String test_uid_2_str = _in.readLine();
@@ -145,26 +138,21 @@ class ActionTestClientTestService implements Service
             _out.println("OK");
             _out.flush();
 
-            if ((test_status1 == ActionStatus.ABORTED) &&
-                    (test_status2 == ActionStatus.ABORTED) &&
-                    (test_status3 == ActionStatus.RUNNING) &&
-                    (test_status4 == ActionStatus.RUNNING) &&
-                    (test_status5 == ActionStatus.ABORTED) &&
-                    (test_status6 == ActionStatus.ABORTED)) {
+            if ((test_status1 == ActionStatus.ABORTED) && (test_status2 == ActionStatus.ABORTED)
+                    && (test_status3 == ActionStatus.RUNNING) && (test_status4 == ActionStatus.RUNNING)
+                    && (test_status5 == ActionStatus.ABORTED) && (test_status6 == ActionStatus.ABORTED)) {
                 System.err.println("test2: passed");
                 _tests_passed++;
             } else {
                 System.err.println("test2: failed");
                 _tests_failed++;
             }
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             System.err.println("test2: failed " + ex);
         }
     }
 
-    private void test3()
-    {
+    private void test3() {
         try {
             String test_tran_type_3 = _in.readLine();
             String test_uid_3_str = _in.readLine();
@@ -196,27 +184,21 @@ class ActionTestClientTestService implements Service
             _out.println("OK");
             _out.flush();
 
-            if ((test_status1 == ActionStatus.ABORTED) &&
-                    (test_status2 == ActionStatus.ABORTED) &&
-                    (test_status3 == ActionStatus.RUNNING) &&
-                    (test_status4 == ActionStatus.RUNNING) &&
-                    (test_status5 == ActionStatus.ABORTED) &&
-                    (test_status6 == ActionStatus.ABORTED)) {
+            if ((test_status1 == ActionStatus.ABORTED) && (test_status2 == ActionStatus.ABORTED)
+                    && (test_status3 == ActionStatus.RUNNING) && (test_status4 == ActionStatus.RUNNING)
+                    && (test_status5 == ActionStatus.ABORTED) && (test_status6 == ActionStatus.ABORTED)) {
                 System.err.println("test3: passed");
                 _tests_passed++;
             } else {
                 System.err.println("test3: failed");
                 _tests_failed++;
             }
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             System.err.println("test3: failed " + ex);
         }
     }
 
-    public void doWork(InputStream is, OutputStream os)
-            throws IOException
-    {
+    public void doWork(InputStream is, OutputStream os) throws IOException {
         System.err.println("starting to work");
 
         _in = new BufferedReader(new InputStreamReader(is));
@@ -236,15 +218,11 @@ class ActionTestClientTestService implements Service
                 test2();
                 test3();
 
-                System.err.println("tests passed: " + _tests_passed +
-                        "  tests failed: " + _tests_failed);
+                System.err.println("tests passed: " + _tests_passed + "  tests failed: " + _tests_failed);
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.err.println(" FAILED " + ex);
-        }
-        finally
-        {
+        } finally {
             synchronized (this) {
                 finished = true;
                 notify();
@@ -252,8 +230,7 @@ class ActionTestClientTestService implements Service
         }
     }
 
-    public synchronized void waitForFinished()
-    {
+    public synchronized void waitForFinished() {
         while (!finished) {
             try {
                 wait();
@@ -274,11 +251,9 @@ class ActionTestClientTestService implements Service
 
 }
 
-public class ActionTestClient
-{
+public class ActionTestClient {
     @Test
-    public void test() throws Exception
-    {
+    public void test() throws Exception {
         assertTrue(test_setup());
 
         ActionTestClientTestService test_service = new ActionTestClientTestService();
@@ -298,8 +273,7 @@ public class ActionTestClient
      * Pre-test setup.
      */
 
-    private static boolean test_setup()
-    {
+    private static boolean test_setup() {
         boolean setupOk = false;
 
         try {
@@ -307,21 +281,18 @@ public class ActionTestClient
             _test_service_socket = new ServerSocket(_port);
             _test_socket = new Socket(host, _port);
 
-            _from_test_service = new BufferedReader(new InputStreamReader
-                    (_test_socket.getInputStream()));
-            _to_test_service = new PrintWriter(new OutputStreamWriter
-                    (_test_socket.getOutputStream()));
+            _from_test_service = new BufferedReader(new InputStreamReader(_test_socket.getInputStream()));
+            _to_test_service = new PrintWriter(new OutputStreamWriter(_test_socket.getOutputStream()));
 
-            _to_test_service.write(Utility.getProcessUid().stringForm()+"\n");
-            _to_test_service.write(Utility.intToHexString(Utility.getpid())+"\n");
+            _to_test_service.write(Utility.getProcessUid().stringForm() + "\n");
+            _to_test_service.write(Utility.intToHexString(Utility.getpid()) + "\n");
 
-            for (int i = 0; i < _number; i++)
-            {
+            for (int i = 0; i < _number; i++) {
                 _tx[i] = new AtomicAction();
                 _tx[i].begin();
                 AtomicAction.suspend();
-                _to_test_service.write(_tx[i].type()+"\n");
-                _to_test_service.write(_tx[i].get_uid().stringForm()+"\n");
+                _to_test_service.write(_tx[i].type() + "\n");
+                _to_test_service.write(_tx[i].get_uid().stringForm() + "\n");
             }
 
             terminateTx(_tx[0], false);
@@ -337,16 +308,14 @@ public class ActionTestClient
             _to_test_service.flush();
 
             setupOk = true;
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.err.println("test_setup: Failed " + ex);
         }
 
         return setupOk;
     }
 
-    static private void terminateTx (AtomicAction tx, boolean commit)
-    {
+    private static void terminateTx(AtomicAction tx, boolean commit) {
         AtomicAction.resume(tx);
 
         if (commit)
@@ -354,7 +323,7 @@ public class ActionTestClient
         else
             tx.abort();
 
-        ActionManager.manager().put(tx);  // put it back on list to simulate running condition.
+        ActionManager.manager().put(tx); // put it back on list to simulate running condition.
     }
 
     private static int _port = 4321;

@@ -41,11 +41,9 @@ import com.arjuna.ats.arjuna.objectstore.StateType;
 import com.arjuna.ats.internal.arjuna.abstractrecords.ActivationRecord;
 import com.arjuna.ats.internal.arjuna.abstractrecords.PersistenceRecord;
 
-public class TypesUnitTest
-{
+public class TypesUnitTest {
     @Test
-    public void testObjectModel ()
-    {
+    public void testObjectModel() {
         new ObjectModel();
 
         PrintWriter pw = new PrintWriter(new StringWriter());
@@ -55,8 +53,7 @@ public class TypesUnitTest
     }
 
     @Test
-    public void testObjectStatus ()
-    {
+    public void testObjectStatus() {
         new ObjectStatus();
 
         PrintWriter pw = new PrintWriter(new StringWriter());
@@ -71,8 +68,7 @@ public class TypesUnitTest
     }
 
     @Test
-    public void testObjectType ()
-    {
+    public void testObjectType() {
         new ObjectType();
 
         PrintWriter pw = new PrintWriter(new StringWriter());
@@ -85,8 +81,7 @@ public class TypesUnitTest
     }
 
     @Test
-    public void testStateStatus ()
-    {
+    public void testStateStatus() {
         PrintWriter pw = new PrintWriter(new StringWriter());
 
         StateStatus.printStateStatus(pw, StateStatus.OS_COMMITTED);
@@ -95,8 +90,7 @@ public class TypesUnitTest
     }
 
     @Test
-    public void testStateType ()
-    {
+    public void testStateType() {
         PrintWriter pw = new PrintWriter(new StringWriter());
 
         StateType.printStateType(pw, StateType.OS_INVISIBLE);
@@ -110,8 +104,7 @@ public class TypesUnitTest
     }
 
     @Test
-    public void testActionType ()
-    {
+    public void testActionType() {
         PrintWriter pw = new PrintWriter(new StringWriter());
 
         ActionType.print(pw, ActionType.NESTED);
@@ -119,8 +112,7 @@ public class TypesUnitTest
     }
 
     @Test
-    public void testAddOutcome ()
-    {
+    public void testAddOutcome() {
         PrintWriter pw = new PrintWriter(new StringWriter());
 
         AddOutcome.print(pw, AddOutcome.AR_ADDED);
@@ -131,8 +123,7 @@ public class TypesUnitTest
     }
 
     @Test
-    public void testTwoPhaseOutcome ()
-    {
+    public void testTwoPhaseOutcome() {
         PrintWriter pw = new PrintWriter(new StringWriter());
 
         TwoPhaseOutcome.print(pw, TwoPhaseOutcome.FINISH_ERROR);
@@ -150,8 +141,7 @@ public class TypesUnitTest
     }
 
     @Test
-    public void testActionStatus ()
-    {
+    public void testActionStatus() {
         PrintWriter pw = new PrintWriter(new StringWriter());
 
         ActionStatus.print(pw, ActionStatus.ABORT_ONLY);
@@ -163,8 +153,7 @@ public class TypesUnitTest
     }
 
     @Test
-    public void testRecordType ()
-    {
+    public void testRecordType() {
         PrintWriter pw = new PrintWriter(new StringWriter());
 
         RecordType.print(pw, RecordType.ACTIVATION);
@@ -175,6 +164,6 @@ public class TypesUnitTest
         assertEquals(RecordType.classToType(RecordType.class), RecordType.UNTYPED);
 
         for (int i = 0; i < 500; i++)
-            RecordType.typeToClass(i);  // will return null for some values
+            RecordType.typeToClass(i); // will return null for some values
     }
 }

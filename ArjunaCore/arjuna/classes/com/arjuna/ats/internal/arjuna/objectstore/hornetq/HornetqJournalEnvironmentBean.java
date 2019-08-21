@@ -25,18 +25,18 @@ import java.io.File;
 import com.arjuna.common.internal.util.propertyservice.PropertyPrefix;
 
 /**
- * A JavaBean containing assorted configuration properties for the HornetQ Journal based transaction logging system.
+ * A JavaBean containing assorted configuration properties for the HornetQ
+ * Journal based transaction logging system.
  *
- * Parameters on this file serve a similar role to their counterparts in HornetQ.
- * The HornetQ docs therefore provide relevant information on usage:
+ * Parameters on this file serve a similar role to their counterparts in
+ * HornetQ. The HornetQ docs therefore provide relevant information on usage:
  * http://hornetq.sourceforge.net/docs/hornetq-2.1.2.Final/user-manual/en/html/persistence.html#configuring.message.journal.journal-type
  *
  * @author Jonathan Halliday (jonathan.halliday@redhat.com), 2010-03
  */
 @PropertyPrefix(prefix = "com.arjuna.ats.arjuna.hornetqjournal.")
-public class HornetqJournalEnvironmentBean implements HornetqJournalEnvironmentBeanMBean
-{
-    private volatile int fileSize = 1024*1024*2;
+public class HornetqJournalEnvironmentBean implements HornetqJournalEnvironmentBeanMBean {
+    private volatile int fileSize = 1024 * 1024 * 2;
 
     private volatile int minFiles = 4;
 
@@ -66,17 +66,14 @@ public class HornetqJournalEnvironmentBean implements HornetqJournalEnvironmentB
 
     private volatile boolean asyncIO = true;
 
-
     /**
-     * Returns the desired size in bytes of each log file.
-     * Minimum 1024.
+     * Returns the desired size in bytes of each log file. Minimum 1024.
      *
      * Default: 2MB (2097152 bytes)
      *
      * @return The individual log file size, in bytes.
      */
-    public int getFileSize()
-    {
+    public int getFileSize() {
         return fileSize;
     }
 
@@ -85,21 +82,18 @@ public class HornetqJournalEnvironmentBean implements HornetqJournalEnvironmentB
      *
      * @param fileSize the individual log file size, in bytes.
      */
-    public void setFileSize(int fileSize)
-    {
+    public void setFileSize(int fileSize) {
         this.fileSize = fileSize;
     }
 
     /**
-     * Returns the minimum number of log files to use.
-     * Minimum 2.
+     * Returns the minimum number of log files to use. Minimum 2.
      *
      * Default: 4
      *
      * @return the minimum number of individual log files.
      */
-    public int getMinFiles()
-    {
+    public int getMinFiles() {
         return minFiles;
     }
 
@@ -108,8 +102,7 @@ public class HornetqJournalEnvironmentBean implements HornetqJournalEnvironmentB
      *
      * @param minFiles the minimum number of individual log files.
      */
-    public void setMinFiles(int minFiles)
-    {
+    public void setMinFiles(int minFiles) {
         this.minFiles = minFiles;
     }
 
@@ -120,8 +113,7 @@ public class HornetqJournalEnvironmentBean implements HornetqJournalEnvironmentB
      *
      * @return the number of files that can be reused.
      */
-    public int getPoolSize()
-    {
+    public int getPoolSize() {
         return poolSize;
     }
 
@@ -130,8 +122,7 @@ public class HornetqJournalEnvironmentBean implements HornetqJournalEnvironmentB
      *
      * @param poolSize the number of files that can be reused.
      */
-    public void setPoolSize(int poolSize)
-    {
+    public void setPoolSize(int poolSize) {
         this.poolSize = poolSize;
     }
 
@@ -142,8 +133,7 @@ public class HornetqJournalEnvironmentBean implements HornetqJournalEnvironmentB
      *
      * @return the threshold file count.
      */
-    public int getCompactMinFiles()
-    {
+    public int getCompactMinFiles() {
         return compactMinFiles;
     }
 
@@ -152,8 +142,7 @@ public class HornetqJournalEnvironmentBean implements HornetqJournalEnvironmentB
      *
      * @param compactMinFiles the threshold file count.
      */
-    public void setCompactMinFiles(int compactMinFiles)
-    {
+    public void setCompactMinFiles(int compactMinFiles) {
         this.compactMinFiles = compactMinFiles;
     }
 
@@ -164,8 +153,7 @@ public class HornetqJournalEnvironmentBean implements HornetqJournalEnvironmentB
      *
      * @return the threshold percentage.
      */
-    public int getCompactPercentage()
-    {
+    public int getCompactPercentage() {
         return compactPercentage;
     }
 
@@ -174,8 +162,7 @@ public class HornetqJournalEnvironmentBean implements HornetqJournalEnvironmentB
      *
      * @param compactPercentage the threshold percentage.
      */
-    public void setCompactPercentage(int compactPercentage)
-    {
+    public void setCompactPercentage(int compactPercentage) {
         this.compactPercentage = compactPercentage;
     }
 
@@ -186,8 +173,7 @@ public class HornetqJournalEnvironmentBean implements HornetqJournalEnvironmentB
      *
      * @return the prefix used to construct individual log file names.
      */
-    public String getFilePrefix()
-    {
+    public String getFilePrefix() {
         return filePrefix;
     }
 
@@ -196,8 +182,7 @@ public class HornetqJournalEnvironmentBean implements HornetqJournalEnvironmentB
      *
      * @param filePrefix the prefix used to construct individual log file names.
      */
-    public void setFilePrefix(String filePrefix)
-    {
+    public void setFilePrefix(String filePrefix) {
         this.filePrefix = filePrefix;
     }
 
@@ -208,8 +193,7 @@ public class HornetqJournalEnvironmentBean implements HornetqJournalEnvironmentB
      *
      * @return the suffix used to construct individual log file names.
      */
-    public String getFileExtension()
-    {
+    public String getFileExtension() {
         return fileExtension;
     }
 
@@ -218,21 +202,19 @@ public class HornetqJournalEnvironmentBean implements HornetqJournalEnvironmentB
      *
      * @param fileExtension the suffix used to construct individual log file names.
      */
-    public void setFileExtension(String fileExtension)
-    {
+    public void setFileExtension(String fileExtension) {
         this.fileExtension = fileExtension;
     }
 
     /**
-     * Gets the maximum write requests queue depth.
-     * Minimum 1. Use 1 for NIO. For AIO, recommended 500.
+     * Gets the maximum write requests queue depth. Minimum 1. Use 1 for NIO. For
+     * AIO, recommended 500.
      *
      * Default: 1
      *
      * @return the max number of outstanding requests.
      */
-    public int getMaxIO()
-    {
+    public int getMaxIO() {
         return maxIO;
     }
 
@@ -241,8 +223,7 @@ public class HornetqJournalEnvironmentBean implements HornetqJournalEnvironmentB
      *
      * @param maxIO the max number of outstanding requests.
      */
-    public void setMaxIO(int maxIO)
-    {
+    public void setMaxIO(int maxIO) {
         this.maxIO = maxIO;
     }
 
@@ -253,8 +234,7 @@ public class HornetqJournalEnvironmentBean implements HornetqJournalEnvironmentB
      *
      * @return the log directory name
      */
-    public String getStoreDir()
-    {
+    public String getStoreDir() {
         return storeDir;
     }
 
@@ -263,23 +243,21 @@ public class HornetqJournalEnvironmentBean implements HornetqJournalEnvironmentB
      *
      * @param storeDir the path to the log directory.
      */
-    public void setStoreDir(String storeDir)
-    {
+    public void setStoreDir(String storeDir) {
         this.storeDir = storeDir;
     }
 
     /**
-     * Returns the sync setting for transaction log write operations.
-     * To preserve ACID properties this value must be set to true, in which case
-     * log write operations block until data is forced to the physical storage device.
-     * Turn sync off only if you don't care about data integrity.
+     * Returns the sync setting for transaction log write operations. To preserve
+     * ACID properties this value must be set to true, in which case log write
+     * operations block until data is forced to the physical storage device. Turn
+     * sync off only if you don't care about data integrity.
      *
      * Default: true.
      *
      * @return true if log writes should be synchronous, false otherwise.
      */
-    public boolean isSyncWrites()
-    {
+    public boolean isSyncWrites() {
         return syncWrites;
     }
 
@@ -288,22 +266,20 @@ public class HornetqJournalEnvironmentBean implements HornetqJournalEnvironmentB
      *
      * @param syncWrites true for synchronous operation, false otherwise.
      */
-    public void setSyncWrites(boolean syncWrites)
-    {
+    public void setSyncWrites(boolean syncWrites) {
         this.syncWrites = syncWrites;
     }
 
     /**
-     * Returns the sync setting for transaction log delete operations.
-     * For optimal crash recovery this value should be set to true.
-     * Asynchronous deletes may give rise to unnecessary crash recovery complications.
+     * Returns the sync setting for transaction log delete operations. For optimal
+     * crash recovery this value should be set to true. Asynchronous deletes may
+     * give rise to unnecessary crash recovery complications.
      *
      * Default: true.
      *
      * @return true if log deletes should be synchronous, false otherwise.
      */
-    public boolean isSyncDeletes()
-    {
+    public boolean isSyncDeletes() {
         return syncDeletes;
     }
 
@@ -312,22 +288,20 @@ public class HornetqJournalEnvironmentBean implements HornetqJournalEnvironmentB
      *
      * @param syncDeletes true for synchronous operation, false otherwise.
      */
-    public void setSyncDeletes(boolean syncDeletes)
-    {
+    public void setSyncDeletes(boolean syncDeletes) {
         this.syncDeletes = syncDeletes;
     }
 
     /**
-     * Returns the target number of timer based buffer flushes per second.
-     * Caution: this property is functionally equivalent to HornetQ's
-     * journal-buffer-timeout but uses different units.
+     * Returns the target number of timer based buffer flushes per second. Caution:
+     * this property is functionally equivalent to HornetQ's journal-buffer-timeout
+     * but uses different units.
      *
      * Default 500.
      *
      * @return the number of buffer flushes per second.
      */
-    public int getBufferFlushesPerSecond()
-    {
+    public int getBufferFlushesPerSecond() {
         return bufferFlushesPerSecond;
     }
 
@@ -336,8 +310,7 @@ public class HornetqJournalEnvironmentBean implements HornetqJournalEnvironmentB
      *
      * @param bufferFlushesPerSecond the target number.
      */
-    public void setBufferFlushesPerSecond(int bufferFlushesPerSecond)
-    {
+    public void setBufferFlushesPerSecond(int bufferFlushesPerSecond) {
         this.bufferFlushesPerSecond = bufferFlushesPerSecond;
     }
 
@@ -348,8 +321,7 @@ public class HornetqJournalEnvironmentBean implements HornetqJournalEnvironmentB
      *
      * @return the size of the buffer.
      */
-    public int getBufferSize()
-    {
+    public int getBufferSize() {
         return bufferSize;
     }
 
@@ -358,8 +330,7 @@ public class HornetqJournalEnvironmentBean implements HornetqJournalEnvironmentB
      *
      * @param bufferSize the size of the buffer.
      */
-    public void setBufferSize(int bufferSize)
-    {
+    public void setBufferSize(int bufferSize) {
         this.bufferSize = bufferSize;
     }
 
@@ -370,8 +341,7 @@ public class HornetqJournalEnvironmentBean implements HornetqJournalEnvironmentB
      *
      * @return true is rate logging is enabled, false otherwise.
      */
-    public boolean isLogRates()
-    {
+    public boolean isLogRates() {
         return logRates;
     }
 
@@ -380,8 +350,7 @@ public class HornetqJournalEnvironmentBean implements HornetqJournalEnvironmentB
      *
      * @param logRates true to enable logging of statistics, false to disable.
      */
-    public void setLogRates(boolean logRates)
-    {
+    public void setLogRates(boolean logRates) {
         this.logRates = logRates;
     }
 
@@ -399,7 +368,8 @@ public class HornetqJournalEnvironmentBean implements HornetqJournalEnvironmentB
     /**
      * Sets the type of Journal.
      *
-     * <i>Note that Journal silently falls back to NIO if AIO native libraries are not available.</i>
+     * <i>Note that Journal silently falls back to NIO if AIO native libraries are
+     * not available.</i>
      *
      * @param asyncIO true to enable AsyncIO, false to disable
      */

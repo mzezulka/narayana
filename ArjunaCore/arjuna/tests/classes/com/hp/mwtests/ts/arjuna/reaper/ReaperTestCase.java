@@ -44,14 +44,11 @@ import com.arjuna.ats.internal.arjuna.coordinator.ReaperElement;
 
 @RunWith(BMUnitRunner.class)
 @BMScript("reaper")
-public class ReaperTestCase extends ReaperTestCaseControl
-{
+public class ReaperTestCase extends ReaperTestCaseControl {
     @Test
-    public void testReaper() throws Exception
-    {
+    public void testReaper() throws Exception {
 
         TransactionReaper reaper = TransactionReaper.transactionReaper();
-
 
         Reapable reapable = new MockReapable(new Uid());
         Reapable reapable2 = new MockReapable(new Uid());
@@ -83,7 +80,7 @@ public class ReaperTestCase extends ReaperTestCaseControl
         try {
             reaper.insert(reapable, 10);
             fail("duplicate insert failed to blow up");
-        } catch(Exception e) {
+        } catch (Exception e) {
         }
         reaper.remove(reapable);
         assertEquals(0, reaper.numberOfTransactions());
@@ -94,7 +91,7 @@ public class ReaperTestCase extends ReaperTestCaseControl
         try {
             reaper.insert(reapable, 20);
             fail("timeout change insert failed to blow up");
-        } catch(Exception e) {
+        } catch (Exception e) {
         }
         assertEquals(1, reaper.numberOfTransactions());
         assertEquals(1, reaper.numberOfTimeouts());
@@ -105,7 +102,8 @@ public class ReaperTestCase extends ReaperTestCaseControl
 
         // enable a repeatable rendezvous before checking the reapable queue
         enableRendezvous("reaper1", true);
-        // enable a repeatable rendezvous before scheduling a reapable in the worker queue for cancellation
+        // enable a repeatable rendezvous before scheduling a reapable in the worker
+        // queue for cancellation
         enableRendezvous("reaper2", true);
         // enable a repeatable rendezvous before checking the worker queue
         enableRendezvous("reaperworker1", true);
@@ -129,7 +127,8 @@ public class ReaperTestCase extends ReaperTestCaseControl
         // we shoudl still have two reapables in the reaper queue
         assertEquals(2, reaper.numberOfTransactions());
         assertEquals(2, reaper.numberOfTimeouts());
-        // now let the worker process the work queue element -- it should not call cancel since the
+        // now let the worker process the work queue element -- it should not call
+        // cancel since the
         // mock reapable will not claim to be running
         triggerRendezvous("reaperworker1");
         // latch the reaper and reaper worker before they check their respective queues
@@ -141,17 +140,21 @@ public class ReaperTestCase extends ReaperTestCaseControl
         assertEquals(1, reaper.numberOfTimeouts());
         // ensure we have waited at lest 1 second so the second reapable is timed out
         triggerWait(1000);
-        // now let the reaper proceed with the next dequeue and enqueue the reapable for the worker to process
+        // now let the reaper proceed with the next dequeue and enqueue the reapable for
+        // the worker to process
         triggerRendezvous("reaper1");
         triggerRendezvous("reaper2");
         triggerRendezvous("reaper2");
-        // relatch the reaper next time round the loop so we can be sure it is not monkeying around
+        // relatch the reaper next time round the loop so we can be sure it is not
+        // monkeying around
         // with the transactions queue
         triggerRendezvous("reaper1");
-        // the worker is still latched so we should still have one entry in the work queue
+        // the worker is still latched so we should still have one entry in the work
+        // queue
         assertEquals(1, reaper.numberOfTransactions());
         assertEquals(1, reaper.numberOfTimeouts());
-        // now let the worker process the work queue element -- it should not call cancel since the
+        // now let the worker process the work queue element -- it should not call
+        // cancel since the
         // mock reapable wil not claim to be running
         triggerRendezvous("reaperworker1");
         // latch reaper worker again so we know it has finished processing the element
@@ -160,30 +163,24 @@ public class ReaperTestCase extends ReaperTestCaseControl
         assertEquals(0, reaper.numberOfTimeouts());
     }
 
-    public class MockReapable implements Reapable
-    {
-        public MockReapable(Uid uid)
-        {
+    public class MockReapable implements Reapable {
+        public MockReapable(Uid uid) {
             this.uid = uid;
         }
 
-        public boolean running()
-        {
-            return false;  //To change body of implemented methods use File | Settings | File Templates.
+        public boolean running() {
+            return false; // To change body of implemented methods use File | Settings | File Templates.
         }
 
-        public boolean preventCommit()
-        {
-            return false;  //To change body of implemented methods use File | Settings | File Templates.
+        public boolean preventCommit() {
+            return false; // To change body of implemented methods use File | Settings | File Templates.
         }
 
-        public int cancel()
-        {
-            return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        public int cancel() {
+            return 0; // To change body of implemented methods use File | Settings | File Templates.
         }
 
-        public Uid get_uid()
-        {
+        public Uid get_uid() {
             return uid;
         }
 

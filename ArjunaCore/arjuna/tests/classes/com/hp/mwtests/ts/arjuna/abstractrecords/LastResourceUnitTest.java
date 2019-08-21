@@ -34,11 +34,9 @@ import com.arjuna.ats.arjuna.coordinator.TwoPhaseOutcome;
 import com.arjuna.ats.internal.arjuna.abstractrecords.LastResourceRecord;
 import com.arjuna.ats.internal.arjuna.abstractrecords.PersistenceRecord;
 
-public class LastResourceUnitTest
-{
+public class LastResourceUnitTest {
     @Test
-    public void test ()
-    {
+    public void test() {
         LastResourceRecord cr = new LastResourceRecord(null); // force errors!
 
         assertFalse(cr.propagateOnAbort());

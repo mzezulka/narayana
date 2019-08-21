@@ -45,35 +45,30 @@ import com.arjuna.ats.arjuna.recovery.RecoverAtomicAction;
 import com.arjuna.ats.arjuna.state.OutputObjectState;
 import com.arjuna.ats.internal.arjuna.common.UidHelper;
 
-public class RecoverAtomicActionTest
-{
+public class RecoverAtomicActionTest {
     @Test
-    public void test ()
-    {
+    public void test() {
         RecoveryStore recoveryStore = StoreManager.getRecoveryStore();
         OutputObjectState fluff = new OutputObjectState();
         Uid kungfuTx = new Uid();
         boolean passed = false;
         final String tn = new AtomicAction().type();
 
-        try
-        {
+        try {
             UidHelper.packInto(kungfuTx, fluff);
 
             System.err.println("Creating dummy log");
 
             recoveryStore.write_committed(kungfuTx, tn, fluff);
 
-            if (recoveryStore.currentState(kungfuTx, tn) == StateStatus.OS_COMMITTED)
-            {
+            if (recoveryStore.currentState(kungfuTx, tn) == StateStatus.OS_COMMITTED) {
                 System.err.println("Wrote dummy transaction " + kungfuTx);
 
                 RecoverAtomicAction rAA = new RecoverAtomicAction(kungfuTx, ActionStatus.COMMITTED);
 
                 // activate should fail!
 
-                if (!rAA.activate())
-                {
+                if (!rAA.activate()) {
                     rAA.replayPhase2();
 
                     // state should have been moved
@@ -81,12 +76,9 @@ public class RecoverAtomicActionTest
                     if (recoveryStore.currentState(kungfuTx, tn) == StateStatus.OS_UNKNOWN)
                         passed = true;
                 }
-            }
-            else
+            } else
                 System.err.println("State is not committed!");
-        }
-        catch (final Exception ex)
-        {
+        } catch (final Exception ex) {
             ex.printStackTrace();
         }
 

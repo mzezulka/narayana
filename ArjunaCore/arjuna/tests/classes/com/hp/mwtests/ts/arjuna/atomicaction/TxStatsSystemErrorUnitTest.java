@@ -20,6 +20,15 @@
  */
 package com.hp.mwtests.ts.arjuna.atomicaction;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import com.arjuna.ats.arjuna.AtomicAction;
 import com.arjuna.ats.arjuna.common.ObjectStoreEnvironmentBean;
 import com.arjuna.ats.arjuna.common.Uid;
@@ -31,28 +40,21 @@ import com.arjuna.ats.arjuna.coordinator.TxStats;
 import com.arjuna.ats.arjuna.objectstore.ParticipantStore;
 import com.arjuna.ats.arjuna.objectstore.StoreManager;
 import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class TxStatsSystemErrorUnitTest {
-    private static final String storeClassName = com.arjuna.ats.internal.arjuna.objectstore.VolatileStore.class.getName();
+    private static final String storeClassName = com.arjuna.ats.internal.arjuna.objectstore.VolatileStore.class
+            .getName();
 
     @BeforeClass
     public static void setupStore() throws Exception {
         String storeType = UnreliableTestStore.class.getName();
         BeanPopulator.getDefaultInstance(ObjectStoreEnvironmentBean.class).setObjectStoreType(storeType);
-        BeanPopulator.getNamedInstance(ObjectStoreEnvironmentBean.class, "communicationStore").setObjectStoreType(storeType);
+        BeanPopulator.getNamedInstance(ObjectStoreEnvironmentBean.class, "communicationStore")
+                .setObjectStoreType(storeType);
     }
 
     @Test
-    public void test() throws Exception
-    {
+    public void test() throws Exception {
         final int loopCnt = 100;
         final int sysErrCnt = loopCnt / 10;
         final int commitCnt = loopCnt * 2 - sysErrCnt; // first loops includes a nested transaction
@@ -65,8 +67,7 @@ public class TxStatsSystemErrorUnitTest {
 
         long startTime = System.nanoTime();
 
-        for (int i = 0; i < loopCnt; i++)
-        {
+        for (int i = 0; i < loopCnt; i++) {
             if (i % 10 == 0)
                 store.setWriteError(true);
 
@@ -88,8 +89,7 @@ public class TxStatsSystemErrorUnitTest {
 
         long avgTxnTime = (System.nanoTime() - startTime) / commitCnt;
 
-        for (int i = 0; i < abortCnt; i++)
-        {
+        for (int i = 0; i < abortCnt; i++) {
             AtomicAction A = new AtomicAction();
 
             A.begin();
@@ -118,7 +118,6 @@ public class TxStatsSystemErrorUnitTest {
 
         TxStats.getInstance().printStatus(pw);
     }
-
 
     private class SimpleAbstractRecord extends AbstractRecord {
         public SimpleAbstractRecord() {

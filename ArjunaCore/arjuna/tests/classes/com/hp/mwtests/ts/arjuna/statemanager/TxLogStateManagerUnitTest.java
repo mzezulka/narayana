@@ -40,24 +40,19 @@ import com.arjuna.ats.arjuna.ObjectModel;
 import com.arjuna.ats.arjuna.common.arjPropertyManager;
 import com.arjuna.ats.internal.arjuna.LogWriteStateManager;
 
-class TxStateManager extends LogWriteStateManager
-{
-    public TxStateManager ()
-    {
+class TxStateManager extends LogWriteStateManager {
+    public TxStateManager() {
         super(ObjectModel.MULTIPLE);
     }
 
-    public boolean modified ()
-    {
+    public boolean modified() {
         return super.modified();
     }
 }
 
-public class TxLogStateManagerUnitTest
-{
+public class TxLogStateManagerUnitTest {
     @Test
-    public void test() throws Exception
-    {
+    public void test() throws Exception {
         AtomicAction A = new AtomicAction();
         TxStateManager tm = new TxStateManager();
 

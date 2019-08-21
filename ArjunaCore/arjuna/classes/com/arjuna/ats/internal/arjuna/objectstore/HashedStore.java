@@ -51,29 +51,26 @@ import com.arjuna.ats.internal.arjuna.common.UidHelper;
  */
 
 /**
- * The basic shadowing store implementations store the object states in
- * a separate file within the same directory in the object store, determined
- * by the object's type. However, as the number of file entries within the
- * directory increases, so does the search time for finding a specific file.
- * The HashStore implementation hashes object states over many different
- * sub-directories to attempt to keep the number of files in a given
- * directory low, thus improving performance as the number of object states
- * grows.
+ * The basic shadowing store implementations store the object states in a
+ * separate file within the same directory in the object store, determined by
+ * the object's type. However, as the number of file entries within the
+ * directory increases, so does the search time for finding a specific file. The
+ * HashStore implementation hashes object states over many different
+ * sub-directories to attempt to keep the number of files in a given directory
+ * low, thus improving performance as the number of object states grows.
  *
  * @author Mark Little (mark@arjuna.com)
- * @version $Id: HashedStore.java 2342 2006-03-30 13:06:17Z  $
+ * @version $Id: HashedStore.java 2342 2006-03-30 13:06:17Z $
  * @since JTS 2.0.
  */
 
-public class HashedStore extends ShadowNoFileLockStore
-{
+public class HashedStore extends ShadowNoFileLockStore {
     /**
-     * Given a type name initialise <code>state</code> to contains all of the
-     * Uids of objects of that type
+     * Given a type name initialise <code>state</code> to contains all of the Uids
+     * of objects of that type
      */
 
-    public boolean allObjUids (String tName, InputObjectState state, int match) throws ObjectStoreException
-    {
+    public boolean allObjUids(String tName, InputObjectState state, int match) throws ObjectStoreException {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("HashedStore.allObjUids(" + tName + ", " + state + ", " + match + ")");
         }
@@ -98,26 +95,19 @@ public class HashedStore extends ShadowNoFileLockStore
         File f = new File(directory);
         String[] entry = f.list();
 
-        if ((entry != null) && (entry.length > 0))
-        {
-            for (int i = 0; i < entry.length; i++)
-            {
-                if ( Character.isDigit(entry[i].charAt(1)) || entry[i].startsWith(HASH_SEPARATOR) )
-                {
+        if ((entry != null) && (entry.length > 0)) {
+            for (int i = 0; i < entry.length; i++) {
+                if (Character.isDigit(entry[i].charAt(1)) || entry[i].startsWith(HASH_SEPARATOR)) {
                     File dir = new File(directory + entry[i]);
 
-                    if (dir.isDirectory())
-                    {
+                    if (dir.isDirectory()) {
                         String[] dirEnt = dir.list();
 
-                        for (int j = 0; j < dirEnt.length; j++)
-                        {
-                            try
-                            {
+                        for (int j = 0; j < dirEnt.length; j++) {
+                            try {
                                 Uid aUid = new Uid(dirEnt[j], true);
 
-                                if (!aUid.valid() || (aUid.equals(Uid.nullUid())))
-                                {
+                                if (!aUid.valid() || (aUid.equals(Uid.nullUid()))) {
                                     String revealed = revealedId(dirEnt[j]);
 
                                     // don't want to give the same id twice.
@@ -128,29 +118,22 @@ public class HashedStore extends ShadowNoFileLockStore
                                         aUid = new Uid(revealed);
                                 }
 
-                                if ((aUid.notEquals(Uid.nullUid())) && ((match == StateStatus.OS_UNKNOWN) ||
-                                    (isType(aUid, tName, match))))
-                                {
-                                    if(scanZeroLengthFiles || new File(dir, dirEnt[j]).length() > 0) {
+                                if ((aUid.notEquals(Uid.nullUid()))
+                                        && ((match == StateStatus.OS_UNKNOWN) || (isType(aUid, tName, match)))) {
+                                    if (scanZeroLengthFiles || new File(dir, dirEnt[j]).length() > 0) {
                                         UidHelper.packInto(aUid, store);
                                     }
                                 }
-                            }
-                            catch (NumberFormatException e)
-                            {
+                            } catch (NumberFormatException e) {
                                 /*
                                  * Not a number at start of file.
                                  */
-                            }
-                            catch (IOException e)
-                            {
+                            } catch (IOException e) {
                                 throw new ObjectStoreException(tsLogger.i18NLogger.get_objectstore_HashedStore_5(), e);
                             }
                         }
                     }
-                }
-                else
-                {
+                } else {
                     // ignore
                 }
             }
@@ -158,12 +141,9 @@ public class HashedStore extends ShadowNoFileLockStore
 
         /* terminate list */
 
-        try
-        {
+        try {
             UidHelper.packInto(Uid.nullUid(), store);
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             throw new ObjectStoreException(tsLogger.i18NLogger.get_objectstore_HashedStore_6(), e);
         }
 
@@ -174,31 +154,25 @@ public class HashedStore extends ShadowNoFileLockStore
         return true;
     }
 
-    public HashedStore (ObjectStoreEnvironmentBean objectStoreEnvironmentBean) throws ObjectStoreException
-    {
+    public HashedStore(ObjectStoreEnvironmentBean objectStoreEnvironmentBean) throws ObjectStoreException {
         super(objectStoreEnvironmentBean);
     }
 
-    protected String truncate (String value)
-    {
+    protected String truncate(String value) {
         int lastIndex = value.lastIndexOf(HashedStore.HASH_SEPARATOR);
         String toReturn = value;
 
-        if (lastIndex != -1)
-        {
+        if (lastIndex != -1) {
             int nextIndex = value.lastIndexOf(HashedStore.HASH_SEPARATOR, lastIndex - 1);
 
-            if (nextIndex != -1)
-            {
+            if (nextIndex != -1) {
                 char[] bitInbetween = new char[lastIndex - nextIndex - 1];
                 boolean isDigit = true;
 
                 value.getChars(nextIndex + 1, lastIndex, bitInbetween, 0);
 
-                for (int i = 0; (i < bitInbetween.length) && isDigit; i++)
-                {
-                    if (!Character.isDigit(bitInbetween[i]))
-                    {
+                for (int i = 0; (i < bitInbetween.length) && isDigit; i++) {
+                    if (!Character.isDigit(bitInbetween[i])) {
                         isDigit = false;
                     }
                 }
@@ -212,14 +186,14 @@ public class HashedStore extends ShadowNoFileLockStore
     }
 
     /**
-     * @return the file name for the state of the object
-     * identified by the Uid and TypeName.
+     * @return the file name for the state of the object identified by the Uid and
+     *         TypeName.
      */
 
-    protected String genPathName (Uid objUid, String tName, int otype) throws ObjectStoreException
-    {
+    protected String genPathName(Uid objUid, String tName, int otype) throws ObjectStoreException {
         if (tsLogger.logger.isTraceEnabled()) {
-            tsLogger.logger.trace("HashedStore.genPathName(" + objUid + ", " + tName + ", " + StateType.stateTypeString(otype) + ")");
+            tsLogger.logger.trace(
+                    "HashedStore.genPathName(" + objUid + ", " + tName + ", " + StateType.stateTypeString(otype) + ")");
         }
 
         String storeName = locateStore(getStoreName());
@@ -227,33 +201,32 @@ public class HashedStore extends ShadowNoFileLockStore
         String cPtr = null;
         int uidHash = objUid.hashCode();
         String os = objUid.fileStringForm();
-        String hashDir = HashedStore.HASH_SEPARATOR + uidHash % HashedStore.NUMBEROFDIRECTORIES + HashedStore.HASH_SEPARATOR + File.separator;  // make sure hash value is unique in the string
+        String hashDir = HashedStore.HASH_SEPARATOR + uidHash % HashedStore.NUMBEROFDIRECTORIES
+                + HashedStore.HASH_SEPARATOR + File.separator; // make sure hash value is unique in the string
 
         if ((tName == null) || (tName.length() == 0))
             cPtr = "";
-        else
-        {
+        else {
             cPtr = tName;
 
             /*
              * Convert Unix separators to 'other', i.e., Windows!
              */
 
-            if (FileSystemStore.rewriteSeparator && (cPtr.indexOf(FileSystemStore.unixSeparator) != -1))
-            {
+            if (FileSystemStore.rewriteSeparator && (cPtr.indexOf(FileSystemStore.unixSeparator) != -1)) {
                 cPtr = cPtr.replace(FileSystemStore.unixSeparator, File.separatorChar);
             }
         }
 
         /*
-         * storeName always ends in '/' so we can remove any
-         * at the start of the type name.
+         * storeName always ends in '/' so we can remove any at the start of the type
+         * name.
          */
 
         if (cPtr.charAt(0) == File.separatorChar)
             cPtr = cPtr.substring(1, cPtr.length());
 
-        if (cPtr.charAt(cPtr.length() -1) != File.separatorChar)
+        if (cPtr.charAt(cPtr.length() - 1) != File.separatorChar)
             fname = storeName + cPtr + File.separator + hashDir + os;
         else
             fname = storeName + cPtr + hashDir + os;
@@ -262,8 +235,8 @@ public class HashedStore extends ShadowNoFileLockStore
          * Make sure we don't end in a '/'.
          */
 
-        if (fname.charAt(fname.length() -1) == File.separatorChar)
-            fname = fname.substring(0, fname.length() -2);
+        if (fname.charAt(fname.length() - 1) == File.separatorChar)
+            fname = fname.substring(0, fname.length() - 2);
 
         // mark the shadow copy distinctly
         if (otype == StateType.OS_SHADOW)
@@ -274,10 +247,8 @@ public class HashedStore extends ShadowNoFileLockStore
 
     public static final char SHADOWCHAR = '!';
 
-    private final boolean present (String id, String[] list)
-    {
-        for (int i = 0; i < list.length; i++)
-        {
+    private final boolean present(String id, String[] list) {
+        for (int i = 0; i < list.length; i++) {
             if (list[i].equals(id))
                 return true;
         }
@@ -288,7 +259,7 @@ public class HashedStore extends ShadowNoFileLockStore
     public static final int DEFAULT_NUMBER_DIRECTORIES = 255;
     private static final String HASH_SEPARATOR = "#";
 
-    private static final int NUMBEROFDIRECTORIES = arjPropertyManager.getObjectStoreEnvironmentBean().getHashedDirectories();
+    private static final int NUMBEROFDIRECTORIES = arjPropertyManager.getObjectStoreEnvironmentBean()
+            .getHashedDirectories();
 
 }
-

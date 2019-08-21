@@ -40,11 +40,9 @@ import com.arjuna.ats.arjuna.common.Uid;
 import com.arjuna.ats.arjuna.common.arjPropertyManager;
 import com.hp.mwtests.ts.arjuna.resources.BasicObject;
 
-public class DestroyRecoverTest
-{
+public class DestroyRecoverTest {
     @Test
-    public void test()
-    {
+    public void test() {
         arjPropertyManager.getCoordinatorEnvironmentBean().setAlternativeRecordOrdering(true);
 
         AtomicAction A = new AtomicAction();
@@ -62,8 +60,7 @@ public class DestroyRecoverTest
             A.removeThread();
 
             A.commit();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
 
             passed = false;
@@ -86,11 +83,9 @@ public class DestroyRecoverTest
                 A.removeThread();
 
                 A.commit();
-            }
-            catch (com.arjuna.ats.arjuna.exceptions.FatalError ex) {
+            } catch (com.arjuna.ats.arjuna.exceptions.FatalError ex) {
                 // ignore
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
 
                 passed = false;
@@ -106,17 +101,15 @@ public class DestroyRecoverTest
                 tx.doCommit();
 
                 /*
-                 * Committing the recovered transaction should have disposed of the
-                 * user object, meaning activation will fail. Which for this test
-                 * is a successful outcome!
+                 * Committing the recovered transaction should have disposed of the user object,
+                 * meaning activation will fail. Which for this test is a successful outcome!
                  */
 
                 BasicObject recoveredObject = new BasicObject(objId);
 
                 if (recoveredObject.get() == -1)
                     passed = true;
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }

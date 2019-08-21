@@ -47,11 +47,9 @@ import com.arjuna.ats.arjuna.common.arjPropertyManager;
 import com.arjuna.ats.internal.arjuna.thread.ThreadActionData;
 import com.hp.mwtests.ts.arjuna.resources.ExtendedObject;
 
-public class ExtendedUnitTest
-{
+public class ExtendedUnitTest {
     @Test
-    public void test() throws Exception
-    {
+    public void test() throws Exception {
         AtomicAction A = new AtomicAction();
         ExtendedObject bo = new ExtendedObject();
         Uid u = bo.get_uid();
@@ -80,8 +78,7 @@ public class ExtendedUnitTest
     }
 
     @Test
-    public void testCadaver () throws Exception
-    {
+    public void testCadaver() throws Exception {
         arjPropertyManager.getCoordinatorEnvironmentBean().setReadonlyOptimisation(false);
 
         AtomicAction A = new AtomicAction();
@@ -104,8 +101,7 @@ public class ExtendedUnitTest
     }
 
     @Test
-    public void testTryLock () throws Exception
-    {
+    public void testTryLock() throws Exception {
         ExtendedObject bo = new ExtendedObject();
 
         assertTrue(bo.lock());
@@ -113,15 +109,14 @@ public class ExtendedUnitTest
     }
 
     @Test
-    public void testFail () throws Exception
-    {
+    public void testFail() throws Exception {
         ExtendedObject bo = new ExtendedObject();
         AtomicAction A = new AtomicAction();
 
         A.begin();
         A.commit();
 
-        ThreadActionData.pushAction(A);  // put it back on this thread.
+        ThreadActionData.pushAction(A); // put it back on this thread.
 
         bo.deactivate();
         bo.set_status();
@@ -131,8 +126,7 @@ public class ExtendedUnitTest
     }
 
     @Test
-    public void testRememberAction () throws Exception
-    {
+    public void testRememberAction() throws Exception {
         ExtendedObject bo = new ExtendedObject();
         final Uid u = bo.get_uid();
 

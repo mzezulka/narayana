@@ -19,7 +19,7 @@
  * @author JBoss Inc.
  */
 
-package com.arjuna.ats.internal.arjuna.recovery ;
+package com.arjuna.ats.internal.arjuna.recovery;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,41 +30,40 @@ import com.arjuna.ats.arjuna.recovery.RecoveryActivator;
 import com.arjuna.common.internal.util.ClassloadingUtility;
 
 /**
- * RecoveryActivators are dynamically loaded. The recoveryActivator to load
- * are specified by properties beginning with "recoveryActivator"
+ * RecoveryActivators are dynamically loaded. The recoveryActivator to load are
+ * specified by properties beginning with "recoveryActivator"
  * <P>
+ *
  * @author Malik Saheb
  * @since ArjunaTS 3.0
  */
 
-public class RecActivatorLoader
-{
-    public RecActivatorLoader()
-    {
+public class RecActivatorLoader {
+    public RecActivatorLoader() {
         loadRecoveryActivators();
     }
 
     // These are loaded in list iteration order.
-    private void loadRecoveryActivators ()
-    {
-        List<String> activatorNames = recoveryPropertyManager.getRecoveryEnvironmentBean().getRecoveryActivatorClassNames();
+    private void loadRecoveryActivators() {
+        List<String> activatorNames = recoveryPropertyManager.getRecoveryEnvironmentBean()
+                .getRecoveryActivatorClassNames();
 
-        for(String activatorName : activatorNames) {
-            RecoveryActivator recoveryActivator = ClassloadingUtility.loadAndInstantiateClass(RecoveryActivator.class, activatorName, null);
-            if(recoveryActivator != null) {
+        for (String activatorName : activatorNames) {
+            RecoveryActivator recoveryActivator = ClassloadingUtility.loadAndInstantiateClass(RecoveryActivator.class,
+                    activatorName, null);
+            if (recoveryActivator != null) {
                 _recoveryActivators.add(recoveryActivator);
             }
         }
     }
 
-    public void startRecoveryActivators() throws RuntimeException
-    {
+    public void startRecoveryActivators() throws RuntimeException {
         tsLogger.logger.debug("Start RecoveryActivators");
 
-        for(RecoveryActivator recoveryActivator : _recoveryActivators)
-        {
-            if(!recoveryActivator.startRCservice()) {
-                throw new RuntimeException( tsLogger.i18NLogger.get_recovery_RecActivatorLoader_initfailed(recoveryActivator.getClass().getCanonicalName()));
+        for (RecoveryActivator recoveryActivator : _recoveryActivators) {
+            if (!recoveryActivator.startRCservice()) {
+                throw new RuntimeException(tsLogger.i18NLogger
+                        .get_recovery_RecActivatorLoader_initfailed(recoveryActivator.getClass().getCanonicalName()));
             }
         }
     }
@@ -73,12 +72,3 @@ public class RecActivatorLoader
     // property file which are dynamically loaded.
     private final List<RecoveryActivator> _recoveryActivators = new ArrayList<RecoveryActivator>();
 }
-
-
-
-
-
-
-
-
-

@@ -27,8 +27,7 @@ import java.sql.SQLException;
  * JDBC store implementation driver-specific code. This version for MySQL JDBC
  * Drivers.
  */
-public class mysql_driver extends
-        com.arjuna.ats.internal.arjuna.objectstore.jdbc.JDBCImple_driver {
+public class mysql_driver extends com.arjuna.ats.internal.arjuna.objectstore.jdbc.JDBCImple_driver {
 
     @Override
     protected String getObjectStateSQLType() {
@@ -44,8 +43,7 @@ public class mysql_driver extends
     }
 
     @Override
-    protected void checkDropTableException(Connection connection,
-            SQLException ex) throws SQLException {
+    protected void checkDropTableException(Connection connection, SQLException ex) throws SQLException {
         if (!ex.getSQLState().equals("42S02")) {
             throw ex;
         }

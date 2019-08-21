@@ -37,8 +37,9 @@ import com.arjuna.ats.arjuna.objectstore.RecoveryStore;
  * @author Mike Musgrove
  */
 /**
- * @deprecated as of 5.0.5.Final In a subsequent release we will change packages names in order to
- * provide a better separation between public and internal classes.
+ * @deprecated as of 5.0.5.Final In a subsequent release we will change packages
+ *             names in order to provide a better separation between public and
+ *             internal classes.
  */
 @Deprecated // in order to provide a better separation between public and internal classes.
 public class StateManagerWrapper extends StateManager {
@@ -58,7 +59,7 @@ public class StateManagerWrapper extends StateManager {
             if (headerStateReader != null) {
                 HeaderState hs = headerStateReader.unpackHeader(os.read_committed(uid, type));
 
-                if (hs != null)  {
+                if (hs != null) {
                     state = hs.getState();
                     txId = hs.getTxUid();
                     processUid = hs.getProcessUid();
@@ -72,13 +73,11 @@ public class StateManagerWrapper extends StateManager {
         }
     }
 
-    public String getCreationTime()
-    {
+    public String getCreationTime() {
         return birthDate < 0 ? "" : formatter.format(new Date(birthDate));
     }
 
-    public long getAgeInSeconds()
-    {
+    public long getAgeInSeconds() {
         return (birthDate < 0 ? -1 : ((System.currentTimeMillis()) - birthDate) / 1000L);
     }
 }

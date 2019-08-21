@@ -46,10 +46,8 @@ import com.arjuna.ats.arjuna.exceptions.ObjectStoreException;
  * @since JTS 1.0.
  */
 
-public class ShadowNoFileLockStore extends ShadowingStore
-{
-    public ShadowNoFileLockStore(ObjectStoreEnvironmentBean objectStoreEnvironmentBean) throws ObjectStoreException
-    {
+public class ShadowNoFileLockStore extends ShadowingStore {
+    public ShadowNoFileLockStore(ObjectStoreEnvironmentBean objectStoreEnvironmentBean) throws ObjectStoreException {
         super(objectStoreEnvironmentBean);
     }
 
@@ -57,13 +55,11 @@ public class ShadowNoFileLockStore extends ShadowingStore
      * Override the default lock/unlock implementations to do nothing.
      */
 
-    protected boolean lock (File fd, int lmode, boolean create)
-    {
+    protected boolean lock(File fd, int lmode, boolean create) {
         return true;
     }
 
-    protected boolean unlock (File fd)
-    {
+    protected boolean unlock(File fd) {
         return true;
     }
 

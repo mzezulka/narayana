@@ -21,17 +21,18 @@
  */
 package com.arjuna.ats.arjuna.coordinator;
 
+import java.util.concurrent.Callable;
+
 import com.arjuna.ats.arjuna.logging.tsLogger;
 import com.arjuna.ats.internal.arjuna.thread.ThreadActionData;
-
-import java.util.concurrent.Callable;
 
 public class AsyncAfterSynchronization implements Callable<Boolean> {
     private TwoPhaseCoordinator coordinator;
     private SynchronizationRecord synchronization;
-    private int                 _status;
+    private int _status;
 
-    public AsyncAfterSynchronization(TwoPhaseCoordinator coordinator, SynchronizationRecord synchronization, int status) {
+    public AsyncAfterSynchronization(TwoPhaseCoordinator coordinator, SynchronizationRecord synchronization,
+            int status) {
         this.coordinator = coordinator;
         this.synchronization = synchronization;
         this._status = status;
@@ -39,6 +40,7 @@ public class AsyncAfterSynchronization implements Callable<Boolean> {
 
     /**
      * Run the call
+     *
      * @return true if the call was successful and false otherwise
      * @throws Exception if the wrapped synchronisation throws an exception
      */

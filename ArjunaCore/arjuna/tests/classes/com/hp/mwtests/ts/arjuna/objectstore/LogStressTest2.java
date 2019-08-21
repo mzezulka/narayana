@@ -43,11 +43,9 @@ import com.hp.mwtests.ts.arjuna.resources.BasicRecord;
  * no logs left at the end.
  */
 
-public class LogStressTest2
-{
+public class LogStressTest2 {
     @Test
-    public void test()
-    {
+    public void test() {
         arjPropertyManager.getCoordinatorEnvironmentBean().setCommitOnePhase(false);
         arjPropertyManager.getObjectStoreEnvironmentBean().setObjectStoreType(LogStore.class.getName());
         arjPropertyManager.getObjectStoreEnvironmentBean().setTxLogSize(10000);
@@ -69,8 +67,7 @@ public class LogStressTest2
                 A.add(new BasicRecord());
 
                 A.commit();
-            }
-            catch (final Exception ex) {
+            } catch (final Exception ex) {
             }
 
             ftime = System.currentTimeMillis();

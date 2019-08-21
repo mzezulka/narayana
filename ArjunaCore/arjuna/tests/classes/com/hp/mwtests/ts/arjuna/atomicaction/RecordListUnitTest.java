@@ -32,11 +32,9 @@ import com.arjuna.ats.arjuna.coordinator.RecordList;
 import com.arjuna.ats.internal.arjuna.abstractrecords.ActivationRecord;
 import com.arjuna.ats.internal.arjuna.abstractrecords.DisposeRecord;
 
-public class RecordListUnitTest
-{
+public class RecordListUnitTest {
     @Test
-    public void test () throws Exception
-    {
+    public void test() throws Exception {
         RecordList rl = new RecordList();
         DisposeRecord dr = new DisposeRecord();
 

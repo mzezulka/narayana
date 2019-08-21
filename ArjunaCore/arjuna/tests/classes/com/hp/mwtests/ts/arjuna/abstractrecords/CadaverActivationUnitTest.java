@@ -36,11 +36,9 @@ import com.arjuna.ats.internal.arjuna.abstractrecords.CadaverActivationRecord;
 import com.arjuna.ats.internal.arjuna.abstractrecords.PersistenceRecord;
 import com.hp.mwtests.ts.arjuna.resources.ExtendedObject;
 
-public class CadaverActivationUnitTest
-{
+public class CadaverActivationUnitTest {
     @Test
-    public void test ()
-    {
+    public void test() {
         ParticipantStore store = StoreManager.setupStore(null, StateType.OS_UNSHARED);
 
         CadaverActivationRecord cr = new CadaverActivationRecord(new ExtendedObject());

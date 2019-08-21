@@ -72,8 +72,7 @@ public class DataSourceJDBCAccess implements JDBCAccess {
         }
 
         if (datasourceName == null) {
-            throw new FatalError(
-                    "The JDBC ObjectStore was not configured with a datasource name");
+            throw new FatalError("The JDBC ObjectStore was not configured with a datasource name");
         }
 
         try {

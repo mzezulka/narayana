@@ -20,8 +20,11 @@
  */
 package com.hp.mwtests.ts.arjuna.objectstore;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,23 +32,20 @@ import org.junit.Test;
 import com.arjuna.ats.arjuna.common.Uid;
 import com.arjuna.ats.arjuna.common.arjPropertyManager;
 import com.arjuna.ats.arjuna.exceptions.ObjectStoreException;
-import com.arjuna.ats.arjuna.objectstore.*;
+import com.arjuna.ats.arjuna.objectstore.StoreManager;
 import com.arjuna.ats.arjuna.state.OutputObjectState;
-
-import java.io.File;
-import java.io.IOException;
 
 /**
  * Test the filesystem is not changed when using a non file based store
  */
-public class AltStoreTest
-{
+public class AltStoreTest {
     String defaultStoreDir = null;
 
     @Before
     public void setPropertiesFileAndRemoveStore() {
         // set up a different properties file specific to this test
-        // (the properties change the store type to one that does not touch the filesystem)
+        // (the properties change the store type to one that does not touch the
+        // filesystem)
         System.setProperty("com.arjuna.ats.arjuna.common.propertiesFile", "alt-jbossts-properties.xml");
 
         defaultStoreDir = arjPropertyManager.getObjectStoreEnvironmentBean().getObjectStoreDir();
@@ -59,8 +59,7 @@ public class AltStoreTest
     }
 
     @Test
-    public void test() throws IOException, ObjectStoreException
-    {
+    public void test() throws IOException, ObjectStoreException {
         final OutputObjectState buff = new OutputObjectState();
         final String tn = "/StateManager/junit";
 
@@ -74,11 +73,12 @@ public class AltStoreTest
 
     /**
      * Delete a directory hierarchy
-     * @param directory the point at which to start deleting (directory is also removed)
+     *
+     * @param directory the point at which to start deleting (directory is also
+     *                  removed)
      * @return
      */
-    private boolean removeContents(File directory)
-    {
+    private boolean removeContents(File directory) {
         if (directory.isDirectory())
             for (String entry : directory.list())
                 if (!removeContents(new File(directory, entry)))

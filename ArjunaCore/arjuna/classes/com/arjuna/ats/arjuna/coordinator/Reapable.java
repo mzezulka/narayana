@@ -35,19 +35,18 @@ import com.arjuna.ats.arjuna.common.Uid;
 
 /**
  * @author Mark Little (mark@arjuna.com)
- * @version $Id: Reapable.java 2342 2006-03-30 13:06:17Z  $
+ * @version $Id: Reapable.java 2342 2006-03-30 13:06:17Z $
  * @since JTS 3.0.
  */
 
-public interface Reapable
-{
+public interface Reapable {
 
-    public boolean running ();
+    public boolean running();
 
-    public boolean preventCommit ();
+    public boolean preventCommit();
 
-    public int cancel ();
+    public int cancel();
 
-    public Uid get_uid ();
+    public Uid get_uid();
 
 }

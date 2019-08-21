@@ -27,11 +27,9 @@ import org.junit.Test;
 import com.arjuna.ats.arjuna.common.recoveryPropertyManager;
 import com.arjuna.ats.arjuna.recovery.RecoveryManager;
 
-public class RecoveryManagerUnitTest
-{
+public class RecoveryManagerUnitTest {
     @Test
-    public void testSuspendResume () throws Exception
-    {
+    public void testSuspendResume() throws Exception {
         recoveryPropertyManager.getRecoveryEnvironmentBean().setPeriodicRecoveryPeriod(1);
         recoveryPropertyManager.getRecoveryEnvironmentBean().setRecoveryBackoffPeriod(1);
 

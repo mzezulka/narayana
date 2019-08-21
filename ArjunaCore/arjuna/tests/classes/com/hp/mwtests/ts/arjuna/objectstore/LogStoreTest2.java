@@ -50,21 +50,21 @@ import com.arjuna.ats.internal.arjuna.objectstore.LogStore;
 
 @RunWith(BMUnitRunner.class)
 @BMScript("objectstore")
-public class LogStoreTest2
-{
+public class LogStoreTest2 {
     @Test
-    public void test()
-    {
+    public void test() {
         arjPropertyManager.getObjectStoreEnvironmentBean().setObjectStoreType(LogStore.class.getName());
 
         // the byteman script will manage this
-        //System.setProperty(Environment.TRANSACTION_LOG_PURGE_TIME, "10000");
+        // System.setProperty(Environment.TRANSACTION_LOG_PURGE_TIME, "10000");
 
         RecoveryStore recoveryStore = StoreManager.getRecoveryStore();
         final int numberOfTransactions = 1000;
         final Uid[] ids = new Uid[numberOfTransactions];
         final int fakeData = 0xdeedbaaf;
-        final String type = "/StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction/TestTest";  // use unique path to prevent pollution from other tests
+        final String type = "/StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction/TestTest"; // use unique path to
+                                                                                                   // prevent pollution
+                                                                                                   // from other tests
 
         for (int i = 0; i < numberOfTransactions; i++) {
             OutputObjectState dummyState = new OutputObjectState();
@@ -73,32 +73,26 @@ public class LogStoreTest2
                 dummyState.packInt(fakeData);
                 ids[i] = new Uid();
                 recoveryStore.write_committed(ids[i], type, dummyState);
-            }
-            catch (final Exception ex) {
+            } catch (final Exception ex) {
                 ex.printStackTrace();
             }
         }
 
         try {
             recoveryStore.remove_committed(ids[0], type);
-        }
-        catch (final Exception ex) {
+        } catch (final Exception ex) {
             ex.printStackTrace();
         }
 
         /*
-        try {
-        */
-            /*
-                * Give the purger thread a chance to run and delete
-                * the entry.
-                */
+         * try {
+         */
         /*
-            Thread.sleep(12000);
-        }
-        catch (final Exception ex) {
-        }
-        */
+         * Give the purger thread a chance to run and delete the entry.
+         */
+        /*
+         * Thread.sleep(12000); } catch (final Exception ex) { }
+         */
 
         InputObjectState ios = new InputObjectState();
         boolean passed = false;
@@ -111,8 +105,7 @@ public class LogStoreTest2
                 do {
                     try {
                         id = UidHelper.unpackFrom(ios);
-                    }
-                    catch (Exception ex) {
+                    } catch (Exception ex) {
                         id = Uid.nullUid();
                     }
 
@@ -134,8 +127,7 @@ public class LogStoreTest2
                             System.err.println("Found unexpected transaction!");
                         }
                     }
-                }
-                while (id.notEquals(Uid.nullUid()));
+                } while (id.notEquals(Uid.nullUid()));
 
                 if ((numberOfEntries == ids.length - 1) && passed) {
                     if (recoveryStore.currentState(ids[0], type) != StateStatus.OS_UNKNOWN)
@@ -150,8 +142,7 @@ public class LogStoreTest2
                     System.err.println("Expected " + ids.length + " and got " + numberOfEntries);
                 }
             }
-        }
-        catch (final Exception ex) {
+        } catch (final Exception ex) {
             ex.printStackTrace();
         }
 

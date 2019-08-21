@@ -61,21 +61,18 @@ public class DynamicDataSourceJDBCAccess implements JDBCAccess {
                 configuration.put(split[0], split[1].replace("\\equ", "="));
             }
             try {
-                this.dataSource = (DataSource) Class.forName(
-                        configuration.remove("ClassName")).newInstance();
+                this.dataSource = (DataSource) Class.forName(configuration.remove("ClassName")).newInstance();
                 Iterator<String> iterator = configuration.keySet().iterator();
                 while (iterator.hasNext()) {
                     String key = iterator.next();
                     String value = configuration.get(key);
                     Method method = null;
                     try {
-                        method = dataSource.getClass().getMethod("set" + key,
-                                java.lang.String.class);
+                        method = dataSource.getClass().getMethod("set" + key, java.lang.String.class);
                         String replace = value.replace("\\semi", ";");
                         method.invoke(dataSource, value.replace("\\semi", ";"));
                     } catch (NoSuchMethodException nsme) {
-                        method = dataSource.getClass().getMethod("set" + key,
-                                int.class);
+                        method = dataSource.getClass().getMethod("set" + key, int.class);
                         method.invoke(dataSource, Integer.valueOf(value));
                     }
                 }

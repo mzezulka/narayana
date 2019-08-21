@@ -21,10 +21,10 @@
  */
 package com.arjuna.ats.arjuna.tools.osb.mbean;
 
+import java.io.IOException;
+
 import com.arjuna.ats.arjuna.common.Uid;
 import com.arjuna.ats.arjuna.state.InputObjectState;
-
-import java.io.IOException;
 
 /**
  * Per record header reader. The majority of records pack the header state {@link HeaderState} first.
@@ -36,8 +36,9 @@ import java.io.IOException;
  * @author Mike Musgrove
  */
 /**
- * @deprecated as of 5.0.5.Final In a subsequent release we will change packages names in order to
- * provide a better separation between public and internal classes.
+ * @deprecated as of 5.0.5.Final In a subsequent release we will change packages
+ *             names in order to provide a better separation between public and
+ *             internal classes.
  */
 @Deprecated // in order to provide a better separation between public and internal classes.
 public class HeaderStateReader {

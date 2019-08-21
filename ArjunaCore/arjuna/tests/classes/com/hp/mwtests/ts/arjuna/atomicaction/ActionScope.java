@@ -38,11 +38,9 @@ import org.junit.Test;
 import com.arjuna.ats.arjuna.AtomicAction;
 import com.arjuna.ats.arjuna.coordinator.ActionStatus;
 
-public class ActionScope
-{
+public class ActionScope {
     @Test
-    public void test() throws Exception
-    {
+    public void test() throws Exception {
         AtomicAction atomicAction = new AtomicAction();
 
         atomicAction.begin();

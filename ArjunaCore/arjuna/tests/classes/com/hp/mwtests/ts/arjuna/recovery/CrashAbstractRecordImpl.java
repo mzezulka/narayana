@@ -41,46 +41,37 @@ import com.arjuna.ats.arjuna.coordinator.TwoPhaseOutcome;
 import com.arjuna.ats.arjuna.state.InputObjectState;
 import com.arjuna.ats.arjuna.state.OutputObjectState;
 
-public class CrashAbstractRecordImpl extends AbstractRecord
-{
-    public CrashAbstractRecordImpl(int crashBehaviour)
-    {
-        super(new Uid("-7FFFFFF" + _count + ":0:0:0:0"),
-                "com.hp.mwtests.ts.arjuna.recovery.CrashAbstractRecordImpl",
+public class CrashAbstractRecordImpl extends AbstractRecord {
+    public CrashAbstractRecordImpl(int crashBehaviour) {
+        super(new Uid("-7FFFFFF" + _count + ":0:0:0:0"), "com.hp.mwtests.ts.arjuna.recovery.CrashAbstractRecordImpl",
                 ObjectType.ANDPERSISTENT);
         _count++;
         _crash_behaviour = crashBehaviour;
     }
 
     // for crash recovery
-    public CrashAbstractRecordImpl()
-    {
+    public CrashAbstractRecordImpl() {
     }
 
-    public int typeIs()
-    {
+    public int typeIs() {
         return RecordType.USER_DEF_FIRST0;
     }
 
-    public boolean doSave()
-    {
+    public boolean doSave() {
         return true;
     }
 
-    public String type()
-    {
+    public String type() {
         return "/StateManager/AbstractRecord/com.hp.mwtests.ts.arjuna.recovery.CrashAbstractRecordImpl";
     }
 
-    public boolean save_state(OutputObjectState os, int i)
-    {
+    public boolean save_state(OutputObjectState os, int i) {
         boolean result = super.save_state(os, i);
 
         if (result) {
             try {
                 os.packInt(_save_param);
-            }
-            catch (IOException ex) {
+            } catch (IOException ex) {
                 result = false;
             }
         }
@@ -88,52 +79,43 @@ public class CrashAbstractRecordImpl extends AbstractRecord
         return result;
     }
 
-    public boolean restore_state(InputObjectState os, int i)
-    {
+    public boolean restore_state(InputObjectState os, int i) {
         boolean result = super.restore_state(os, i);
 
         try {
             _save_param = os.unpackInt();
             _save_param++;
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             result = false;
         }
 
         return result;
     }
 
-    public Object value()
-    {
+    public Object value() {
         return null;
     }
 
-    public void setValue(Object object)
-    {
+    public void setValue(Object object) {
     }
 
-    public int nestedAbort()
-    {
+    public int nestedAbort() {
         return TwoPhaseOutcome.FINISH_OK;
     }
 
-    public int nestedCommit()
-    {
+    public int nestedCommit() {
         return TwoPhaseOutcome.FINISH_OK;
     }
 
-    public int nestedPrepare()
-    {
+    public int nestedPrepare() {
         return TwoPhaseOutcome.PREPARE_OK;
     }
 
-    public int topLevelAbort()
-    {
+    public int topLevelAbort() {
         return TwoPhaseOutcome.FINISH_OK;
     }
 
-    public int topLevelCommit()
-    {
+    public int topLevelCommit() {
         int two_phase_outcome = TwoPhaseOutcome.FINISH_OK;
 
         if (_crash_behaviour == CRASH_IN_COMMIT) {
@@ -143,8 +125,7 @@ public class CrashAbstractRecordImpl extends AbstractRecord
         return two_phase_outcome;
     }
 
-    public int topLevelPrepare()
-    {
+    public int topLevelPrepare() {
         int two_phase_outcome = TwoPhaseOutcome.PREPARE_OK;
 
         if (_crash_behaviour == CRASH_IN_PREPARE) {
@@ -154,31 +135,25 @@ public class CrashAbstractRecordImpl extends AbstractRecord
         return two_phase_outcome;
     }
 
-    public void alter(AbstractRecord abstractRecord)
-    {
+    public void alter(AbstractRecord abstractRecord) {
     }
 
-    public void merge(AbstractRecord abstractRecord)
-    {
+    public void merge(AbstractRecord abstractRecord) {
     }
 
-    public boolean shouldAdd(AbstractRecord abstractRecord)
-    {
+    public boolean shouldAdd(AbstractRecord abstractRecord) {
         return false;
     }
 
-    public boolean shouldAlter(AbstractRecord abstractRecord)
-    {
+    public boolean shouldAlter(AbstractRecord abstractRecord) {
         return false;
     }
 
-    public boolean shouldMerge(AbstractRecord abstractRecord)
-    {
+    public boolean shouldMerge(AbstractRecord abstractRecord) {
         return false;
     }
 
-    public boolean shouldReplace(AbstractRecord abstractRecord)
-    {
+    public boolean shouldReplace(AbstractRecord abstractRecord) {
         return false;
     }
 

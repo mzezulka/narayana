@@ -44,8 +44,7 @@ public class jconnect_driver extends JDBCImple_driver {
     }
 
     @Override
-    protected void checkDropTableException(Connection connection,
-            SQLException ex) throws SQLException {
+    protected void checkDropTableException(Connection connection, SQLException ex) throws SQLException {
         if (ex.getErrorCode() != 3701) {
             throw ex;
         }

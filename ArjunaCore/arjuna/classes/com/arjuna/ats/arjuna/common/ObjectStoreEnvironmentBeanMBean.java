@@ -20,15 +20,13 @@
  */
 package com.arjuna.ats.arjuna.common;
 
-import com.arjuna.ats.arjuna.objectstore.jdbc.JDBCAccess;
-
 /**
- * A JMX MBean interface containing configuration for the objectstore and various implementations thereof.
+ * A JMX MBean interface containing configuration for the objectstore and
+ * various implementations thereof.
  *
  * @author Jonathan Halliday (jonathan.halliday@redhat.com)
  */
-public interface ObjectStoreEnvironmentBeanMBean
-{
+public interface ObjectStoreEnvironmentBeanMBean {
     int getCacheStoreSize();
 
     boolean isCacheStoreSync();
@@ -73,8 +71,7 @@ public interface ObjectStoreEnvironmentBeanMBean
     /**
      * Sets the instance of JDBCAccess
      *
-     * @param connectionDetails
-     *            an Object that provides JDBCAccess, or null.
+     * @param connectionDetails an Object that provides JDBCAccess, or null.
      */
     public void setJdbcAccess(String connectionDetails);
 
@@ -88,8 +85,7 @@ public interface ObjectStoreEnvironmentBeanMBean
     /**
      * Set the table prefix
      *
-     * @param tablePrefix
-     *            A prefix to use on the tables
+     * @param tablePrefix A prefix to use on the tables
      */
     public void setTablePrefix(String tablePrefix);
 
@@ -103,8 +99,7 @@ public interface ObjectStoreEnvironmentBeanMBean
     /**
      * Set whether to drop the table.
      *
-     * @param dropTable
-     *            Drop the table
+     * @param dropTable Drop the table
      */
     public void setDropTable(boolean dropTable);
 

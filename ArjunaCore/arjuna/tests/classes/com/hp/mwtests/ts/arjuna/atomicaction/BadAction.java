@@ -36,11 +36,9 @@ import org.junit.Test;
 import com.arjuna.ats.arjuna.AtomicAction;
 import com.arjuna.ats.arjuna.coordinator.BasicAction;
 
-public class BadAction
-{
+public class BadAction {
     @Test
-    public void test()
-    {
+    public void test() {
         AtomicAction A = new AtomicAction();
         AtomicAction B = new AtomicAction();
 

@@ -25,15 +25,12 @@ import com.arjuna.ats.arjuna.AtomicAction;
 
 /**
  * This class is a plug-in module for the recovery manager. This class is
- * responsible for the removing transaction logs that are too
- * old.
+ * responsible for the removing transaction logs that are too old.
  */
 
-public class AtomicActionExpiryScanner extends ExpiredTransactionScanner
-{
+public class AtomicActionExpiryScanner extends ExpiredTransactionScanner {
 
-    public AtomicActionExpiryScanner()
-    {
+    public AtomicActionExpiryScanner() {
         super(_transactionType, _transactionType + "/Expired");
     }
 

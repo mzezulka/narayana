@@ -51,8 +51,7 @@ public class OtherObjectStoreAPIJMXTest {
     private RecoveryStoreProxy rsProxy;
     private ParticipantStoreProxy psProxy;
 
-    public void createMBeans (RecoveryStore rs, ParticipantStore ps) throws Exception
-    {
+    public void createMBeans(RecoveryStore rs, ParticipantStore ps) throws Exception {
         // create MBeans representing the ObjectStore
         rsb = new RecoveryStoreBean(rs);
         psb = new ParticipantStoreBean(ps);
@@ -67,8 +66,7 @@ public class OtherObjectStoreAPIJMXTest {
     }
 
     @After
-    public void tearDown () throws Exception
-    {
+    public void tearDown() throws Exception {
         // Unregister MBeans
         rsb.stop();
         psb.stop();
@@ -77,10 +75,9 @@ public class OtherObjectStoreAPIJMXTest {
     }
 
     @Test
-    public void testActionStore() throws Exception
-    {
+    public void testActionStore() throws Exception {
         ObjectStoreEnvironmentBean objectStoreEnvironmentBean = new ObjectStoreEnvironmentBean();
-        objectStoreEnvironmentBean.setLocalOSRoot( "tmp" );
+        objectStoreEnvironmentBean.setLocalOSRoot("tmp");
 
         ActionStore as = new ActionStore(objectStoreEnvironmentBean);
 
@@ -89,8 +86,7 @@ public class OtherObjectStoreAPIJMXTest {
 
         createMBeans(as, as);
 
-        for (int i = 0; i < 10; i++)
-        {
+        for (int i = 0; i < 10; i++) {
             Uid u = new Uid();
 
             psProxy.write_uncommitted(u, tn, buff);
@@ -120,10 +116,9 @@ public class OtherObjectStoreAPIJMXTest {
     }
 
     @Test
-    public void testHashedStore () throws Exception
-    {
+    public void testHashedStore() throws Exception {
         ObjectStoreEnvironmentBean objectStoreEnvironmentBean = new ObjectStoreEnvironmentBean();
-        objectStoreEnvironmentBean.setLocalOSRoot( "tmp" );
+        objectStoreEnvironmentBean.setLocalOSRoot("tmp");
 
         HashedStore as = new HashedStore(objectStoreEnvironmentBean);
 
@@ -132,8 +127,7 @@ public class OtherObjectStoreAPIJMXTest {
 
         createMBeans(as, as);
 
-        for (int i = 0; i < 10; i++)
-        {
+        for (int i = 0; i < 10; i++) {
             Uid u = new Uid();
 
             psProxy.write_uncommitted(u, tn, buff);
@@ -162,10 +156,9 @@ public class OtherObjectStoreAPIJMXTest {
     }
 
     @Test
-    public void testHashedActionStore () throws Exception
-    {
+    public void testHashedActionStore() throws Exception {
         ObjectStoreEnvironmentBean objectStoreEnvironmentBean = new ObjectStoreEnvironmentBean();
-        objectStoreEnvironmentBean.setLocalOSRoot( "tmp" );
+        objectStoreEnvironmentBean.setLocalOSRoot("tmp");
 
         HashedActionStore as = new HashedActionStore(objectStoreEnvironmentBean);
 
@@ -174,8 +167,7 @@ public class OtherObjectStoreAPIJMXTest {
 
         createMBeans(as, as);
 
-        for (int i = 0; i < 10; i++)
-        {
+        for (int i = 0; i < 10; i++) {
             Uid u = new Uid();
 
             psProxy.write_uncommitted(u, tn, buff);
@@ -204,10 +196,9 @@ public class OtherObjectStoreAPIJMXTest {
     }
 
     @Test
-    public void testShadowingStore () throws Exception
-    {
+    public void testShadowingStore() throws Exception {
         ObjectStoreEnvironmentBean objectStoreEnvironmentBean = new ObjectStoreEnvironmentBean();
-        objectStoreEnvironmentBean.setLocalOSRoot( "tmp" );
+        objectStoreEnvironmentBean.setLocalOSRoot("tmp");
 
         ShadowingStore as = new ShadowingStore(objectStoreEnvironmentBean);
 
@@ -215,8 +206,7 @@ public class OtherObjectStoreAPIJMXTest {
         final String tn = "/StateManager/junit";
 
         createMBeans(as, as);
-        for (int i = 0; i < 10; i++)
-        {
+        for (int i = 0; i < 10; i++) {
             Uid u = new Uid();
 
             psProxy.write_uncommitted(u, tn, buff);
@@ -245,10 +235,9 @@ public class OtherObjectStoreAPIJMXTest {
     }
 
     @Test
-    public void testNullActionStore () throws Exception
-    {
+    public void testNullActionStore() throws Exception {
         ObjectStoreEnvironmentBean objectStoreEnvironmentBean = new ObjectStoreEnvironmentBean();
-        objectStoreEnvironmentBean.setLocalOSRoot( "tmp" );
+        objectStoreEnvironmentBean.setLocalOSRoot("tmp");
 
         NullActionStore as = new NullActionStore(objectStoreEnvironmentBean);
 
@@ -256,8 +245,7 @@ public class OtherObjectStoreAPIJMXTest {
         final String tn = "/StateManager/junit";
 
         createMBeans(as, as);
-        for (int i = 0; i < 10; i++)
-        {
+        for (int i = 0; i < 10; i++) {
             Uid u = new Uid();
 
             psProxy.write_uncommitted(u, tn, buff);
@@ -286,10 +274,9 @@ public class OtherObjectStoreAPIJMXTest {
     }
 
     @Test
-    public void testVolatileStore () throws Exception
-    {
+    public void testVolatileStore() throws Exception {
         ObjectStoreEnvironmentBean objectStoreEnvironmentBean = new ObjectStoreEnvironmentBean();
-        objectStoreEnvironmentBean.setLocalOSRoot( "tmp" );
+        objectStoreEnvironmentBean.setLocalOSRoot("tmp");
 
         VolatileStore as = new VolatileStore(objectStoreEnvironmentBean);
 
@@ -297,34 +284,24 @@ public class OtherObjectStoreAPIJMXTest {
         final String tn = "/StateManager/junit";
 
         createMBeans(as, as);
-        for (int i = 0; i < 10; i++)
-        {
+        for (int i = 0; i < 10; i++) {
             Uid u = new Uid();
 
             InputObjectState ios = new InputObjectState();
 
-            try
-            {
+            try {
                 rsProxy.allObjUids("", ios);
-            }
-            catch (final Exception ex)
-            {
+            } catch (final Exception ex) {
             }
 
-            try
-            {
+            try {
                 assertTrue(psProxy.read_uncommitted(u, tn) == null);
-            }
-            catch (final Exception ex)
-            {
+            } catch (final Exception ex) {
             }
 
-            try
-            {
+            try {
                 psProxy.commit_state(u, tn);
-            }
-            catch (final Exception ex)
-            {
+            } catch (final Exception ex) {
             }
 
             rsProxy.write_committed(u, tn, buff);
@@ -333,30 +310,21 @@ public class OtherObjectStoreAPIJMXTest {
 
             rsProxy.read_committed(u, tn);
 
-            try
-            {
+            try {
                 assertTrue(psProxy.remove_uncommitted(u, tn));
-            }
-            catch (final Exception ex)
-            {
+            } catch (final Exception ex) {
             }
 
             rsProxy.remove_committed(u, tn);
 
-            try
-            {
+            try {
                 assertTrue(rsProxy.hide_state(u, tn));
-            }
-            catch (final Exception ex)
-            {
+            } catch (final Exception ex) {
             }
 
-            try
-            {
+            try {
                 assertTrue(rsProxy.reveal_state(u, tn));
-            }
-            catch (final Exception ex)
-            {
+            } catch (final Exception ex) {
             }
         }
     }

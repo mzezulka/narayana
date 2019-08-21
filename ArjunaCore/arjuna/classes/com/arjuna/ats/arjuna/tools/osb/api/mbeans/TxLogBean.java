@@ -44,15 +44,15 @@ public abstract class TxLogBean extends BaseStoreBean implements TxLogBeanMBean 
     @Override
     protected abstract ObjectName getMBeanName();
 
-    public void sync () throws java.io.SyncFailedException, ObjectStoreException {
-        store.sync ();
+    public void sync() throws java.io.SyncFailedException, ObjectStoreException {
+        store.sync();
     }
 
-    public boolean write_committed (Uid u, String tn, OutputObjectStateWrapper buff) throws ObjectStoreException {
-        return store.write_committed (u, tn, buff.getOOS());
+    public boolean write_committed(Uid u, String tn, OutputObjectStateWrapper buff) throws ObjectStoreException {
+        return store.write_committed(u, tn, buff.getOOS());
     }
 
-    public boolean remove_committed (Uid u, String tn) throws ObjectStoreException {
+    public boolean remove_committed(Uid u, String tn) throws ObjectStoreException {
         return store.remove_committed(u, tn);
     }
 

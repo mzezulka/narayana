@@ -33,11 +33,9 @@ import com.arjuna.ats.arjuna.recovery.TransactionStatusConnectionManager;
  * suite is simply to cover the edge cases.
  */
 
-public class TransactionStatusConnectionManagerUnitTest
-{
+public class TransactionStatusConnectionManagerUnitTest {
     @Test
-    public void testPresumedAbort ()
-    {
+    public void testPresumedAbort() {
         Uid tx = new Uid();
         TransactionStatusConnectionManager tscm = new TransactionStatusConnectionManager();
 

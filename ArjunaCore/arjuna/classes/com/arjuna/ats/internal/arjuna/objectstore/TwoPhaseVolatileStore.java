@@ -32,17 +32,15 @@ import com.arjuna.ats.arjuna.state.InputObjectState;
 import com.arjuna.ats.arjuna.state.OutputObjectState;
 
 /**
- * Two phase volatile store. Allows for recoverable and shared object instances to
- * participate in a transaction. Does not support all recovery methods that are
- * specific to persistent (durable) object stores.
+ * Two phase volatile store. Allows for recoverable and shared object instances
+ * to participate in a transaction. Does not support all recovery methods that
+ * are specific to persistent (durable) object stores.
  *
  * @author marklittle
  */
 
-public class TwoPhaseVolatileStore extends ObjectStore
-{
-    public TwoPhaseVolatileStore(ObjectStoreEnvironmentBean objectStoreEnvironmentBean) throws ObjectStoreException
-    {
+public class TwoPhaseVolatileStore extends ObjectStore {
+    public TwoPhaseVolatileStore(ObjectStoreEnvironmentBean objectStoreEnvironmentBean) throws ObjectStoreException {
         super(objectStoreEnvironmentBean);
 
         if (objectStoreEnvironmentBean.isVolatileStoreSupportAllObjUids())
@@ -52,15 +50,14 @@ public class TwoPhaseVolatileStore extends ObjectStore
     /**
      * Obtain all of the Uids for a specified type.
      *
-     * @param s The type to scan for.
+     * @param s    The type to scan for.
      * @param buff The object state in which to store the Uids
-     * @param m The file type to look for (e.g., committed, shadowed).
+     * @param m    The file type to look for (e.g., committed, shadowed).
      * @return <code>true</code> if no errors occurred, <code>false</code>
      *         otherwise.
      */
 
-    public boolean allObjUids(String s, InputObjectState buff, int m) throws ObjectStoreException
-    {
+    public boolean allObjUids(String s, InputObjectState buff, int m) throws ObjectStoreException {
         if (store == null)
             throw new ObjectStoreException("Operation not supported by this implementation");
 
@@ -75,8 +72,7 @@ public class TwoPhaseVolatileStore extends ObjectStore
      *         otherwise.
      */
 
-    public boolean allTypes(InputObjectState buff) throws ObjectStoreException
-    {
+    public boolean allTypes(InputObjectState buff) throws ObjectStoreException {
         if (store == null)
             throw new ObjectStoreException("Operation not supported by this implementation");
 
@@ -84,26 +80,23 @@ public class TwoPhaseVolatileStore extends ObjectStore
     }
 
     /**
-     * @param u The object to query.
+     * @param u  The object to query.
      * @param tn The type of the object to query.
-     * @return the current state of the object's state (e.g., shadowed,
-     *         committed ...)
+     * @return the current state of the object's state (e.g., shadowed, committed
+     *         ...)
      */
 
-    public int currentState(Uid u, String tn) throws ObjectStoreException
-    {
+    public int currentState(Uid u, String tn) throws ObjectStoreException {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("TwoPhaseVolatileStore.currentState(Uid=" + u + ", typeName=" + tn + ")");
         }
 
         StateInstance inst = _stateMap.get(u);
 
-        if (inst != null)
-        {
+        if (inst != null) {
             if (inst.original != null)
                 return StateStatus.OS_COMMITTED;
-            else
-            {
+            else {
                 if (inst.shadow != null)
                     return StateStatus.OS_UNCOMMITTED;
             }
@@ -116,101 +109,87 @@ public class TwoPhaseVolatileStore extends ObjectStore
      * @return the name of the object store.
      */
 
-    public String getStoreName()
-    {
+    public String getStoreName() {
         return "TwoPhaseVolatileStore";
     }
 
     /**
      * Commit the object's state in the object store.
      *
-     * @param u The object to work on.
+     * @param u  The object to work on.
      * @param tn The type of the object to work on.
      * @return <code>true</code> if no errors occurred, <code>false</code>
      *         otherwise.
      */
 
-    public boolean commit_state(Uid u, String tn) throws ObjectStoreException
-    {
-        synchronized (_stateMap)
-        {
+    public boolean commit_state(Uid u, String tn) throws ObjectStoreException {
+        synchronized (_stateMap) {
             StateInstance inst = _stateMap.get(u);
 
             if (inst == null)
                 throw new ObjectStoreException("Could not find state instance to commit!");
 
-            synchronized (inst)
-            {
-                if (inst.shadow != null)
-                {
+            synchronized (inst) {
+                if (inst.shadow != null) {
                     inst.original = inst.shadow;
                     inst.shadow = null;
 
                     return true;
-                }
-                else
+                } else
                     return false;
             }
         }
     }
 
     /**
-     * Hide the object's state in the object store. Used by crash
-     * recovery.
+     * Hide the object's state in the object store. Used by crash recovery.
      *
-     * @param u The object to work on.
+     * @param u  The object to work on.
      * @param tn The type of the object to work on.
      * @return <code>true</code> if no errors occurred, <code>false</code>
      *         otherwise.
      */
 
-    public boolean hide_state(Uid u, String tn) throws ObjectStoreException
-    {
+    public boolean hide_state(Uid u, String tn) throws ObjectStoreException {
         throw new ObjectStoreException("Operation not supported by this implementation");
     }
 
     /**
      * Reveal a hidden object's state.
      *
-     * @param u The object to work on.
+     * @param u  The object to work on.
      * @param tn The type of the object to work on.
      * @return <code>true</code> if no errors occurred, <code>false</code>
      *         otherwise.
      */
 
-    public boolean reveal_state(Uid u, String tn) throws ObjectStoreException
-    {
+    public boolean reveal_state(Uid u, String tn) throws ObjectStoreException {
         throw new ObjectStoreException("Operation not supported by this implementation");
     }
 
     /**
      * Read the object's committed state.
      *
-     * @param u The object to work on.
+     * @param u  The object to work on.
      * @param tn The type of the object to work on.
      * @return the state of the object.
      */
 
-    public InputObjectState read_committed(Uid u, String tn) throws ObjectStoreException
-    {
+    public InputObjectState read_committed(Uid u, String tn) throws ObjectStoreException {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("TwoPhaseVolatileStore.read_committed(Uid=" + u + ", typeName=" + tn + ")");
         }
 
-        synchronized (_stateMap)
-        {
+        synchronized (_stateMap) {
             StateInstance inst = _stateMap.get(u);
 
             if (inst == null)
                 return null;
 
-            synchronized (inst)
-            {
-                if (inst.original != null)
-                {
+            synchronized (inst) {
+                if (inst.original != null) {
                     return new InputObjectState(inst.original);
-                }
-                else
+                } else
                     return null;
             }
         }
@@ -219,27 +198,22 @@ public class TwoPhaseVolatileStore extends ObjectStore
     /**
      * Read the object's shadowed state.
      *
-     * @param u The object to work on.
+     * @param u  The object to work on.
      * @param tn The type of the object to work on.
      * @return the state of the object.
      */
 
-    public InputObjectState read_uncommitted(Uid u, String tn) throws ObjectStoreException
-    {
-        synchronized (_stateMap)
-        {
+    public InputObjectState read_uncommitted(Uid u, String tn) throws ObjectStoreException {
+        synchronized (_stateMap) {
             StateInstance inst = _stateMap.get(u);
 
             if (inst == null)
                 return null;
 
-            synchronized (inst)
-            {
-                if (inst.shadow != null)
-                {
+            synchronized (inst) {
+                if (inst.shadow != null) {
                     return new InputObjectState(inst.shadow);
-                }
-                else
+                } else
                     return null;
             }
         }
@@ -248,34 +222,29 @@ public class TwoPhaseVolatileStore extends ObjectStore
     /**
      * Remove the object's committed state.
      *
-     * @param u The object to work on.
+     * @param u  The object to work on.
      * @param tn The type of the object to work on.
      * @return <code>true</code> if no errors occurred, <code>false</code>
      *         otherwise.
      */
 
-    public boolean remove_committed(Uid u, String tn) throws ObjectStoreException
-    {
+    public boolean remove_committed(Uid u, String tn) throws ObjectStoreException {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("TwoPhaseVolatileStore.remove_committed(Uid=" + u + ", typeName=" + tn + ")");
         }
 
-        synchronized (_stateMap)
-        {
+        synchronized (_stateMap) {
             StateInstance inst = _stateMap.get(u);
 
             if (inst == null)
                 return false;
 
-            synchronized (inst)
-            {
-                if (inst.original != null)
-                {
+            synchronized (inst) {
+                if (inst.original != null) {
                     inst.original = null;
 
                     return true;
-                }
-                else
+                } else
                     return false;
             }
         }
@@ -284,30 +253,25 @@ public class TwoPhaseVolatileStore extends ObjectStore
     /**
      * Remove the object's uncommitted state.
      *
-     * @param u The object to work on.
+     * @param u  The object to work on.
      * @param tn The type of the object to work on.
      * @return <code>true</code> if no errors occurred, <code>false</code>
      *         otherwise.
      */
 
-    public boolean remove_uncommitted(Uid u, String tn) throws ObjectStoreException
-    {
-        synchronized (_stateMap)
-        {
+    public boolean remove_uncommitted(Uid u, String tn) throws ObjectStoreException {
+        synchronized (_stateMap) {
             StateInstance inst = _stateMap.get(u);
 
             if (inst == null)
                 return false;
 
-            synchronized (inst)
-            {
-                if (inst.shadow != null)
-                {
+            synchronized (inst) {
+                if (inst.shadow != null) {
                     inst.shadow = null;
 
                     return true;
-                }
-                else
+                } else
                     return false;
             }
         }
@@ -316,36 +280,28 @@ public class TwoPhaseVolatileStore extends ObjectStore
     /**
      * Write a new copy of the object's committed state.
      *
-     * @param u The object to work on.
-     * @param tn The type of the object to work on.
+     * @param u    The object to work on.
+     * @param tn   The type of the object to work on.
      * @param buff The state to write.
      * @return <code>true</code> if no errors occurred, <code>false</code>
      *         otherwise.
      */
 
-    public boolean write_committed(Uid u, String tn, OutputObjectState buff) throws ObjectStoreException
-    {
+    public boolean write_committed(Uid u, String tn, OutputObjectState buff) throws ObjectStoreException {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("TwoPhaseVolatileStore.write_committed(Uid=" + u + ", typeName=" + tn + ")");
         }
 
-        synchronized (_stateMap)
-        {
+        synchronized (_stateMap) {
             StateInstance inst = _stateMap.get(u);
 
-            if (inst == null)
-            {
-                _stateMap.put(u,  new StateInstance(buff, null, tn, u));
-            }
-            else
-            {
-                synchronized (inst)
-                {
-                    if (inst.original == null)
-                    {
+            if (inst == null) {
+                _stateMap.put(u, new StateInstance(buff, null, tn, u));
+            } else {
+                synchronized (inst) {
+                    if (inst.original == null) {
                         inst.original = buff;
-                    }
-                    else
+                    } else
                         return false;
                 }
             }
@@ -360,33 +316,25 @@ public class TwoPhaseVolatileStore extends ObjectStore
     /**
      * Write a copy of the object's uncommitted state.
      *
-     * @param u The object to work on.
-     * @param tn The type of the object to work on.
+     * @param u    The object to work on.
+     * @param tn   The type of the object to work on.
      * @param buff The state to write.
      * @return <code>true</code> if no errors occurred, <code>false</code>
      *         otherwise.
      */
 
-    public boolean write_uncommitted(Uid u, String tn, OutputObjectState buff) throws ObjectStoreException
-    {
-        synchronized (_stateMap)
-        {
+    public boolean write_uncommitted(Uid u, String tn, OutputObjectState buff) throws ObjectStoreException {
+        synchronized (_stateMap) {
             StateInstance inst = _stateMap.get(u);
 
-            if (inst == null)
-            {
+            if (inst == null) {
                 inst = new StateInstance(null, buff, tn, u);
 
                 _stateMap.put(u, inst);
-            }
-            else
-            {
-                if (inst.shadow != null)
-                {
+            } else {
+                if (inst.shadow != null) {
                     return false; // probably another thread trying to commit optimistically.
-                }
-                else
-                {
+                } else {
                     inst.shadow = buff;
                 }
             }
@@ -396,28 +344,24 @@ public class TwoPhaseVolatileStore extends ObjectStore
     }
 
     /**
-     * Suppress directories of the specified type from
-     * allTypes etc?
+     * Suppress directories of the specified type from allTypes etc?
      */
 
-    protected boolean supressEntry(String name)
-    {
+    protected boolean supressEntry(String name) {
         return false;
     }
 
-    private class StateInstance
-    {
-        public StateInstance (OutputObjectState orig, OutputObjectState sd, String tn, Uid u)
-        {
+    private class StateInstance {
+        public StateInstance(OutputObjectState orig, OutputObjectState sd, String tn, Uid u) {
             original = orig;
             shadow = sd;
             typeName = tn;
             uid = u;
         }
 
-        public String toString ()
-        {
-            return "StateInstance < original "+(original == null ? "empty" : "present")+", shadow "+(shadow == null ? "empty" : "present")+", "+typeName+" "+uid+" >";
+        public String toString() {
+            return "StateInstance < original " + (original == null ? "empty" : "present") + ", shadow "
+                    + (shadow == null ? "empty" : "present") + ", " + typeName + " " + uid + " >";
         }
 
         public OutputObjectState original;
@@ -430,7 +374,8 @@ public class TwoPhaseVolatileStore extends ObjectStore
      * This could potentially grow indefinitely. Place a limit on the size?
      */
 
-    //private WeakHashMap<Uid, StateInstance> _stateMap = new WeakHashMap<Uid, StateInstance>();
+    // private WeakHashMap<Uid, StateInstance> _stateMap = new WeakHashMap<Uid,
+    // StateInstance>();
 
     private ConcurrentHashMap<Uid, StateInstance> _stateMap = new ConcurrentHashMap<Uid, StateInstance>();
 

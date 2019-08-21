@@ -38,11 +38,9 @@ import com.arjuna.ats.internal.arjuna.abstractrecords.DisposeRecord;
 import com.arjuna.ats.internal.arjuna.abstractrecords.PersistenceRecord;
 import com.hp.mwtests.ts.arjuna.resources.ExtendedObject;
 
-public class DisposeRecordUnitTest
-{
+public class DisposeRecordUnitTest {
     @Test
-    public void test ()
-    {
+    public void test() {
         ParticipantStore store = StoreManager.setupStore(null, StateType.OS_UNSHARED);
 
         DisposeRecord cr = new DisposeRecord(store, new ExtendedObject());

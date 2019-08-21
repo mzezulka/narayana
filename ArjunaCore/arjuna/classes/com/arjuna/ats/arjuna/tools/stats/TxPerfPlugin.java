@@ -33,8 +33,7 @@ import com.sun.tools.jconsole.JConsoleContext;
 import com.sun.tools.jconsole.JConsoleContext.ConnectionState;
 import com.sun.tools.jconsole.JConsolePlugin;
 
-public class TxPerfPlugin extends JConsolePlugin implements PropertyChangeListener
-{
+public class TxPerfPlugin extends JConsolePlugin implements PropertyChangeListener {
     private TxPerfGraph graph;
     private Map<String, JPanel> tabs;
 

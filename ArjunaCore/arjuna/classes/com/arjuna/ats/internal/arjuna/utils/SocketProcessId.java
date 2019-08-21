@@ -41,33 +41,25 @@ import com.arjuna.ats.arjuna.logging.tsLogger;
 import com.arjuna.ats.arjuna.utils.Utility;
 
 /**
- * Obtains a unique value to represent the process id via sockets and
- * ports.
+ * Obtains a unique value to represent the process id via sockets and ports.
  *
  * @author Mark Little (mark_little@hp.com)
- * @version $Id: SocketProcessId.java 2342 2006-03-30 13:06:17Z  $
+ * @version $Id: SocketProcessId.java 2342 2006-03-30 13:06:17Z $
  * @since HPTS 3.0.
  */
 
-public class SocketProcessId implements com.arjuna.ats.arjuna.utils.Process
-{
-    public SocketProcessId()
-    {
+public class SocketProcessId implements com.arjuna.ats.arjuna.utils.Process {
+    public SocketProcessId() {
         int port = arjPropertyManager.getCoreEnvironmentBean().getSocketProcessIdPort();
         int maxPorts = arjPropertyManager.getCoreEnvironmentBean().getSocketProcessIdMaxPorts();
 
         int maxPort;
 
-        if (maxPorts <= 1)
-        {
+        if (maxPorts <= 1) {
             maxPort = port;
-        }
-        else if (Utility.MAX_PORT - maxPorts < port)
-        {
+        } else if (Utility.MAX_PORT - maxPorts < port) {
             maxPort = Utility.MAX_PORT;
-        }
-        else
-        {
+        } else {
             maxPort = port + maxPorts;
         }
 
@@ -83,22 +75,17 @@ public class SocketProcessId implements com.arjuna.ats.arjuna.utils.Process
     }
 
     /**
-     * @return the process id. This had better be unique between processes
-     * on the same machine. If not we're in trouble!
+     * @return the process id. This had better be unique between processes on the
+     *         same machine. If not we're in trouble!
      */
-    public int getpid ()
-    {
+    public int getpid() {
         return _thePort;
     }
 
-    private static ServerSocket createSocket(int port)
-    {
-        try
-        {
+    private static ServerSocket createSocket(int port) {
+        try {
             return new ServerSocket(port, 0, InetAddress.getByName(null));
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             return null;
         }
     }

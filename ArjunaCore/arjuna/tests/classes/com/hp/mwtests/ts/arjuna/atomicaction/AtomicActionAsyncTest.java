@@ -21,16 +21,14 @@
  */
 package com.hp.mwtests.ts.arjuna.atomicaction;
 
-import com.hp.mwtests.ts.arjuna.resources.TestBase;
-import org.junit.Test;
-import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 import com.arjuna.ats.arjuna.common.arjPropertyManager;
 
-public class AtomicActionAsyncTest extends AtomicActionTestBase
-{
-    // NOTE: The following bean properties can only be set once (because TxControl takes a static copy of them)
+public class AtomicActionAsyncTest extends AtomicActionTestBase {
+    // NOTE: The following bean properties can only be set once (because TxControl
+    // takes a static copy of them)
     @BeforeClass
     public static void init() {
         AtomicActionTestBase.init(true);
@@ -101,7 +99,8 @@ public class AtomicActionAsyncTest extends AtomicActionTestBase
     @Test
     public void testHeuristicNotification() throws Exception {
         // NOTE: cannot test for heuristics with asynchronous commit
-        // - setting reportHeuristics during commit will override the asynchronous commit config setting
+        // - setting reportHeuristics during commit will override the asynchronous
+        // commit config setting
         super.testHeuristicNotification(true);
     }
 

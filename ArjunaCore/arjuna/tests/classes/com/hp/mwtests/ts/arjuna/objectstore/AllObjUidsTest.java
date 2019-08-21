@@ -45,11 +45,9 @@ import com.arjuna.ats.arjuna.objectstore.StoreManager;
 import com.arjuna.ats.arjuna.state.InputObjectState;
 import com.arjuna.ats.internal.arjuna.common.UidHelper;
 
-public class AllObjUidsTest
-{
+public class AllObjUidsTest {
     @Test
-    public void test() throws IOException, ObjectStoreException
-    {
+    public void test() throws IOException, ObjectStoreException {
         RecoveryStore recoveryStore = StoreManager.getRecoveryStore();
         String type = "/StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction/DummyAtomicAction";
 

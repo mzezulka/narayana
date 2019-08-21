@@ -21,34 +21,43 @@
  */
 package com.arjuna.ats.arjuna.tools.osb.mbean;
 
-import com.arjuna.ats.arjuna.coordinator.TwoPhaseOutcome;
-
 import javax.transaction.xa.XAException;
+
+import com.arjuna.ats.arjuna.coordinator.TwoPhaseOutcome;
 
 /**
  * @author Mike Musgrove
  */
 /**
- * @deprecated as of 5.0.5.Final In a subsequent release we will change packages names in order to
- * provide a better separation between public and internal classes.
+ * @deprecated as of 5.0.5.Final In a subsequent release we will change packages
+ *             names in order to provide a better separation between public and
+ *             internal classes.
  */
 @Deprecated // in order to provide a better separation between public and internal classes.
 public enum HeuristicStatus {
     HEURISTIC_ROLLBACK, // after prepare decided to roll back without waiting for coordinator
-    HEURISTIC_COMMIT,  // after prepare decided to commit without waiting for coordinator
-    HEURISTIC_MIXED,  // after prepare some sub-participants committed and some rolled back without waiting for coordinator
-    HEURISTIC_HAZARD,  // after prepare some sub-participants committed, some rolled back and some we don't know
+    HEURISTIC_COMMIT, // after prepare decided to commit without waiting for coordinator
+    HEURISTIC_MIXED, // after prepare some sub-participants committed and some rolled back without
+                     // waiting for coordinator
+    HEURISTIC_HAZARD, // after prepare some sub-participants committed, some rolled back and some we
+                      // don't know
     UNKNOWN;
 
-    public static final int UNKNOWN_XA_ERROR_CODE =  XAException.XA_RBEND + 1000; // must be large than any legitimate XA error code
+    public static final int UNKNOWN_XA_ERROR_CODE = XAException.XA_RBEND + 1000; // must be large than any legitimate XA
+                                                                                 // error code
 
     public static HeuristicStatus intToStatus(int heuristic) {
         switch (heuristic) {
-            case TwoPhaseOutcome.HEURISTIC_ROLLBACK: return HEURISTIC_ROLLBACK;
-            case TwoPhaseOutcome.HEURISTIC_COMMIT: return HEURISTIC_COMMIT;
-            case TwoPhaseOutcome.HEURISTIC_MIXED: return HEURISTIC_MIXED;
-            case TwoPhaseOutcome.HEURISTIC_HAZARD: return HEURISTIC_HAZARD;
-            default: return UNKNOWN;
+        case TwoPhaseOutcome.HEURISTIC_ROLLBACK:
+            return HEURISTIC_ROLLBACK;
+        case TwoPhaseOutcome.HEURISTIC_COMMIT:
+            return HEURISTIC_COMMIT;
+        case TwoPhaseOutcome.HEURISTIC_MIXED:
+            return HEURISTIC_MIXED;
+        case TwoPhaseOutcome.HEURISTIC_HAZARD:
+            return HEURISTIC_HAZARD;
+        default:
+            return UNKNOWN;
         }
     }
 

@@ -29,11 +29,9 @@ import com.arjuna.ats.arjuna.AtomicAction;
 import com.arjuna.ats.arjuna.coordinator.AddOutcome;
 import com.hp.mwtests.ts.arjuna.resources.SyncRecord;
 
-public class SynchronizationUnitTest
-{
+public class SynchronizationUnitTest {
     @Test
-    public void test () throws Exception
-    {
+    public void test() throws Exception {
         AtomicAction A = new AtomicAction();
         SyncRecord sr = new SyncRecord();
 
@@ -48,8 +46,7 @@ public class SynchronizationUnitTest
     }
 
     @Test
-    public void testInvalid () throws Exception
-    {
+    public void testInvalid() throws Exception {
         AtomicAction A = new AtomicAction();
 
         A.begin();

@@ -74,6 +74,48 @@ import io.opentracing.tag.Tags;
 
 public class BasicAction extends StateManager {
 
+    /* These (genuine) lists hold the abstract records */
+    protected RecordList pendingList;
+    protected RecordList preparedList;
+    protected RecordList readonlyList;
+    protected RecordList failedList;
+    protected RecordList heuristicList;
+    protected boolean savedIntentionList;
+
+    private ActionHierarchy currentHierarchy;
+    private ParticipantStore transactionStore; // a ParticipantStore is also a TxLog
+
+    // private boolean savedIntentionList;
+
+    /* Atomic action status variables */
+
+    private volatile int actionStatus;
+    private int actionType;
+    private BasicAction parentAction;
+    private AbstractRecord recordBeingHandled;
+    private int heuristicDecision;
+    private CheckedAction _checkedAction; // control what happens if threads active when terminating.
+    private boolean pastFirstParticipant; // remember where we are (were) in committing during recovery
+    private boolean internalError; // is there an error internal to the TM (such as write log errors, for example)
+
+    /*
+     * We need to keep track of the number of threads associated with each action.
+     * Since we can't override the basic thread methods, we have to provide an
+     * explicit means of registering threads with an action.
+     */
+
+    private Hashtable<String, Thread> _childThreads;
+    private Hashtable<BasicAction, BasicAction> _childActions;
+
+    private BasicActionFinalizer finalizerObject;
+    private static final boolean finalizeBasicActions = arjPropertyManager.getCoordinatorEnvironmentBean()
+            .isFinalizeBasicActions();
+
+    // private Mutex _lock = new Mutex(); // TODO
+    private List<Throwable> deferredThrowables = new ArrayList<>();
+
+    protected boolean subordinate;
+
     public BasicAction() {
         super(ObjectType.NEITHER);
 
@@ -360,6 +402,7 @@ public class BasicAction extends StateManager {
      * @return the status of the BasicAction
      */
 
+    @Override
     public final int status() {
         int s = ActionStatus.INVALID;
 
@@ -380,6 +423,7 @@ public class BasicAction extends StateManager {
      * @see com.arjuna.ats.arjuna.objectstore.ObjectStore
      */
 
+    @Override
     public ParticipantStore getStore() {
         if (transactionStore == null) {
             transactionStore = StoreManager.getParticipantStore();
@@ -425,6 +469,7 @@ public class BasicAction extends StateManager {
      * @return <code>true</code> if successful, <code>false</code> otherwise.
      */
 
+    @Override
     public boolean activate() {
         return activate(null);
     }
@@ -437,6 +482,7 @@ public class BasicAction extends StateManager {
      * @return <code>true</code> if successful, <code>false</code> otherwise.
      */
 
+    @Override
     public boolean activate(String root) {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("BasicAction::activate() for action-id " + get_uid());
@@ -487,6 +533,7 @@ public class BasicAction extends StateManager {
      *
      */
 
+    @Override
     public boolean deactivate() {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("BasicAction::deactivate() for action-id " + get_uid());
@@ -532,8 +579,7 @@ public class BasicAction extends StateManager {
      * @return <code>true</code> if successful, <code>false</code> otherwise.
      */
 
-    public final boolean addChildThread() // current thread
-    {
+    public final boolean addChildThread() {
         return addChildThread(Thread.currentThread());
     }
 
@@ -587,9 +633,7 @@ public class BasicAction extends StateManager {
      *
      * @return <code>true</code> if successful, <code>false</code> otherwise.
      */
-
-    public final boolean removeChildThread() // current thread
-    {
+    public final boolean removeChildThread() {
         return removeChildThread(ThreadUtil.getThreadId(Thread.currentThread()));
     }
 
@@ -711,6 +755,7 @@ public class BasicAction extends StateManager {
      * @return <code>true</code> if successful, <code>false</code> otherwise.
      */
 
+    @Override
     public boolean save_state(OutputObjectState os, int ot) {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("BasicAction::save_state ()");
@@ -945,6 +990,7 @@ public class BasicAction extends StateManager {
      * Overloads Object.toString()
      */
 
+    @Override
     public String toString() {
         return new String("BasicAction: " + get_uid() + " status: " + ActionStatus.stringForm(actionStatus));
     }
@@ -955,6 +1001,7 @@ public class BasicAction extends StateManager {
      * @return <code>true</code> if successful, <code>false</code> otherwise.
      */
 
+    @Override
     public boolean restore_state(InputObjectState os, int ot) {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("BasicAction::restore_state ()");
@@ -1107,6 +1154,7 @@ public class BasicAction extends StateManager {
      * Overloads StateManager.type()
      */
 
+    @Override
     public String type() {
         return "/StateManager/BasicAction";
     }
@@ -1142,6 +1190,7 @@ public class BasicAction extends StateManager {
      * @see com.arjuna.ats.arjuna.StateManager
      */
 
+    @Override
     public boolean destroy() {
         return true;
     }
@@ -1217,57 +1266,59 @@ public class BasicAction extends StateManager {
      */
 
     protected synchronized int Begin(BasicAction parentAct) {
-        new ScopeBuilder(SpanName.TX_BEGIN).start();
-        //new ScopeBuilder(SpanName.GLOBAL_PRE_2PC).start();
-        if (tsLogger.logger.isTraceEnabled()) {
-            tsLogger.logger.trace("BasicAction::Begin() for action-id " + get_uid());
-        }
+        try (Scope _ignored = new ScopeBuilder(SpanName.TX_BEGIN).tag(TagName.UID, get_uid())
+                .startWithoutSpanFinish(get_uid().toString())) {
+            if (tsLogger.logger.isTraceEnabled()) {
+                tsLogger.logger.trace("BasicAction::Begin() for action-id " + get_uid());
+            }
 
-        // check to see if transaction system is enabled
+            // check to see if transaction system is enabled
 
-        if (!TxControl.isEnabled()) {
-            /*
-             * Prevent transaction from making forward progress.
-             */
+            if (!TxControl.isEnabled()) {
+                /*
+                 * Prevent transaction from making forward progress.
+                 */
 
-            actionStatus = ActionStatus.ABORT_ONLY;
+                actionStatus = ActionStatus.ABORT_ONLY;
 
-            tsLogger.i18NLogger.warn_coordinator_notrunning();
-        } else {
-            if (actionStatus != ActionStatus.CREATED) {
-                tsLogger.i18NLogger.warn_coordinator_BasicAction_29(get_uid(), ActionStatus.stringForm(actionStatus));
+                tsLogger.i18NLogger.warn_coordinator_notrunning();
             } else {
-                actionInitialise(parentAct);
-                actionStatus = ActionStatus.RUNNING;
+                if (actionStatus != ActionStatus.CREATED) {
+                    tsLogger.i18NLogger.warn_coordinator_BasicAction_29(get_uid(),
+                            ActionStatus.stringForm(actionStatus));
+                } else {
+                    actionInitialise(parentAct);
+                    actionStatus = ActionStatus.RUNNING;
 
-                if ((actionType != ActionType.TOP_LEVEL)
-                        && ((parentAct == null) || (parentAct.status() > ActionStatus.RUNNING))) {
-                    actionStatus = ActionStatus.ABORT_ONLY;
+                    if ((actionType != ActionType.TOP_LEVEL)
+                            && ((parentAct == null) || (parentAct.status() > ActionStatus.RUNNING))) {
+                        actionStatus = ActionStatus.ABORT_ONLY;
 
-                    if (parentAct == null) {
-                        tsLogger.i18NLogger.warn_coordinator_BasicAction_30(get_uid());
-                    } else {
-                        tsLogger.i18NLogger.warn_coordinator_BasicAction_31(get_uid(), parentAct.get_uid(),
-                                Integer.toString(parentAct.status()));
+                        if (parentAct == null) {
+                            tsLogger.i18NLogger.warn_coordinator_BasicAction_30(get_uid());
+                        } else {
+                            tsLogger.i18NLogger.warn_coordinator_BasicAction_31(get_uid(), parentAct.get_uid(),
+                                    Integer.toString(parentAct.status()));
+                        }
+                    }
+
+                    ActionManager.manager().put(this);
+
+                    if (finalizeBasicActions) {
+                        finalizerObject = new BasicActionFinalizer(this);
+                    }
+
+                    if (TxStats.enabled()) {
+                        TxStats.getInstance().incrementTransactions();
+
+                        if (parentAct != null)
+                            TxStats.getInstance().incrementNestedTransactions();
                     }
                 }
-
-                ActionManager.manager().put(this);
-
-                if (finalizeBasicActions) {
-                    finalizerObject = new BasicActionFinalizer(this);
-                }
-
-                if (TxStats.enabled()) {
-                    TxStats.getInstance().incrementTransactions();
-
-                    if (parentAct != null)
-                        TxStats.getInstance().incrementNestedTransactions();
-                }
             }
-        }
 
-        return actionStatus;
+            return actionStatus;
+        }
     }
 
     /**
@@ -1378,7 +1429,8 @@ public class BasicAction extends StateManager {
             }
         }
 
-        TracingUtils.finishActiveSpan();
+        TracingUtils.log("this is the place where we want to close the whole transaction");
+        TracingUtils.finishScope(get_uid().toString());
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.tracef("BasicAction::End() result for action-id (%s) is (%s) node id: (%s)", get_uid(),
                     TwoPhaseOutcome.stringForm(heuristicDecision),
@@ -1456,7 +1508,7 @@ public class BasicAction extends StateManager {
         // set the error flag to true
         try (Scope _s = new ScopeBuilder(SpanName.GLOBAL_ABORT)
                 .tag(TagName.APPLICATION_ABORT, String.valueOf(applicationAbort)).tag(TagName.UID, get_uid())
-                .tag(TagName.ASYNCHRONOUS, false).tag(Tags.ERROR, true).start()) {
+                .tag(TagName.ASYNCHRONOUS, false).tag(Tags.ERROR, true).start(get_uid().toString())) {
             if (tsLogger.logger.isTraceEnabled()) {
                 tsLogger.logger.trace("BasicAction::Abort() for action-id " + get_uid());
             }
@@ -1658,10 +1710,10 @@ public class BasicAction extends StateManager {
      * @throws Error JBTM-895 tests, byteman limitation
      */
 
-    protected synchronized final void phase2Commit(boolean reportHeuristics) throws Error {
+    protected final synchronized void phase2Commit(boolean reportHeuristics) throws Error {
         try (Scope _s = new ScopeBuilder(SpanName.GLOBAL_COMMIT)
                 .tag(TagName.REPORT_HEURISTICS, String.valueOf(reportHeuristics)).tag(TagName.UID, this.get_uid())
-                .start()) {
+                .start(get_uid().toString())) {
 
             if (tsLogger.logger.isTraceEnabled()) {
                 tsLogger.logger.trace("BasicAction::phase2Commit() for action-id " + get_uid());
@@ -1689,8 +1741,8 @@ public class BasicAction extends StateManager {
                  */
 
                 doCommit(preparedList, reportHeuristics); /*
-                                                             * process the preparedList
-                                                             */
+                                                           * process the preparedList
+                                                           */
 
                 /*
                  * Now check any heuristic decision. If we received one then we may have to
@@ -1768,10 +1820,10 @@ public class BasicAction extends StateManager {
      * This can be overridden at runtime using the READONLY_OPTIMISATION variable.
      */
 
-    protected synchronized final void phase2Abort(boolean reportHeuristics) {
+    protected final synchronized void phase2Abort(boolean reportHeuristics) {
         try (Scope _s = new ScopeBuilder(SpanName.GLOBAL_ABORT)
                 .tag(TagName.REPORT_HEURISTICS, String.valueOf(reportHeuristics)).tag(TagName.APPLICATION_ABORT, false)
-                .tag(TagName.ASYNCHRONOUS, false).tag(TagName.UID, this.get_uid()).tag(Tags.ERROR, true).start()) {
+                .tag(TagName.ASYNCHRONOUS, false).tag(TagName.UID, this.get_uid()).tag(Tags.ERROR, true).start(get_uid().toString())) {
             if (tsLogger.logger.isTraceEnabled()) {
                 tsLogger.logger.trace("BasicAction::phase2Abort() for action-id " + get_uid());
             }
@@ -1899,11 +1951,11 @@ public class BasicAction extends StateManager {
      *         than go through prepare.
      */
 
-    protected synchronized final int prepare(boolean reportHeuristics) {
+    protected final synchronized int prepare(boolean reportHeuristics) {
         // Finish the pre 2PC wrapping span
         // TracingUtils.finishActiveSpan();
         try (Scope _s = new ScopeBuilder(SpanName.GLOBAL_PREPARE)
-                .tag(TagName.REPORT_HEURISTICS, String.valueOf(reportHeuristics)).tag(TagName.UID, get_uid()).start()) {
+                .tag(TagName.REPORT_HEURISTICS, String.valueOf(reportHeuristics)).tag(TagName.UID, get_uid()).start(get_uid().toString())) {
             if (tsLogger.logger.isTraceEnabled()) {
                 tsLogger.logger.trace("BasicAction::prepare () for action-id " + get_uid());
             }
@@ -3336,50 +3388,6 @@ public class BasicAction extends StateManager {
         else if (record.value() instanceof ExceptionDeferrer)
             ((ExceptionDeferrer) record.value()).getDeferredThrowables(throwables);
     }
-
-    /* These (genuine) lists hold the abstract records */
-
-    protected RecordList pendingList;
-    protected RecordList preparedList;
-    protected RecordList readonlyList;
-    protected RecordList failedList;
-    protected RecordList heuristicList;
-    protected boolean savedIntentionList;
-
-    private ActionHierarchy currentHierarchy;
-    private ParticipantStore transactionStore; // a ParticipantStore is also a TxLog
-
-    // private boolean savedIntentionList;
-
-    /* Atomic action status variables */
-
-    private volatile int actionStatus;
-    private int actionType;
-    private BasicAction parentAction;
-    private AbstractRecord recordBeingHandled;
-    private int heuristicDecision;
-    private CheckedAction _checkedAction; // control what happens if threads active when terminating.
-    private boolean pastFirstParticipant; // remember where we are (were) in committing during recovery
-    private boolean internalError; // is there an error internal to the TM (such as write log errors, for example)
-
-    /*
-     * We need to keep track of the number of threads associated with each action.
-     * Since we can't override the basic thread methods, we have to provide an
-     * explicit means of registering threads with an action.
-     */
-
-    private Hashtable<String, Thread> _childThreads;
-    private Hashtable<BasicAction, BasicAction> _childActions;
-
-    private BasicActionFinalizer finalizerObject;
-    private static final boolean finalizeBasicActions = arjPropertyManager.getCoordinatorEnvironmentBean()
-            .isFinalizeBasicActions();
-
-    // private Mutex _lock = new Mutex(); // TODO
-    private List<Throwable> deferredThrowables = new ArrayList<>();
-
-    protected boolean subordinate;
-
 }
 
 class BasicActionFinalizer {

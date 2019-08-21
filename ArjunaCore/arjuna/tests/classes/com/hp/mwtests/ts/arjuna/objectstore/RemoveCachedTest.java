@@ -46,11 +46,9 @@ import com.arjuna.ats.arjuna.state.InputObjectState;
 import com.arjuna.ats.internal.arjuna.common.UidHelper;
 import com.arjuna.ats.internal.arjuna.objectstore.CacheStore;
 
-public class RemoveCachedTest
-{
+public class RemoveCachedTest {
     @Test
-    public void test() throws IOException, ObjectStoreException
-    {
+    public void test() throws IOException, ObjectStoreException {
         boolean passed = true;
         RecoveryStore store = new CacheStore(new ObjectStoreEnvironmentBean());
         String type = "ArjunaMS/Destinations/a3d6227_dc656_3b77ce7e_2/Messages";

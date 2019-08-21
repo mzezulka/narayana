@@ -35,11 +35,9 @@ import com.arjuna.ats.arjuna.state.OutputObjectState;
 import com.arjuna.ats.internal.arjuna.abstractrecords.ActivationRecord;
 import com.hp.mwtests.ts.arjuna.resources.ExtendedObject;
 
-public class ActivationRecordUnitTest
-{
+public class ActivationRecordUnitTest {
     @Test
-    public void test ()
-    {
+    public void test() {
         AtomicAction A = new AtomicAction();
         AtomicAction B = new AtomicAction();
 

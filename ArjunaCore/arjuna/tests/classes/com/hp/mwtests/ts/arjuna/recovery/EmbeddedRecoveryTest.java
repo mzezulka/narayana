@@ -38,11 +38,9 @@ import org.junit.Test;
 import com.arjuna.ats.arjuna.common.recoveryPropertyManager;
 import com.arjuna.ats.arjuna.recovery.RecoveryManager;
 
-public class EmbeddedRecoveryTest
-{
+public class EmbeddedRecoveryTest {
     @Test
-    public void test()
-    {
+    public void test() {
         recoveryPropertyManager.getRecoveryEnvironmentBean().setRecoveryBackoffPeriod(1);
 
         RecoveryManager manager = RecoveryManager.manager(RecoveryManager.DIRECT_MANAGEMENT);

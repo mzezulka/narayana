@@ -39,30 +39,21 @@ import com.arjuna.ats.arjuna.objectstore.StoreManager;
 import com.arjuna.ats.arjuna.state.InputObjectState;
 import com.arjuna.ats.internal.arjuna.common.UidHelper;
 
-public class TransactionMonitor
-{
+public class TransactionMonitor {
 
-public static void main (String[] args)
-    {
+    public static void main(String[] args) {
         String root = null;
 
-        for (int i = 0; i < args.length; i++)
-        {
-            if (args[i].compareTo("-help") == 0)
-            {
+        for (int i = 0; i < args.length; i++) {
+            if (args[i].compareTo("-help") == 0) {
                 usage();
                 System.exit(0);
-            }
-            else
-            {
-                if (args[i].compareTo("-root") == 0)
-                {
-                    root = args[i+1];
+            } else {
+                if (args[i].compareTo("-root") == 0) {
+                    root = args[i + 1];
                     i++;
-                }
-                else
-                {
-                    System.out.println("Unknown option "+args[i]);
+                } else {
+                    System.out.println("Unknown option " + args[i]);
                     usage();
 
                     System.exit(0);
@@ -74,60 +65,50 @@ public static void main (String[] args)
         BasicAction ba = new BasicAction();
         String baType = ba.type();
         if (baType.charAt(0) == '/')
-                baType = baType.substring(1);
-        try
-        {
+            baType = baType.substring(1);
+        try {
             RecoveryStore recoveryStore = StoreManager.getRecoveryStore();
 
             InputObjectState types = new InputObjectState();
 
-            if (recoveryStore.allTypes(types))
-            {
+            if (recoveryStore.allTypes(types)) {
                 String theName = null;
                 int count = 0;
 
-                try
-                {
+                try {
                     boolean endOfList = false;
 
-                    while (!endOfList)
-                    {
+                    while (!endOfList) {
                         theName = types.unpackString();
 
                         if (theName.compareTo("") == 0)
                             endOfList = true;
-                        else if (theName.startsWith(baType))
-                        {
+                        else if (theName.startsWith(baType)) {
                             count++;
 
-                            System.out.println(count+": "+theName);
+                            System.out.println(count + ": " + theName);
 
                             InputObjectState uids = new InputObjectState();
 
-                            if (recoveryStore.allObjUids(theName, uids))
-                            {
+                            if (recoveryStore.allObjUids(theName, uids)) {
                                 Uid theUid = new Uid(Uid.nullUid());
 
-                                try
-                                {
+                                try {
                                     boolean endOfUids = false;
 
-                                    while (!endOfUids)
-                                    {
+                                    while (!endOfUids) {
                                         theUid = UidHelper.unpackFrom(uids);
 
                                         if (theUid.equals(Uid.nullUid()))
                                             endOfUids = true;
-                                        else
-                                        {
-                                            System.out.print("\t"+theUid+" state is ");
-                                            System.out.print(StateStatus.stateStatusString(recoveryStore.currentState(theUid, theName)));
+                                        else {
+                                            System.out.print("\t" + theUid + " state is ");
+                                            System.out.print(StateStatus
+                                                    .stateStatusString(recoveryStore.currentState(theUid, theName)));
                                             System.out.println();
                                         }
                                     }
-                                }
-                                catch (Exception e)
-                                {
+                                } catch (Exception e) {
                                     // end of uids!
                                 }
                             }
@@ -135,25 +116,19 @@ public static void main (String[] args)
                             System.out.println();
                         }
                     }
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     System.err.println(e);
 
                     // end of list!
                 }
             }
-        }
-        catch (Exception e)
-        {
-            System.err.println("Caught unexpected exception: "+e);
+        } catch (Exception e) {
+            System.err.println("Caught unexpected exception: " + e);
         }
     }
 
-private static void usage ()
-    {
+    private static void usage() {
         System.out.println("Usage: TransactionMonitor [-root <store root>] [-help]");
     }
 
 };
-

@@ -55,11 +55,8 @@ import com.arjuna.ats.internal.arjuna.recovery.Listener;
 import com.arjuna.ats.internal.arjuna.recovery.TransactionStatusConnector;
 import com.arjuna.ats.internal.arjuna.recovery.TransactionStatusManagerItem;
 
-class TransactionStatusConnectorTestService implements Service
-{
-    public void doWork(InputStream is, OutputStream os)
-            throws IOException
-    {
+class TransactionStatusConnectorTestService implements Service {
+    public void doWork(InputStream is, OutputStream os) throws IOException {
         BufferedReader in = new BufferedReader(new InputStreamReader(is));
         PrintWriter out = new PrintWriter(new OutputStreamWriter(os));
 
@@ -77,11 +74,9 @@ class TransactionStatusConnectorTestService implements Service
                     out.flush();
                 }
             }
-        }
-        catch (SocketException ex) {
-            ; // Socket closed
-        }
-        catch (Exception ex) {
+        } catch (SocketException ex) {
+            // no-op, socket closed
+        } catch (Exception ex) {
             System.err.println("TestService failed " + ex);
         }
     }
@@ -92,11 +87,9 @@ class TransactionStatusConnectorTestService implements Service
     public boolean _stop_test = false;
 }
 
-public class TransactionStatusConnectorTest
-{
+public class TransactionStatusConnectorTest {
     @Test
-    public void test()
-    {
+    public void test() {
         assertTrue(test_setup());
         test1();
         assertEquals(0, _tests_failed);
@@ -106,8 +99,7 @@ public class TransactionStatusConnectorTest
     /**
      * Pre-test setup.
      */
-    private static boolean test_setup()
-    {
+    private static boolean test_setup() {
         boolean setupOk = false;
 
         try {
@@ -141,8 +133,7 @@ public class TransactionStatusConnectorTest
 
                 setupOk = true;
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.err.println("test_setup: Failed " + ex);
         }
 
@@ -150,52 +141,40 @@ public class TransactionStatusConnectorTest
     }
 
     /**
-     * Test which checks that a transaction status connector can be
-     * created and transaction statuses can be retrieved using a simple
-     * test service.
+     * Test which checks that a transaction status connector can be created and
+     * transaction statuses can be retrieved using a simple test service.
      */
-    private static void test1()
-    {
+    private static void test1() {
         try {
-            TransactionStatusConnector testTransactionStatusConnector =
-                    new TransactionStatusConnector(_pidStr, _pidUid);
+            TransactionStatusConnector testTransactionStatusConnector = new TransactionStatusConnector(_pidStr,
+                    _pidUid);
 
             _test_service._test_status = Integer.toString(_test_status_1);
-            int test_status1 = testTransactionStatusConnector.getTransactionStatus
-                    (_test_tran_type_1, _test_uid_1);
+            int test_status1 = testTransactionStatusConnector.getTransactionStatus(_test_tran_type_1, _test_uid_1);
             _rx_tran_type_1 = _test_service._rx_tran_type;
             _rx_uid_str_1 = _test_service._rx_uid_str;
 
             _test_service._test_status = Integer.toString(_test_status_2);
-            int test_status2 = testTransactionStatusConnector.getTransactionStatus
-                    (_test_tran_type_2, _test_uid_2);
+            int test_status2 = testTransactionStatusConnector.getTransactionStatus(_test_tran_type_2, _test_uid_2);
             _rx_tran_type_2 = _test_service._rx_tran_type;
             _rx_uid_str_2 = _test_service._rx_uid_str;
 
             _test_service._test_status = Integer.toString(_test_status_3);
-            int test_status3 = testTransactionStatusConnector.getTransactionStatus
-                    (_test_tran_type_3, _test_uid_3);
+            int test_status3 = testTransactionStatusConnector.getTransactionStatus(_test_tran_type_3, _test_uid_3);
             _rx_tran_type_3 = _test_service._rx_tran_type;
             _rx_uid_str_3 = _test_service._rx_uid_str;
 
             _test_service._test_status = Integer.toString(_test_status_4);
-            int test_status4 = testTransactionStatusConnector.getTransactionStatus
-                    (_test_tran_type_4, _test_uid_4);
+            int test_status4 = testTransactionStatusConnector.getTransactionStatus(_test_tran_type_4, _test_uid_4);
             _rx_tran_type_4 = _test_service._rx_tran_type;
             _rx_uid_str_4 = _test_service._rx_uid_str;
 
-            if ((test_status1 == _test_status_1) &&
-                    (test_status2 == _test_status_2) &&
-                    (test_status3 == _test_status_3) &&
-                    (test_status4 == _test_status_4) &&
-                    (_rx_tran_type_1.equals(_test_tran_type_1)) &&
-                    (_rx_tran_type_2.equals(_test_tran_type_2)) &&
-                    (_rx_tran_type_3.equals(_test_tran_type_3)) &&
-                    (_rx_tran_type_4.equals(_test_tran_type_4)) &&
-                    (_rx_uid_str_1.equals(_test_uid_1.toString())) &&
-                    (_rx_uid_str_2.equals(_test_uid_2.toString())) &&
-                    (_rx_uid_str_3.equals(_test_uid_3.toString())) &&
-                    (_rx_uid_str_4.equals(_test_uid_4.toString()))) {
+            if ((test_status1 == _test_status_1) && (test_status2 == _test_status_2) && (test_status3 == _test_status_3)
+                    && (test_status4 == _test_status_4) && (_rx_tran_type_1.equals(_test_tran_type_1))
+                    && (_rx_tran_type_2.equals(_test_tran_type_2)) && (_rx_tran_type_3.equals(_test_tran_type_3))
+                    && (_rx_tran_type_4.equals(_test_tran_type_4)) && (_rx_uid_str_1.equals(_test_uid_1.toString()))
+                    && (_rx_uid_str_2.equals(_test_uid_2.toString())) && (_rx_uid_str_3.equals(_test_uid_3.toString()))
+                    && (_rx_uid_str_4.equals(_test_uid_4.toString()))) {
                 System.out.println(_unit_test + "test1: passed");
                 _tests_passed++;
             } else {
@@ -203,8 +182,7 @@ public class TransactionStatusConnectorTest
                 _tests_failed++;
             }
             _listener.stopListener();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
 
             System.err.println(_unit_test + " test1 " + ex);

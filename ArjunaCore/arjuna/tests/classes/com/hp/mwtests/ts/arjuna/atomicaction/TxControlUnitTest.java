@@ -30,11 +30,9 @@ import com.arjuna.ats.arjuna.common.arjPropertyManager;
 import com.arjuna.ats.arjuna.coordinator.ActionStatus;
 import com.arjuna.ats.arjuna.coordinator.TxControl;
 
-public class TxControlUnitTest
-{
+public class TxControlUnitTest {
     @Test
-    public void testDisable () throws Exception
-    {
+    public void testDisable() throws Exception {
         AtomicAction A = new AtomicAction();
 
         TxControl.disable();
@@ -55,15 +53,15 @@ public class TxControlUnitTest
     }
 
     @Test
-    public void testGetSet () throws Exception
-    {
+    public void testGetSet() throws Exception {
         TxControl.setDefaultTimeout(1000);
 
         assertEquals(TxControl.getDefaultTimeout(), 1000);
 
         assertEquals(TxControl.getAsyncPrepare(), arjPropertyManager.getCoordinatorEnvironmentBean().isAsyncPrepare());
 
-        assertEquals(TxControl.getMaintainHeuristics(), arjPropertyManager.getCoordinatorEnvironmentBean().isMaintainHeuristics());
+        assertEquals(TxControl.getMaintainHeuristics(),
+                arjPropertyManager.getCoordinatorEnvironmentBean().isMaintainHeuristics());
 
         String nodeName = "1";
 

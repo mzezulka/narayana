@@ -61,48 +61,34 @@ import com.arjuna.ats.arjuna.utils.FileLock;
  * @since 1.0
  */
 
-public class ShadowingStore extends FileSystemStore
-{
+public class ShadowingStore extends FileSystemStore {
     /**
-     * @return current state of object. Assumes that genPathName allocates
-     *         enough extra space to allow extra chars to be added. State search
-     *         is ordered OS_SHADOW, OS_UNCOMMITTED_HIDDEN, OS_ORIGINAL,
-     *         OS_COMMITTED_HIDDEN.
+     * @return current state of object. Assumes that genPathName allocates enough
+     *         extra space to allow extra chars to be added. State search is ordered
+     *         OS_SHADOW, OS_UNCOMMITTED_HIDDEN, OS_ORIGINAL, OS_COMMITTED_HIDDEN.
      */
 
-    public int currentState (Uid objUid, String tName)
-            throws ObjectStoreException
-    {
+    public int currentState(Uid objUid, String tName) throws ObjectStoreException {
         int theState = StateStatus.OS_UNKNOWN;
 
         String path = genPathName(objUid, tName, StateType.OS_SHADOW);
 
-        if (exists(path))
-        {
+        if (exists(path)) {
             theState = StateStatus.OS_UNCOMMITTED;
-        }
-        else
-        {
+        } else {
             path = path + HIDDINGCHAR;
 
-            if (exists(path))
-            {
+            if (exists(path)) {
                 theState = StateStatus.OS_UNCOMMITTED_HIDDEN;
-            }
-            else
-            {
+            } else {
                 path = genPathName(objUid, tName, StateType.OS_ORIGINAL);
 
-                if (exists(path))
-                {
+                if (exists(path)) {
                     theState = StateStatus.OS_COMMITTED;
-                }
-                else
-                {
+                } else {
                     path = path + HIDDINGCHAR;
 
-                    if (exists(path))
-                    {
+                    if (exists(path)) {
                         theState = StateStatus.OS_COMMITTED_HIDDEN;
                     }
                 }
@@ -110,8 +96,8 @@ public class ShadowingStore extends FileSystemStore
         }
 
         if (tsLogger.logger.isTraceEnabled()) {
-            tsLogger.logger.trace("ShadowingStore.currentState("+objUid+", "+tName+") - returning "+
-                    StateStatus.stateStatusString(theState));
+            tsLogger.logger.trace("ShadowingStore.currentState(" + objUid + ", " + tName + ") - returning "
+                    + StateStatus.stateStatusString(theState));
         }
 
         return theState;
@@ -119,33 +105,27 @@ public class ShadowingStore extends FileSystemStore
 
     /**
      * Commit a previous write_state operation which was made with the SHADOW
-     * StateType argument. This is achieved by renaming the shadow and removing
-     * the hidden version.
+     * StateType argument. This is achieved by renaming the shadow and removing the
+     * hidden version.
      */
 
-    public boolean commit_state (Uid objUid, String tName)
-            throws ObjectStoreException
-    {
+    public boolean commit_state(Uid objUid, String tName) throws ObjectStoreException {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("ShadowingStore.commit_state(" + objUid + ", " + tName + ")");
         }
 
         boolean result = false;
 
-        if (tName != null)
-        {
+        if (tName != null) {
             String shadow = null;
             String filename = null;
             int state = currentState(objUid, tName);
 
-            if ((state == StateStatus.OS_UNCOMMITTED_HIDDEN)
-                    || (state == StateStatus.OS_UNCOMMITTED))
-            {
+            if ((state == StateStatus.OS_UNCOMMITTED_HIDDEN) || (state == StateStatus.OS_UNCOMMITTED)) {
                 shadow = genPathName(objUid, tName, StateType.OS_SHADOW);
                 filename = genPathName(objUid, tName, StateType.OS_ORIGINAL);
 
-                if (state == StateStatus.OS_UNCOMMITTED_HIDDEN)
-                {
+                if (state == StateStatus.OS_UNCOMMITTED_HIDDEN) {
                     /* maintain hidden status on rename */
 
                     shadow = shadow + HIDDINGCHAR;
@@ -156,45 +136,37 @@ public class ShadowingStore extends FileSystemStore
                 File originalState = new File(filename);
 
                 /*
-                 * We need to do this because rename will not overwrite an
-                 * existing file in Windows, as it will in Unix. It is safe to
-                 * do so since we have written the shadow.
+                 * We need to do this because rename will not overwrite an existing file in
+                 * Windows, as it will in Unix. It is safe to do so since we have written the
+                 * shadow.
                  */
 
                 result = renameFromTo(shadowState, originalState);
 
                 if (!result) {
                     tsLogger.i18NLogger.warn_objectstore_ShadowingStore_2(shadow, filename);
-                }
-                else
-                {
+                } else {
                     super.addToCache(filename);
                     super.removeFromCache(shadow);
                 }
 
                 shadowState = null;
                 originalState = null;
-            }
-            else
+            } else
                 result = true;
-        }
-        else
+        } else
             throw new ObjectStoreException(
-                    "ShadowStore::commit_state - "
-                            + tsLogger.i18NLogger.get_objectstore_notypenameuid()
-                            + objUid);
+                    "ShadowStore::commit_state - " + tsLogger.i18NLogger.get_objectstore_notypenameuid() + objUid);
 
         return result;
     }
 
     /**
-     * Hide/reveal an object regardless of state. Hidden objects cannot be read
-     * but they can be written (Crash recovery needs this).
+     * Hide/reveal an object regardless of state. Hidden objects cannot be read but
+     * they can be written (Crash recovery needs this).
      */
 
-    public boolean hide_state (Uid objUid, String tName)
-            throws ObjectStoreException
-    {
+    public boolean hide_state(Uid objUid, String tName) throws ObjectStoreException {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("ShadowingStore.hide_state(" + objUid + ", " + tName + ")");
         }
@@ -205,65 +177,56 @@ public class ShadowingStore extends FileSystemStore
         String path1 = null;
         String path2 = null;
 
-        switch (state)
-        {
-            case StateStatus.OS_UNCOMMITTED_HIDDEN:
-            case StateStatus.OS_COMMITTED_HIDDEN:
-                break;
-            case StateStatus.OS_COMMITTED:
-            {
-                path1 = genPathName(objUid, tName, StateType.OS_ORIGINAL);
-                path2 = new String(path1) + HIDDINGCHAR;
+        switch (state) {
+        case StateStatus.OS_UNCOMMITTED_HIDDEN:
+        case StateStatus.OS_COMMITTED_HIDDEN:
+            break;
+        case StateStatus.OS_COMMITTED: {
+            path1 = genPathName(objUid, tName, StateType.OS_ORIGINAL);
+            path2 = new String(path1) + HIDDINGCHAR;
 
-                File newState = new File(path1);
-                File oldState = new File(path2);
+            File newState = new File(path1);
+            File oldState = new File(path2);
 
-                if (renameFromTo(newState, oldState))
-                {
-                    super.removeFromCache(path1);
-                    super.addToCache(path2);
-                }
-                else {
-                    tsLogger.i18NLogger.warn_objectstore_ShadowingStore_3(newState.getName(), oldState.getName());
-                }
-
-                newState = null;
-                oldState = null;
-
-                break;
+            if (renameFromTo(newState, oldState)) {
+                super.removeFromCache(path1);
+                super.addToCache(path2);
+            } else {
+                tsLogger.i18NLogger.warn_objectstore_ShadowingStore_3(newState.getName(), oldState.getName());
             }
-            case StateStatus.OS_UNCOMMITTED:
-            {
-                path1 = genPathName(objUid, tName, StateType.OS_SHADOW);
-                path2 = new String(path1) + HIDDINGCHAR;
 
-                File newState = new File(path1);
-                File oldState = new File(path2);
+            newState = null;
+            oldState = null;
 
-                if (renameFromTo(newState, oldState))
-                {
-                    super.removeFromCache(path1);
-                    super.addToCache(path2);
-                }
-                else {
-                    tsLogger.i18NLogger.warn_objectstore_ShadowingStore_3(newState.getName(), oldState.getName());
-                }
+            break;
+        }
+        case StateStatus.OS_UNCOMMITTED: {
+            path1 = genPathName(objUid, tName, StateType.OS_SHADOW);
+            path2 = new String(path1) + HIDDINGCHAR;
 
-                newState = null;
-                oldState = null;
+            File newState = new File(path1);
+            File oldState = new File(path2);
 
-                break;
+            if (renameFromTo(newState, oldState)) {
+                super.removeFromCache(path1);
+                super.addToCache(path2);
+            } else {
+                tsLogger.i18NLogger.warn_objectstore_ShadowingStore_3(newState.getName(), oldState.getName());
             }
-            default:
-                hiddenOk = false;
+
+            newState = null;
+            oldState = null;
+
+            break;
+        }
+        default:
+            hiddenOk = false;
         }
 
         return hiddenOk;
     }
 
-    public boolean reveal_state (Uid objUid, String tName)
-            throws ObjectStoreException
-    {
+    public boolean reveal_state(Uid objUid, String tName) throws ObjectStoreException {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("ShadowingStore.reveal_state(" + objUid + ", " + tName + ")");
         }
@@ -274,75 +237,66 @@ public class ShadowingStore extends FileSystemStore
         String path1 = null;
         String path2 = null;
 
-        switch (state)
-        {
-            case StateStatus.OS_UNCOMMITTED_HIDDEN:
-            {
-                path1 = genPathName(objUid, tName, StateType.OS_SHADOW);
-                path2 = new String(path1) + HIDDINGCHAR;
+        switch (state) {
+        case StateStatus.OS_UNCOMMITTED_HIDDEN: {
+            path1 = genPathName(objUid, tName, StateType.OS_SHADOW);
+            path2 = new String(path1) + HIDDINGCHAR;
 
-                File newState = new File(path2);
-                File oldState = new File(path1);
+            File newState = new File(path2);
+            File oldState = new File(path1);
 
-                if (renameFromTo(newState, oldState))
-                {
-                    super.removeFromCache(path2);
-                    super.addToCache(path1);
-                }
-                else {
-                    tsLogger.i18NLogger.warn_objectstore_ShadowingStore_4(newState.getName(), oldState.getName());
-                }
-
-                newState = null;
-                oldState = null;
-
-                break;
+            if (renameFromTo(newState, oldState)) {
+                super.removeFromCache(path2);
+                super.addToCache(path1);
+            } else {
+                tsLogger.i18NLogger.warn_objectstore_ShadowingStore_4(newState.getName(), oldState.getName());
             }
-            case StateStatus.OS_COMMITTED_HIDDEN:
-            {
-                path1 = genPathName(objUid, tName, StateType.OS_ORIGINAL);
-                path2 = new String(path1) + HIDDINGCHAR;
 
-                File newState = new File(path2);
-                File oldState = new File(path1);
+            newState = null;
+            oldState = null;
 
-                if (renameFromTo(newState, oldState))
-                {
-                    super.removeFromCache(path2);
-                    super.addToCache(path1);
-                }
-                else {
-                    tsLogger.i18NLogger.warn_objectstore_ShadowingStore_4(newState.getName(), oldState.getName());
-                }
+            break;
+        }
+        case StateStatus.OS_COMMITTED_HIDDEN: {
+            path1 = genPathName(objUid, tName, StateType.OS_ORIGINAL);
+            path2 = new String(path1) + HIDDINGCHAR;
 
-                newState = null;
-                oldState = null;
+            File newState = new File(path2);
+            File oldState = new File(path1);
 
-                break;
+            if (renameFromTo(newState, oldState)) {
+                super.removeFromCache(path2);
+                super.addToCache(path1);
+            } else {
+                tsLogger.i18NLogger.warn_objectstore_ShadowingStore_4(newState.getName(), oldState.getName());
             }
-            case StateStatus.OS_COMMITTED:
-            case StateStatus.OS_UNCOMMITTED:
-                break;
-            default:
-                revealedOk = false;
+
+            newState = null;
+            oldState = null;
+
+            break;
+        }
+        case StateStatus.OS_COMMITTED:
+        case StateStatus.OS_UNCOMMITTED:
+            break;
+        default:
+            revealedOk = false;
         }
 
         return revealedOk;
     }
 
     /**
-     * @return the file name for the state of the object identified by the Uid
-     *         and TypeName. If the StateType argument is OS_SHADOW then the Uid
-     *         part of the name includes # characters. Builds on lower level
-     *         genPathName which allocates enough slop to accomodate the extra
-     *         chars.
+     * @return the file name for the state of the object identified by the Uid and
+     *         TypeName. If the StateType argument is OS_SHADOW then the Uid part of
+     *         the name includes # characters. Builds on lower level genPathName
+     *         which allocates enough slop to accomodate the extra chars.
      */
 
-    protected String genPathName (Uid objUid, String tName, int ft)
-            throws ObjectStoreException
-    {
+    protected String genPathName(Uid objUid, String tName, int ft) throws ObjectStoreException {
         if (tsLogger.logger.isTraceEnabled()) {
-            tsLogger.logger.trace("ShadowingStore.genPathName(" + objUid + ", " + tName + ", " + StateType.stateTypeString(ft) + ")");
+            tsLogger.logger.trace(
+                    "ShadowingStore.genPathName(" + objUid + ", " + tName + ", " + StateType.stateTypeString(ft) + ")");
         }
 
         String fname = super.genPathName(objUid, tName, ft);
@@ -353,8 +307,7 @@ public class ShadowingStore extends FileSystemStore
         return fname;
     }
 
-    protected String revealedId (String name)
-    {
+    protected String revealedId(String name) {
         int index = name.indexOf(HIDDINGCHAR);
 
         if (index == -1)
@@ -366,35 +319,31 @@ public class ShadowingStore extends FileSystemStore
             return name;
     }
 
-    protected InputObjectState read_state (Uid objUid, String tName, int ft)
-            throws ObjectStoreException
-    {
+    protected InputObjectState read_state(Uid objUid, String tName, int ft) throws ObjectStoreException {
         if (tsLogger.logger.isTraceEnabled()) {
-            tsLogger.logger.trace("ShadowingStore.read_state(" + objUid + ", " + tName + ", " + StateType.stateTypeString(ft) + ")");
+            tsLogger.logger.trace(
+                    "ShadowingStore.read_state(" + objUid + ", " + tName + ", " + StateType.stateTypeString(ft) + ")");
         }
 
         InputObjectState new_image = null;
 
-        if (tName != null)
-        {
+        if (tName != null) {
             int state = currentState(objUid, tName);
 
-            if ((state == StateStatus.OS_COMMITTED)
-                    || (state == StateStatus.OS_UNCOMMITTED))
-            {
+            if ((state == StateStatus.OS_COMMITTED) || (state == StateStatus.OS_UNCOMMITTED)) {
                 /*
                  * Is the current state the same as that requested?
                  */
 
                 if (((state == StateStatus.OS_COMMITTED) && (ft != StateType.OS_ORIGINAL))
-                        || ((state == StateStatus.OS_UNCOMMITTED) && (ft != StateType.OS_SHADOW)))
-                {
+                        || ((state == StateStatus.OS_UNCOMMITTED) && (ft != StateType.OS_SHADOW))) {
                     /*
                      * Print out a warning/info if the state has changed to help explain the null
                      * value that is returned.
                      */
 
-                    tsLogger.logger.info("Object state "+objUid+" for type "+tName+" has changed on disk from what was expected.");
+                    tsLogger.logger.info("Object state " + objUid + " for type " + tName
+                            + " has changed on disk from what was expected.");
 
                     return null;
                 }
@@ -402,107 +351,86 @@ public class ShadowingStore extends FileSystemStore
                 String fname = genPathName(objUid, tName, ft);
                 File fd = openAndLock(fname, FileLock.F_RDLCK, false);
 
-                if (fd != null)
-                {
+                if (fd != null) {
                     int imageSize = (int) fd.length();
                     byte[] buffer = new byte[imageSize];
                     FileInputStream ifile = null;
 
-                    try
-                    {
+                    try {
                         ifile = new FileInputStream(fd);
-                    }
-                    catch (FileNotFoundException e)
-                    {
+                    } catch (FileNotFoundException e) {
                         closeAndUnlock(fd, ifile, null);
 
-                        tsLogger.logger.info("ObjectStore record was deleted during restoration, users should not deleted records manually: " + fd.getAbsolutePath(), e);
+                        tsLogger.logger.info(
+                                "ObjectStore record was deleted during restoration, users should not deleted records manually: "
+                                        + fd.getAbsolutePath(),
+                                e);
 
                         return null;
                     }
 
                     /* now try to read the actual image out of the store */
 
-                    try
-                    {
-                        if ((buffer != null)
-                                && (ifile.read(buffer, 0, imageSize) == imageSize))
-                        {
-                            new_image = new InputObjectState(objUid, tName,
-                                    buffer);
-                        }
-                        else {
+                    try {
+                        if ((buffer != null) && (ifile.read(buffer, 0, imageSize) == imageSize)) {
+                            new_image = new InputObjectState(objUid, tName, buffer);
+                        } else {
                             tsLogger.i18NLogger.warn_objectstore_ShadowingStore_7();
                         }
-                    }
-                    catch (IOException e)
-                    {
+                    } catch (IOException e) {
                         closeAndUnlock(fd, ifile, null);
 
-                        throw new ObjectStoreException(
-                                "ShadowingStore::read_state failed: " + e, e);
+                        throw new ObjectStoreException("ShadowingStore::read_state failed: " + e, e);
                     }
 
                     if (!closeAndUnlock(fd, ifile, null)) {
                         tsLogger.i18NLogger.warn_objectstore_ShadowingStore_8(fname);
                     }
-                }
-                else
-                {
+                } else {
                     tsLogger.i18NLogger.warn_objectstore_ShadowingStore_5(fname);
                 }
-            }
-            else
-            {
+            } else {
                 /*
-                 * We tried to read either a committed or uncommitted state but neither was present.
-                 * This may be an error but we can't tell at the level of the ObjectStore and so
-                 * SHOULD NOT issue a warning message by default. The application can figure this out because
-                 * we're going to return a null InputObjectState anyway!
+                 * We tried to read either a committed or uncommitted state but neither was
+                 * present. This may be an error but we can't tell at the level of the
+                 * ObjectStore and so SHOULD NOT issue a warning message by default. The
+                 * application can figure this out because we're going to return a null
+                 * InputObjectState anyway!
                  *
-                 * Changing this from a warning to trace so that anyone who needs to check this can do so. But
-                 * it shouldn't be the default action!
+                 * Changing this from a warning to trace so that anyone who needs to check this
+                 * can do so. But it shouldn't be the default action!
                  *
                  * https://issues.jboss.org/browse/JBTM-2593
                  */
 
                 if (tsLogger.logger.isTraceEnabled())
-                    tsLogger.logger.trace("ShadowingStore.read_state could not find committed or uncommitted state for "+objUid+
-                                    " instead found state "+StateStatus.stateStatusString(state));
+                    tsLogger.logger.trace("ShadowingStore.read_state could not find committed or uncommitted state for "
+                            + objUid + " instead found state " + StateStatus.stateStatusString(state));
             }
-        }
-        else
+        } else
             throw new ObjectStoreException(
-                    "ShadowStore::read_state - "
-                            + tsLogger.i18NLogger.get_objectstore_notypenameuid()
-                            + objUid);
+                    "ShadowStore::read_state - " + tsLogger.i18NLogger.get_objectstore_notypenameuid() + objUid);
 
         return new_image;
     }
 
-    protected boolean remove_state (Uid objUid, String name, int ft)
-            throws ObjectStoreException
-    {
+    protected boolean remove_state(Uid objUid, String name, int ft) throws ObjectStoreException {
         if (tsLogger.logger.isTraceEnabled()) {
-            tsLogger.logger.trace("ShadowingStore.remove_state(" + objUid + ", " + name + ", " + StateType.stateTypeString(ft) + ")");
+            tsLogger.logger.trace(
+                    "ShadowingStore.remove_state(" + objUid + ", " + name + ", " + StateType.stateTypeString(ft) + ")");
         }
 
         boolean removeOk = true;
 
-        if (name != null)
-        {
+        if (name != null) {
             int state = currentState(objUid, name);
 
-            if ((state == StateStatus.OS_COMMITTED)
-                    || (state == StateStatus.OS_UNCOMMITTED))
-            {
+            if ((state == StateStatus.OS_COMMITTED) || (state == StateStatus.OS_UNCOMMITTED)) {
                 String fname = genPathName(objUid, name, ft);
                 File fd = openAndLock(fname, FileLock.F_WRLCK, false);
 
-                if (fd != null)
-                {
-                    if (!fd.canWrite())
-                    {
+                if (fd != null) {
+                    if (!fd.canWrite()) {
                         removeOk = false;
 
                         if (ft == StateType.OS_ORIGINAL) {
@@ -512,11 +440,8 @@ public class ShadowingStore extends FileSystemStore
                                 tsLogger.i18NLogger.warn_objectstore_ShadowingStore_10(objUid, name);
                             }
                         }
-                    }
-                    else
-                    {
-                        if (!fd.delete())
-                        {
+                    } else {
+                        if (!fd.delete()) {
                             removeOk = false;
 
                             if (ft == StateType.OS_ORIGINAL) {
@@ -526,8 +451,7 @@ public class ShadowingStore extends FileSystemStore
                     }
 
                     closeAndUnlock(fd, null, null);
-                }
-                else {
+                } else {
                     tsLogger.i18NLogger.warn_objectstore_ShadowingStore_12(objUid);
 
                     removeOk = false;
@@ -535,9 +459,7 @@ public class ShadowingStore extends FileSystemStore
 
                 if (removeOk)
                     super.removeFromCache(fname);
-            }
-            else
-            {
+            } else {
                 removeOk = false;
 
                 if (state == StateStatus.OS_UNKNOWN)
@@ -545,8 +467,7 @@ public class ShadowingStore extends FileSystemStore
                 else
                     tsLogger.i18NLogger.info_objectstore_ShadowingStore_15(objUid, name);
             }
-        }
-        else {
+        } else {
             removeOk = false;
 
             tsLogger.i18NLogger.warn_objectstore_ShadowingStore_17(objUid);
@@ -556,21 +477,19 @@ public class ShadowingStore extends FileSystemStore
     }
 
     /**
-     * write_state saves the ObjectState in a file named by the type and Uid of
-     * the ObjectState. If the second argument is SHADOW, then the file name is
-     * different so that a subsequent commit_state invocation will rename the
-     * file.
+     * write_state saves the ObjectState in a file named by the type and Uid of the
+     * ObjectState. If the second argument is SHADOW, then the file name is
+     * different so that a subsequent commit_state invocation will rename the file.
      */
 
-    protected boolean write_state (Uid objUid, String tName,
-                                   OutputObjectState state, int ft) throws ObjectStoreException
-    {
+    protected boolean write_state(Uid objUid, String tName, OutputObjectState state, int ft)
+            throws ObjectStoreException {
         if (tsLogger.logger.isTraceEnabled()) {
-            tsLogger.logger.trace("ShadowingStore.write_state(" + objUid + ", " + tName + ", " + StateType.stateTypeString(ft) + ")");
+            tsLogger.logger.trace(
+                    "ShadowingStore.write_state(" + objUid + ", " + tName + ", " + StateType.stateTypeString(ft) + ")");
         }
 
-        if (tName != null)
-        {
+        if (tName != null) {
             String fname = genPathName(objUid, tName, ft);
             File fd = openAndLock(fname, FileLock.F_WRLCK, true);
             int imageSize = (int) state.length();
@@ -583,16 +502,13 @@ public class ShadowingStore extends FileSystemStore
 
             FileOutputStream ofile = null;
 
-            if (imageSize > 0)
-            {
-                try
-                {
+            if (imageSize > 0) {
+                try {
                     ofile = new FileOutputStream(fd);
 
                     ofile.write(state.buffer(), 0, imageSize);
 
-                    if (synchronousWrites())
-                    {
+                    if (synchronousWrites()) {
                         // must flush any in-memory buffering prior to sync
 
                         ofile.flush();
@@ -601,34 +517,25 @@ public class ShadowingStore extends FileSystemStore
                         // valid!
                         fileDesc.sync();
                     }
-                }
-                catch (SyncFailedException e)
-                {
+                } catch (SyncFailedException e) {
                     closeAndUnlock(fd, null, ofile);
 
-                    throw new ObjectStoreException(
-                            "ShadowingStore::write_state() - write failed to sync for "
-                                    + fname, e);
-                }
-                catch (FileNotFoundException e)
-                {
+                    throw new ObjectStoreException("ShadowingStore::write_state() - write failed to sync for " + fname,
+                            e);
+                } catch (FileNotFoundException e) {
                     closeAndUnlock(fd, null, ofile);
 
                     e.printStackTrace();
 
                     throw new ObjectStoreException(
-                            "ShadowingStore::write_state() - write failed to locate file "
-                                    + fname + ": " + e, e);
-                }
-                catch (IOException e)
-                {
+                            "ShadowingStore::write_state() - write failed to locate file " + fname + ": " + e, e);
+                } catch (IOException e) {
                     closeAndUnlock(fd, null, ofile);
 
                     e.printStackTrace();
 
                     throw new ObjectStoreException(
-                            "ShadowingStore::write_state() - write failed for "
-                                    + fname + ": " + e, e);
+                            "ShadowingStore::write_state() - write failed for " + fname + ": " + e, e);
                 }
             }
 
@@ -639,16 +546,12 @@ public class ShadowingStore extends FileSystemStore
             super.addToCache(fname);
 
             return true;
-        }
-        else
+        } else
             throw new ObjectStoreException(
-                    "ShadowStore::write_state - "
-                            + tsLogger.i18NLogger.get_objectstore_notypenameuid()
-                            + objUid);
+                    "ShadowStore::write_state - " + tsLogger.i18NLogger.get_objectstore_notypenameuid() + objUid);
     }
 
-    public ShadowingStore(ObjectStoreEnvironmentBean objectStoreEnvironmentBean) throws ObjectStoreException
-    {
+    public ShadowingStore(ObjectStoreEnvironmentBean objectStoreEnvironmentBean) throws ObjectStoreException {
         super(objectStoreEnvironmentBean);
     }
 

@@ -31,6 +31,25 @@
 
 package com.arjuna.ats.internal.jta.resources.arjunacore;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
+
+import javax.transaction.xa.XAException;
+import javax.transaction.xa.XAResource;
+import javax.transaction.xa.Xid;
+
+import org.jboss.tm.FirstResource;
+import org.jboss.tm.LastResource;
+
 import com.arjuna.ats.arjuna.ObjectType;
 import com.arjuna.ats.arjuna.common.Uid;
 import com.arjuna.ats.arjuna.coordinator.AbstractRecord;
@@ -58,29 +77,7 @@ import com.arjuna.common.internal.util.ClassloadingUtility;
 import io.narayana.tracing.ScopeBuilder;
 import io.narayana.tracing.SpanName;
 import io.narayana.tracing.TagName;
-import io.narayana.tracing.TracingUtils;
 import io.opentracing.Scope;
-import io.opentracing.Span;
-import io.opentracing.util.GlobalTracer;
-
-import javax.transaction.xa.XAException;
-import javax.transaction.xa.XAResource;
-import javax.transaction.xa.Xid;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.NotSerializableException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
-
-import org.jboss.tm.FirstResource;
-import org.jboss.tm.LastResource;
 
 /**
  * @author Mark Little (mark_little@hp.com)
@@ -144,6 +141,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
         return _tranID;
     }
 
+    @Override
     public Uid order() {
         if (_theXAResource instanceof FirstResource)
             return START_XARESOURCE;
@@ -153,26 +151,32 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
         return super.order();
     }
 
+    @Override
     public boolean propagateOnCommit() {
         return false; // cannot ever be nested!
     }
 
+    @Override
     public int typeIs() {
         return RecordType.JTA_RECORD;
     }
 
+    @Override
     public Object value() {
         return _theXAResource;
     }
 
+    @Override
     public void setValue(Object o) {
         jtaLogger.i18NLogger.warn_resources_arjunacore_setvalue("XAResourceRecord::set_value()");
     }
 
+    @Override
     public int nestedAbort() {
         return TwoPhaseOutcome.FINISH_OK;
     }
 
+    @Override
     public int nestedCommit() {
         return TwoPhaseOutcome.FINISH_OK;
     }
@@ -181,10 +185,12 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
      * XA is not subtransaction aware.
      */
 
+    @Override
     public int nestedPrepare() {
         return TwoPhaseOutcome.PREPARE_OK; // do nothing
     }
 
+    @Override
     public int topLevelPrepare() {
         if (jtaLogger.logger.isTraceEnabled()) {
             jtaLogger.logger.trace("XAResourceRecord.topLevelPrepare for " + this + ", record id=" + order());
@@ -200,7 +206,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
 
         try(Scope scope = new ScopeBuilder(SpanName.LOCAL_PREPARE)
                 .tag(TagName.XARES, _theXAResource)
-                .start()) {
+                .start(get_uid().toString())) {
             endAssociation(XAResource.TMSUCCESS, TxInfo.NOT_ASSOCIATED);
 
             _prepared = true;
@@ -256,6 +262,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
         }
     }
 
+    @Override
     public int topLevelAbort() {
         if (jtaLogger.logger.isTraceEnabled()) {
             jtaLogger.logger.trace("XAResourceRecord.topLevelAbort for " + this + ", record id=" + order());
@@ -390,6 +397,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
         return TwoPhaseOutcome.FINISH_OK;
     }
 
+    @Override
     public int topLevelCommit() {
         if (jtaLogger.logger.isTraceEnabled()) {
             jtaLogger.logger.trace("XAResourceRecord.topLevelCommit for " + this + ", record id=" + order());
@@ -417,7 +425,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
 
                 try(Scope scope = new ScopeBuilder(SpanName.LOCAL_COMMIT)
                         .tag(TagName.XARES, _theXAResource)
-                        .start()) {
+                        .start(get_uid().toString())) {
                     _theXAResource.commit(_tranID, false);
                 } catch (XAException e1) {
                     if (notAProblem(e1, true)) {
@@ -516,6 +524,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
         return XAResourceErrorHandler.notAProblem(_theXAResource, ex, commit);
     }
 
+    @Override
     public int nestedOnePhaseCommit() {
         return TwoPhaseOutcome.FINISH_ERROR;
     }
@@ -527,6 +536,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
      * it will not have an intentions list anyway.
      */
 
+    @Override
     public int topLevelOnePhaseCommit() {
         if (jtaLogger.logger.isTraceEnabled()) {
             jtaLogger.logger.trace("XAResourceRecord.topLevelOnePhaseCommit for " + this + ", record id=" + order());
@@ -696,6 +706,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
             return TwoPhaseOutcome.FINISH_ERROR;
     }
 
+    @Override
     public boolean forgetHeuristic() {
         if (jtaLogger.logger.isTraceEnabled()) {
             jtaLogger.logger.trace("XAResourceRecord.forget for " + this);
@@ -748,6 +759,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
             return XARecoveryResource.WAITING_FOR_RECOVERY;
     }
 
+    @Override
     public boolean save_state(OutputObjectState os, int t) {
         boolean res = false;
 
@@ -817,6 +829,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
         return res;
     }
 
+    @Override
     public boolean restore_state(InputObjectState os, int t) {
         boolean res = false;
 
@@ -941,6 +954,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
         return res;
     }
 
+    @Override
     public String type() {
         return XAResourceRecord.typeName();
     }
@@ -949,28 +963,35 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
         return "/StateManager/AbstractRecord/XAResourceRecord";
     }
 
+    @Override
     public boolean doSave() {
         return true;
     }
 
+    @Override
     public void merge(AbstractRecord a) {
     }
 
+    @Override
     public void alter(AbstractRecord a) {
     }
 
+    @Override
     public boolean shouldAdd(AbstractRecord a) {
         return false;
     }
 
+    @Override
     public boolean shouldAlter(AbstractRecord a) {
         return false;
     }
 
+    @Override
     public boolean shouldMerge(AbstractRecord a) {
         return false;
     }
 
+    @Override
     public boolean shouldReplace(AbstractRecord a) {
         return false;
     }
@@ -1058,6 +1079,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
         _recovered = true;
     }
 
+    @Override
     public String toString() {
         return "XAResourceRecord < resource:" + _theXAResource + ", txid:" + _tranID + ", heuristic: "
                 + TwoPhaseOutcome.stringForm(_heuristic)

@@ -42,27 +42,25 @@ import com.arjuna.ats.arjuna.state.OutputObjectState;
  * @since 3.2.
  */
 
-public interface OnePhaseResource
-{
+public interface OnePhaseResource {
 
     /**
      * Return values from TwoPhaseOutcome to indicate success or failure.
      *
-     * If this fails, then we will automatically attempt to rollback any
-     * other participants.
+     * If this fails, then we will automatically attempt to rollback any other
+     * participants.
      */
 
-    public int commit ();
+    public int commit();
 
     /**
      * Return values from TwoPhaseOutcome to indicate success or failure.
      */
 
-    public int rollback ();
+    public int rollback();
 
-    public void pack (OutputObjectState os) throws IOException;
+    public void pack(OutputObjectState os) throws IOException;
 
-    public void unpack (InputObjectState os) throws IOException;
+    public void unpack(InputObjectState os) throws IOException;
 
 }
-

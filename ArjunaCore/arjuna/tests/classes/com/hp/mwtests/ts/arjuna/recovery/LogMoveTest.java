@@ -44,11 +44,9 @@ import com.arjuna.ats.arjuna.state.OutputObjectState;
 import com.arjuna.ats.internal.arjuna.common.UidHelper;
 import com.arjuna.ats.internal.arjuna.recovery.ExpiredTransactionScanner;
 
-public class LogMoveTest
-{
+public class LogMoveTest {
     @Test
-    public void test()
-    {
+    public void test() {
         RecoveryStore recoveryStore = StoreManager.getRecoveryStore();
         OutputObjectState fluff = new OutputObjectState();
         Uid kungfuTx = new Uid();
@@ -82,8 +80,7 @@ public class LogMoveTest
                 }
             } else
                 System.err.println("State is not committed!");
-        }
-        catch (final Exception ex) {
+        } catch (final Exception ex) {
             ex.printStackTrace();
         }
 

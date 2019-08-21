@@ -38,37 +38,30 @@ import com.arjuna.ats.arjuna.common.Uid;
  * @since JBTM 4.9.0.
  */
 
-public class Header
-{
-    public Header ()
-    {
+public class Header {
+    public Header() {
         _txId = null;
         _processId = null;
     }
 
-    public Header (Uid txId, Uid processId)
-    {
+    public Header(Uid txId, Uid processId) {
         _txId = txId;
         _processId = processId;
     }
 
-    public Uid getTxId ()
-    {
+    public Uid getTxId() {
         return _txId;
     }
 
-    public Uid getProcessId ()
-    {
+    public Uid getProcessId() {
         return _processId;
     }
 
-    public void setTxId (Uid txId)
-    {
+    public void setTxId(Uid txId) {
         _txId = txId;
     }
 
-    public void setProcessId (Uid processId)
-    {
+    public void setProcessId(Uid processId) {
         _processId = processId;
     }
 

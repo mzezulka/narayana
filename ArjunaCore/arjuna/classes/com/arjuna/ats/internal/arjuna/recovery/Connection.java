@@ -39,80 +39,70 @@ import java.net.Socket;
 import com.arjuna.ats.arjuna.logging.tsLogger;
 import com.arjuna.ats.arjuna.recovery.Service;
 
-public class Connection extends Thread
-{
-   /**
-    * Takes socket and service to execute.
-    */
-
-   public Connection( Socket server_socket, Service service)
-   {
-       this(server_socket, service, null);
-   }
-
+public class Connection extends Thread {
     /**
-     * Takes socket and service to execute and a callback to run when processing of the connection has completed
+     * Takes socket and service to execute.
      */
 
-    public Connection( Socket server_socket, Service service, Callback callback )
-   {
-      super( "Server.Connection:" + server_socket.getInetAddress().getHostAddress() + ":" + server_socket.getPort() );
+    public Connection(Socket server_socket, Service service) {
+        this(server_socket, service, null);
+    }
 
-      _server_socket = server_socket;
+    /**
+     * Takes socket and service to execute and a callback to run when processing of
+     * the connection has completed
+     */
 
-      try
-      {
-      _server_socket.setSoTimeout(0);
-      }
-      catch (java.net.SocketException ex) {
-          tsLogger.i18NLogger.warn_recovery_Connection_2();
-      }
+    public Connection(Socket server_socket, Service service, Callback callback) {
+        super("Server.Connection:" + server_socket.getInetAddress().getHostAddress() + ":" + server_socket.getPort());
 
-      _service = service;
+        _server_socket = server_socket;
 
-       _callback = callback;
-   }
+        try {
+            _server_socket.setSoTimeout(0);
+        } catch (java.net.SocketException ex) {
+            tsLogger.i18NLogger.warn_recovery_Connection_2();
+        }
 
-   /**
-    * Obtains input and output streams and executes work
-    * required by the service.
-    */
+        _service = service;
 
-   public void run()
-   {
-      try
-      {
-         InputStream  is = _server_socket.getInputStream();
-         OutputStream os = _server_socket.getOutputStream();
+        _callback = callback;
+    }
 
-         _service.doWork ( is, os );
-      }
-      catch ( IOException ex ) {
-          tsLogger.i18NLogger.warn_recovery_Connection_1();
-      }
-      finally
-      {
+    /**
+     * Obtains input and output streams and executes work required by the service.
+     */
 
-      // run the callback to notify completion of processing for this connection
+    public void run() {
+        try {
+            InputStream is = _server_socket.getInputStream();
+            OutputStream os = _server_socket.getOutputStream();
 
-      if (_callback != null) {
-          _callback.run();
-      }
-      }
-   }
+            _service.doWork(is, os);
+        } catch (IOException ex) {
+            tsLogger.i18NLogger.warn_recovery_Connection_1();
+        } finally {
 
-   // What client (RecoveryManager) talks to.
-   private Socket  _server_socket;
+            // run the callback to notify completion of processing for this connection
 
-   // What Service is provided to the client(RecoveryManager).
-   private Service _service;
+            if (_callback != null) {
+                _callback.run();
+            }
+        }
+    }
 
-   private Callback _callback;
+    // What client (RecoveryManager) talks to.
+    private Socket _server_socket;
 
-    // abstract class instantiated by clients to allow notification that a connection has been closed
+    // What Service is provided to the client(RecoveryManager).
+    private Service _service;
 
-   public static abstract class Callback
-   {
-       abstract void run();
-   }
+    private Callback _callback;
+
+    // abstract class instantiated by clients to allow notification that a
+    // connection has been closed
+
+    public abstract static class Callback {
+        abstract void run();
+    }
 }

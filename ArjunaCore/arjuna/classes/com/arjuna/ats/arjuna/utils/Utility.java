@@ -48,26 +48,21 @@ import com.arjuna.ats.arjuna.logging.tsLogger;
  * @version $Id: Utility.java 2342 2006-03-30 13:06:17Z $
  * @since JTS 1.0.
  */
-public class Utility
-{
+public class Utility {
 
     /**
      * Convert integer to hex String.
      */
 
-    public static String intToHexString (int number)
-            throws NumberFormatException
-    {
+    public static String intToHexString(int number) throws NumberFormatException {
         return Integer.toString(number, 16);
     }
 
     /**
-     * Convert a hex String to an integer. Be careful of -1. Java IO is really
-     * bad!
+     * Convert a hex String to an integer. Be careful of -1. Java IO is really bad!
      */
 
-    public static int hexStringToInt (String s) throws NumberFormatException
-    {
+    public static int hexStringToInt(String s) throws NumberFormatException {
         boolean isNeg;
         String toUse = s;
 
@@ -76,13 +71,10 @@ public class Utility
 
         String lastString = toUse.substring(toUse.length() - 1);
 
-        if (toUse.substring(0, 1).equals("-"))
-        {
+        if (toUse.substring(0, 1).equals("-")) {
             toUse = "-0" + toUse.substring(1, toUse.length() - 1);
             isNeg = true;
-        }
-        else
-        {
+        } else {
             toUse = "0" + toUse.substring(0, toUse.length() - 1);
             isNeg = false;
         }
@@ -93,12 +85,9 @@ public class Utility
 
         val = val << 4;
 
-        if (isNeg)
-        {
+        if (isNeg) {
             val -= Integer.valueOf(lastString, 16).intValue();
-        }
-        else
-        {
+        } else {
             val += Integer.valueOf(lastString, 16).intValue();
         }
 
@@ -109,9 +98,7 @@ public class Utility
      * Convert a long to a hex String.
      */
 
-    public static String longToHexString (long number)
-            throws NumberFormatException
-    {
+    public static String longToHexString(long number) throws NumberFormatException {
         return Long.toString(number, 16);
     }
 
@@ -119,8 +106,7 @@ public class Utility
      * Convert a hex String to a long
      */
 
-    public static long hexStringToLong (String s) throws NumberFormatException
-    {
+    public static long hexStringToLong(String s) throws NumberFormatException {
         boolean isNeg;
         String toUse = s;
 
@@ -129,13 +115,10 @@ public class Utility
 
         String lastString = toUse.substring(toUse.length() - 1);
 
-        if (toUse.substring(0, 1).equals("-"))
-        {
+        if (toUse.substring(0, 1).equals("-")) {
             toUse = "-0" + toUse.substring(1, toUse.length() - 1);
             isNeg = true;
-        }
-        else
-        {
+        } else {
             toUse = "0" + toUse.substring(0, toUse.length() - 1);
             isNeg = false;
         }
@@ -146,12 +129,9 @@ public class Utility
 
         val = val << 4;
 
-        if (isNeg)
-        {
+        if (isNeg) {
             val -= Long.valueOf(lastString, 16).longValue();
-        }
-        else
-        {
+        } else {
             val += Long.valueOf(lastString, 16).longValue();
         }
 
@@ -161,26 +141,24 @@ public class Utility
     /**
      * @return Long(s) representing the ip v6 address of the local machine.
      *         Essentially the bytes of the InetAddress are shuffled into the
-     *         long(s). This was once part of the Uid class but has been
-     *         separated for general availability.
+     *         long(s). This was once part of the Uid class but has been separated
+     *         for general availability.
      * @since JTS 2.1.
      */
     public static long[] hostInetAddr() throws UnknownHostException {
-        if(myAddr == null) {
+        if (myAddr == null) {
             calculateHostInetAddr();
         }
 
         return myAddr;
     }
 
-    private static synchronized void calculateHostInetAddr () throws UnknownHostException
-    {
+    private static synchronized void calculateHostInetAddr() throws UnknownHostException {
         /*
          * Calculate only once.
          */
 
-        if (myAddr == null)
-        {
+        if (myAddr == null) {
             myAddr = new long[2];
 
             myAddr[0] = 0;
@@ -189,24 +167,19 @@ public class Utility
             byte[] b = null;
             InetAddress addr;
 
-            try
-            {
+            try {
                 addr = InetAddress.getLocalHost();
-            }
-            catch (final UnknownHostException uhe) {
+            } catch (final UnknownHostException uhe) {
                 tsLogger.i18NLogger.warn_utils_Utility_2();
 
                 addr = InetAddress.getByName(null);
             }
 
-            if (addr instanceof Inet6Address)
-            {
+            if (addr instanceof Inet6Address) {
                 // 16 bytes to work with.
 
                 b = addr.getAddress();
-            }
-            else
-            {
+            } else {
                 /*
                  * Convert ipv4 to ipv6
                  *
@@ -232,8 +205,7 @@ public class Utility
                 System.arraycopy(v4Address, 0, b, 12, v4Address.length);
             }
 
-            for (int i = 0; i < 8; i++)
-            {
+            for (int i = 0; i < 8; i++) {
                 /*
                  * Convert signed byte into unsigned.
                  */
@@ -245,8 +217,7 @@ public class Utility
                 myAddr[0] = (myAddr[0] << 8) | l;
             }
 
-            for (int i = 8; i < 16; i++)
-            {
+            for (int i = 8; i < 16; i++) {
                 /*
                  * Convert signed byte into unsigned.
                  */
@@ -263,25 +234,21 @@ public class Utility
     /**
      * Convert a host name into an InetAddress object
      *
-     * @param host
-     *            if empty or null then the loopback address is used
+     * @param host if empty or null then the loopback address is used
      * @return an InetAddress structure corresponding the desired host name
-     * @throws UnknownHostException
-     *             if the hostname cannot be found
+     * @throws UnknownHostException if the hostname cannot be found
      */
-    public static InetAddress hostNameToInetAddress (String host) throws UnknownHostException
-    {
+    public static InetAddress hostNameToInetAddress(String host) throws UnknownHostException {
         return InetAddress.getByName(host);
     }
 
     /**
-     * @return the process id. This had better be unique between processes on
-     *         the same machine. If not we're in trouble!
+     * @return the process id. This had better be unique between processes on the
+     *         same machine. If not we're in trouble!
      * @since JTS 2.1.
      */
 
-    public static final int getpid ()
-    {
+    public static final int getpid() {
         Process handle = getProcess();
 
         return ((handle == null) ? -1 : handle.getpid());
@@ -291,8 +258,7 @@ public class Utility
      * @return a Uid representing this process.
      * @since JTS 2.1.
      */
-    public static Uid getProcessUid ()
-    {
+    public static Uid getProcessUid() {
         if (processUid == null) {
             initProcessUid();
         }
@@ -301,14 +267,14 @@ public class Utility
     }
 
     private static synchronized void initProcessUid() {
-        // not done from a static initializer because Uid ctor calls back into this class.
-        if(processUid == null) {
+        // not done from a static initializer because Uid ctor calls back into this
+        // class.
+        if (processUid == null) {
             processUid = new Uid();
         }
     }
 
-    public static final boolean isWindows ()
-    {
+    public static final boolean isWindows() {
         String os = System.getProperty("os.name");
 
         if (("WIN32".equals(os)) || (os.indexOf("Windows") != -1))
@@ -317,26 +283,21 @@ public class Utility
             return false;
     }
 
-    public static final void setProcess (Process p)
-    {
+    public static final void setProcess(Process p) {
         processHandle = p;
     }
 
-    private static synchronized void initDefaultProcess ()
-    {
-        if(processHandle == null)
-        {
+    private static synchronized void initDefaultProcess() {
+        if (processHandle == null) {
             processHandle = arjPropertyManager.getCoreEnvironmentBean().getProcessImplementation();
-            if(processHandle == null) {
+            if (processHandle == null) {
                 tsLogger.i18NLogger.warn_utils_Utility_1();
             }
         }
     }
 
-    private static final Process getProcess ()
-    {
-        if (processHandle == null)
-        {
+    private static final Process getProcess() {
+        if (processHandle == null) {
             initDefaultProcess();
         }
 
@@ -344,38 +305,32 @@ public class Utility
     }
 
     public static void validatePortRange(int port) {
-        if(port < 0 || port > MAX_PORT) {
-            throw new IllegalArgumentException("port value out of range "+port);
+        if (port < 0 || port > MAX_PORT) {
+            throw new IllegalArgumentException("port value out of range " + port);
         }
     }
 
-    public static synchronized String getDefaultProcessId ()
-    {
+    public static synchronized String getDefaultProcessId() {
         initialise();
 
         return defaultProcessId;
     }
 
-    public static synchronized boolean isAndroid ()
-    {
+    public static synchronized boolean isAndroid() {
         initialise();
 
         return _isAndroid;
     }
 
-    private static void initialise ()
-    {
-        if (defaultProcessId == null)
-        {
+    private static void initialise() {
+        if (defaultProcessId == null) {
             String t = System.getProperty("java.vm.vendor");
 
-            if (t.toLowerCase().indexOf("android") != -1)
-            {
+            if (t.toLowerCase().indexOf("android") != -1) {
                 defaultProcessId = "com.arjuna.ats.internal.arjuna.utils.AndroidProcessId";
 
                 _isAndroid = true;
-            }
-            else
+            } else
                 defaultProcessId = "com.arjuna.ats.internal.arjuna.utils.SocketProcessId";
         }
     }
@@ -393,8 +348,8 @@ public class Utility
     private static boolean _isAndroid = false;
 
     /**
-     * The maximum queue length for incoming connection indications (a request
-     * to connect)
+     * The maximum queue length for incoming connection indications (a request to
+     * connect)
      */
     public static final int BACKLOG = 50;
 

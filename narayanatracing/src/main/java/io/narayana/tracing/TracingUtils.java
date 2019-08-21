@@ -1,6 +1,7 @@
 package io.narayana.tracing;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import io.opentracing.Span;
 import io.opentracing.Tracer;
@@ -22,32 +23,36 @@ public class TracingUtils {
      * Useful when the user wishes to add tags whose existence / value
      * is dependent on the context (i.e. status of the transaction).
      */
-    public static void addCurrentSpanTag(TagName name, String val) {
-        getTracer().activeSpan().setTag(name.toString(), val);
+    public static void addActiveSpanTag(TagName name, String val) {
+        activeSpan().ifPresent(s -> s.setTag(name.toString(), val));
     }
 
     public static void addCurrentSpanTag(TagName name, Object obj) {
-        addCurrentSpanTag(name, obj == null ? "null" : obj.toString());
+        addActiveSpanTag(name, obj == null ? "null" : obj.toString());
     }
 
     public static <T> void addCurrentSpanTag(Tag<T> tag, T obj) {
-        getTracer().activeSpan().setTag(tag, obj);
+        activeSpan().ifPresent((s) -> s.setTag(tag, obj));
     }
 
     /**
      * Log a message for the currently active span.
      */
     public static void log(String message) {
-        getTracer().activeSpan().log(message);
+        activeSpan().ifPresent(s -> s.log(message));
     }
 
     public static <T> void log(String fld, String value) {
-        getTracer().activeSpan().log(Collections.singletonMap(fld, value));
+        activeSpan().ifPresent(s -> s.log(Collections.singletonMap(fld, value)));
     }
 
-    public static void finishActiveSpan() {
+    public static void finishScope(String txUid) {
+        ScopeBuilder.finish(txUid);
+    }
+
+    private static Optional<Span> activeSpan() {
         Span span = getTracer().activeSpan();
-        if(span != null) span.finish();
+        return span == null ? Optional.empty() : Optional.of(span);
     }
 
     /**

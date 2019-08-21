@@ -42,29 +42,25 @@ import java.io.PrintWriter;
  * @since JTS 1.0.
  */
 
-public class ObjectModel
-{
+public class ObjectModel {
 
     /**
-     * In the SINGLE model, it is assumed that only a single instance of the
-     * object will exist within a single JVM, and that it will be shared between
-     * threads.
+     * In the SINGLE model, it is assumed that only a single instance of the object
+     * will exist within a single JVM, and that it will be shared between threads.
      */
 
     public static final int SINGLE = 0;
 
     /**
-     * In the MULTIPLE model, it is assumed that multiple instances of the
-     * object may exist in different JVMs concurrently, or within the same
-     * JVM if each thread gets its own instance.
+     * In the MULTIPLE model, it is assumed that multiple instances of the object
+     * may exist in different JVMs concurrently, or within the same JVM if each
+     * thread gets its own instance.
      */
 
     public static final int MULTIPLE = 1;
 
-    public static String stringForm (int os)
-    {
-        switch (os)
-        {
+    public static String stringForm(int os) {
+        switch (os) {
         case SINGLE:
             return "SINGLE";
         case MULTIPLE:
@@ -78,8 +74,7 @@ public class ObjectModel
      * Print out a human-readable form of the model type.
      */
 
-    public static void print (PrintWriter strm, int os)
-    {
+    public static void print(PrintWriter strm, int os) {
         strm.print(stringForm(os));
     }
 

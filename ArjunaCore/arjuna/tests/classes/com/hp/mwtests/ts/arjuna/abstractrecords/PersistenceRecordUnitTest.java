@@ -41,11 +41,9 @@ import com.arjuna.ats.arjuna.state.OutputObjectState;
 import com.arjuna.ats.internal.arjuna.abstractrecords.PersistenceRecord;
 import com.hp.mwtests.ts.arjuna.resources.ExtendedObject;
 
-public class PersistenceRecordUnitTest
-{
+public class PersistenceRecordUnitTest {
     @Test
-    public void test ()
-    {
+    public void test() {
         ParticipantStore store = StoreManager.setupStore(null, StateType.OS_UNSHARED);
 
         PersistenceRecord cr = new PersistenceRecord(new OutputObjectState(), store, new ExtendedObject());

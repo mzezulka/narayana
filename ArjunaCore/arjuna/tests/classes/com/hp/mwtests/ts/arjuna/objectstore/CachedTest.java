@@ -45,17 +45,14 @@ import com.arjuna.ats.arjuna.state.InputObjectState;
 import com.arjuna.ats.arjuna.state.OutputObjectState;
 import com.arjuna.ats.internal.arjuna.objectstore.CacheStore;
 
-class ThreadWriter extends Thread
-{
+class ThreadWriter extends Thread {
     private static final String TYPE = "test";
 
-    public ThreadWriter(ParticipantStore theStore)
-    {
+    public ThreadWriter(ParticipantStore theStore) {
         participantStore = theStore;
     }
 
-    public void run()
-    {
+    public void run() {
         byte[] data = new byte[1024];
         OutputObjectState state = new OutputObjectState(new Uid(), "type");
         Uid u = new Uid();
@@ -73,16 +70,14 @@ class ThreadWriter extends Thread
                 if (s != null) {
                     if (participantStore.remove_committed(u, TYPE))
                         passed = true;
-                }
-                else
-                    System.err.println("No state found while trying to read "+u);
+                } else
+                    System.err.println("No state found while trying to read " + u);
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
 
-        System.err.println("Thread for "+u+" "+((passed) ? "succeeded" : "failed"));
+        System.err.println("Thread for " + u + " " + ((passed) ? "succeeded" : "failed"));
     }
 
     public boolean passed = false;
@@ -90,12 +85,9 @@ class ThreadWriter extends Thread
     private ParticipantStore participantStore = null;
 }
 
-
-public class CachedTest
-{
+public class CachedTest {
     @Test
-    public void test() throws Exception
-    {
+    public void test() throws Exception {
         int cacheSize = 2048;
         int threads = 100;
         Thread[] t = new Thread[threads];
@@ -109,13 +101,13 @@ public class CachedTest
         long stime = Calendar.getInstance().getTime().getTime();
 
         for (int i = 0; i < threads; i++) {
-            System.err.println("i: "+i);
+            System.err.println("i: " + i);
             t[i] = new ThreadWriter(store);
             t[i].start();
         }
 
         for (int j = 0; j < threads; j++) {
-            System.err.println("j: "+j);
+            System.err.println("j: " + j);
             t[j].join();
             assertTrue(((ThreadWriter) t[j]).passed);
         }

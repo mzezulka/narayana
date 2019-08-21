@@ -31,26 +31,21 @@
 
 package com.hp.mwtests.ts.arjuna.recovery;
 
-class DummyRecoveryModule implements com.arjuna.ats.arjuna.recovery.RecoveryModule
-{
-    public DummyRecoveryModule()
-    {
+class DummyRecoveryModule implements com.arjuna.ats.arjuna.recovery.RecoveryModule {
+    public DummyRecoveryModule() {
     }
 
-    public void periodicWorkFirstPass()
-    {
+    public void periodicWorkFirstPass() {
         System.err.println("DummyRecoveryModule.periodicWorkFirstPass");
     }
 
-    public void periodicWorkSecondPass()
-    {
+    public void periodicWorkSecondPass() {
         System.err.println("DummyRecoveryModule.periodicWorkSecondPass");
 
         _complete = true;
     }
 
-    public final boolean finished()
-    {
+    public final boolean finished() {
         return _complete;
     }
 

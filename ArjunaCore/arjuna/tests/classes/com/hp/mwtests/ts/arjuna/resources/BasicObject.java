@@ -37,11 +37,9 @@ import com.arjuna.ats.arjuna.common.Uid;
 import com.arjuna.ats.arjuna.state.InputObjectState;
 import com.arjuna.ats.arjuna.state.OutputObjectState;
 
-public class BasicObject extends StateManager
-{
+public class BasicObject extends StateManager {
 
-    public BasicObject()
-    {
+    public BasicObject() {
         super(ObjectType.ANDPERSISTENT);
 
         state = 0;
@@ -53,8 +51,7 @@ public class BasicObject extends StateManager
         deactivate();
     }
 
-    public BasicObject(Uid u)
-    {
+    public BasicObject(Uid u) {
         super(u, ObjectType.ANDPERSISTENT);
 
         state = -1;
@@ -62,67 +59,55 @@ public class BasicObject extends StateManager
         activate();
     }
 
-    public void incr(int value)
-    {
+    public void incr(int value) {
         modified();
 
         state += value;
     }
 
-    public void set(int value)
-    {
+    public void set(int value) {
         modified();
 
         state = value;
     }
 
-    public int get()
-    {
-        try
-        {
+    public int get() {
+        try {
             lockMutex();
 
             if (activate())
                 return state;
             else
                 return -1;
-        }
-        finally
-        {
+        } finally {
             getMutex().unlock();
         }
     }
 
-    public String type()
-    {
-        return super.type()+"/BasicObject";
+    public String type() {
+        return super.type() + "/BasicObject";
     }
 
-    public boolean deactivate()
-    {
+    public boolean deactivate() {
         return super.deactivate();
     }
 
-    public boolean activate()
-    {
+    public boolean activate() {
         return super.activate();
     }
 
-    public boolean save_state(OutputObjectState os, int type)
-    {
+    public boolean save_state(OutputObjectState os, int type) {
         try {
             os.packInt(state);
             os.packBytes(moreState);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             return false;
         }
 
         return super.save_state(os, type);
     }
 
-    public boolean restore_state(InputObjectState os, int type)
-    {
+    public boolean restore_state(InputObjectState os, int type) {
         try {
             state = -1;
             moreState = null;
@@ -130,13 +115,11 @@ public class BasicObject extends StateManager
             state = os.unpackInt();
             moreState = os.unpackBytes();
 
-            if ((moreState[0] == 'a') && (moreState[1] == 'b')
-                    && (moreState[2] == 'c') && (moreState[3] == 'd')) {
+            if ((moreState[0] == 'a') && (moreState[1] == 'b') && (moreState[2] == 'c') && (moreState[3] == 'd')) {
                 // ok
             } else
                 return false;
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             return false;
         }
 
@@ -144,5 +127,5 @@ public class BasicObject extends StateManager
     }
 
     private int state;
-    private byte[] moreState = {'a', 'b', 'c', 'd'};
+    private byte[] moreState = { 'a', 'b', 'c', 'd' };
 }

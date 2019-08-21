@@ -32,7 +32,6 @@
 package com.arjuna.ats.internal.jta.transaction.arjunacore;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -48,7 +47,6 @@ import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
-import org.jboss.logging.processor.util.Strings;
 import org.jboss.tm.ConnectableResource;
 import org.jboss.tm.XAResourceWrapper;
 
@@ -57,7 +55,6 @@ import com.arjuna.ats.arjuna.coordinator.AbstractRecord;
 import com.arjuna.ats.arjuna.coordinator.ActionStatus;
 import com.arjuna.ats.arjuna.coordinator.AddOutcome;
 import com.arjuna.ats.arjuna.coordinator.BasicAction;
-import com.arjuna.ats.arjuna.coordinator.ExceptionDeferrer;
 import com.arjuna.ats.arjuna.coordinator.TransactionReaper;
 import com.arjuna.ats.arjuna.exceptions.ObjectStoreException;
 import com.arjuna.ats.arjuna.logging.tsLogger;
@@ -87,9 +84,6 @@ import io.narayana.tracing.SpanName;
 import io.narayana.tracing.TagName;
 import io.narayana.tracing.TracingUtils;
 import io.opentracing.Scope;
-import io.opentracing.Span;
-import io.opentracing.Tracer;
-import io.opentracing.util.GlobalTracer;
 
 /*
  * Is given an AtomicAction, but uses the TwoPhaseCoordinator aspects of it to
@@ -122,6 +116,7 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
      * Overloads Object.equals()
      */
 
+    @Override
     public boolean equals(Object obj) {
         if (jtaLogger.logger.isTraceEnabled()) {
             jtaLogger.logger.trace("TransactionImple.equals");
@@ -154,6 +149,7 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
      * Return -1 if we fail.
      */
 
+    @Override
     public int hashCode() {
         if (_theTransaction == null)
             return -1;
@@ -175,6 +171,7 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
      * transaction during phase 1.
      */
 
+    @Override
     public void commit() throws javax.transaction.RollbackException, javax.transaction.HeuristicMixedException,
             javax.transaction.HeuristicRollbackException, java.lang.SecurityException,
             javax.transaction.SystemException, java.lang.IllegalStateException {
@@ -243,6 +240,7 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
         return e;
     }
 
+    @Override
     public void rollback()
             throws java.lang.IllegalStateException, java.lang.SecurityException, javax.transaction.SystemException {
         if (jtaLogger.logger.isTraceEnabled()) {
@@ -291,6 +289,7 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
             throw new IllegalStateException(jtaLogger.i18NLogger.get_transaction_arjunacore_inactive());
     }
 
+    @Override
     public void setRollbackOnly() throws java.lang.IllegalStateException, javax.transaction.SystemException {
         if (jtaLogger.logger.isTraceEnabled()) {
             jtaLogger.logger.trace("TransactionImple.setRollbackOnly");
@@ -325,6 +324,7 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
             throw new IllegalStateException(jtaLogger.i18NLogger.get_transaction_arjunacore_inactive());
     }
 
+    @Override
     public int getStatus() throws javax.transaction.SystemException {
         int status = javax.transaction.Status.STATUS_NO_TRANSACTION;
 
@@ -339,6 +339,7 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
         return status;
     }
 
+    @Override
     public void registerSynchronization(javax.transaction.Synchronization sync)
             throws javax.transaction.RollbackException, java.lang.IllegalStateException,
             javax.transaction.SystemException {
@@ -392,11 +393,13 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
      * already come across.
      */
 
+    @Override
     public boolean enlistResource(XAResource xaRes)
             throws RollbackException, IllegalStateException, javax.transaction.SystemException {
         return enlistResource(xaRes, null);
     }
 
+    @Override
     public boolean enlistResource(XAResource xaRes, Object[] params)
             throws RollbackException, IllegalStateException, javax.transaction.SystemException {
         if (jtaLogger.logger.isTraceEnabled()) {
@@ -429,7 +432,7 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
             }
         }
         try (Scope scope = new ScopeBuilder(SpanName.RESOURCE_ENLISTMENT)
-                .tag(TagName.XARES, xaRes).start()) {
+                .tag(TagName.XARES, xaRes).start(get_uid().toString())) {
             /*
              * For each transaction we maintain a list of resources registered with it. Each
              * element on this list also contains a list of threads which have registered
@@ -742,6 +745,7 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
      * sense otherwise!
      */
 
+    @Override
     public boolean delistResource(XAResource xaRes, int flags)
             throws IllegalStateException, javax.transaction.SystemException {
         if (jtaLogger.logger.isTraceEnabled()) {
@@ -894,10 +898,12 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
         }
     }
 
+    @Override
     public final Uid get_uid() {
         return _theTransaction.get_uid();
     }
 
+    @Override
     public final Xid getTxId() {
         Xid res = baseXid();
 
@@ -926,6 +932,7 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
         return true;
     }
 
+    @Override
     public String toString() {
         if (_theTransaction == null)
             return "TransactionImple < ac, NoTransaction >";
@@ -989,6 +996,7 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
         }
     }
 
+    @Override
     public int getXAResourceState(XAResource xaRes) {
         int state = TxInfo.UNKNOWN;
 
@@ -1046,11 +1054,13 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
     }
 
     // get a key-value pair from a transaction specific Map
+    @Override
     public Object getTxLocalResource(Object key) {
         return _txLocalResources.get(key);
     }
 
     // store a key-value pair in the scope of the transaction.
+    @Override
     public void putTxLocalResource(Object key, Object value) {
         _txLocalResources.put(key, value);
     }
@@ -1065,6 +1075,7 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
      *
      * @return
      */
+    @Override
     public boolean isAlive() {
         try {
             if (_theTransaction != null) {
@@ -1487,18 +1498,22 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
         return Collections.unmodifiableMap(_transactions);
     }
 
+    @Override
     public Map<XAResource, TxInfo> getResources() {
         return Collections.unmodifiableMap(_resources);
     }
 
+    @Override
     public int getTimeout() {
         return _theTransaction.getTimeout();
     }
 
+    @Override
     public long getRemainingTimeoutMills() {
         return TransactionReaper.transactionReaper().getRemainingTimeoutMills(_theTransaction);
     }
 
+    @Override
     public java.util.Map<Uid, String> getSynchronizations() {
         if (_theTransaction != null)
             return _theTransaction.getSynchronizations();

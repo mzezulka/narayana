@@ -29,10 +29,9 @@ import com.arjuna.ats.arjuna.coordinator.RecordListIterator;
 import com.arjuna.ats.arjuna.coordinator.TwoPhaseOutcome;
 import com.arjuna.ats.arjuna.logging.tsLogger;
 
-public class EditableAtomicAction extends AtomicAction implements EditableTransaction  // going to have to be one per action type because of state differences
-{
-    public EditableAtomicAction (final Uid u)
-    {
+//going to have to be one per action type because of state differences
+public class EditableAtomicAction extends AtomicAction implements EditableTransaction {
+    public EditableAtomicAction(final Uid u) {
         super(u);
 
         _activated = activate();
@@ -43,16 +42,15 @@ public class EditableAtomicAction extends AtomicAction implements EditableTransa
     }
 
     /**
-     * Move a previous heuristic participant back to the prepared list so that recovery
-     * can try again. If it fails again then it may end up back on the heuristic list.
+     * Move a previous heuristic participant back to the prepared list so that
+     * recovery can try again. If it fails again then it may end up back on the
+     * heuristic list.
      */
 
-    public void moveHeuristicToPrepared (int index) throws IndexOutOfBoundsException
-    {
+    public void moveHeuristicToPrepared(int index) throws IndexOutOfBoundsException {
         if ((index < 0) || (index >= super.heuristicList.size()))
             throw new IndexOutOfBoundsException();
-        else
-        {
+        else {
             if (super.heuristicList.size() == 0)
                 throw new IndexOutOfBoundsException();
 
@@ -63,14 +61,13 @@ public class EditableAtomicAction extends AtomicAction implements EditableTransa
                 rec = iter.iterate();
 
             /*
-             * Before we move we need to tell the resource that is can forget about the heuristic.
-             * This assumes that a) the user knows what they are doing, and b) the resource can then
-             * be driven through commit once more. If either of those assumptions is incorrect then
-             * we could be in a world of pain!
+             * Before we move we need to tell the resource that is can forget about the
+             * heuristic. This assumes that a) the user knows what they are doing, and b)
+             * the resource can then be driven through commit once more. If either of those
+             * assumptions is incorrect then we could be in a world of pain!
              */
 
-            if (rec.forgetHeuristic())
-            {
+            if (rec.forgetHeuristic()) {
                 /*
                  * Move from heuristic list to prepared list.
                  */
@@ -81,18 +78,16 @@ public class EditableAtomicAction extends AtomicAction implements EditableTransa
                 /*
                  * If the list is zero then the heuristic has gone away!
                  *
-                 * We don't maintain a per-resource heuristic so we cannot change
-                 * the heuristic each time we remove a resource, i.e., we have to
-                 * assume that the original heuristic applies to all of the remaining
-                 * participants.
+                 * We don't maintain a per-resource heuristic so we cannot change the heuristic
+                 * each time we remove a resource, i.e., we have to assume that the original
+                 * heuristic applies to all of the remaining participants.
                  */
 
                 if (super.heuristicList.size() == 0)
                     super.setHeuristicDecision(TwoPhaseOutcome.FINISH_OK);
 
                 super.updateState();
-            }
-            else {
+            } else {
                 tsLogger.i18NLogger.warn_tools_log_eaa2();
             }
         }
@@ -102,12 +97,10 @@ public class EditableAtomicAction extends AtomicAction implements EditableTransa
      * Delete a heuristic participant from the list.
      */
 
-    public void deleteHeuristicParticipant (int index) throws IndexOutOfBoundsException
-    {
+    public void deleteHeuristicParticipant(int index) throws IndexOutOfBoundsException {
         if ((index < 0) || (index >= super.heuristicList.size()))
             throw new IndexOutOfBoundsException();
-        else
-        {
+        else {
             if (super.heuristicList.size() == 0)
                 throw new IndexOutOfBoundsException();
 
@@ -132,29 +125,25 @@ public class EditableAtomicAction extends AtomicAction implements EditableTransa
         }
     }
 
-    public String toString ()
-    {
+    public String toString() {
         if (!_activated)
             return "RecoveryAction not activated.";
-        else
-        {
-            String printableForm = "ActionStatus: "+ActionStatus.stringForm(super.status());
+        else {
+            String printableForm = "ActionStatus: " + ActionStatus.stringForm(super.status());
 
-            printableForm += "\nHeuristic Decision: "+TwoPhaseOutcome.stringForm(super.getHeuristicDecision());
+            printableForm += "\nHeuristic Decision: " + TwoPhaseOutcome.stringForm(super.getHeuristicDecision());
 
             if (super.preparedList.size() == 0)
                 printableForm += "\nNo prepared entries.";
-            else
-            {
+            else {
                 printableForm += "\nPrepared entries:";
 
                 RecordListIterator iter = new RecordListIterator(super.preparedList);
                 AbstractRecord rec = iter.iterate();
                 int i = 0;
 
-                while (rec != null)
-                {
-                    printableForm += "\n["+i+"] "+rec;
+                while (rec != null) {
+                    printableForm += "\n[" + i + "] " + rec;
 
                     rec = iter.iterate();
                     i++;
@@ -163,17 +152,15 @@ public class EditableAtomicAction extends AtomicAction implements EditableTransa
 
             if (super.heuristicList.size() == 0)
                 printableForm += "\nNo heuristic entries.";
-            else
-            {
+            else {
                 printableForm += "\nHeuristic entries:";
 
                 RecordListIterator iter = new RecordListIterator(super.heuristicList);
                 AbstractRecord rec = iter.iterate();
                 int i = 0;
 
-                while (rec != null)
-                {
-                    printableForm += "\n["+i+"] "+rec;
+                while (rec != null) {
+                    printableForm += "\n[" + i + "] " + rec;
 
                     rec = iter.iterate();
                     i++;

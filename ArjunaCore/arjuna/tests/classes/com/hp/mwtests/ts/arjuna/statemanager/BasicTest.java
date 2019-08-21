@@ -41,11 +41,9 @@ import com.arjuna.ats.arjuna.ObjectModel;
 import com.arjuna.ats.arjuna.common.Uid;
 import com.hp.mwtests.ts.arjuna.resources.BasicObject;
 
-public class BasicTest
-{
+public class BasicTest {
     @Test
-    public void test() throws Exception
-    {
+    public void test() throws Exception {
         AtomicAction A = new AtomicAction();
         BasicObject bo = new BasicObject();
 
@@ -62,8 +60,7 @@ public class BasicTest
     }
 
     @Test
-    public void testNested () throws Exception
-    {
+    public void testNested() throws Exception {
         AtomicAction A = new AtomicAction();
         AtomicAction B = new AtomicAction();
         BasicObject bo = new BasicObject();

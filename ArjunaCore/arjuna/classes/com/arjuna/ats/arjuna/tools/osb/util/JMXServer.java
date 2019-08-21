@@ -20,7 +20,6 @@
  */
 package com.arjuna.ats.arjuna.tools.osb.util;
 
-import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Constructor;
 import java.util.List;
@@ -42,14 +41,14 @@ import com.arjuna.ats.arjuna.tools.osb.mbean.ObjStoreItemMBean;
 /**
  * Simple wrapper for accessing the JMX server
  *
- * @deprecated as of 5.0.5.Final In a subsequent release we will change packages names in order to
- * provide a better separation between public and internal classes.
+ * @deprecated as of 5.0.5.Final In a subsequent release we will change packages
+ *             names in order to provide a better separation between public and
+ *             internal classes.
  *
  * @author Mike Musgrove
  */
 @Deprecated // in order to provide a better separation between public and internal classes.
-public class JMXServer
-{
+public class JMXServer {
     public static String JTS_INITIALISER_CNAME = "com.arjuna.ats.internal.jta.tools.osb.mbean.jts.ToolsInitialiser";
     public static String AJT_RECORD_TYPE = "CosTransactions/XAResourceRecord";
     public static String AJT_WRAPPER_TYPE = "com.arjuna.ats.internal.jta.tools.osb.mbean.jts.ArjunaTransactionImpleWrapper";
@@ -57,14 +56,18 @@ public class JMXServer
 
     private static MBeanServer server;
     private static JMXServer agent = new JMXServer();
-    public static JMXServer getAgent() { return agent; }
 
-    public static boolean isJTS() {return getAgent().isJTS;}
+    public static JMXServer getAgent() {
+        return agent;
+    }
+
+    public static boolean isJTS() {
+        return getAgent().isJTS;
+    }
 
     private boolean isJTS;
 
-    public JMXServer()
-    {
+    public JMXServer() {
         Class<?> c1;
         Class<?> c2;
 
@@ -73,11 +76,11 @@ public class JMXServer
             Constructor constructor = cl.getConstructor();
             constructor.newInstance();
             isJTS = true;
-        } catch (Exception e) { // ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException
+        } catch (Exception e) { // ClassNotFoundException, NoSuchMethodException, InvocationTargetException,
+                                // IllegalAccessException, InstantiationException
             if (tsLogger.logger.isTraceEnabled())
                 tsLogger.logger.trace("JTS not available: " + e);
         }
-
 
         try {
             c1 = Class.forName("com.arjuna.ats.internal.jta.Implementations");
@@ -93,10 +96,8 @@ public class JMXServer
         }
     }
 
-    public MBeanServer getServer()
-    {
-        if (server == null)
-        {
+    public MBeanServer getServer() {
+        if (server == null) {
             List<MBeanServer> servers = MBeanServerFactory.findMBeanServer(null);
 
             if (servers != null && servers.size() > 0)
@@ -111,12 +112,11 @@ public class JMXServer
         return server;
     }
 
-    public ObjectInstance registerMBean(String name, ObjStoreItemMBean bean)
-    {
+    public ObjectInstance registerMBean(String name, ObjStoreItemMBean bean) {
         try {
             if (tsLogger.logger.isDebugEnabled())
                 tsLogger.logger.debug("registering bean " + name);
-            //tsLogger.i18NLogger.info_tools_osb_util_JMXServer_m_1(name);
+            // tsLogger.i18NLogger.info_tools_osb_util_JMXServer_m_1(name);
             return getServer().registerMBean(bean, new ObjectName(name));
         } catch (InstanceAlreadyExistsException e) {
             tsLogger.i18NLogger.info_tools_osb_util_JMXServer_m_2(name);
@@ -127,8 +127,7 @@ public class JMXServer
         return null;
     }
 
-    public boolean unregisterMBean(String name)
-    {
+    public boolean unregisterMBean(String name) {
         try {
 
             getServer().unregisterMBean(new ObjectName(name));

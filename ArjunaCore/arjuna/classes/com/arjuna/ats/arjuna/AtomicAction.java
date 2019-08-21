@@ -40,13 +40,6 @@ import com.arjuna.ats.arjuna.coordinator.TxControl;
 import com.arjuna.ats.arjuna.logging.tsLogger;
 import com.arjuna.ats.internal.arjuna.thread.ThreadActionData;
 
-import io.narayana.tracing.ScopeBuilder;
-import io.narayana.tracing.SpanName;
-import io.narayana.tracing.TracingUtils;
-import io.opentracing.Scope;
-import io.opentracing.Span;
-import io.opentracing.util.GlobalTracer;
-
 /**
  * This is a user-level transaction class, unlike BasicAction. AtomicAction
  * takes care of thread-to-action scoping. This is a "one-shot" object, i.e.,
@@ -336,7 +329,7 @@ public class AtomicAction extends TwoPhaseCoordinator {
     public static final boolean resume(AtomicAction act) {
         if (act == null) {
             suspend(); // If you ever change this, you need to change the way resume is handled in
-                        // /ArjunaJTS/integration/src/main/java/com/arjuna/ats/jbossatx/BaseTransactionManagerDelegate.java
+                       // /ArjunaJTS/integration/src/main/java/com/arjuna/ats/jbossatx/BaseTransactionManagerDelegate.java
         } else
             ThreadActionData.restoreActions(act);
 

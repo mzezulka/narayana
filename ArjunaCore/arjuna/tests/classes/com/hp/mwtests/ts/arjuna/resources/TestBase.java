@@ -30,22 +30,18 @@ import com.arjuna.ats.arjuna.common.arjPropertyManager;
 /**
  * handy utility functions for unit tests.
  */
-public class TestBase
-{
+public class TestBase {
     @Before
-    public void setUp()
-    {
+    public void setUp() {
         emptyObjectStore();
     }
 
     @After
-    public void tearDown()
-    {
+    public void tearDown() {
         emptyObjectStore();
     }
 
-    private void emptyObjectStore()
-    {
+    private void emptyObjectStore() {
         String objectStoreDirName = arjPropertyManager.getObjectStoreEnvironmentBean().getObjectStoreDir();
 
         System.out.println("Emptying " + objectStoreDirName);
@@ -55,28 +51,18 @@ public class TestBase
         removeContents(objectStoreDir);
     }
 
-    public void removeContents(File directory)
-    {
-        if ((directory != null) &&
-                directory.isDirectory() &&
-                (!directory.getName().equals("")) &&
-                (!directory.getName().equals("/")) &&
-                (!directory.getName().equals("\\")) &&
-                (!directory.getName().equals(".")) &&
-                (!directory.getName().equals("..")))
-        {
+    public void removeContents(File directory) {
+        if ((directory != null) && directory.isDirectory() && (!directory.getName().equals(""))
+                && (!directory.getName().equals("/")) && (!directory.getName().equals("\\"))
+                && (!directory.getName().equals(".")) && (!directory.getName().equals(".."))) {
             File[] contents = directory.listFiles();
 
-            for (int index = 0; index < contents.length; index++)
-            {
-                if (contents[index].isDirectory())
-                {
+            for (int index = 0; index < contents.length; index++) {
+                if (contents[index].isDirectory()) {
                     removeContents(contents[index]);
 
                     contents[index].delete();
-                }
-                else
-                {
+                } else {
                     contents[index].delete();
                 }
             }

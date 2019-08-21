@@ -36,8 +36,9 @@ import com.arjuna.ats.arjuna.logging.tsLogger;
  * @author Mike Musgrove
  */
 /**
- * @deprecated as of 5.0.5.Final In a subsequent release we will change packages names in order to
- * provide a better separation between public and internal classes.
+ * @deprecated as of 5.0.5.Final In a subsequent release we will change packages
+ *             names in order to provide a better separation between public and
+ *             internal classes.
  */
 @Deprecated // in order to provide a better separation between public and internal classes.
 public class LogRecordWrapper extends OSEntryBean implements LogRecordWrapperMBean {
@@ -55,7 +56,7 @@ public class LogRecordWrapper extends OSEntryBean implements LogRecordWrapperMBe
 
     public LogRecordWrapper(ActionBean parent, AbstractRecord rec, ParticipantStatus listType, UidWrapper wrapper) {
         super(wrapper);
-        init(parent,  rec, listType);
+        init(parent, rec, listType);
     }
 
     public LogRecordWrapper(ActionBean parent, AbstractRecord rec, ParticipantStatus listType) {
@@ -63,7 +64,8 @@ public class LogRecordWrapper extends OSEntryBean implements LogRecordWrapperMBe
     }
 
     private static UidWrapper makeWrapper(ActionBean parent, AbstractRecord rec, String beanType) {
-        UidWrapper w = new UidWrapper(parent._uidWrapper.getBrowser(), beanType, rec.type(), rec.getClass().getName(), rec.order(), false);
+        UidWrapper w = new UidWrapper(parent._uidWrapper.getBrowser(), beanType, rec.type(), rec.getClass().getName(),
+                rec.order(), false);
         // TODO look up the hander for rec.type() and use that to create the wrapper
         w.setName(parent.getName() + ",puid=" + rec.order().fileStringForm());
 
@@ -121,13 +123,14 @@ public class LogRecordWrapper extends OSEntryBean implements LogRecordWrapperMBe
             return "participant is prepared for recovery";
 
         /*
-         * Only move a heuristic to the prepared list if it hasn't already committed or rolled back
+         * Only move a heuristic to the prepared list if it hasn't already committed or
+         * rolled back
          */
         if (newState.equals(ParticipantStatus.PREPARED) && getListType().equals(ParticipantStatus.HEURISTIC)) {
             HeuristicStatus heuristicStatus = HeuristicStatus.valueOf(getHeuristicStatus());
 
-            if (heuristicStatus.equals(HeuristicStatus.HEURISTIC_COMMIT) ||
-                heuristicStatus.equals(HeuristicStatus.HEURISTIC_ROLLBACK)) {
+            if (heuristicStatus.equals(HeuristicStatus.HEURISTIC_COMMIT)
+                    || heuristicStatus.equals(HeuristicStatus.HEURISTIC_ROLLBACK)) {
                 return "participant has already committed or rolled back";
             }
         }
@@ -135,7 +138,7 @@ public class LogRecordWrapper extends OSEntryBean implements LogRecordWrapperMBe
         if (parent != null && parent.setStatus(this, newState)) {
             listType = newState;
 
-            if (newState == ParticipantStatus.PREPARED )
+            if (newState == ParticipantStatus.PREPARED)
                 return "participant recovery will be attempted during the next recovery pass";
 
             return "participant status change was successful";
@@ -183,8 +186,7 @@ public class LogRecordWrapper extends OSEntryBean implements LogRecordWrapperMBe
         return sb;
     }
 
-    public String callMethod(Object object, String mName)
-    {
+    public String callMethod(Object object, String mName) {
         try {
             return (String) object.getClass().getMethod(mName).invoke(object);
         } catch (NoSuchMethodException e) {
@@ -203,7 +205,7 @@ public class LogRecordWrapper extends OSEntryBean implements LogRecordWrapperMBe
         Object heuristicInformation = rec.value();
         HeuristicStatus hs;
 
-        if (heuristicInformation  != null && heuristicInformation instanceof HeuristicInformation) {
+        if (heuristicInformation != null && heuristicInformation instanceof HeuristicInformation) {
             HeuristicInformation hi = (HeuristicInformation) heuristicInformation;
             hs = HeuristicStatus.intToStatus(hi.getHeuristicType());
         } else {

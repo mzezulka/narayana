@@ -52,19 +52,16 @@ import com.hp.mwtests.ts.arjuna.resources.TestBase;
 
 @RunWith(BMUnitRunner.class)
 @BMScript("objectstore")
-public class LogStoreRecoveryTest extends TestBase
-{
+public class LogStoreRecoveryTest extends TestBase {
     @Before
-    public void setUp()
-        {
+    public void setUp() {
         arjPropertyManager.getObjectStoreEnvironmentBean().setObjectStoreType(LogStore.class.getName());
 
         super.setUp();
-        }
+    }
 
     @Test
-    public void test()
-    {
+    public void test() {
         RecoveryStore recoveryStore = StoreManager.getRecoveryStore();
 
         final int numberOfTransactions = 1000;
@@ -79,47 +76,39 @@ public class LogStoreRecoveryTest extends TestBase
                 dummyState.packInt(fakeData);
                 ids[i] = new Uid();
                 recoveryStore.write_committed(ids[i], type, dummyState);
-            }
-            catch (final Exception ex) {
+            } catch (final Exception ex) {
                 ex.printStackTrace();
             }
         }
 
         /*
-           * Remove 50% of the entries, simulating a crash during
-           * normal execution.
-           *
-           * Q: why not just write 50% in the first place?
-           * A: because we will extend this test to allow the recovery
-           *    system to run in between writing and removing.
-           */
+         * Remove 50% of the entries, simulating a crash during normal execution.
+         *
+         * Q: why not just write 50% in the first place? A: because we will extend this
+         * test to allow the recovery system to run in between writing and removing.
+         */
 
         for (int i = 0; i < numberOfTransactions / 2; i++) {
             try {
                 recoveryStore.remove_committed(ids[i], type);
-            }
-            catch (final Exception ex) {
+            } catch (final Exception ex) {
                 ex.printStackTrace();
             }
         }
         /*
-        try {
-        */
-            /*
-                * Give the purger thread a chance to run and delete
-                * the entries we've "removed" (really only marked as
-                * being removable.)
-                */
-       /*
-            Thread.sleep(12000);
-        }
-        catch (final Exception ex) {
-        }
-        */
+         * try {
+         */
+        /*
+         * Give the purger thread a chance to run and delete the entries we've "removed"
+         * (really only marked as being removable.)
+         */
+        /*
+         * Thread.sleep(12000); } catch (final Exception ex) { }
+         */
 
         /*
-           * Now get a list of entries to work on.
-           */
+         * Now get a list of entries to work on.
+         */
 
         InputObjectState ios = new InputObjectState();
         boolean passed = true;
@@ -132,8 +121,7 @@ public class LogStoreRecoveryTest extends TestBase
                 do {
                     try {
                         id = UidHelper.unpackFrom(ios);
-                    }
-                    catch (Exception ex) {
+                    } catch (Exception ex) {
                         id = Uid.nullUid();
                     }
 
@@ -153,8 +141,7 @@ public class LogStoreRecoveryTest extends TestBase
                             System.err.println("Found unexpected transaction!");
                         }
                     }
-                }
-                while (id.notEquals(Uid.nullUid()));
+                } while (id.notEquals(Uid.nullUid()));
 
                 if ((numberOfEntries == numberOfTransactions / 2) && passed) {
                     System.err.println("Would attempt recovery on " + numberOfEntries + " dead transactions.");
@@ -164,8 +151,7 @@ public class LogStoreRecoveryTest extends TestBase
                     System.err.println("Expected " + (numberOfTransactions / 2) + " and got " + numberOfEntries);
                 }
             }
-        }
-        catch (final Exception ex) {
+        } catch (final Exception ex) {
             ex.printStackTrace();
         }
 

@@ -39,67 +39,63 @@ import com.arjuna.ats.arjuna.exceptions.ObjectStoreException;
 import com.arjuna.ats.arjuna.state.InputObjectState;
 
 /**
- * The object store interface is the application's route to using
- * a specific object store implementation. The interface dynamically
- * binds to an implementation of the right type.
+ * The object store interface is the application's route to using a specific
+ * object store implementation. The interface dynamically binds to an
+ * implementation of the right type.
  *
- * This is the base class from which all object store types are derived.
- * Note that because object store instances are stateless, to improve
- * efficiency we try to only create one instance of each type per process.
- * Therefore, the create and destroy methods are used instead of new
- * and delete. If an object store is accessed via create it *must* be
- * deleted using destroy. Of course it is still possible to make use of
- * new directly.
+ * This is the base class from which all object store types are derived. Note
+ * that because object store instances are stateless, to improve efficiency we
+ * try to only create one instance of each type per process. Therefore, the
+ * create and destroy methods are used instead of new and delete. If an object
+ * store is accessed via create it *must* be deleted using destroy. Of course it
+ * is still possible to make use of new directly.
  *
  * @author Mark Little (mark@arjuna.com)
- * @version $Id: ObjectStore.java 2342 2006-03-30 13:06:17Z  $
+ * @version $Id: ObjectStore.java 2342 2006-03-30 13:06:17Z $
  * @since JTS 1.0.
  */
 
-public abstract class ObjectStore implements ObjectStoreAPI
-{
+public abstract class ObjectStore implements ObjectStoreAPI {
     @Override
-    public void start() {}
+    public void start() {
+    }
 
     @Override
-    public void stop() {}
+    public void stop() {
+    }
 
-    public boolean allObjUids (String s, InputObjectState buff) throws ObjectStoreException
-    {
+    public boolean allObjUids(String s, InputObjectState buff) throws ObjectStoreException {
         return allObjUids(s, buff, StateStatus.OS_UNKNOWN);
     }
 
     /**
-     * Some object store implementations may be running with automatic
-     * sync disabled. Calling this method will ensure that any states are
-     * flushed to disk.
+     * Some object store implementations may be running with automatic sync
+     * disabled. Calling this method will ensure that any states are flushed to
+     * disk.
      */
 
-    public void sync () throws java.io.SyncFailedException, ObjectStoreException
-    {
+    public void sync() throws java.io.SyncFailedException, ObjectStoreException {
     }
 
     /**
      * @param localOSRoot the root of the store.
      *
-     * @return the full path of the store. localOSRoot is always a relative
-     * name. NOTE this path always ends in a /
+     * @return the full path of the store. localOSRoot is always a relative name.
+     *         NOTE this path always ends in a /
      */
 
-    public String locateStore (String localOSRoot) throws ObjectStoreException
-    {
+    public String locateStore(String localOSRoot) throws ObjectStoreException {
         String toReturn = null;
 
-        if ((localOSRoot == null) || (localOSRoot.length() == 0))
-        {
+        if ((localOSRoot == null) || (localOSRoot.length() == 0)) {
             if ((_objectStoreRoot != null) && (_objectStoreRoot.length() > 0))
                 localOSRoot = _objectStoreRoot;
             else
-                localOSRoot = "defaultStore"+File.separator;
+                localOSRoot = "defaultStore" + File.separator;
         }
 
         if ((localOSRoot != null) && (localOSRoot.length() > 0))
-            toReturn = _objectStoreDir + File.separator+localOSRoot;
+            toReturn = _objectStoreDir + File.separator + localOSRoot;
 
         if (!toReturn.endsWith(File.separator))
             toReturn = toReturn + File.separator;
@@ -111,11 +107,10 @@ public abstract class ObjectStore implements ObjectStoreAPI
      * Does this store need to do the full write_uncommitted/commit protocol?
      *
      * @return <code>true</code> if full commit is needed, <code>false</code>
-     * otherwise.
+     *         otherwise.
      */
 
-    public boolean fullCommitNeeded ()
-    {
+    public boolean fullCommitNeeded() {
         return true;
     }
 
@@ -123,16 +118,15 @@ public abstract class ObjectStore implements ObjectStoreAPI
      * Is the current state of the object the same as that provided as the last
      * parameter?
      *
-     * @param u The object to work on.
+     * @param u  The object to work on.
      * @param tn The type of the object.
      * @param st The expected type of the object.
      *
      * @return <code>true</code> if the current state is as expected,
-     * <code>false</code> otherwise.
+     *         <code>false</code> otherwise.
      */
 
-    public boolean isType (Uid u, String tn, int st) throws ObjectStoreException
-    {
+    public boolean isType(Uid u, String tn, int st) throws ObjectStoreException {
         return ((currentState(u, tn) == st) ? true : false);
     }
 
@@ -140,30 +134,26 @@ public abstract class ObjectStore implements ObjectStoreAPI
      * Initialise the object store.
      */
 
-    public final void initialise (Uid u, String tn)
-    {
+    public final void initialise(Uid u, String tn) {
     }
 
-    public final int shareState ()
-    {
+    public final int shareState() {
         return shareStatus;
     }
 
-    public final String storeDir ()
-    {
+    public final String storeDir() {
         return _objectStoreDir;
     }
 
-    public final String storeRoot ()
-    {
+    public final String storeRoot() {
         return _objectStoreRoot;
     }
 
-    protected ObjectStore(ObjectStoreEnvironmentBean objectStoreEnvironmentBean) throws ObjectStoreException
-    {
+    protected ObjectStore(ObjectStoreEnvironmentBean objectStoreEnvironmentBean) throws ObjectStoreException {
         shareStatus = objectStoreEnvironmentBean.getShare();
 
-        if (objectStoreEnvironmentBean.getObjectStoreDir() == null || objectStoreEnvironmentBean.getObjectStoreDir().length() == 0) {
+        if (objectStoreEnvironmentBean.getObjectStoreDir() == null
+                || objectStoreEnvironmentBean.getObjectStoreDir().length() == 0) {
             throw new ObjectStoreException("object store location property not set."); // TODO i18n
         }
 
@@ -179,27 +169,25 @@ public abstract class ObjectStore implements ObjectStoreAPI
         }
 
         /*
-        * We use the classname of the object store implementation to
-        * specify the directory for the object store.
-        */
+         * We use the classname of the object store implementation to specify the
+         * directory for the object store.
+         */
 
         _objectStoreDir = storeDir + this.getClass().getSimpleName();
     }
 
     /**
-     * Suppress directories of the specified type from
-     * allTypes etc?
+     * Suppress directories of the specified type from allTypes etc?
      */
 
-    protected abstract boolean supressEntry (String name);
+    protected abstract boolean supressEntry(String name);
 
     /**
-     * Given a type id which is possibly hidden (e.g., has a ! at the
-     * end), make it a valid Uid so we can return it.
+     * Given a type id which is possibly hidden (e.g., has a ! at the end), make it
+     * a valid Uid so we can return it.
      */
 
-    protected String revealedId (String name)
-    {
+    protected String revealedId(String name) {
         return name;
     }
 
@@ -208,4 +196,3 @@ public abstract class ObjectStore implements ObjectStoreAPI
     protected final String _objectStoreRoot;
     private final String _objectStoreDir;
 }
-

@@ -41,21 +41,21 @@ import com.arjuna.ats.arjuna.recovery.RecoverAtomicAction;
 import com.arjuna.ats.internal.arjuna.objectstore.LogStore;
 import com.hp.mwtests.ts.arjuna.resources.BasicRecord;
 
-public class LogStoreReactivationTest
-{
+public class LogStoreReactivationTest {
     @Test
-    public void test()
-    {
+    public void test() {
         arjPropertyManager.getCoordinatorEnvironmentBean().setCommitOnePhase(false);
         arjPropertyManager.getObjectStoreEnvironmentBean().setObjectStoreType(LogStore.class.getName());
         arjPropertyManager.getObjectStoreEnvironmentBean().setSynchronousRemoval(false);
         // the byteman script will enforce this
-        //System.setProperty(Environment.TRANSACTION_LOG_PURGE_TIME, "1000000");  // essentially infinite
+        // System.setProperty(Environment.TRANSACTION_LOG_PURGE_TIME, "1000000"); //
+        // essentially infinite
 
         AtomicAction A = new AtomicAction();
         Uid txId = A.get_uid();
 
-        System.err.println("IMPORTANT: ignore warnings about USER_DEF_FIRST0 as they are expected due to BasicRecord usage!");
+        System.err.println(
+                "IMPORTANT: ignore warnings about USER_DEF_FIRST0 as they are expected due to BasicRecord usage!");
 
         A.begin();
 

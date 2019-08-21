@@ -38,38 +38,26 @@ import com.arjuna.ats.arjuna.objectstore.StoreManager;
 import com.arjuna.ats.arjuna.state.InputObjectState;
 import com.arjuna.ats.internal.arjuna.common.UidHelper;
 
-public class ObjectStateQuery
-{
+public class ObjectStateQuery {
 
     @SuppressWarnings("unchecked")
-    public static void main (String[] args)
-    {
+    public static void main(String[] args) {
         String uid = null;
         String type = null;
 
-        for (int i = 0; i < args.length; i++)
-        {
-            if (args[i].compareTo("-help") == 0)
-            {
+        for (int i = 0; i < args.length; i++) {
+            if (args[i].compareTo("-help") == 0) {
                 usage();
                 System.exit(0);
-            }
-            else
-            {
-                if (args[i].compareTo("-uid") == 0)
-                {
+            } else {
+                if (args[i].compareTo("-uid") == 0) {
                     uid = args[i + 1];
                     i++;
-                }
-                else
-                {
-                    if (args[i].compareTo("-type") == 0)
-                    {
+                } else {
+                    if (args[i].compareTo("-type") == 0) {
                         type = args[i + 1];
                         i++;
-                    }
-                    else
-                    {
+                    } else {
                         System.out.println("Unknown option " + args[i]);
                         usage();
 
@@ -79,12 +67,10 @@ public class ObjectStateQuery
             }
         }
 
-        try
-        {
+        try {
             RecoveryStore recoveryStore = StoreManager.getRecoveryStore();
 
-            System.out.println("Status is "
-                    + recoveryStore.currentState(new Uid(uid), type));
+            System.out.println("Status is " + recoveryStore.currentState(new Uid(uid), type));
 
             InputObjectState buff = new InputObjectState();
 
@@ -92,18 +78,14 @@ public class ObjectStateQuery
 
             Uid u = UidHelper.unpackFrom(buff);
 
-            System.out.println("got "+u);
-        }
-        catch (Exception e)
-        {
-            System.err.println("Caught unexpected exception: "+e);
+            System.out.println("got " + u);
+        } catch (Exception e) {
+            System.err.println("Caught unexpected exception: " + e);
         }
     }
 
-    private static void usage ()
-    {
-        System.out
-                .println("Usage: ObjectStateQuery [-uid <state id>] [-type <state type>] [-help]");
+    private static void usage() {
+        System.out.println("Usage: ObjectStateQuery [-uid <state id>] [-type <state type>] [-help]");
     }
 
 }

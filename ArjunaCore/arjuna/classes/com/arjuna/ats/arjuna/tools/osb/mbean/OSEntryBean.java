@@ -21,8 +21,6 @@
  */
 package com.arjuna.ats.arjuna.tools.osb.mbean;
 
-import java.io.IOException;
-
 import javax.management.MBeanException;
 
 import com.arjuna.ats.arjuna.common.Uid;
@@ -38,8 +36,9 @@ import com.arjuna.ats.arjuna.tools.osb.util.JMXServer;
  * @author Mike Musgrove
  */
 /**
- * @deprecated as of 5.0.5.Final In a subsequent release we will change packages names in order to
- * provide a better separation between public and internal classes.
+ * @deprecated as of 5.0.5.Final In a subsequent release we will change packages
+ *             names in order to provide a better separation between public and
+ *             internal classes.
  */
 @Deprecated // in order to provide a better separation between public and internal classes.
 public class OSEntryBean implements OSEntryBeanMBean {
@@ -111,6 +110,7 @@ public class OSEntryBean implements OSEntryBeanMBean {
 
     /**
      * Remove this record from the ObjectStore
+     *
      * @return a textual indication of whether the remove operation succeeded
      * @throws MBeanException
      */

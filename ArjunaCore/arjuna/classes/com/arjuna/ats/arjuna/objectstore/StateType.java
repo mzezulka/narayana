@@ -37,12 +37,11 @@ import java.io.PrintWriter;
  * The type of the state in the ObjectStore.
  *
  * @author Mark Little (mark@arjuna.com)
- * @version $Id: ObjectStore.java 2342 2006-03-30 13:06:17Z  $
+ * @version $Id: ObjectStore.java 2342 2006-03-30 13:06:17Z $
  * @since JTS 1.0.
  */
 
-public class StateType
-{
+public class StateType {
     /**
      * StateType.
      */
@@ -54,15 +53,12 @@ public class StateType
     public static final int OS_SHARED = 13;
     public static final int OS_UNSHARED = 14;
 
-    public static void printStateType (PrintWriter strm, int res)
-    {
+    public static void printStateType(PrintWriter strm, int res) {
         strm.print(stateTypeString(res));
     }
 
-    public static String stateTypeString (int res)
-    {
-        switch (res)
-        {
+    public static String stateTypeString(int res) {
+        switch (res) {
         case StateType.OS_SHADOW:
             return "StateType.OS_SHADOW";
         case StateType.OS_ORIGINAL:
@@ -78,8 +74,6 @@ public class StateType
         }
     }
 
-    private StateType ()
-    {
+    private StateType() {
     }
 }
-

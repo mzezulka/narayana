@@ -26,11 +26,9 @@ import com.arjuna.ats.arjuna.exceptions.FatalError;
 import com.arjuna.ats.arjuna.exceptions.ObjectStoreError;
 import com.arjuna.ats.arjuna.exceptions.ObjectStoreException;
 
-public class ExceptionsUnitTest
-{
+public class ExceptionsUnitTest {
     @Test
-    public void test ()
-    {
+    public void test() {
         FatalError fe = new FatalError();
 
         fe = new FatalError("problem");

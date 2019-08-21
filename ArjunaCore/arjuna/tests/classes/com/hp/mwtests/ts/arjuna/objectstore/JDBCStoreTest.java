@@ -46,8 +46,7 @@ public class JDBCStoreTest {
     @Before
     public void before() {
         if (System.getProperty("com.arjuna.ats.arjuna.common.propertiesFile") == null) {
-            System.setProperty("com.arjuna.ats.arjuna.common.propertiesFile",
-                    "h2jbossts-properties.xml");
+            System.setProperty("com.arjuna.ats.arjuna.common.propertiesFile", "h2jbossts-properties.xml");
             resetPropertiesFile = true;
         }
     }
@@ -60,8 +59,7 @@ public class JDBCStoreTest {
     }
 
     @Test
-    public void testStateMachine() throws SQLException, ObjectStoreException,
-            Exception {
+    public void testStateMachine() throws SQLException, ObjectStoreException, Exception {
 
         ObjectStoreEnvironmentBean jdbcStoreEnvironmentBean = BeanPopulator
                 .getDefaultInstance(ObjectStoreEnvironmentBean.class);
@@ -79,8 +77,7 @@ public class JDBCStoreTest {
 
         assertTrue(api.read_committed(uid, "typeName") == null);
 
-        assertTrue(api.write_uncommitted(uid, "typeName",
-                new OutputObjectState()));
+        assertTrue(api.write_uncommitted(uid, "typeName", new OutputObjectState()));
 
         assertTrue(api.commit_state(uid, "typeName"));
 
@@ -93,8 +90,7 @@ public class JDBCStoreTest {
         assertTrue(api.reveal_state(uid, "typeName"));
 
         byte[] buff = new byte[10496000 + 1];
-        OutputObjectState outputObjectState = new OutputObjectState(new Uid(),
-                "tName");
+        OutputObjectState outputObjectState = new OutputObjectState(new Uid(), "tName");
         outputObjectState.packBytes(buff);
         assertFalse(api.write_uncommitted(uid, "typeName", outputObjectState));
 

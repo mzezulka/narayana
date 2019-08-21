@@ -65,18 +65,15 @@ import com.arjuna.common.util.propertyservice.PropertiesFactory;
  * Currently only looks at this machine.
  */
 
-class DirEntry
-{
+class DirEntry {
 
-    public DirEntry()
-    {
+    public DirEntry() {
         node = null;
         fullPathName = null;
         present = false;
     }
 
-    public DirEntry(DefaultMutableTreeNode n, String s)
-    {
+    public DirEntry(DefaultMutableTreeNode n, String s) {
         node = n;
         fullPathName = s;
         present = true;
@@ -90,25 +87,18 @@ class DirEntry
 
 };
 
-class MonitorThread extends Thread
-{
+class MonitorThread extends Thread {
 
-    public MonitorThread(OTM arg, long timeout)
-    {
+    public MonitorThread(OTM arg, long timeout) {
         otm = arg;
         sleepTime = timeout;
     }
 
-    public void run ()
-    {
-        for (;;)
-        {
-            try
-            {
+    public void run() {
+        for (;;) {
+            try {
                 Thread.sleep(sleepTime);
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
             }
 
             otm.updateTransactions();
@@ -121,22 +111,17 @@ class MonitorThread extends Thread
 
 };
 
-public class OTM extends JSplitPane
-{
+public class OTM extends JSplitPane {
 
-    public OTM()
-    {
+    public OTM() {
         super(HORIZONTAL_SPLIT);
 
         String localHost = null;
 
-        try
-        {
+        try {
             InetAddress myAddress = InetAddress.getLocalHost();
             localHost = myAddress.getHostName();
-        }
-        catch (UnknownHostException e)
-        {
+        } catch (UnknownHostException e) {
             localHost = "LocalHostUnknown";
         }
 
@@ -155,37 +140,27 @@ public class OTM extends JSplitPane
         tree = new JTree(topMachine);
         transactions = new JTree(topTran);
 
-        tree.getSelectionModel().setSelectionMode(
-                TreeSelectionModel.SINGLE_TREE_SELECTION);
+        tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 
         // Listen for when the selection changes.
 
-        MouseListener ml = new MouseAdapter()
-        {
-            public void mouseClicked (MouseEvent e)
-            {
+        MouseListener ml = new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
                 int selRow = tree.getRowForLocation(e.getX(), e.getY());
                 TreePath selPath = tree.getPathForLocation(e.getX(), e.getY());
 
-                if (selRow != -1)
-                {
-                    if (e.getClickCount() == 2)
-                    {
-                        if ((e.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK)
-                        {
-                            DefaultMutableTreeNode node = (DefaultMutableTreeNode) selPath
-                                    .getPathComponent(selRow);
+                if (selRow != -1) {
+                    if (e.getClickCount() == 2) {
+                        if ((e.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK) {
+                            DefaultMutableTreeNode node = (DefaultMutableTreeNode) selPath.getPathComponent(selRow);
 
-                            if (node.isLeaf())
-                            {
+                            if (node.isLeaf()) {
                                 getTransactions(node);
-                            }
-                            else
-                                removeTransactions(); //modifyTransactionView();
+                            } else
+                                removeTransactions(); // modifyTransactionView();
                         }
                     }
-                    if (e.getClickCount() == 1)
-                    {
+                    if (e.getClickCount() == 1) {
                         if ((e.getModifiers() & InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK)
                             removeTransactions();
                     }
@@ -211,8 +186,8 @@ public class OTM extends JSplitPane
         tranView.setMinimumSize(minimumSize);
 
         /*
-         * setDividerLocation(300); //XXX: ignored! bug 4101306 workaround for
-         * bug 4101306:
+         * setDividerLocation(300); //XXX: ignored! bug 4101306 workaround for bug
+         * 4101306:
          */
 
         treeView.setPreferredSize(new Dimension(200, 200));
@@ -221,41 +196,33 @@ public class OTM extends JSplitPane
     }
 
     @SuppressWarnings("unchecked")
-    public synchronized void updateTransactions ()
-    {
-        if (scanningNode != null)
-        {
-            DefaultMutableTreeNode top = (DefaultMutableTreeNode) topTran
-                    .getFirstChild();
+    public synchronized void updateTransactions() {
+        if (scanningNode != null) {
+            DefaultMutableTreeNode top = (DefaultMutableTreeNode) topTran.getFirstChild();
             DefaultTreeModel model = (DefaultTreeModel) transactions.getModel();
 
-            try
-            {
+            try {
                 RecoveryStore recoveryStore = StoreManager.getRecoveryStore();
 
                 InputObjectState types = new InputObjectState();
 
                 startSweep();
 
-                if (recoveryStore.allTypes(types))
-                {
+                if (recoveryStore.allTypes(types)) {
                     String fullPathName = null;
                     boolean found = false;
 
-                    try
-                    {
+                    try {
                         boolean endOfList = false;
                         DefaultMutableTreeNode currentNode = null;
                         DefaultMutableTreeNode currentRoot = top;
 
-                        while (!endOfList)
-                        {
+                        while (!endOfList) {
                             fullPathName = types.unpackString();
 
                             if (fullPathName.compareTo("") == 0)
                                 endOfList = true;
-                            else
-                            {
+                            else {
                                 found = true;
 
                                 InputObjectState uids = new InputObjectState();
@@ -264,10 +231,8 @@ public class OTM extends JSplitPane
 
                                 currentNode = findNode(fullPathName);
 
-                                if (currentNode == null)
-                                {
-                                    currentNode = new DefaultMutableTreeNode(
-                                            nodeName);
+                                if (currentNode == null) {
+                                    currentNode = new DefaultMutableTreeNode(nodeName);
                                     addDirectory(currentNode, fullPathName);
                                     currentRoot.add(currentNode);
 
@@ -275,7 +240,7 @@ public class OTM extends JSplitPane
                                      * New, so update view.
                                      */
 
-                                    int i[] = new int[1];
+                                    int[] i = new int[1];
 
                                     i[0] = currentRoot.getChildCount() - 1;
 
@@ -289,43 +254,31 @@ public class OTM extends JSplitPane
                                 if (added)
                                     currentRoot.add(currentNode);
 
-                                if (recoveryStore.allObjUids(fullPathName, uids))
-                                {
+                                if (recoveryStore.allObjUids(fullPathName, uids)) {
                                     Uid theUid = new Uid(Uid.nullUid());
 
-                                    try
-                                    {
+                                    try {
                                         boolean endOfUids = false;
                                         boolean first = true;
                                         boolean haveUids = false;
 
-                                        while (!endOfUids)
-                                        {
+                                        while (!endOfUids) {
                                             theUid = UidHelper.unpackFrom(uids);
 
-                                            if (theUid.equals(Uid.nullUid()))
-                                            {
-                                                if (!haveUids)
-                                                {
-                                                    if (emptyDirectory(currentNode))
-                                                    {
-                                                        currentNode
-                                                                .removeAllChildren();
-                                                        model
-                                                                .nodeChanged(currentNode);
+                                            if (theUid.equals(Uid.nullUid())) {
+                                                if (!haveUids) {
+                                                    if (emptyDirectory(currentNode)) {
+                                                        currentNode.removeAllChildren();
+                                                        model.nodeChanged(currentNode);
                                                     }
                                                 }
 
                                                 endOfUids = true;
-                                            }
-                                            else
-                                            {
+                                            } else {
                                                 haveUids = true;
 
-                                                if (first)
-                                                {
-                                                    currentNode
-                                                            .removeAllChildren();
+                                                if (first) {
+                                                    currentNode.removeAllChildren();
 
                                                     first = false;
                                                 }
@@ -333,23 +286,16 @@ public class OTM extends JSplitPane
                                                 DefaultMutableTreeNode tranID = new DefaultMutableTreeNode(
                                                         theUid.stringForm());
 
-                                                tranID
-                                                        .add(new DefaultMutableTreeNode(
-                                                                new String(
-                                                                        "status: "
-                                                                                + statusToString(recoveryStore
-                                                                                        .currentState(
-                                                                                                theUid,
-                                                                                                fullPathName)))));
+                                                tranID.add(new DefaultMutableTreeNode(
+                                                        new String("status: " + statusToString(
+                                                                recoveryStore.currentState(theUid, fullPathName)))));
 
                                                 currentNode.add(tranID);
 
                                                 added = true;
                                             }
                                         }
-                                    }
-                                    catch (Exception e)
-                                    {
+                                    } catch (Exception e) {
                                         // end of uids!
                                     }
 
@@ -365,39 +311,28 @@ public class OTM extends JSplitPane
                             if (!found)
                                 currentRoot.add(emptyTx);
                         }
-                    }
-                    catch (Exception e)
-                    {
+                    } catch (Exception e) {
                         // end of list!
                     }
                 }
 
-                try
-                {
+                try {
                     endSweep();
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                     System.exit(0);
                 }
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 System.err.println(e);
             }
         }
     }
 
-    private boolean emptyDirectory (DefaultMutableTreeNode node)
-    {
-        DefaultMutableTreeNode child = (DefaultMutableTreeNode) node
-                .getFirstChild();
+    private boolean emptyDirectory(DefaultMutableTreeNode node) {
+        DefaultMutableTreeNode child = (DefaultMutableTreeNode) node.getFirstChild();
 
-        if (child != null)
-        {
-            DefaultMutableTreeNode status = (DefaultMutableTreeNode) child
-                    .getFirstChild();
+        if (child != null) {
+            DefaultMutableTreeNode status = (DefaultMutableTreeNode) child.getFirstChild();
 
             if (status != null)
                 return status.isLeaf();
@@ -406,22 +341,16 @@ public class OTM extends JSplitPane
         return true;
     }
 
-    private void createNodes (DefaultMutableTreeNode topMachine)
-    {
+    private void createNodes(DefaultMutableTreeNode topMachine) {
         int number = _machines.size();
         DefaultMutableTreeNode machine = null;
 
-        if (number == 0)
-        {
-            topMachine
-                    .add(new DefaultMutableTreeNode("No machines registered."));
-        }
-        else
-        {
+        if (number == 0) {
+            topMachine.add(new DefaultMutableTreeNode("No machines registered."));
+        } else {
             String machineName = null;
 
-            for (int i = 0; i < number; i++)
-            {
+            for (int i = 0; i < number; i++) {
                 machineName = (String) _machines.elementAt(i);
                 machine = new DefaultMutableTreeNode(machineName);
                 topMachine.add(machine);
@@ -429,20 +358,17 @@ public class OTM extends JSplitPane
         }
     }
 
-    private void modifyTransactionView ()
-    {
+    private void modifyTransactionView() {
         if (transactions.isCollapsed(1))
             transactions.expandRow(1);
         else
             transactions.collapseRow(1);
     }
 
-    private void removeTransactions ()
-    {
+    private void removeTransactions() {
         int count = transactions.getRowCount();
 
-        for (int i = count; i > 0; i--)
-        {
+        for (int i = count; i > 0; i--) {
             transactions.collapseRow(i);
             transactions.removeSelectionRow(i);
         }
@@ -461,42 +387,35 @@ public class OTM extends JSplitPane
     }
 
     @SuppressWarnings("unchecked")
-    private synchronized void getTransactions (
-            DefaultMutableTreeNode machineName)
-    {
+    private synchronized void getTransactions(DefaultMutableTreeNode machineName) {
         removeTransactions();
 
         scanningNode = machineName;
 
         DefaultMutableTreeNode top = new DefaultMutableTreeNode(scanningNode);
 
-        try
-        {
+        try {
             RecoveryStore recoveryStore = StoreManager.getRecoveryStore();
 
             InputObjectState types = new InputObjectState();
 
-            if (recoveryStore.allTypes(types))
-            {
+            if (recoveryStore.allTypes(types)) {
                 String fullPathName = null;
                 boolean found = false;
 
-                try
-                {
+                try {
                     boolean endOfList = false;
                     DefaultMutableTreeNode currentNode = null;
                     DefaultMutableTreeNode currentRoot = top;
 
                     topTran.add(currentRoot);
 
-                    while (!endOfList)
-                    {
+                    while (!endOfList) {
                         fullPathName = types.unpackString();
 
                         if (fullPathName.compareTo("") == 0)
                             endOfList = true;
-                        else
-                        {
+                        else {
                             found = true;
 
                             InputObjectState uids = new InputObjectState();
@@ -508,40 +427,29 @@ public class OTM extends JSplitPane
                             currentRoot = findRoot(top, currentNode);
                             currentRoot.add(currentNode);
 
-                            if (recoveryStore.allObjUids(fullPathName, uids))
-                            {
+                            if (recoveryStore.allObjUids(fullPathName, uids)) {
                                 Uid theUid = new Uid(Uid.nullUid());
 
-                                try
-                                {
+                                try {
                                     boolean endOfUids = false;
 
-                                    while (!endOfUids)
-                                    {
+                                    while (!endOfUids) {
                                         theUid = UidHelper.unpackFrom(uids);
 
                                         if (theUid.equals(Uid.nullUid()))
                                             endOfUids = true;
-                                        else
-                                        {
+                                        else {
                                             DefaultMutableTreeNode tranID = new DefaultMutableTreeNode(
                                                     theUid.stringForm());
 
-                                            tranID
-                                                    .add(new DefaultMutableTreeNode(
-                                                            new String(
-                                                                    "status: "
-                                                                            + statusToString(recoveryStore
-                                                                                    .currentState(
-                                                                                            theUid,
-                                                                                            fullPathName)))));
+                                            tranID.add(
+                                                    new DefaultMutableTreeNode(new String("status: " + statusToString(
+                                                            recoveryStore.currentState(theUid, fullPathName)))));
 
                                             currentNode.add(tranID);
                                         }
                                     }
-                                }
-                                catch (Exception e)
-                                {
+                                } catch (Exception e) {
                                     // end of uids!
                                 }
                             }
@@ -554,15 +462,11 @@ public class OTM extends JSplitPane
                         if (!found)
                             currentRoot.add(emptyTx);
                     }
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     // end of list!
                 }
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             System.err.println(e);
         }
 
@@ -573,14 +477,11 @@ public class OTM extends JSplitPane
         transactions.repaint();
     }
 
-    private void startSweep ()
-    {
+    private void startSweep() {
         int number = _dirs.size();
 
-        if (number != 0)
-        {
-            for (int i = 0; i < number; i++)
-            {
+        if (number != 0) {
+            for (int i = 0; i < number; i++) {
                 DirEntry dirEntry = (DirEntry) _dirs.elementAt(i);
 
                 if (dirEntry != null)
@@ -589,30 +490,22 @@ public class OTM extends JSplitPane
         }
     }
 
-    private void endSweep ()
-    {
+    private void endSweep() {
         int number = _dirs.size();
 
-        if (number != 0)
-        {
-            for (int i = 0; i < number; i++)
-            {
+        if (number != 0) {
+            for (int i = 0; i < number; i++) {
                 DirEntry dirEntry = (DirEntry) _dirs.elementAt(i);
 
-                if (dirEntry != null)
-                {
-                    if (!dirEntry.present)
-                    {
-                        DefaultMutableTreeNode top = (DefaultMutableTreeNode) topTran
-                                .getFirstChild();
-                        DefaultTreeModel model = (DefaultTreeModel) transactions
-                                .getModel();
-                        DefaultMutableTreeNode root = findRoot(top,
-                                dirEntry.node);
+                if (dirEntry != null) {
+                    if (!dirEntry.present) {
+                        DefaultMutableTreeNode top = (DefaultMutableTreeNode) topTran.getFirstChild();
+                        DefaultTreeModel model = (DefaultTreeModel) transactions.getModel();
+                        DefaultMutableTreeNode root = findRoot(top, dirEntry.node);
 
                         int index = root.getIndex(dirEntry.node);
-                        int j[] = new int[1];
-                        Object o[] = new Object[1];
+                        int[] j = new int[1];
+                        Object[] o = new Object[1];
 
                         j[0] = root.getIndex(dirEntry.node);
                         o[0] = dirEntry.node;
@@ -632,22 +525,16 @@ public class OTM extends JSplitPane
         }
     }
 
-    private synchronized DefaultMutableTreeNode findNode (String fullPathName)
-    {
-        if (fullPathName != null)
-        {
+    private synchronized DefaultMutableTreeNode findNode(String fullPathName) {
+        if (fullPathName != null) {
             int number = _dirs.size();
 
-            if (number != 0)
-            {
-                for (int i = 0; i < number; i++)
-                {
+            if (number != 0) {
+                for (int i = 0; i < number; i++) {
                     DirEntry dirEntry = (DirEntry) _dirs.elementAt(i);
 
-                    if (dirEntry != null)
-                    {
-                        if (dirEntry.fullPathName.compareTo(fullPathName) == 0)
-                        {
+                    if (dirEntry != null) {
+                        if (dirEntry.fullPathName.compareTo(fullPathName) == 0) {
                             /*
                              * Found entry in new list, so mark it as present.
                              */
@@ -664,24 +551,18 @@ public class OTM extends JSplitPane
         return null;
     }
 
-    private synchronized DefaultMutableTreeNode findRoot (
-            DefaultMutableTreeNode top, DefaultMutableTreeNode curr)
-    {
+    private synchronized DefaultMutableTreeNode findRoot(DefaultMutableTreeNode top, DefaultMutableTreeNode curr) {
         DefaultMutableTreeNode root = top;
 
-        if (curr != null)
-        {
+        if (curr != null) {
             int number = _dirs.size();
             String name = fullNodeName(curr);
 
-            if (number != 0)
-            {
-                for (int i = 0; i < number; i++)
-                {
+            if (number != 0) {
+                for (int i = 0; i < number; i++) {
                     DirEntry dirEntry = (DirEntry) _dirs.elementAt(i);
 
-                    if (dirEntry != null)
-                    {
+                    if (dirEntry != null) {
                         DefaultMutableTreeNode node = dirEntry.node;
                         String dirName = dirEntry.fullPathName;
 
@@ -695,43 +576,34 @@ public class OTM extends JSplitPane
         return root;
     }
 
-    private void addDirectory (DefaultMutableTreeNode node, String path)
-    {
+    private void addDirectory(DefaultMutableTreeNode node, String path) {
         _dirs.addElement(new DirEntry(node, path));
     }
 
-    private void removeDirectory (String path)
-    {
+    private void removeDirectory(String path) {
         Enumeration elements = _dirs.elements();
 
-        while (elements.hasMoreElements())
-        {
+        while (elements.hasMoreElements()) {
             DirEntry e = (DirEntry) elements.nextElement();
 
-            if (e.fullPathName.compareTo(path) == 0)
-            {
+            if (e.fullPathName.compareTo(path) == 0) {
                 _dirs.removeElement(e);
                 return;
             }
         }
     }
 
-    private String fullNodeName (DefaultMutableTreeNode curr)
-    {
+    private String fullNodeName(DefaultMutableTreeNode curr) {
         String root = "StateManager";
 
-        if (curr != null)
-        {
+        if (curr != null) {
             int number = _dirs.size();
 
-            if (number != 0)
-            {
-                for (int i = 0; i < number; i++)
-                {
+            if (number != 0) {
+                for (int i = 0; i < number; i++) {
                     DirEntry dirEntry = (DirEntry) _dirs.elementAt(i);
 
-                    if (dirEntry != null)
-                    {
+                    if (dirEntry != null) {
                         if (dirEntry.node == curr)
                             return dirEntry.fullPathName;
                     }
@@ -744,30 +616,23 @@ public class OTM extends JSplitPane
         return root;
     }
 
-    private String stripName (String name)
-    {
+    private String stripName(String name) {
         String root = null;
 
-        if (name != null)
-        {
+        if (name != null) {
             int number = _dirs.size();
 
-            if (number != 0)
-            {
-                for (int i = 0; i < number; i++)
-                {
+            if (number != 0) {
+                for (int i = 0; i < number; i++) {
                     DirEntry dirEntry = (DirEntry) _dirs.elementAt(i);
 
-                    if (dirEntry != null)
-                    {
+                    if (dirEntry != null) {
                         DefaultMutableTreeNode node = dirEntry.node;
                         String dirName = dirEntry.fullPathName;
                         int subString = name.indexOf(dirName);
 
-                        if ((subString != -1) && (name.compareTo(dirName) != 0))
-                        {
-                            root = name.substring(subString + dirName.length()
-                                    + 1);
+                        if ((subString != -1) && (name.compareTo(dirName) != 0)) {
+                            root = name.substring(subString + dirName.length() + 1);
                         }
                     }
                 }
@@ -775,29 +640,23 @@ public class OTM extends JSplitPane
 
             if (root == null)
                 root = name;
-        }
-        else
+        } else
             root = "StateManager";
 
         return root;
     }
 
-    private void printChildren (DefaultMutableTreeNode currentNode)
-    {
-        if (currentNode != null)
-        {
+    private void printChildren(DefaultMutableTreeNode currentNode) {
+        if (currentNode != null) {
             Enumeration children = currentNode.children();
 
-            if (children != null)
-            {
+            if (children != null) {
                 String name = (String) currentNode.getUserObject();
 
                 System.out.println("Node: " + name);
 
-                while (children.hasMoreElements())
-                {
-                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) children
-                            .nextElement();
+                while (children.hasMoreElements()) {
+                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) children.nextElement();
 
                     name = (String) node.getUserObject();
 
@@ -807,10 +666,8 @@ public class OTM extends JSplitPane
         }
     }
 
-    private static String statusToString (int status)
-    {
-        switch (status)
-        {
+    private static String statusToString(int status) {
+        switch (status) {
         case StateStatus.OS_COMMITTED:
             return "StateStatus.OS_COMMITTED";
         case StateStatus.OS_UNCOMMITTED:
@@ -827,37 +684,28 @@ public class OTM extends JSplitPane
         }
     }
 
-    public static void main (String[] args)
-    {
+    public static void main(String[] args) {
         Uid u = new Uid();
-        String timeout = PropertiesFactory.getDefaultProperties().getProperty(
-                pollingTimeout);
+        String timeout = PropertiesFactory.getDefaultProperties().getProperty(pollingTimeout);
 
-        if (timeout != null)
-        {
-            try
-            {
+        if (timeout != null) {
+            try {
                 sleepTime = Long.parseLong(timeout); // is it a digit?
-            }
-            catch (NumberFormatException e)
-            {
-                System.err.println("Error - specified timeout " + timeout
-                        + " is invalid!");
+            } catch (NumberFormatException e) {
+                System.err.println("Error - specified timeout " + timeout + " is invalid!");
                 System.exit(0);
             }
         }
 
         /*
-         * Create a window. Use JFrame since this window will include
-         * lightweight components.
+         * Create a window. Use JFrame since this window will include lightweight
+         * components.
          */
 
         JFrame frame = new JFrame("OTM Transaction Monitor");
 
-        WindowListener l = new WindowAdapter()
-        {
-            public void windowClosing (WindowEvent e)
-            {
+        WindowListener l = new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
                 System.exit(0);
             }
         };
@@ -870,8 +718,7 @@ public class OTM extends JSplitPane
         frame.pack();
         frame.show();
 
-        if (sleepTime != -1)
-        {
+        if (sleepTime != -1) {
             MonitorThread thread = new MonitorThread(otm, sleepTime);
 
             thread.start();
@@ -888,8 +735,7 @@ public class OTM extends JSplitPane
 
     private static DefaultMutableTreeNode scanningNode = null;
 
-    private static DefaultMutableTreeNode emptyTx = new DefaultMutableTreeNode(
-            "No transactions.");
+    private static DefaultMutableTreeNode emptyTx = new DefaultMutableTreeNode("No transactions.");
 
     private static JTree tree = null;
 

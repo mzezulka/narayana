@@ -41,174 +41,156 @@ import com.arjuna.ats.arjuna.logging.tsLogger;
 import com.arjuna.ats.arjuna.recovery.ExpiryScanner;
 
 /**
- * Threaded object to run {@link ExpiryScanner} implementations to scan
- * the action store to remove items deemed expired by some algorithm.
- * Performs a scan at interval defined by the property
- * com.arjuna.ats.arjuna.recovery.expiryScanInterval (hours).
- * ExpiryScanner implementations are registered as properties beginning with
+ * Threaded object to run {@link ExpiryScanner} implementations to scan the
+ * action store to remove items deemed expired by some algorithm. Performs a
+ * scan at interval defined by the property
+ * com.arjuna.ats.arjuna.recovery.expiryScanInterval (hours). ExpiryScanner
+ * implementations are registered as properties beginning with
  * "com.arjuna.ats.arjuna.recovery.expiryScanner".
  * <P>
  * Singleton, instantiated in the RecoveryManager.
  * <P>
  */
 
-public class ExpiredEntryMonitor extends Thread
-{
+public class ExpiredEntryMonitor extends Thread {
     /**
-    *  Start the monitor thread, if the properties make it appropriate
-    */
-
-  public static synchronized boolean startUp()
-  {
-      // ensure singleton
-      if ( _theInstance != null )
-      {
-      return false;
-      }
-
-      // process system properties -- n.b. we only do this once!
-
-      if (!initialised) {
-          initialise();
-      }
-
-      if ( _scanIntervalSeconds == 0 )
-      {
-      // no scanning wanted
-
-      if (tsLogger.logger.isDebugEnabled()) {
-          tsLogger.logger.debug("Expiry scan zero - not scanning");
-      }
-
-      return false;
-      }
-
-      if ( _expiryScanners.size() == 0 )
-      {
-      // nothing to do
-
-      if (tsLogger.logger.isDebugEnabled()) {
-          tsLogger.logger.debug("No Expiry scanners loaded - not scanning");
-      }
-
-      return false;
-      }
-
-      // create, and thus launch the monitor
-
-      _theInstance = new ExpiredEntryMonitor(_skipFirst);
-
-      _theInstance.start();
-
-      return true;
-  }
-
-    /**
-     * terminate any currently active monitor thread, cancelling any further scans but waiting for the
-     * thread to exit before returning
+     * Start the monitor thread, if the properties make it appropriate
      */
-  public synchronized static void shutdown()
-  {
-      if (_theInstance != null) {
-          _theInstance.terminate();
-          // now wait for it to finish
-          try {
-              _theInstance.join();
-          } catch (InterruptedException e) {
-              // ignore
-          }
-      }
 
-      _theInstance = null;
-  }
+    public static synchronized boolean startUp() {
+        // ensure singleton
+        if (_theInstance != null) {
+            return false;
+        }
 
-  private ExpiredEntryMonitor(boolean skipFirst)
-  {
-      super ("Transaction Expired Entry Monitor");
-    if (tsLogger.logger.isDebugEnabled()) {
-        tsLogger.logger.debug("ExpiredEntryMonitor - constructed");
+        // process system properties -- n.b. we only do this once!
+
+        if (!initialised) {
+            initialise();
+        }
+
+        if (_scanIntervalSeconds == 0) {
+            // no scanning wanted
+
+            if (tsLogger.logger.isDebugEnabled()) {
+                tsLogger.logger.debug("Expiry scan zero - not scanning");
+            }
+
+            return false;
+        }
+
+        if (_expiryScanners.size() == 0) {
+            // nothing to do
+
+            if (tsLogger.logger.isDebugEnabled()) {
+                tsLogger.logger.debug("No Expiry scanners loaded - not scanning");
+            }
+
+            return false;
+        }
+
+        // create, and thus launch the monitor
+
+        _theInstance = new ExpiredEntryMonitor(_skipFirst);
+
+        _theInstance.start();
+
+        return true;
     }
-    _skipNext = skipFirst;
-    _stop = false;
 
-    this.setDaemon(true);
-  }
+    /**
+     * terminate any currently active monitor thread, cancelling any further scans
+     * but waiting for the thread to exit before returning
+     */
+    public static synchronized void shutdown() {
+        if (_theInstance != null) {
+            _theInstance.terminate();
+            // now wait for it to finish
+            try {
+                _theInstance.join();
+            } catch (InterruptedException e) {
+                // ignore
+            }
+        }
 
-  /**
-   * performs periodic scans until a shutdwn is notified
-   */
-  public void run()
-  {
-    while( true )
-    {
-        tsLogger.logger.debugf("ExpiredEntryMonitor running at %s", _theTimestamper.format(new Date()).toString());
-
-    if (_skipNext)
-    {
-        // make sure we skip at most one scan
-
-        _skipNext = false;
-
-         tsLogger.i18NLogger.info_recovery_ExpiredEntryMonitor_5();
+        _theInstance = null;
     }
-    else
-    {
-        Enumeration scanners = _expiryScanners.elements();
 
-        while ( scanners.hasMoreElements() )
-        {
-        ExpiryScanner m = (ExpiryScanner)scanners.nextElement();
+    private ExpiredEntryMonitor(boolean skipFirst) {
+        super("Transaction Expired Entry Monitor");
+        if (tsLogger.logger.isDebugEnabled()) {
+            tsLogger.logger.debug("ExpiredEntryMonitor - constructed");
+        }
+        _skipNext = skipFirst;
+        _stop = false;
 
-            // check for a shutdown request before starting a scan
-            synchronized (this) {
-                if (_stop) {
-                    break;
+        this.setDaemon(true);
+    }
+
+    /**
+     * performs periodic scans until a shutdwn is notified
+     */
+    public void run() {
+        while (true) {
+            tsLogger.logger.debugf("ExpiredEntryMonitor running at %s", _theTimestamper.format(new Date()).toString());
+
+            if (_skipNext) {
+                // make sure we skip at most one scan
+
+                _skipNext = false;
+
+                tsLogger.i18NLogger.info_recovery_ExpiredEntryMonitor_5();
+            } else {
+                Enumeration scanners = _expiryScanners.elements();
+
+                while (scanners.hasMoreElements()) {
+                    ExpiryScanner m = (ExpiryScanner) scanners.nextElement();
+
+                    // check for a shutdown request before starting a scan
+                    synchronized (this) {
+                        if (_stop) {
+                            break;
+                        }
+                    }
+
+                    // ok go ahead and scan
+
+                    m.scan();
+
+                    if (tsLogger.logger.isDebugEnabled()) {
+                        tsLogger.logger.debug("  ");
+                        // bit of space if detailing
+                    }
                 }
             }
 
-            // ok go ahead and scan
+            // wait for a bit to avoid catching (too many) transactions etc. that
+            // are really progressing quite happily
 
-        m.scan();
-
-        if (tsLogger.logger.isDebugEnabled()) {
-            tsLogger.logger.debug("  ");
-            // bit of space if detailing
-        }
-        }
-    }
-
-    // wait for a bit to avoid catching (too many) transactions etc. that
-    // are really progressing quite happily
-
-    try
-    {
-        // check for shutdown request before we sleep
-        synchronized (this) {
-        if (_stop) {
-            break;
-        }
-        wait( _scanIntervalSeconds * 1000 );
-        // check if we were woken because of a shutdown
-        if (_stop) {
-            break;
-        }
+            try {
+                // check for shutdown request before we sleep
+                synchronized (this) {
+                    if (_stop) {
+                        break;
+                    }
+                    wait(_scanIntervalSeconds * 1000);
+                    // check if we were woken because of a shutdown
+                    if (_stop) {
+                        break;
+                    }
+                }
+            } catch (InterruptedException e1) {
+                // we should only get shut down by a shutdown request so ignore interrupts
+            }
         }
     }
-    catch ( InterruptedException e1 )
-    {
-        // we should only get shut down by a shutdown request so ignore interrupts
-    }
-    }
-  }
 
-  private synchronized void terminate()
-  {
-      _stop = true;
-      notify();
-  }
+    private synchronized void terminate() {
+        _stop = true;
+        notify();
+    }
 
-    private static void initialise()
-    {
+    private static void initialise() {
         /*
          * Read the system properties to set the configurable options
          */
@@ -216,17 +198,15 @@ public class ExpiredEntryMonitor extends Thread
         _scanIntervalSeconds = recoveryPropertyManager.getRecoveryEnvironmentBean().getExpiryScanInterval() * 60 * 60;
 
         if (tsLogger.logger.isDebugEnabled()) {
-            tsLogger.logger.debug("Expiry scan interval set to "+Integer.toString(_scanIntervalSeconds)+" seconds");
+            tsLogger.logger.debug("Expiry scan interval set to " + Integer.toString(_scanIntervalSeconds) + " seconds");
         }
 
-        if (_scanIntervalSeconds != 0)
-        {
+        if (_scanIntervalSeconds != 0) {
 
             // is it being used to skip the first time
-            if ( _scanIntervalSeconds < 0 )
-            {
+            if (_scanIntervalSeconds < 0) {
                 _skipFirst = true;
-                _scanIntervalSeconds = - _scanIntervalSeconds;
+                _scanIntervalSeconds = -_scanIntervalSeconds;
             }
 
             loadScanners();
@@ -235,20 +215,20 @@ public class ExpiredEntryMonitor extends Thread
         initialised = true;
     }
 
-    private static void loadScanners()
-    {
+    private static void loadScanners() {
         _expiryScanners = new Vector();
 
-        for(ExpiryScanner scanner : recoveryPropertyManager.getRecoveryEnvironmentBean().getExpiryScanners()) {
-            if ( scanner.toBeUsed() ) {
-                _expiryScanners.add( scanner );
+        for (ExpiryScanner scanner : recoveryPropertyManager.getRecoveryEnvironmentBean().getExpiryScanners()) {
+            if (scanner.toBeUsed()) {
+                _expiryScanners.add(scanner);
             }
         }
     }
 
     /**
-     * flag which causes the next scan to be skipped if it is true. this is set from _skipFirst when a
-     * monitor is created and rest to false each time a scan is considered.
+     * flag which causes the next scan to be skipped if it is true. this is set from
+     * _skipFirst when a monitor is created and rest to false each time a scan is
+     * considered.
      */
     private boolean _skipNext;
 
@@ -258,7 +238,8 @@ public class ExpiredEntryMonitor extends Thread
     private boolean _stop;
 
     /**
-     * list of scanners to be invoked by the monitor thread in order to check for expired log entries
+     * list of scanners to be invoked by the monitor thread in order to check for
+     * expired log entries
      */
     private static Vector _expiryScanners;
 
@@ -278,8 +259,9 @@ public class ExpiredEntryMonitor extends Thread
     private static SimpleDateFormat _theTimestamper = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss");
 
     /**
-     * a flag which if true causes the scanner to perform a scan when it is first starts or if false skip this
-     * first scan. it can be set to true by supplying a negative scan interval in the property file.
+     * a flag which if true causes the scanner to perform a scan when it is first
+     * starts or if false skip this first scan. it can be set to true by supplying a
+     * negative scan interval in the property file.
      */
     private static boolean _skipFirst = false;
 

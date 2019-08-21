@@ -41,8 +41,7 @@ import java.io.PrintWriter;
  * @since JTS 1.0.
  */
 
-public class ObjectType
-{
+public class ObjectType {
 
     public static final int RECOVERABLE = 0;
 
@@ -56,23 +55,20 @@ public class ObjectType
      * Print a human-readable form of the object type.
      */
 
-    public static void print (PrintWriter strm, int ot)
-    {
+    public static void print(PrintWriter strm, int ot) {
         strm.print(toString(ot));
     }
 
-    public static String toString(int ot)
-    {
-        switch (ot)
-        {
-            case RECOVERABLE:
-                return "RECOVERABLE";
-            case ANDPERSISTENT:
-                return"ANDPERSISTENT";
-            case NEITHER:
-                return"NEITHER";
-            default:
-                return"UNKNOWN_TYPE";
+    public static String toString(int ot) {
+        switch (ot) {
+        case RECOVERABLE:
+            return "RECOVERABLE";
+        case ANDPERSISTENT:
+            return "ANDPERSISTENT";
+        case NEITHER:
+            return "NEITHER";
+        default:
+            return "UNKNOWN_TYPE";
         }
     }
 }

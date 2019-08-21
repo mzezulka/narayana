@@ -29,43 +29,32 @@ import com.arjuna.ats.arjuna.common.Uid;
 import com.arjuna.ats.arjuna.state.OutputObjectState;
 import com.arjuna.ats.internal.arjuna.common.UidHelper;
 
-public class UidHelperUnitTest
-{
+public class UidHelperUnitTest {
     @Test
-    public void test () throws Exception
-    {
-        Uid u = new Uid("hello", true);  // should be invalid!
+    public void test() throws Exception {
+        Uid u = new Uid("hello", true); // should be invalid!
 
         assertEquals(u.valid(), false);
 
-        try
-        {
+        try {
             u = UidHelper.unpackFrom(null);
 
             fail();
-        }
-        catch (final IllegalArgumentException ex)
-        {
+        } catch (final IllegalArgumentException ex) {
         }
 
-        try
-        {
+        try {
             UidHelper.packInto(null, new OutputObjectState());
 
             fail();
-        }
-        catch (final IllegalArgumentException ex)
-        {
+        } catch (final IllegalArgumentException ex) {
         }
 
-        try
-        {
+        try {
             UidHelper.packInto(u, new OutputObjectState());
 
             fail();
-        }
-        catch (final IllegalArgumentException ex)
-        {
+        } catch (final IllegalArgumentException ex) {
         }
     }
 }

@@ -36,11 +36,9 @@ import com.arjuna.ats.arjuna.state.OutputBuffer;
 import com.arjuna.ats.arjuna.state.OutputObjectState;
 import com.arjuna.ats.internal.arjuna.common.UidHelper;
 
-public class IOStateUnitTest
-{
+public class IOStateUnitTest {
     @Test
-    public void testIOObjectBuffer() throws Exception
-    {
+    public void testIOObjectBuffer() throws Exception {
         PrintWriter pw = new PrintWriter(new StringWriter());
         OutputBuffer obuff = new OutputBuffer(1024);
 
@@ -62,8 +60,7 @@ public class IOStateUnitTest
     }
 
     @Test
-    public void testIOObjectState() throws Exception
-    {
+    public void testIOObjectState() throws Exception {
         OutputObjectState oos = new OutputObjectState(new Uid(), "");
 
         oos.packBoolean(true);

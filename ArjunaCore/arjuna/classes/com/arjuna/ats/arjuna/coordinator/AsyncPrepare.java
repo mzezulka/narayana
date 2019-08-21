@@ -31,16 +31,16 @@
 
 package com.arjuna.ats.arjuna.coordinator;
 
-import com.arjuna.ats.internal.arjuna.thread.ThreadActionData;
-
 import java.util.concurrent.Callable;
 
+import com.arjuna.ats.internal.arjuna.thread.ThreadActionData;
+
 /**
- * Instances of this class are responsible for performing asynchronous
- * prepare on a specific AbstractRecord associated with a transaction.
+ * Instances of this class are responsible for performing asynchronous prepare
+ * on a specific AbstractRecord associated with a transaction.
  *
  * @author Mark Little (mark@arjuna.com)
- * @version $Id: AsyncPrepare.java 2342 2006-03-30 13:06:17Z  $
+ * @version $Id: AsyncPrepare.java 2342 2006-03-30 13:06:17Z $
  * @since JTS 1.2.4.
  */
 
@@ -50,11 +50,10 @@ import java.util.concurrent.Callable;
 class AsyncPrepare implements Callable<Integer> {
     public Integer call() throws Exception {
         /*
-                   * This is a transient thread so we don't want to register it
-                   * with the action it is preparing, only change its notion of
-                   * the current transaction so that any abstract records that
-                   * need that information can still have it.
-                   */
+         * This is a transient thread so we don't want to register it with the action it
+         * is preparing, only change its notion of the current transaction so that any
+         * abstract records that need that information can still have it.
+         */
 
         ThreadActionData.pushAction(_theAction, false);
 

@@ -23,22 +23,19 @@ package com.hp.mwtests.ts.arjuna.atomicaction;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import com.arjuna.ats.arjuna.coordinator.RecordType;
-import com.arjuna.ats.arjuna.coordinator.TwoPhaseOutcome;
 import org.junit.Test;
 
 import com.arjuna.ats.arjuna.AtomicAction;
 import com.arjuna.ats.arjuna.coordinator.AbstractRecord;
 import com.arjuna.ats.arjuna.coordinator.ActionStatus;
 import com.arjuna.ats.arjuna.coordinator.BasicAction;
+import com.arjuna.ats.arjuna.coordinator.RecordType;
+import com.arjuna.ats.arjuna.coordinator.TwoPhaseOutcome;
 import com.arjuna.ats.internal.arjuna.thread.ThreadActionData;
 
-
-public class AtomicActionUnitTest
-{
+public class AtomicActionUnitTest {
     @Test
-    public void testBasic () throws Exception
-    {
+    public void testBasic() throws Exception {
         AtomicAction A = new AtomicAction();
 
         A.begin();
@@ -64,8 +61,7 @@ public class AtomicActionUnitTest
     }
 
     @Test
-    public void testThreading () throws Exception
-    {
+    public void testThreading() throws Exception {
         AtomicAction A = new AtomicAction();
 
         A.begin();
@@ -91,8 +87,7 @@ public class AtomicActionUnitTest
     }
 
     @Test
-    public void testPreventCommit () throws Exception
-    {
+    public void testPreventCommit() throws Exception {
         AtomicAction A = new AtomicAction();
 
         A.begin();
@@ -105,8 +100,7 @@ public class AtomicActionUnitTest
     }
 
     @Test
-    public void testNested () throws Exception
-    {
+    public void testNested() throws Exception {
         AtomicAction A = new AtomicAction();
         AtomicAction B = new AtomicAction();
 
@@ -122,8 +116,7 @@ public class AtomicActionUnitTest
     }
 
     @Test
-    public void testActivateDeactivate () throws Exception
-    {
+    public void testActivateDeactivate() throws Exception {
         AtomicAction A = new AtomicAction();
 
         A.begin();
@@ -136,8 +129,7 @@ public class AtomicActionUnitTest
     }
 
     @Test
-    public void testCanCommitSuspendedTransaction() throws Exception
-    {
+    public void testCanCommitSuspendedTransaction() throws Exception {
         AtomicAction aa = new AtomicAction();
         aa.begin();
         assertTrue(aa.Current() != null);

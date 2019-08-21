@@ -22,22 +22,18 @@ package com.hp.mwtests.ts.arjuna.resources;
 
 import com.arjuna.ats.arjuna.coordinator.HeuristicNotification;
 
-public class DummyHeuristic extends HeuristicNotification
-{
-    public int getStatus ()
-    {
+public class DummyHeuristic extends HeuristicNotification {
+    public int getStatus() {
         return _status;
     }
 
     @Override
-    public void heuristicOutcome (int actionStatus)
-    {
+    public void heuristicOutcome(int actionStatus) {
         _status = actionStatus;
     }
 
     @Override
-    public int compareTo (Object o)
-    {
+    public int compareTo(Object o) {
         DummyHeuristic sr = (DummyHeuristic) o;
         if (get_uid().equals(sr.get_uid())) {
             return 0;

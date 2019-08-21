@@ -34,7 +34,6 @@ package com.arjuna.ats.arjuna;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -65,11 +64,6 @@ import com.arjuna.ats.internal.arjuna.abstractrecords.PersistenceRecord;
 import com.arjuna.ats.internal.arjuna.abstractrecords.RecoveryRecord;
 import com.arjuna.ats.internal.arjuna.common.UidHelper;
 import com.arjuna.ats.internal.arjuna.objectstore.TwoPhaseVolatileStore;
-
-import io.narayana.tracing.TracingUtils;
-import io.opentracing.Scope;
-import io.opentracing.Span;
-import io.opentracing.util.GlobalTracer;
 
 /**
  * The root of the Arjuna class hierarchy. This class provides state management
@@ -723,10 +717,9 @@ public class StateManager {
         BasicAction action = BasicAction.Current();
         RecoveryRecord record = null;
 
-        if ((myType == ObjectType.NEITHER)
-                || (currentStatus == ObjectStatus.DESTROYED)) /*
-                                                                 * NEITHER => no recovery info
-                                                                 */
+        if ((myType == ObjectType.NEITHER) || (currentStatus == ObjectStatus.DESTROYED)) /*
+                                                                                          * NEITHER => no recovery info
+                                                                                          */
         {
             return true;
         }
@@ -773,10 +766,10 @@ public class StateManager {
                 if ((rStatus = action.add(record)) != AddOutcome.AR_ADDED) {
                     synchronized (modifyingActions) {
                         modifyingActions.remove(action.get_uid()); // remember
-                                                                    // to
-                                                                    // unregister
-                                                                    // with
-                                                                    // action
+                                                                   // to
+                                                                   // unregister
+                                                                   // with
+                                                                   // action
                     }
 
                     record = null;
@@ -1089,7 +1082,7 @@ public class StateManager {
             if ((action != null) && (action.status() == ActionStatus.RUNNING)) {
                 synchronized (mutex) {
                     createLists(); // if there wasn't a transaction running when we were activated then we need to
-                                    // do this now
+                                   // do this now
 
                     if (usingActions.get(action.get_uid()) == null)
                         usingActions.put(action.get_uid(), action);
@@ -1176,7 +1169,7 @@ public class StateManager {
      * Set the status of the object to destroyed so that we can no longer use it.
      */
 
-    synchronized final void destroyed() {
+    final synchronized void destroyed() {
         currentStatus = ObjectStatus.DESTROYED;
     }
 

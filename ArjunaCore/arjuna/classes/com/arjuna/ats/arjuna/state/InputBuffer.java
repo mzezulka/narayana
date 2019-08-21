@@ -49,15 +49,13 @@ import com.arjuna.ats.arjuna.logging.tsLogger;
  * @since JTS 1.0.
  */
 
-public class InputBuffer
-{
+public class InputBuffer {
 
     /**
      * Create a new buffer.
      */
 
-    public InputBuffer()
-    {
+    public InputBuffer() {
         _byteArray = null;
         _valid = false;
         _inputStream = null;
@@ -68,23 +66,19 @@ public class InputBuffer
      * Create our own copy of the byte array.
      */
 
-    public InputBuffer(byte b[])
-    {
+    public InputBuffer(byte[] b) {
         _valid = true;
 
         _byteArray = new byte[b.length];
 
         System.arraycopy(b, 0, _byteArray, 0, b.length);
 
-        try
-        {
+        try {
             _inputStream = new ByteArrayInputStream(_byteArray);
             _input = new DataInputStream(_inputStream);
 
             skipHeader();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             _valid = false;
         }
     }
@@ -93,8 +87,7 @@ public class InputBuffer
      * Create a new buffer and copy the provided one.
      */
 
-    public InputBuffer(InputBuffer buff)
-    {
+    public InputBuffer(InputBuffer buff) {
         _byteArray = null;
         _valid = false;
         _inputStream = null;
@@ -107,8 +100,7 @@ public class InputBuffer
      * Is the buffer valid?
      */
 
-    public final synchronized boolean valid ()
-    {
+    public final synchronized boolean valid() {
         return _valid;
     }
 
@@ -116,25 +108,19 @@ public class InputBuffer
      * Copy the existing buffer.
      */
 
-    public synchronized void copy (InputBuffer buff)
-    {
-        if (buff._valid)
-        {
+    public synchronized void copy(InputBuffer buff) {
+        if (buff._valid) {
             _byteArray = new byte[buff._byteArray.length];
             _valid = true;
 
-            System.arraycopy(buff._byteArray, 0, _byteArray, 0,
-                    buff._byteArray.length);
+            System.arraycopy(buff._byteArray, 0, _byteArray, 0, buff._byteArray.length);
 
-            try
-            {
+            try {
                 _inputStream = new ByteArrayInputStream(_byteArray);
                 _input = new DataInputStream(_inputStream);
 
                 skipHeader();
-            }
-            catch (IOException e)
-            {
+            } catch (IOException e) {
                 _valid = false;
             }
         }
@@ -144,8 +130,7 @@ public class InputBuffer
      * Return the length of the byte buffer.
      */
 
-    public final synchronized int length ()
-    {
+    public final synchronized int length() {
         return ((_byteArray == null) ? 0 : _byteArray.length);
     }
 
@@ -153,8 +138,7 @@ public class InputBuffer
      * Return the internal byte buffer.
      */
 
-    public final synchronized byte[] buffer ()
-    {
+    public final synchronized byte[] buffer() {
         return _byteArray;
     }
 
@@ -162,35 +146,30 @@ public class InputBuffer
      * Set the buffer to be used by this instance.
      */
 
-    public final synchronized void setBuffer (byte[] b)
-    {
+    public final synchronized void setBuffer(byte[] b) {
         _byteArray = new byte[b.length];
 
         System.arraycopy(b, 0, _byteArray, 0, b.length);
 
-        try
-        {
+        try {
             _inputStream = new ByteArrayInputStream(_byteArray);
             _input = new DataInputStream(_inputStream);
 
             _valid = true;
 
             skipHeader();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             _byteArray = null;
             _valid = false;
         }
     }
 
     /**
-     * Unpack a byte from the stream. If the next item in the buffer is not of
-     * the right type then an IOException is thrown.
+     * Unpack a byte from the stream. If the next item in the buffer is not of the
+     * right type then an IOException is thrown.
      */
 
-    public final synchronized byte unpackByte () throws IOException
-    {
+    public final synchronized byte unpackByte() throws IOException {
         if (!_valid)
             throw new IOException(tsLogger.i18NLogger.get_state_InputBuffer_1());
 
@@ -200,20 +179,18 @@ public class InputBuffer
     }
 
     /**
-     * Unpack the next byte array from the stream. If the next item in the
-     * buffer is not of the right type then an IOException is thrown.
+     * Unpack the next byte array from the stream. If the next item in the buffer is
+     * not of the right type then an IOException is thrown.
      */
 
-    public final synchronized byte[] unpackBytes () throws IOException
-    {
+    public final synchronized byte[] unpackBytes() throws IOException {
         if (!_valid)
             throw new IOException(tsLogger.i18NLogger.get_state_InputBuffer_2());
 
         int size = unpackInt();
-        byte b[] = new byte[size];
+        byte[] b = new byte[size];
 
-        if (size > 0)
-        {
+        if (size > 0) {
             _input.read(b, 0, size);
 
             realign(size);
@@ -223,12 +200,11 @@ public class InputBuffer
     }
 
     /**
-     * Unpack a boolean from the stream. If the next item in the buffer is not
-     * of the right type then an IOException is thrown.
+     * Unpack a boolean from the stream. If the next item in the buffer is not of
+     * the right type then an IOException is thrown.
      */
 
-    public final synchronized boolean unpackBoolean () throws IOException
-    {
+    public final synchronized boolean unpackBoolean() throws IOException {
         if (!_valid)
             throw new IOException(tsLogger.i18NLogger.get_state_InputBuffer_3());
 
@@ -244,12 +220,11 @@ public class InputBuffer
     }
 
     /**
-     * Unpack a character from the stream. If the next item in the buffer is not
-     * of the right type then an IOException is thrown.
+     * Unpack a character from the stream. If the next item in the buffer is not of
+     * the right type then an IOException is thrown.
      */
 
-    public final synchronized char unpackChar () throws IOException
-    {
+    public final synchronized char unpackChar() throws IOException {
         if (!_valid)
             throw new IOException(tsLogger.i18NLogger.get_state_InputBuffer_4());
 
@@ -259,12 +234,11 @@ public class InputBuffer
     }
 
     /**
-     * Unpack a short from the stream. If the next item in the buffer is not of
-     * the right type then an IOException is thrown.
+     * Unpack a short from the stream. If the next item in the buffer is not of the
+     * right type then an IOException is thrown.
      */
 
-    public final synchronized short unpackShort () throws IOException
-    {
+    public final synchronized short unpackShort() throws IOException {
         if (!_valid)
             throw new IOException(tsLogger.i18NLogger.get_state_InputBuffer_5());
 
@@ -274,12 +248,11 @@ public class InputBuffer
     }
 
     /**
-     * Unpack an integer from the stream. If the next item in the buffer is not
-     * of the right type then an IOException is thrown.
+     * Unpack an integer from the stream. If the next item in the buffer is not of
+     * the right type then an IOException is thrown.
      */
 
-    public final synchronized int unpackInt () throws IOException
-    {
+    public final synchronized int unpackInt() throws IOException {
         if (!_valid)
             throw new IOException(tsLogger.i18NLogger.get_state_InputBuffer_6());
 
@@ -293,12 +266,11 @@ public class InputBuffer
     }
 
     /**
-     * Unpack a long from the stream. If the next item in the buffer is not of
-     * the right type then an IOException is thrown.
+     * Unpack a long from the stream. If the next item in the buffer is not of the
+     * right type then an IOException is thrown.
      */
 
-    public final synchronized long unpackLong () throws IOException
-    {
+    public final synchronized long unpackLong() throws IOException {
         if (!_valid)
             throw new IOException(tsLogger.i18NLogger.get_state_InputBuffer_7());
 
@@ -312,12 +284,11 @@ public class InputBuffer
     }
 
     /**
-     * Unpack a float from the stream. If the next item in the buffer is not of
-     * the right type then an IOException is thrown.
+     * Unpack a float from the stream. If the next item in the buffer is not of the
+     * right type then an IOException is thrown.
      */
 
-    public final synchronized float unpackFloat () throws IOException
-    {
+    public final synchronized float unpackFloat() throws IOException {
         if (!_valid)
             throw new IOException(tsLogger.i18NLogger.get_state_InputBuffer_8());
 
@@ -331,12 +302,11 @@ public class InputBuffer
     }
 
     /**
-     * Unpack a double from the stream. If the next item in the buffer is not of
-     * the right type then an IOException is thrown.
+     * Unpack a double from the stream. If the next item in the buffer is not of the
+     * right type then an IOException is thrown.
      */
 
-    public final synchronized double unpackDouble () throws IOException
-    {
+    public final synchronized double unpackDouble() throws IOException {
         if (!_valid)
             throw new IOException(tsLogger.i18NLogger.get_state_InputBuffer_9());
 
@@ -350,15 +320,13 @@ public class InputBuffer
     }
 
     /**
-     * Unpack a String from the stream. If the next item in the buffer is not of
-     * the right type then an IOException is thrown. Currently different from
-     * the C++ version in that a distinct new instance will always be returned,
-     * rather than a reference to a previously returned object in the case of
-     * the "same" string.
+     * Unpack a String from the stream. If the next item in the buffer is not of the
+     * right type then an IOException is thrown. Currently different from the C++
+     * version in that a distinct new instance will always be returned, rather than
+     * a reference to a previously returned object in the case of the "same" string.
      */
 
-    public final synchronized String unpackString () throws IOException
-    {
+    public final synchronized String unpackString() throws IOException {
         if (!_valid)
             throw new IOException(tsLogger.i18NLogger.get_state_InputBuffer_10());
 
@@ -368,8 +336,8 @@ public class InputBuffer
             return null;
 
         /*
-         * We don't need the '\0' character which Arjuna puts in the buffer. We
-         * only put it in for compatibility with C++. So ignore it.
+         * We don't need the '\0' character which Arjuna puts in the buffer. We only put
+         * it in for compatibility with C++. So ignore it.
          */
 
         byte[] b = new byte[length - 1];
@@ -384,36 +352,32 @@ public class InputBuffer
     }
 
     /**
-     * Unpack a buffer from the provided buffer, and initialise this instance
-     * with it. If the next item in the buffer is not of the right type then an
+     * Unpack a buffer from the provided buffer, and initialise this instance with
+     * it. If the next item in the buffer is not of the right type then an
      * IOException is thrown.
      */
 
-    public synchronized void unpackFrom (InputBuffer buff) throws IOException
-    {
+    public synchronized void unpackFrom(InputBuffer buff) throws IOException {
         if (buff == null)
             throw new IOException(tsLogger.i18NLogger.get_state_InputBuffer_11());
 
         _valid = false;
 
         /*
-         * unpack number of bytes, then create new byte array and unpack each
-         * byte separately.
+         * unpack number of bytes, then create new byte array and unpack each byte
+         * separately.
          */
 
         _byteArray = buff.unpackBytes();
 
         _valid = true;
 
-        try
-        {
+        try {
             _inputStream = new ByteArrayInputStream(_byteArray);
             _input = new DataInputStream(_inputStream);
 
             skipHeader();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             _valid = false;
         }
     }
@@ -422,20 +386,16 @@ public class InputBuffer
      * Reset the read pointer for this buffer.
      */
 
-    public final boolean reread ()
-    {
+    public final boolean reread() {
         if (!_valid)
             return false;
 
-        try
-        {
+        try {
             _inputStream = new ByteArrayInputStream(_byteArray);
             _input = new DataInputStream(_inputStream);
 
             skipHeader();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             _valid = false;
         }
 
@@ -446,27 +406,21 @@ public class InputBuffer
      * Print information about this instance.
      */
 
-    public void print (PrintWriter strm)
-    {
-        if (_valid)
-        {
+    public void print(PrintWriter strm) {
+        if (_valid) {
             strm.println("InputBuffer : \n");
 
             strm.println("InputBuffer : \n");
 
             for (int i = 0; i < _byteArray.length; i++)
                 strm.write((char) _byteArray[i]);
-        }
-        else
+        } else
             strm.println("InputBuffer : invalid.");
     }
 
-    private final void realign (int amount) throws IOException
-    {
-        if ((amount % OutputBuffer.ALIGNMENT) > 0)
-        {
-            int excess = OutputBuffer.ALIGNMENT
-                    - (amount % OutputBuffer.ALIGNMENT);
+    private final void realign(int amount) throws IOException {
+        if ((amount % OutputBuffer.ALIGNMENT) > 0) {
+            int excess = OutputBuffer.ALIGNMENT - (amount % OutputBuffer.ALIGNMENT);
 
             if (_inputStream.available() < excess)
                 excess = _inputStream.available();
@@ -475,8 +429,7 @@ public class InputBuffer
         }
     }
 
-    private final void skipHeader () throws IOException
-    {
+    private final void skipHeader() throws IOException {
         _inputStream.skip(OutputBuffer.headerSize); // sizeof buffer header
     }
 

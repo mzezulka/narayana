@@ -32,15 +32,12 @@ import com.arjuna.ats.arjuna.AtomicAction;
 import com.arjuna.ats.arjuna.common.arjPropertyManager;
 import com.arjuna.ats.arjuna.coordinator.TxStats;
 
-public class TxStatsUnitTest
-{
+public class TxStatsUnitTest {
     @Test
-    public void test() throws Exception
-    {
+    public void test() throws Exception {
         arjPropertyManager.getCoordinatorEnvironmentBean().setEnableStatistics(true);
 
-        for (int i = 0; i < 100; i++)
-        {
+        for (int i = 0; i < 100; i++) {
             AtomicAction A = new AtomicAction();
             AtomicAction B = new AtomicAction();
 
@@ -51,8 +48,7 @@ public class TxStatsUnitTest
             A.commit();
         }
 
-        for (int i = 0; i < 100; i++)
-        {
+        for (int i = 0; i < 100; i++) {
             AtomicAction A = new AtomicAction();
 
             A.begin();

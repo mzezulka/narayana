@@ -43,24 +43,19 @@ import com.arjuna.ats.arjuna.common.Uid;
  * @since JTS 3.0
  */
 
-public class ActionManager
-{
+public class ActionManager {
 
-    class Lifetime
-    {
-        public Lifetime (BasicAction act)
-        {
+    class Lifetime {
+        public Lifetime(BasicAction act) {
             theAction = act;
             timeAdded = System.currentTimeMillis();
         }
 
-        public BasicAction getAction ()
-        {
+        public BasicAction getAction() {
             return theAction;
         }
 
-        public long getTimeAdded ()
-        {
+        public long getTimeAdded() {
             return timeAdded;
         }
 
@@ -68,18 +63,15 @@ public class ActionManager
         private long timeAdded;
     }
 
-    public static final ActionManager manager()
-    {
+    public static final ActionManager manager() {
         return _theManager;
     }
 
-    public void put(BasicAction act)
-    {
+    public void put(BasicAction act) {
         _allActions.put(act.get_uid(), new Lifetime(act));
     }
 
-    public BasicAction get(Uid id)
-    {
+    public BasicAction get(Uid id) {
         Lifetime lt = _allActions.get(id);
 
         if (lt != null)
@@ -89,13 +81,14 @@ public class ActionManager
     }
 
     /**
-     * @deprecated this method no longer serves any useful purpose and will be removed in a future release
-     * @param id the uid of the action for which the time when it was added is required
+     * @deprecated this method no longer serves any useful purpose and will be
+     *             removed in a future release
+     * @param id the uid of the action for which the time when it was added is
+     *           required
      * @return the time that the action was begun
      */
     @Deprecated
-    public long getTimeAdded (Uid id)
-    {
+    public long getTimeAdded(Uid id) {
         Lifetime lt = _allActions.get(id);
 
         if (lt != null)
@@ -104,18 +97,15 @@ public class ActionManager
             return 0;
     }
 
-    public void remove(Uid id)
-    {
+    public void remove(Uid id) {
         _allActions.remove(id);
     }
 
-    public int getNumberOfInflightTransactions()
-    {
+    public int getNumberOfInflightTransactions() {
         return _allActions.size();
     }
 
-    private ActionManager()
-    {
+    private ActionManager() {
     }
 
     private static final ActionManager _theManager = new ActionManager();

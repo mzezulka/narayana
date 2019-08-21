@@ -54,18 +54,15 @@ import com.arjuna.ats.arjuna.logging.tsLogger;
  * @since JTS 1.0.
  */
 
-public class RecordList
-{
+public class RecordList {
 
-    public RecordList()
-    {
+    public RecordList() {
         listHead = null;
         listTail = null;
         noEntries = 0;
     }
 
-    public RecordList(RecordList copy)
-    {
+    public RecordList(RecordList copy) {
         listHead = copy.listHead;
         listTail = copy.listTail;
         noEntries = copy.noEntries;
@@ -77,17 +74,13 @@ public class RecordList
      * @return the front element.
      */
 
-    public final AbstractRecord getFront ()
-    {
+    public final AbstractRecord getFront() {
         AbstractRecord temp = listHead;
 
-        if (noEntries == 1)
-        {
+        if (noEntries == 1) {
             listHead = listTail = null;
             noEntries = 0;
-        }
-        else if (noEntries > 1)
-        {
+        } else if (noEntries > 1) {
             listHead = listHead.getNext();
             listHead.setPrevious(null);
             temp.setNext(null);
@@ -104,17 +97,13 @@ public class RecordList
      * @return the last element.
      */
 
-    public final AbstractRecord getRear ()
-    {
+    public final AbstractRecord getRear() {
         AbstractRecord temp = listTail;
 
-        if (noEntries == 1)
-        {
+        if (noEntries == 1) {
             listHead = listTail = null;
             noEntries = 0;
-        }
-        else if (noEntries > 1)
-        {
+        } else if (noEntries > 1) {
             listTail = listTail.getPrevious();
             listTail.setNext(null);
             temp.setPrevious(null);
@@ -124,8 +113,7 @@ public class RecordList
         return temp;
     }
 
-    public AbstractRecord getNext (AbstractRecord current)
-    {
+    public AbstractRecord getNext(AbstractRecord current) {
         AbstractRecord rec = current.getNext();
 
         if (remove(rec))
@@ -138,18 +126,15 @@ public class RecordList
      * Insert the entry at the head of the list.
      */
 
-    public final boolean insert (AbstractRecord newRecord)
-    {
+    public final boolean insert(AbstractRecord newRecord) {
         /* Do the insert starting at the head of the list */
         return insert(newRecord, listHead);
     }
 
-    public final void print (PrintWriter strm)
-    {
+    public final void print(PrintWriter strm) {
         AbstractRecord arp = listHead;
 
-        for (int i = 0; i < noEntries; i++)
-        {
+        for (int i = 0; i < noEntries; i++) {
             strm.print(arp);
             arp = arp.getNext();
         }
@@ -159,16 +144,12 @@ public class RecordList
      * Explicit push onto front of list.
      */
 
-    public final void putFront (AbstractRecord newRecord)
-    {
-        if (listHead == null)
-        {
+    public final void putFront(AbstractRecord newRecord) {
+        if (listHead == null) {
             listHead = listTail = newRecord;
             newRecord.setNext(null);
             newRecord.setPrevious(null);
-        }
-        else
-        {
+        } else {
             listHead.setPrevious(newRecord);
             newRecord.setPrevious(null);
             newRecord.setNext(listHead);
@@ -182,16 +163,12 @@ public class RecordList
      * Explicit push onto rear of list.
      */
 
-    public final void putRear (AbstractRecord newRecord)
-    {
-        if (listTail == null)
-        {
+    public final void putRear(AbstractRecord newRecord) {
+        if (listTail == null) {
             listHead = listTail = newRecord;
             newRecord.setNext(null);
             newRecord.setPrevious(null);
-        }
-        else
-        {
+        } else {
             listTail.setNext(newRecord);
             newRecord.setPrevious(listTail);
             newRecord.setNext(null);
@@ -201,18 +178,15 @@ public class RecordList
         noEntries++;
     }
 
-    public final AbstractRecord peekFront ()
-    {
+    public final AbstractRecord peekFront() {
         return listHead;
     }
 
-    public final AbstractRecord peekRear ()
-    {
+    public final AbstractRecord peekRear() {
         return listTail;
     }
 
-    public final AbstractRecord peekNext (AbstractRecord curr)
-    {
+    public final AbstractRecord peekNext(AbstractRecord curr) {
         return curr.getNext();
     }
 
@@ -220,20 +194,15 @@ public class RecordList
      * Assume it's in this list!
      */
 
-    public final boolean remove (AbstractRecord oldRecord)
-    {
+    public final boolean remove(AbstractRecord oldRecord) {
         if (oldRecord == null)
             return false;
 
-        if (noEntries == 1)
-        {
+        if (noEntries == 1) {
             listHead = listTail = null;
             noEntries = 0;
-        }
-        else if (noEntries > 1)
-        {
-            if (listHead == oldRecord)
-            {
+        } else if (noEntries > 1) {
+            if (listHead == oldRecord) {
                 listHead = listHead.getNext();
 
                 if (listHead != null)
@@ -241,11 +210,8 @@ public class RecordList
 
                 oldRecord.setNext(null);
                 oldRecord.setPrevious(null);
-            }
-            else
-            {
-                if (listTail == oldRecord)
-                {
+            } else {
+                if (listTail == oldRecord) {
                     listTail = listTail.getPrevious();
 
                     if (listTail != null)
@@ -253,15 +219,12 @@ public class RecordList
 
                     oldRecord.setNext(null);
                     oldRecord.setPrevious(null);
-                }
-                else
-                {
+                } else {
                     if (oldRecord.getPrevious() != null)
                         oldRecord.getPrevious().setNext(oldRecord.getNext());
 
                     if (oldRecord.getNext() != null)
-                        oldRecord.getNext()
-                                .setPrevious(oldRecord.getPrevious());
+                        oldRecord.getNext().setPrevious(oldRecord.getPrevious());
                 }
             }
 
@@ -275,22 +238,18 @@ public class RecordList
      * @return the number of items in the current list.
      */
 
-    public final int size ()
-    {
+    public final int size() {
         return noEntries;
     }
 
-    public String toString ()
-    {
+    public String toString() {
         AbstractRecord rec = listHead;
         String s = "RecordList:";
 
         if (rec == null)
             s += " empty";
-        else
-        {
-            while (rec != null)
-            {
+        else {
+            while (rec != null) {
                 s += " " + rec.order();
                 rec = rec.getNext();
             }
@@ -301,90 +260,74 @@ public class RecordList
 
     /**
      * This is a variation on ordered insertion. Insertion obeys the following
-     * algorithm. Starting at the record indicated by 'startat' examine each
-     * entry in the list in turn and perform the following code 1) If the new
-     * record should be merged with the old, call nr.merge passing the old
-     * record as an argument and then INSERT the new record IN PLACE OF the old
-     * and exit 2) If the new record should replace the old then INSERT the new
-     * record IN PLACE OF the old and exit 3) If the new record should be added
-     * in addition to the old then INSERT the new record BEFORE the old and exit
-     * 4) If the two records are the same (determined by the == operator) simply
-     * exit 5) Otherwise determine if the new record should be added here
-     * regardless due to the ordering constraints on the list and if so add and
-     * exit, otherwise step on to the next element and repeat all the steps.
-     * Steps 1-4 effectively ensure that information maintained in any two
-     * records for the same object is current either by merging in new
-     * information, replacing the old with new, adding in new, or leaving the
-     * old alone. Step 5 ensures that if no existing record exists insertion
-     * takes place at the correct point
+     * algorithm. Starting at the record indicated by 'startat' examine each entry
+     * in the list in turn and perform the following code 1) If the new record
+     * should be merged with the old, call nr.merge passing the old record as an
+     * argument and then INSERT the new record IN PLACE OF the old and exit 2) If
+     * the new record should replace the old then INSERT the new record IN PLACE OF
+     * the old and exit 3) If the new record should be added in addition to the old
+     * then INSERT the new record BEFORE the old and exit 4) If the two records are
+     * the same (determined by the == operator) simply exit 5) Otherwise determine
+     * if the new record should be added here regardless due to the ordering
+     * constraints on the list and if so add and exit, otherwise step on to the next
+     * element and repeat all the steps. Steps 1-4 effectively ensure that
+     * information maintained in any two records for the same object is current
+     * either by merging in new information, replacing the old with new, adding in
+     * new, or leaving the old alone. Step 5 ensures that if no existing record
+     * exists insertion takes place at the correct point
      *
      * @return <code>true</code> if insertion/replacement took place,
      *         <code>false</code> otherwise.
      */
 
-    private final boolean insert (AbstractRecord newRecord,
-            AbstractRecord startAt)
-    {
+    private final boolean insert(AbstractRecord newRecord, AbstractRecord startAt) {
         AbstractRecord current = startAt;
 
         /*
          * Step through the existing list one record at a time
          */
 
-        while (current != null)
-        {
-            if (newRecord.shouldMerge(current))
-            {
+        while (current != null) {
+            if (newRecord.shouldMerge(current)) {
                 if (tsLogger.logger.isTraceEnabled()) {
-                    tsLogger.logger.trace("RecordList::insert("+this+") : merging "+newRecord.type()+
-                            " and "+current.type()+" for "+newRecord.order());
+                    tsLogger.logger.trace("RecordList::insert(" + this + ") : merging " + newRecord.type() + " and "
+                            + current.type() + " for " + newRecord.order());
                 }
 
                 newRecord.merge(current);
                 replace(newRecord, current);
 
                 return true;
-            }
-            else
-            {
-                if (newRecord.shouldReplace(current))
-                {
+            } else {
+                if (newRecord.shouldReplace(current)) {
                     if (tsLogger.logger.isTraceEnabled()) {
-                        tsLogger.logger.trace("RecordList::insert("+this+") : replacing "+current.type()+
-                                " and "+newRecord.type()+" for "+newRecord.order());
+                        tsLogger.logger.trace("RecordList::insert(" + this + ") : replacing " + current.type() + " and "
+                                + newRecord.type() + " for " + newRecord.order());
                     }
 
                     replace(newRecord, current);
 
                     return true;
-                }
-                else
-                {
-                    if (newRecord.shouldAdd(current))
-                    {
+                } else {
+                    if (newRecord.shouldAdd(current)) {
                         if (tsLogger.logger.isTraceEnabled()) {
-                            tsLogger.logger.trace("RecordList::insert("+this+") : adding extra record of type "+
-                                newRecord.type()+" before "+current.type()+" for "+newRecord.order());
+                            tsLogger.logger.trace("RecordList::insert(" + this + ") : adding extra record of type "
+                                    + newRecord.type() + " before " + current.type() + " for " + newRecord.order());
                         }
 
                         insertBefore(newRecord, current);
 
                         return true;
-                    }
-                    else
-                    {
+                    } else {
                         if (newRecord.shouldAlter(current))
                             newRecord.alter(current);
 
-                        if (newRecord.equals(current))
-                        {
+                        if (newRecord.equals(current)) {
                             return false;
-                        }
-                        else if (newRecord.lessThan(current))
-                        {
+                        } else if (newRecord.lessThan(current)) {
                             if (tsLogger.logger.isTraceEnabled()) {
-                                tsLogger.logger.trace("RecordList::insert("+this+") : inserting "+
-                                        newRecord.type()+" for "+newRecord.order()+" before "+current.type());
+                                tsLogger.logger.trace("RecordList::insert(" + this + ") : inserting " + newRecord.type()
+                                        + " for " + newRecord.order() + " before " + current.type());
                             }
 
                             insertBefore(newRecord, current);
@@ -398,19 +341,17 @@ public class RecordList
             }
         }
 
-        if (current == null)
-        {
+        if (current == null) {
             if (tsLogger.logger.isTraceEnabled()) {
-                tsLogger.logger.trace("RecordList::insert("+this+") : appending "+newRecord.type()+" for "+newRecord.order());
+                tsLogger.logger.trace("RecordList::insert(" + this + ") : appending " + newRecord.type() + " for "
+                        + newRecord.order());
             }
 
             putRear(newRecord);
-        }
-        else
-        {
+        } else {
             if (tsLogger.logger.isTraceEnabled()) {
-                tsLogger.logger.trace("RecordList::insert("+this+") : inserting "+newRecord.type()+" for "+newRecord.order()+
-                        " before "+current.type()+" for "+current.order());
+                tsLogger.logger.trace("RecordList::insert(" + this + ") : inserting " + newRecord.type() + " for "
+                        + newRecord.order() + " before " + current.type() + " for " + current.order());
             }
 
             insertBefore(newRecord, current);
@@ -423,9 +364,7 @@ public class RecordList
      * Insert the first parameter before the second in the list.
      */
 
-    private final void insertBefore (AbstractRecord newRecord,
-            AbstractRecord before)
-    {
+    private final void insertBefore(AbstractRecord newRecord, AbstractRecord before) {
         /* first do the main link chaining */
 
         newRecord.setPrevious(before.getPrevious());
@@ -443,9 +382,7 @@ public class RecordList
         noEntries++;
     }
 
-    private final void replace (AbstractRecord newRecord,
-            AbstractRecord oldRecord)
-    {
+    private final void replace(AbstractRecord newRecord, AbstractRecord oldRecord) {
         newRecord.setPrevious(oldRecord.getPrevious());
         newRecord.setNext(oldRecord.getNext());
 

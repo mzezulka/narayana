@@ -21,10 +21,9 @@
  */
 package com.arjuna.ats.arjuna.tools.osb.mbean;
 
-import com.arjuna.ats.arjuna.logging.tsLogger;
-
-import java.io.File;
 import java.lang.reflect.Constructor;
+
+import com.arjuna.ats.arjuna.logging.tsLogger;
 
 /**
  * Information provided to {@link ObjStoreBrowser#registerHandler} for instrumenting record types.
@@ -32,8 +31,9 @@ import java.lang.reflect.Constructor;
  * @author Mike Musgrove
  */
 /**
- * @deprecated as of 5.0.5.Final In a subsequent release we will change packages names in order to
- * provide a better separation between public and internal classes.
+ * @deprecated as of 5.0.5.Final In a subsequent release we will change packages
+ *             names in order to provide a better separation between public and
+ *             internal classes.
  */
 @Deprecated // in order to provide a better separation between public and internal classes.
 public class OSBTypeHandler {
@@ -45,17 +45,20 @@ public class OSBTypeHandler {
     private String typeName; // the type name {@link com.arjuna.ats.arjuna.coordinator.AbstractRecord#type()}
     HeaderStateReader headerStateReader;
 
-    public OSBTypeHandler(boolean enabled, String recordClass, String beanClass, String typeName, String headerStateReaderClassName) {
+    public OSBTypeHandler(boolean enabled, String recordClass, String beanClass, String typeName,
+            String headerStateReaderClassName) {
         this(enabled, true, recordClass, beanClass, typeName, headerStateReaderClassName);
     }
 
-    public OSBTypeHandler(boolean enabled, boolean allowRegistration, String recordClass, String beanClass, String typeName, String headerStateReaderClassName) {
+    public OSBTypeHandler(boolean enabled, boolean allowRegistration, String recordClass, String beanClass,
+            String typeName, String headerStateReaderClassName) {
         this.enabled = enabled;
         this.allowRegistration = allowRegistration;
         this.recordClass = recordClass;
         this.beanClass = beanClass;
         this.typeName = typeName;
-        this.headerStateReader = headerStateReaderClassName == null ? new HeaderStateReader() : createHeader(headerStateReaderClassName);
+        this.headerStateReader = headerStateReaderClassName == null ? new HeaderStateReader()
+                : createHeader(headerStateReaderClassName);
     }
 
     private static HeaderStateReader createHeader(String headerStateReaderClassName) {
@@ -65,7 +68,8 @@ public class OSBTypeHandler {
             return constructor.newInstance();
         } catch (ClassNotFoundException e) {
             tsLogger.logger.debugf("OSB: Header reader for class %s not found", headerStateReaderClassName);
-        } catch (Throwable e) { // NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException
+        } catch (Throwable e) { // NoSuchMethodException, InvocationTargetException, IllegalAccessException,
+                                // InstantiationException
             tsLogger.i18NLogger.info_osb_HeaderStateCtorFail(e);
         }
 

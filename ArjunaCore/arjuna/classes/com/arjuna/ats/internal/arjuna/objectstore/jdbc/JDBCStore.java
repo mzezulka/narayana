@@ -99,12 +99,9 @@ public class JDBCStore implements ObjectStoreAPI {
      * Is the current state of the object the same as that provided as the last
      * parameter?
      *
-     * @param u
-     *            The object to work on.
-     * @param tn
-     *            The type of the object.
-     * @param st
-     *            The expected type of the object.
+     * @param u  The object to work on.
+     * @param tn The type of the object.
+     * @param st The expected type of the object.
      *
      * @return <code>true</code> if the current state is as expected,
      *         <code>false</code> otherwise.
@@ -181,11 +178,10 @@ public class JDBCStore implements ObjectStoreAPI {
     /**
      * Create a new JDBCStore
      *
-     * @param jdbcStoreEnvironmentBean
-     *            The environment bean containing the configuration
-     * @throws ObjectStoreException
-     *             In case the store environment bean was not correctly
-     *             configured
+     * @param jdbcStoreEnvironmentBean The environment bean containing the
+     *                                 configuration
+     * @throws ObjectStoreException In case the store environment bean was not
+     *                              correctly configured
      */
     public JDBCStore(ObjectStoreEnvironmentBean jdbcStoreEnvironmentBean) throws ObjectStoreException {
         this.jdbcStoreEnvironmentBean = jdbcStoreEnvironmentBean;
@@ -227,8 +223,8 @@ public class JDBCStore implements ObjectStoreAPI {
                 }
 
                 /*
-                 * Check for spaces in the name - our implementation classes are
-                 * always just the first part of such names.
+                 * Check for spaces in the name - our implementation classes are always just the
+                 * first part of such names.
                  */
 
                 int index = name.indexOf(' ');
@@ -240,7 +236,8 @@ public class JDBCStore implements ObjectStoreAPI {
 
                 name = name.toLowerCase();
 
-                final String packagePrefix = JDBCStore.class.getName().substring(0, JDBCStore.class.getName().lastIndexOf('.')) + ".drivers.";
+                final String packagePrefix = JDBCStore.class.getName().substring(0,
+                        JDBCStore.class.getName().lastIndexOf('.')) + ".drivers.";
                 Class jdbcImpleClass = null;
                 try {
                     jdbcImpleClass = Class.forName(packagePrefix + name + "_" + major + "_" + minor + "_driver");
@@ -251,7 +248,8 @@ public class JDBCStore implements ObjectStoreAPI {
                         jdbcImpleClass = Class.forName(packagePrefix + name + "_driver");
                     }
                 }
-                _theImple = (com.arjuna.ats.internal.arjuna.objectstore.jdbc.JDBCImple_driver) jdbcImpleClass.newInstance();
+                _theImple = (com.arjuna.ats.internal.arjuna.objectstore.jdbc.JDBCImple_driver) jdbcImpleClass
+                        .newInstance();
 
                 _theImple.initialise(jdbcAccess, tableName, jdbcStoreEnvironmentBean);
                 imples.put(key, _theImple);

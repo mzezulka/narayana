@@ -49,18 +49,15 @@ import com.arjuna.ats.arjuna.utils.FileLock;
  * contend to exclusively lock the same file.
  */
 
-class FileContender extends Thread
-{
+class FileContender extends Thread {
 
-    public FileContender(File file, int id, int lmode)
-    {
+    public FileContender(File file, int id, int lmode) {
         _theFile = file;
         _id = id;
         _mode = lmode;
     }
 
-    public void run()
-    {
+    public void run() {
         FileLock fileLock = new FileLock(_theFile);
 
         for (int i = 0; i < 100; i++) {
@@ -88,16 +85,14 @@ class FileContender extends Thread
 
 }
 
-public class FileLockingUnitTest
-{
+public class FileLockingUnitTest {
     @Test
-    public void test() throws IOException
-    {
+    public void test() throws IOException {
         int lmode = FileLock.F_WRLCK;
 
         /*
-       * Create the file to contend over.
-       */
+         * Create the file to contend over.
+         */
 
         File theFile = new File("foobar");
         theFile.deleteOnExit();
@@ -109,8 +104,8 @@ public class FileLockingUnitTest
         ofile.close();
 
         /*
-       * Now create the threads.
-       */
+         * Now create the threads.
+         */
 
         FileContender thread1 = new FileContender(theFile, 1, lmode);
         FileContender thread2 = new FileContender(theFile, 2, lmode);
@@ -121,16 +116,14 @@ public class FileLockingUnitTest
         try {
             thread1.join();
             thread2.join();
-        }
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             fail("Test did not complete successfully.");
         }
     }
 
     @Test
-    public void testMultipleLock () throws Exception
-    {
-        FileLock fl = new FileLock(System.getProperty("java.io.tmpdir")+"/barfoo");
+    public void testMultipleLock() throws Exception {
+        FileLock fl = new FileLock(System.getProperty("java.io.tmpdir") + "/barfoo");
 
         assertTrue(fl.lock(FileLock.F_RDLCK, true));
         assertTrue(fl.lock(FileLock.F_RDLCK));

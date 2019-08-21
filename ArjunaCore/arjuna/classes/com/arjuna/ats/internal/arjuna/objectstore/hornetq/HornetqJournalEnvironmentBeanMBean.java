@@ -21,12 +21,12 @@
 package com.arjuna.ats.internal.arjuna.objectstore.hornetq;
 
 /**
- * A JMX MBean interface containing configuration for the HornetQ Journal based transaction logging system.
+ * A JMX MBean interface containing configuration for the HornetQ Journal based
+ * transaction logging system.
  *
  * @author Jonathan Halliday (jonathan.halliday@redhat.com)
  */
-public interface HornetqJournalEnvironmentBeanMBean
-{
+public interface HornetqJournalEnvironmentBeanMBean {
     public int getFileSize();
 
     public int getMinFiles();

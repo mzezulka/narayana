@@ -35,27 +35,22 @@ import com.arjuna.ats.arjuna.coordinator.abstractrecord.RecordTypeMap;
 import com.arjuna.ats.internal.arjuna.tools.log.EditableAtomicAction;
 import com.hp.mwtests.ts.arjuna.resources.CrashRecord;
 
-class DummyMap2 implements RecordTypeMap
-{
+class DummyMap2 implements RecordTypeMap {
     @SuppressWarnings("unchecked")
-    public Class getRecordClass ()
-    {
+    public Class getRecordClass() {
         return CrashRecord.class;
     }
 
-    public int getType ()
-    {
+    public int getType() {
         return RecordType.USER_DEF_FIRST0;
     }
 }
 
-public class LogEditorUnitTest
-{
+public class LogEditorUnitTest {
     @Test
-    public void test () throws Exception
-    {
+    public void test() throws Exception {
         String localOSRoot = "foobar";
-        String objectStoreDir = System.getProperty("java.io.tmpdir")+"/bar";
+        String objectStoreDir = System.getProperty("java.io.tmpdir") + "/bar";
 
         arjPropertyManager.getObjectStoreEnvironmentBean().setLocalOSRoot(localOSRoot);
         arjPropertyManager.getObjectStoreEnvironmentBean().setObjectStoreDir(objectStoreDir);
@@ -66,37 +61,27 @@ public class LogEditorUnitTest
 
         A.begin();
 
-        A.add(new CrashRecord(CrashRecord.CrashLocation.NoCrash,
-                CrashRecord.CrashType.Normal));
-        A.add(new CrashRecord(CrashRecord.CrashLocation.CrashInCommit,
-                CrashRecord.CrashType.HeuristicHazard));
-        A.add(new CrashRecord(CrashRecord.CrashLocation.CrashInCommit,
-                CrashRecord.CrashType.HeuristicHazard));
-        A.add(new CrashRecord(CrashRecord.CrashLocation.CrashInCommit,
-                CrashRecord.CrashType.HeuristicHazard));
+        A.add(new CrashRecord(CrashRecord.CrashLocation.NoCrash, CrashRecord.CrashType.Normal));
+        A.add(new CrashRecord(CrashRecord.CrashLocation.CrashInCommit, CrashRecord.CrashType.HeuristicHazard));
+        A.add(new CrashRecord(CrashRecord.CrashLocation.CrashInCommit, CrashRecord.CrashType.HeuristicHazard));
+        A.add(new CrashRecord(CrashRecord.CrashLocation.CrashInCommit, CrashRecord.CrashType.HeuristicHazard));
 
         int outcome = A.commit();
 
-        System.out.println("Transaction " + A + " committed with "
-                + ActionStatus.stringForm(outcome));
+        System.out.println("Transaction " + A + " committed with " + ActionStatus.stringForm(outcome));
 
         AtomicAction B = new AtomicAction();
 
         B.begin();
 
-        B.add(new CrashRecord(CrashRecord.CrashLocation.NoCrash,
-                CrashRecord.CrashType.Normal));
-        B.add(new CrashRecord(CrashRecord.CrashLocation.CrashInCommit,
-                CrashRecord.CrashType.HeuristicHazard));
-        B.add(new CrashRecord(CrashRecord.CrashLocation.CrashInCommit,
-                CrashRecord.CrashType.Normal));
-        B.add(new CrashRecord(CrashRecord.CrashLocation.CrashInCommit,
-                CrashRecord.CrashType.HeuristicHazard));
+        B.add(new CrashRecord(CrashRecord.CrashLocation.NoCrash, CrashRecord.CrashType.Normal));
+        B.add(new CrashRecord(CrashRecord.CrashLocation.CrashInCommit, CrashRecord.CrashType.HeuristicHazard));
+        B.add(new CrashRecord(CrashRecord.CrashLocation.CrashInCommit, CrashRecord.CrashType.Normal));
+        B.add(new CrashRecord(CrashRecord.CrashLocation.CrashInCommit, CrashRecord.CrashType.HeuristicHazard));
 
         outcome = B.commit();
 
-        System.out.println("Transaction " + B + " committed with "
-                + ActionStatus.stringForm(outcome));
+        System.out.println("Transaction " + B + " committed with " + ActionStatus.stringForm(outcome));
 
         RecordTypeManager.manager().add(new DummyMap2());
 
@@ -106,26 +91,20 @@ public class LogEditorUnitTest
 
         eaa.moveHeuristicToPrepared(1);
 
-        try
-        {
+        try {
             eaa.moveHeuristicToPrepared(-1);
             fail();
-        }
-        catch (final Exception ex)
-        {
+        } catch (final Exception ex) {
         }
 
         eaa = new EditableAtomicAction(A.get_uid());
 
         eaa.deleteHeuristicParticipant(0);
 
-        try
-        {
+        try {
             eaa.deleteHeuristicParticipant(-1);
             fail();
-        }
-        catch (final Exception ex)
-        {
+        } catch (final Exception ex) {
         }
     }
 }

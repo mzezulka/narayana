@@ -41,17 +41,14 @@ import java.io.PrintWriter;
  * @since 1.0.
  */
 
-public class ActionType
-{
+public class ActionType {
 
     public static final int TOP_LEVEL = 0;
 
     public static final int NESTED = 1;
 
-    public static String stringForm (int type)
-    {
-        switch (type)
-        {
+    public static String stringForm(int type) {
+        switch (type) {
         case TOP_LEVEL:
             return "ActionType.TOP_LEVEL";
         case NESTED:
@@ -65,8 +62,7 @@ public class ActionType
      * Print a human-readable version of the type.
      */
 
-    public static void print (PrintWriter strm, int res)
-    {
+    public static void print(PrintWriter strm, int res) {
         strm.print(stringForm(res));
     }
 

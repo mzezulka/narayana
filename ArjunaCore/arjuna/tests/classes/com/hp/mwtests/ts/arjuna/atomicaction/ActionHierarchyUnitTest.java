@@ -33,18 +33,15 @@ import com.arjuna.ats.arjuna.coordinator.ActionType;
 import com.arjuna.ats.arjuna.state.InputBuffer;
 import com.arjuna.ats.arjuna.state.OutputBuffer;
 
-public class ActionHierarchyUnitTest
-{
+public class ActionHierarchyUnitTest {
     @Test
-    public void test() throws Exception
-    {
+    public void test() throws Exception {
         ActionHierarchy ah = new ActionHierarchy(5);
         Uid[] tx = new Uid[5];
 
         assertEquals(ah.getDeepestActionUid(), Uid.nullUid());
 
-        for (int i = 0; i < tx.length; i++)
-        {
+        for (int i = 0; i < tx.length; i++) {
             tx[i] = new Uid();
 
             ah.add(tx[i]);

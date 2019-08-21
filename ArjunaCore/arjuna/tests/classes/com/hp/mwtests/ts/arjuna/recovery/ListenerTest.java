@@ -51,11 +51,8 @@ import org.junit.Test;
 import com.arjuna.ats.arjuna.recovery.Service;
 import com.arjuna.ats.internal.arjuna.recovery.Listener;
 
-class ListenerTestService implements Service
-{
-    public void doWork(InputStream is, OutputStream os)
-            throws IOException
-    {
+class ListenerTestService implements Service {
+    public void doWork(InputStream is, OutputStream os) throws IOException {
         BufferedReader in = new BufferedReader(new InputStreamReader(is));
         PrintWriter out = new PrintWriter(new OutputStreamWriter(os));
 
@@ -63,21 +60,17 @@ class ListenerTestService implements Service
             String test_string = in.readLine();
             out.println(test_string);
             out.flush();
-        }
-        catch (SocketException ex) {
-            ; // socket closed
-        }
-        catch (IOException ex) {
+        } catch (SocketException ex) {
+            // no-op, socket closed
+        } catch (IOException ex) {
             System.err.println("testService: failed");
         }
     }
 }
 
-public class ListenerTest
-{
+public class ListenerTest {
     @Test
-    public void test()
-    {
+    public void test() {
         assertTrue(test_setup());
 
         test1();
@@ -89,8 +82,7 @@ public class ListenerTest
     /**
      * Pre-test setup.
      */
-    private static boolean test_setup()
-    {
+    private static boolean test_setup() {
         boolean setupOk = false;
 
         try {
@@ -103,14 +95,11 @@ public class ListenerTest
             _test_service_socket = new ServerSocket(_test_port);
 
             _test_socket = new Socket(_test_host, _test_port);
-            _from_test_service = new BufferedReader(new InputStreamReader
-                    (_test_socket.getInputStream()));
-            _to_test_service = new PrintWriter(new OutputStreamWriter
-                    (_test_socket.getOutputStream()));
+            _from_test_service = new BufferedReader(new InputStreamReader(_test_socket.getInputStream()));
+            _to_test_service = new PrintWriter(new OutputStreamWriter(_test_socket.getOutputStream()));
 
             setupOk = true;
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.err.println("test_setup: Failed " + ex);
         }
 
@@ -120,11 +109,9 @@ public class ListenerTest
     /**
      * Check that listener can be created and a simlple service ran.
      */
-    private static void test1()
-    {
+    private static void test1() {
         try {
-            Listener testListener = new Listener(_test_service_socket,
-                    _test_service);
+            Listener testListener = new Listener(_test_service_socket, _test_service);
             try {
                 testListener.start();
 
@@ -142,15 +129,13 @@ public class ListenerTest
                     System.out.println(_unit_test + "test1: failed");
                     _tests_failed++;
                 }
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 System.err.println(_unit_test + " test1 " + ex);
                 _tests_failed++;
             }
 
             testListener.stopListener();
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             System.err.println(_unit_test + " test1 " + ex);
             _tests_failed++;
         }

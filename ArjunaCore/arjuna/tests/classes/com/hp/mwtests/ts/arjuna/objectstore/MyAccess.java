@@ -35,8 +35,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.StringTokenizer;
 
-public class MyAccess implements
-        com.arjuna.ats.arjuna.objectstore.jdbc.JDBCAccess {
+public class MyAccess implements com.arjuna.ats.arjuna.objectstore.jdbc.JDBCAccess {
 
     public Connection getConnection() throws SQLException {
         return null;

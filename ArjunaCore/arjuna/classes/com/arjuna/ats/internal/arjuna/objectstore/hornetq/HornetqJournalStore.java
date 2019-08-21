@@ -24,21 +24,20 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.apache.activemq.artemis.core.io.SequentialFileFactory;
+import org.apache.activemq.artemis.core.io.aio.AIOSequentialFileFactory;
+import org.apache.activemq.artemis.core.io.nio.NIOSequentialFileFactory;
 import org.apache.activemq.artemis.core.journal.Journal;
 import org.apache.activemq.artemis.core.journal.JournalLoadInformation;
 import org.apache.activemq.artemis.core.journal.PreparedTransactionInfo;
 import org.apache.activemq.artemis.core.journal.RecordInfo;
-import org.apache.activemq.artemis.core.io.SequentialFileFactory;
 import org.apache.activemq.artemis.core.journal.TransactionFailureCallback;
-import org.apache.activemq.artemis.core.io.aio.AIOSequentialFileFactory;
 import org.apache.activemq.artemis.core.journal.impl.JournalImpl;
-import org.apache.activemq.artemis.core.io.nio.NIOSequentialFileFactory;
 
 import com.arjuna.ats.arjuna.common.Uid;
 import com.arjuna.ats.arjuna.exceptions.ObjectStoreException;
@@ -50,16 +49,15 @@ import com.arjuna.ats.arjuna.state.OutputObjectState;
 import com.arjuna.ats.internal.arjuna.common.UidHelper;
 
 /**
- * Implementation of the tx store backed by HornetQ's journal.
- * This is a bean suitable for hooking into the app server lifecycle.
+ * Implementation of the tx store backed by HornetQ's journal. This is a bean
+ * suitable for hooking into the app server lifecycle.
  *
  * @author Jonathan Halliday (jonathan.halliday@redhat.com), 2010-03
  */
-public class HornetqJournalStore
-{
+public class HornetqJournalStore {
     private final Journal journal;
 
-    private final ConcurrentMap<String,ConcurrentMap<Uid, RecordInfo>> content = new ConcurrentHashMap<String, ConcurrentMap<Uid, RecordInfo>>();
+    private final ConcurrentMap<String, ConcurrentMap<Uid, RecordInfo>> content = new ConcurrentHashMap<String, ConcurrentMap<Uid, RecordInfo>>();
 
     private final boolean syncWrites;
     private final boolean syncDeletes;
@@ -85,19 +83,21 @@ public class HornetqJournalStore
             }
         };
 
-        JournalLoadInformation journalLoadInformation = journal.load(committedRecords, preparedTransactions, failureCallback);
+        JournalLoadInformation journalLoadInformation = journal.load(committedRecords, preparedTransactions,
+                failureCallback);
         maxID.set(journalLoadInformation.getMaxID());
 
-        if(!preparedTransactions.isEmpty()) {
+        if (!preparedTransactions.isEmpty()) {
             tsLogger.i18NLogger.warn_journal_load_error();
         }
 
-        for(RecordInfo record : committedRecords) {
+        for (RecordInfo record : committedRecords) {
             InputBuffer inputBuffer = new InputBuffer(record.data);
             Uid uid = UidHelper.unpackFrom(inputBuffer);
             String typeName = inputBuffer.unpackString();
             getContentForType(typeName).put(uid, record);
-            // don't unpack the rest yet, we may never need it. read_committed does it on demand.
+            // don't unpack the rest yet, we may never need it. read_committed does it on
+            // demand.
         }
     }
 
@@ -107,46 +107,37 @@ public class HornetqJournalStore
         syncDeletes = envBean.isSyncDeletes();
 
         File storeDir = new File(envBean.getStoreDir());
-        if(!storeDir.exists() && !storeDir.mkdirs()) {
+        if (!storeDir.exists() && !storeDir.mkdirs()) {
             throw new IOException(tsLogger.i18NLogger.get_dir_create_failed(storeDir.getCanonicalPath()));
         }
         storeDirCanonicalPath = storeDir.getCanonicalPath();
 
         SequentialFileFactory sequentialFileFactory;
-        if(envBean.isAsyncIO() && AIOSequentialFileFactory.isSupported()) {
-            sequentialFileFactory = new AIOSequentialFileFactory(
-                    storeDir,
-                    envBean.getBufferSize(),
-                    (int)(1000000000d / envBean.getBufferFlushesPerSecond()), // bufferTimeout nanos .000000001 second
-                    envBean.getMaxIO(),
-                    envBean.isLogRates());
+        if (envBean.isAsyncIO() && AIOSequentialFileFactory.isSupported()) {
+            sequentialFileFactory = new AIOSequentialFileFactory(storeDir, envBean.getBufferSize(),
+                    (int) (1000000000d / envBean.getBufferFlushesPerSecond()), // bufferTimeout nanos .000000001 second
+                    envBean.getMaxIO(), envBean.isLogRates());
         } else {
-            sequentialFileFactory = new NIOSequentialFileFactory(
-                    storeDir,
-                    true,
-                    envBean.getBufferSize(),
-                    (int)(1000000000d / envBean.getBufferFlushesPerSecond()), // bufferTimeout nanos .000000001 second
-                    envBean.getMaxIO(),
-                    envBean.isLogRates());
+            sequentialFileFactory = new NIOSequentialFileFactory(storeDir, true, envBean.getBufferSize(),
+                    (int) (1000000000d / envBean.getBufferFlushesPerSecond()), // bufferTimeout nanos .000000001 second
+                    envBean.getMaxIO(), envBean.isLogRates());
         }
 
-        journal = new JournalImpl(envBean.getFileSize(), envBean.getMinFiles(), envBean.getPoolSize(), envBean.getCompactMinFiles(),
-                        envBean.getCompactPercentage(), sequentialFileFactory, envBean.getFilePrefix(),
-                        envBean.getFileExtension(), envBean.getMaxIO());
+        journal = new JournalImpl(envBean.getFileSize(), envBean.getMinFiles(), envBean.getPoolSize(),
+                envBean.getCompactMinFiles(), envBean.getCompactPercentage(), sequentialFileFactory,
+                envBean.getFilePrefix(), envBean.getFileExtension(), envBean.getMaxIO());
     }
-
 
     /**
      * Remove the object's committed state.
      *
-     * @param uid  The object to work on.
+     * @param uid      The object to work on.
      * @param typeName The type of the object to work on.
      * @return <code>true</code> if no errors occurred, <code>false</code>
      *         otherwise.
      * @throws ObjectStoreException if things go wrong.
      */
-    public boolean remove_committed(Uid uid, String typeName) throws ObjectStoreException
-    {
+    public boolean remove_committed(Uid uid, String typeName) throws ObjectStoreException {
         try {
             RecordInfo record = getContentForType(typeName).remove(uid);
             long id = (record != null ? record.id : getId(uid, typeName));
@@ -157,7 +148,7 @@ public class HornetqJournalStore
             tsLogger.i18NLogger.warn_hornetqobjectstore_remove_state_exception(e);
 
             return false;
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new ObjectStoreException(e);
         }
     }
@@ -165,15 +156,14 @@ public class HornetqJournalStore
     /**
      * Write a new copy of the object's committed state.
      *
-     * @param uid    The object to work on.
-     * @param typeName   The type of the object to work on.
-     * @param txData The state to write.
+     * @param uid      The object to work on.
+     * @param typeName The type of the object to work on.
+     * @param txData   The state to write.
      * @return <code>true</code> if no errors occurred, <code>false</code>
      *         otherwise.
      * @throws ObjectStoreException if things go wrong.
      */
-    public boolean write_committed(Uid uid, String typeName, OutputObjectState txData) throws ObjectStoreException
-    {
+    public boolean write_committed(Uid uid, String typeName, OutputObjectState txData) throws ObjectStoreException {
         RecordInfo previousRecord = null;
         try {
             OutputBuffer outputBuffer = new OutputBuffer();
@@ -182,20 +172,21 @@ public class HornetqJournalStore
             outputBuffer.packBytes(txData.buffer());
             byte[] data = outputBuffer.buffer();
 
-            RecordInfo record = new RecordInfo(getId(uid, typeName), RECORD_TYPE, data, false, (short)0);
+            RecordInfo record = new RecordInfo(getId(uid, typeName), RECORD_TYPE, data, false, (short) 0);
             previousRecord = getContentForType(typeName).putIfAbsent(uid, record);
 
-            if(previousRecord != null) {
+            if (previousRecord != null) {
                 // the packed data may have changed so updated the map with the latest data
-                getContentForType(typeName).replace(uid,  record);
+                getContentForType(typeName).replace(uid, record);
                 journal.appendUpdateRecord(previousRecord.id, RECORD_TYPE, data, syncWrites);
             } else {
                 journal.appendAddRecord(record.id, RECORD_TYPE, data, syncWrites);
             }
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             if (previousRecord == null) {
-                // if appendAddRecord() fails, remove record from map. Leave it there if appendUpdateRecord() fails.
+                // if appendAddRecord() fails, remove record from map. Leave it there if
+                // appendUpdateRecord() fails.
                 getContentForType(typeName).remove(uid);
             }
             throw new ObjectStoreException(e);
@@ -207,26 +198,26 @@ public class HornetqJournalStore
     /**
      * Read the object's committed state.
      *
-     * @param uid  The object to work on.
+     * @param uid      The object to work on.
      * @param typeName The type of the object to work on.
      * @return the state of the object.
      * @throws ObjectStoreException if things go wrong.
      */
-    public InputObjectState read_committed(Uid uid, String typeName) throws ObjectStoreException
-    {
+    public InputObjectState read_committed(Uid uid, String typeName) throws ObjectStoreException {
         RecordInfo record = getContentForType(typeName).get(uid);
-        if(record == null) {
+        if (record == null) {
             return null;
         }
 
-        // this repeated unpacking is a little inefficient - subclass RecordInfo to hold unpacked form too?
+        // this repeated unpacking is a little inefficient - subclass RecordInfo to hold
+        // unpacked form too?
         // not too much of an issue as log reads are done for recovery only.
         try {
             InputBuffer inputBuffer = new InputBuffer(record.data);
             UidHelper.unpackFrom(inputBuffer);
             inputBuffer.unpackString();
             return new InputObjectState(uid, typeName, inputBuffer.unpackBytes());
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new ObjectStoreException(e);
         }
     }
@@ -236,11 +227,11 @@ public class HornetqJournalStore
     }
 
     /**
-     * @return the "name" of the object store. Where in the hierarchy it appears, e.g., /ObjectStore/MyName/...
+     * @return the "name" of the object store. Where in the hierarchy it appears,
+     *         e.g., /ObjectStore/MyName/...
      */
-    public String getStoreName()
-    {
-        return this.getClass().getSimpleName()+":"+storeDirCanonicalPath;
+    public String getStoreName() {
+        return this.getClass().getSimpleName() + ":" + storeDirCanonicalPath;
     }
 
     public String[] getKnownTypes() {
@@ -257,11 +248,11 @@ public class HornetqJournalStore
     private ConcurrentMap<Uid, RecordInfo> getContentForType(String typeName) {
         ConcurrentMap<Uid, RecordInfo> result = content.get(typeName);
 
-        if(result == null) {
+        if (result == null) {
             ConcurrentHashMap<Uid, RecordInfo> newMap = new ConcurrentHashMap<Uid, RecordInfo>();
             result = content.putIfAbsent(typeName, newMap);
 
-            if(result == null) {
+            if (result == null) {
                 result = newMap;
             }
         }
@@ -270,7 +261,7 @@ public class HornetqJournalStore
 
     private long getId(Uid uid, String typeName) {
         RecordInfo record = getContentForType(typeName).get(uid);
-        if(record != null) {
+        if (record != null) {
             return record.id;
         } else {
             return maxID.incrementAndGet();

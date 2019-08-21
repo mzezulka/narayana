@@ -40,123 +40,101 @@ import com.arjuna.ats.arjuna.coordinator.TwoPhaseOutcome;
 import com.arjuna.ats.arjuna.state.InputObjectState;
 import com.arjuna.ats.arjuna.state.OutputObjectState;
 
-public class ShutdownRecord extends AbstractRecord
-{
+public class ShutdownRecord extends AbstractRecord {
 
     public static final int FAIL_IN_PREPARE = 0;
     public static final int FAIL_IN_COMMIT = 1;
 
-    public ShutdownRecord(int failurePoint)
-    {
+    public ShutdownRecord(int failurePoint) {
         super(new Uid());
 
         _failurePoint = failurePoint;
     }
 
-    public int typeIs()
-    {
+    public int typeIs() {
         return RecordType.USER_DEF_FIRST0;
     }
 
-    public int nestedAbort()
-    {
+    public int nestedAbort() {
         return TwoPhaseOutcome.FINISH_OK;
     }
 
-    public int nestedCommit()
-    {
+    public int nestedCommit() {
         return TwoPhaseOutcome.FINISH_ERROR;
     }
 
-    public int nestedPrepare()
-    {
+    public int nestedPrepare() {
         return TwoPhaseOutcome.PREPARE_NOTOK;
     }
 
-    public int topLevelAbort()
-    {
+    public int topLevelAbort() {
         return TwoPhaseOutcome.FINISH_OK;
     }
 
-    public int topLevelCommit()
-    {
+    public int topLevelCommit() {
         if (_failurePoint == FAIL_IN_COMMIT)
             return TwoPhaseOutcome.FINISH_ERROR;
         else
             return TwoPhaseOutcome.FINISH_OK;
     }
 
-    public int topLevelPrepare()
-    {
+    public int topLevelPrepare() {
         if (_failurePoint == FAIL_IN_PREPARE)
             return TwoPhaseOutcome.PREPARE_NOTOK;
         else
             return TwoPhaseOutcome.PREPARE_OK;
     }
 
-    public void print(PrintWriter strm)
-    {
+    public void print(PrintWriter strm) {
         strm.println("Shutdown for:");
         super.print(strm);
     }
 
-    public boolean save_state(OutputObjectState os, int ot)
-    {
+    public boolean save_state(OutputObjectState os, int ot) {
         return false;
     }
 
-    public boolean restore_state(InputObjectState os, int ot)
-    {
+    public boolean restore_state(InputObjectState os, int ot) {
         return false;
     }
 
-    public String type()
-    {
+    public String type() {
         return "/StateManager/AbstractRecord/ShutdownRecord";
     }
 
-    public boolean shouldAdd(AbstractRecord a)
-    {
+    public boolean shouldAdd(AbstractRecord a) {
         return false;
     }
 
-    public boolean shouldMerge(AbstractRecord a)
-    {
+    public boolean shouldMerge(AbstractRecord a) {
         return false;
     }
 
-    public boolean shouldReplace(AbstractRecord a)
-    {
+    public boolean shouldReplace(AbstractRecord a) {
         return false;
     }
 
-    public boolean shouldAlter(AbstractRecord a)
-    {
+    public boolean shouldAlter(AbstractRecord a) {
         return false;
     }
 
-    public void merge(AbstractRecord a)
-    {
+    public void merge(AbstractRecord a) {
     }
 
-    public void alter(AbstractRecord a)
-    {
+    public void alter(AbstractRecord a) {
     }
 
     /**
      * @return <code>Object</code> to be used to order.
      */
 
-    public Object value()
-    {
+    public Object value() {
         return null;
     }
 
-    public void setValue(Object o)
-    {
+    public void setValue(Object o) {
     }
 
     private int _failurePoint = -1;
 
 }
-
