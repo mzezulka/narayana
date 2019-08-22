@@ -7,14 +7,16 @@ package io.narayana.tracing;
  */
 public enum TagName {
 
-    UID("UID"),
-    XID("XID"),
-    ASYNCHRONOUS("asynchronous"),
-    XARES("XAResource"),
-    TXINFO("transaction"),
-    APPLICATION_ABORT("application initiated abort"),
-    REPORT_HEURISTICS("report heuristics");
+    UID("uid"),
+    XID("xid"),
+    ASYNCHRONOUS("async"),
+    XARES("xares"),
+    STATUS("status"),
+    TXINFO("info"),
+    APPLICATION_ABORT("app_abrt"),
+    REPORT_HEURISTICS("report");
 
+    private static final String TX_PREFIX = "transaction";
     private final String name;
 
     private TagName(String name) {
@@ -23,6 +25,6 @@ public enum TagName {
 
     @Override
     public String toString() {
-        return name;
+        return TX_PREFIX + "." + name;
     }
 }

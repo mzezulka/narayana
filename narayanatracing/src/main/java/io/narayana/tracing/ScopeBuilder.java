@@ -60,13 +60,43 @@ public final class ScopeBuilder {
         return getTracer().scopeManager().activate(spanBldr.withTag(Tags.COMPONENT, "narayana").start());
     }
 
+    /**
+     * Finishes root span representing the transaction with id {@code txUid}
+     * @param txUid
+     */
     public static void finish(String txUid) {
         TX_UID_TO_SPAN_MAP.get(txUid).finish();
     }
 
-    public Scope startWithoutSpanFinish(String txUid) {
+    /**
+     * @throws IllegalArgumentException {@code txUid} is null or a span with this ID already exists
+     * @param txUid UID of the new transaction
+     * @return
+     */
+    public Scope startRootSpan(String txUid) {
         Span span = spanBldr.withTag(Tags.COMPONENT, "narayana").start();
         TX_UID_TO_SPAN_MAP.put(txUid, span);
         return getTracer().scopeManager().activate(span);
+    }
+
+    /**
+     * This is different from setting the transaction status as failed.
+     * Using this method, the span itself is marked as failed (in terms of
+     * the OpenTracing API).
+     * @param txUid
+     */
+    public static void markTransactionFailed(String txUid) {
+        TX_UID_TO_SPAN_MAP.get(txUid).setTag(Tags.ERROR, true);
+    }
+
+    /**
+     * Sets TagName.STATUS tag of the root span. If this method is called more than once,
+     * the value is overwritten.
+     * @throws IllegalArgumentException {@code txUid} does not represent any currently managed transaction
+     * @param txUid UID of the transaction
+     * @param status one of the possible states any transaction could be in
+     */
+    public static void setTransactionStatus(String txUid, TransactionStatus status) {
+        TX_UID_TO_SPAN_MAP.get(txUid).setTag(TagName.STATUS.toString(), status.toString().toLowerCase());
     }
 }

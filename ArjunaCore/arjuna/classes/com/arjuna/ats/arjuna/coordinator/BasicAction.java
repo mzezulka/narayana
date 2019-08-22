@@ -59,6 +59,7 @@ import io.narayana.tracing.ScopeBuilder;
 import io.narayana.tracing.SpanName;
 import io.narayana.tracing.TagName;
 import io.narayana.tracing.TracingUtils;
+import io.narayana.tracing.TransactionStatus;
 import io.opentracing.Scope;
 import io.opentracing.log.Fields;
 import io.opentracing.tag.Tags;
@@ -1267,7 +1268,7 @@ public class BasicAction extends StateManager {
 
     protected synchronized int Begin(BasicAction parentAct) {
         try (Scope _ignored = new ScopeBuilder(SpanName.TX_BEGIN).tag(TagName.UID, get_uid())
-                .startWithoutSpanFinish(get_uid().toString())) {
+                .startRootSpan(get_uid().toString())) {
             if (tsLogger.logger.isTraceEnabled()) {
                 tsLogger.logger.trace("BasicAction::Begin() for action-id " + get_uid());
             }
@@ -1431,6 +1432,9 @@ public class BasicAction extends StateManager {
             }
         }
 
+        if(actionStatus == ActionStatus.COMMITTED) {
+            ScopeBuilder.setTransactionStatus(get_uid().toString(), TransactionStatus.COMMITTED);
+        }
         TracingUtils.log("this is the place where we want to close the whole transaction");
         TracingUtils.finishRootScope(get_uid().toString());
         if (tsLogger.logger.isTraceEnabled()) {
@@ -1506,11 +1510,10 @@ public class BasicAction extends StateManager {
      * @return <code>ActionStatus</code> indicating outcome.
      */
     protected synchronized int Abort(boolean applicationAbort) {
-        // We already know this transaction will not finish with a commit, so
-        // set the error flag to true
         try (Scope _s = new ScopeBuilder(SpanName.GLOBAL_ABORT)
                 .tag(TagName.APPLICATION_ABORT, String.valueOf(applicationAbort)).tag(TagName.UID, get_uid())
-                .tag(TagName.ASYNCHRONOUS, false).tag(Tags.ERROR, true).start(get_uid().toString())) {
+                .tag(TagName.ASYNCHRONOUS, false).start(get_uid().toString())) {
+
             if (tsLogger.logger.isTraceEnabled()) {
                 tsLogger.logger.trace("BasicAction::Abort() for action-id " + get_uid());
             }
@@ -1562,7 +1565,7 @@ public class BasicAction extends StateManager {
             }
 
             ActionManager.manager().remove(get_uid());
-
+            ScopeBuilder.setTransactionStatus(get_uid().toString(), TransactionStatus.ABORTED);
             actionStatus = ActionStatus.ABORTED;
 
             if (TxStats.enabled()) {
@@ -1574,7 +1577,9 @@ public class BasicAction extends StateManager {
 
             return actionStatus;
         } finally {
+            ScopeBuilder.markTransactionFailed(get_uid().toString());
             TracingUtils.finishActiveSpan();
+            ScopeBuilder.finish(get_uid().toString());
         }
     }
 
@@ -1829,7 +1834,9 @@ public class BasicAction extends StateManager {
     protected final synchronized void phase2Abort(boolean reportHeuristics) {
         try (Scope _s = new ScopeBuilder(SpanName.GLOBAL_ABORT)
                 .tag(TagName.REPORT_HEURISTICS, String.valueOf(reportHeuristics)).tag(TagName.APPLICATION_ABORT, false)
-                .tag(TagName.ASYNCHRONOUS, false).tag(TagName.UID, this.get_uid()).tag(Tags.ERROR, true).start(get_uid().toString())) {
+                .tag(TagName.ASYNCHRONOUS, false).tag(TagName.UID, this.get_uid()).start(get_uid().toString())) {
+            ScopeBuilder.markTransactionFailed(get_uid().toString());
+
             if (tsLogger.logger.isTraceEnabled()) {
                 tsLogger.logger.trace("BasicAction::phase2Abort() for action-id " + get_uid());
             }
@@ -1861,7 +1868,8 @@ public class BasicAction extends StateManager {
             forgetHeuristics();
 
             actionStatus = abortStatus();
-
+            ScopeBuilder.setTransactionStatus(get_uid().toString(), TransactionStatus.ABORTED);
+            ScopeBuilder.markTransactionFailed(get_uid().toString());
             updateState(); // we may end up saving more than the heuristic list
             // here!
 
