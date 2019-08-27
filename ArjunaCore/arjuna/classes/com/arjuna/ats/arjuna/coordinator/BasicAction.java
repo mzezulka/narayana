@@ -1267,61 +1267,57 @@ public class BasicAction extends StateManager {
      */
 
     protected synchronized int Begin(BasicAction parentAct) {
-        try (Scope _ignored = new ScopeBuilder(SpanName.TX_BEGIN).tag(TagName.UID, get_uid())
-                .startRootSpan(get_uid().toString())) {
-            if (tsLogger.logger.isTraceEnabled()) {
-                tsLogger.logger.trace("BasicAction::Begin() for action-id " + get_uid());
-            }
+        new ScopeBuilder(SpanName.TX_BEGIN, get_uid()).tag(TagName.UID, get_uid())
+                .startRootSpan(get_uid().toString());
+        if (tsLogger.logger.isTraceEnabled()) {
+            tsLogger.logger.trace("BasicAction::Begin() for action-id " + get_uid());
+        }
 
-            // check to see if transaction system is enabled
+        // check to see if transaction system is enabled
 
-            if (!TxControl.isEnabled()) {
-                /*
-                 * Prevent transaction from making forward progress.
-                 */
+        if (!TxControl.isEnabled()) {
+            /*
+             * Prevent transaction from making forward progress.
+             */
 
-                actionStatus = ActionStatus.ABORT_ONLY;
+            actionStatus = ActionStatus.ABORT_ONLY;
 
-                tsLogger.i18NLogger.warn_coordinator_notrunning();
+            tsLogger.i18NLogger.warn_coordinator_notrunning();
+        } else {
+            if (actionStatus != ActionStatus.CREATED) {
+                tsLogger.i18NLogger.warn_coordinator_BasicAction_29(get_uid(), ActionStatus.stringForm(actionStatus));
             } else {
-                if (actionStatus != ActionStatus.CREATED) {
-                    tsLogger.i18NLogger.warn_coordinator_BasicAction_29(get_uid(),
-                            ActionStatus.stringForm(actionStatus));
-                } else {
-                    actionInitialise(parentAct);
-                    actionStatus = ActionStatus.RUNNING;
+                actionInitialise(parentAct);
+                actionStatus = ActionStatus.RUNNING;
 
-                    if ((actionType != ActionType.TOP_LEVEL)
-                            && ((parentAct == null) || (parentAct.status() > ActionStatus.RUNNING))) {
-                        actionStatus = ActionStatus.ABORT_ONLY;
+                if ((actionType != ActionType.TOP_LEVEL)
+                        && ((parentAct == null) || (parentAct.status() > ActionStatus.RUNNING))) {
+                    actionStatus = ActionStatus.ABORT_ONLY;
 
-                        if (parentAct == null) {
-                            tsLogger.i18NLogger.warn_coordinator_BasicAction_30(get_uid());
-                        } else {
-                            tsLogger.i18NLogger.warn_coordinator_BasicAction_31(get_uid(), parentAct.get_uid(),
-                                    Integer.toString(parentAct.status()));
-                        }
-                    }
-
-                    ActionManager.manager().put(this);
-
-                    if (finalizeBasicActions) {
-                        finalizerObject = new BasicActionFinalizer(this);
-                    }
-
-                    if (TxStats.enabled()) {
-                        TxStats.getInstance().incrementTransactions();
-
-                        if (parentAct != null)
-                            TxStats.getInstance().incrementNestedTransactions();
+                    if (parentAct == null) {
+                        tsLogger.i18NLogger.warn_coordinator_BasicAction_30(get_uid());
+                    } else {
+                        tsLogger.i18NLogger.warn_coordinator_BasicAction_31(get_uid(), parentAct.get_uid(),
+                                Integer.toString(parentAct.status()));
                     }
                 }
-            }
 
-            return actionStatus;
-        } finally {
-            TracingUtils.finishActiveSpan();
+                ActionManager.manager().put(this);
+
+                if (finalizeBasicActions) {
+                    finalizerObject = new BasicActionFinalizer(this);
+                }
+
+                if (TxStats.enabled()) {
+                    TxStats.getInstance().incrementTransactions();
+
+                    if (parentAct != null)
+                        TxStats.getInstance().incrementNestedTransactions();
+                }
+            }
         }
+
+        return actionStatus;
     }
 
     /**
@@ -1348,6 +1344,7 @@ public class BasicAction extends StateManager {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("BasicAction::End() for action-id " + get_uid());
         }
+        ScopeBuilder.finish(get_uid().toString());
 
         /* Check for superfluous invocation */
 
@@ -1432,7 +1429,7 @@ public class BasicAction extends StateManager {
             }
         }
 
-        if(actionStatus == ActionStatus.COMMITTED) {
+        if (actionStatus == ActionStatus.COMMITTED) {
             ScopeBuilder.setTransactionStatus(get_uid().toString(), TransactionStatus.COMMITTED);
         }
         TracingUtils.log("this is the place where we want to close the whole transaction");
@@ -1578,7 +1575,6 @@ public class BasicAction extends StateManager {
             return actionStatus;
         } finally {
             ScopeBuilder.markTransactionFailed(get_uid().toString());
-            TracingUtils.finishActiveSpan();
             ScopeBuilder.finish(get_uid().toString());
         }
     }
@@ -1971,7 +1967,8 @@ public class BasicAction extends StateManager {
         // Finish the pre 2PC wrapping span
         // TracingUtils.finishActiveSpan();
         try (Scope _s = new ScopeBuilder(SpanName.GLOBAL_PREPARE)
-                .tag(TagName.REPORT_HEURISTICS, String.valueOf(reportHeuristics)).tag(TagName.UID, get_uid()).start(get_uid().toString())) {
+                .tag(TagName.REPORT_HEURISTICS, String.valueOf(reportHeuristics)).tag(TagName.UID, get_uid())
+                .start(get_uid().toString())) {
             if (tsLogger.logger.isTraceEnabled()) {
                 tsLogger.logger.trace("BasicAction::prepare () for action-id " + get_uid());
             }

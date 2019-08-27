@@ -405,7 +405,12 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
         if (jtaLogger.logger.isTraceEnabled()) {
             jtaLogger.logger.trace("XAResourceRecord.topLevelCommit for " + this + ", record id=" + order());
         }
-
+        try(Scope scope = new ScopeBuilder(SpanName.LOCAL_COMMIT)
+                .tag(TagName.XARES, _theXAResource)
+                .start(get_uid().toString())) {
+        } finally {
+            TracingUtils.finishActiveSpan();
+        }
         if (!_prepared)
             return TwoPhaseOutcome.NOT_PREPARED;
 
@@ -426,9 +431,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
                  * through prepare.
                  */
 
-                try(Scope scope = new ScopeBuilder(SpanName.LOCAL_COMMIT)
-                        .tag(TagName.XARES, _theXAResource)
-                        .start(get_uid().toString())) {
+                try {
                     _theXAResource.commit(_tranID, false);
                 } catch (XAException e1) {
                     if (notAProblem(e1, true)) {

@@ -31,13 +31,13 @@ public final class ScopeBuilder {
     /**
      * @param name name of the span which will be activated in the scope
      */
-    public ScopeBuilder(SpanName name) {
-        this.spanBldr = prepareSpan(name);
+    public ScopeBuilder(SpanName name, Object...args) {
+        this.spanBldr = prepareSpan(name, args);
     }
 
-    private static SpanBuilder prepareSpan(SpanName name) {
+    private static SpanBuilder prepareSpan(SpanName name, Object... args) {
         Objects.requireNonNull(name, "Name of the span cannot be null");
-        return getTracer().buildSpan(name.toString());
+        return getTracer().buildSpan(String.format(name.toString(), args));
     }
 
     /**
@@ -61,22 +61,22 @@ public final class ScopeBuilder {
     }
 
     /**
-     * Finishes root span representing the transaction with id {@code txUid}
-     * @param txUid
-     */
-    public static void finish(String txUid) {
-        TX_UID_TO_SPAN_MAP.get(txUid).finish();
-    }
-
-    /**
      * @throws IllegalArgumentException {@code txUid} is null or a span with this ID already exists
      * @param txUid UID of the new transaction
      * @return
      */
     public Scope startRootSpan(String txUid) {
-        Span span = spanBldr.withTag(Tags.COMPONENT, "narayana").start();
+        Span span = spanBldr.withTag(Tags.COMPONENT, "narayana").ignoreActiveSpan().start();
         TX_UID_TO_SPAN_MAP.put(txUid, span);
         return getTracer().scopeManager().activate(span);
+    }
+
+    /**
+     * Finishes root span representing the transaction with id {@code txUid}
+     * @param txUid
+     */
+    public static void finish(String txUid) {
+        TX_UID_TO_SPAN_MAP.get(txUid).finish();
     }
 
     /**

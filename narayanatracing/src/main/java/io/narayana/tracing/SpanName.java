@@ -1,7 +1,7 @@
 package io.narayana.tracing;
 
 /**
- * String constants to be used as names when creating spans.
+ * String constants and string formatters to be used as names when creating spans.
  *
  * @author Miloslav Zezulka (mzezulka@redhat.com)
  *
@@ -11,7 +11,7 @@ public enum SpanName {
     /*
      * The root span of the whole trace representing the transaction.
      */
-    TX_BEGIN("Transaction start"),
+    TX_BEGIN("Transaction '%s'"),
 
     RESOURCE_ENLISTMENT("Resource enlistment"),
 
