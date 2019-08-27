@@ -79,10 +79,9 @@ import com.arjuna.ats.jta.xa.XAModifier;
 import com.arjuna.ats.jta.xa.XidImple;
 import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
 
-import io.narayana.tracing.ScopeBuilder;
 import io.narayana.tracing.SpanName;
 import io.narayana.tracing.TagName;
-import io.narayana.tracing.TracingUtils;
+import io.narayana.tracing.Tracing;
 import io.opentracing.Scope;
 
 /*
@@ -431,7 +430,7 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
                 }
             }
         }
-        try (Scope scope = new ScopeBuilder(SpanName.RESOURCE_ENLISTMENT)
+        try (Scope scope = new Tracing.ScopeBuilder(SpanName.RESOURCE_ENLISTMENT)
                 .tag(TagName.XARES, xaRes).start(get_uid().toString())) {
             /*
              * For each transaction we maintain a list of resources registered with it. Each
@@ -458,7 +457,7 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
                         info = (TxInfo) _duplicateResources.get(xaRes);
                     }
                 }
-                TracingUtils.addCurrentSpanTag(TagName.TXINFO, info);
+                Tracing.addCurrentSpanTag(TagName.TXINFO, info);
                 if (info != null) {
                     switch (info.getState()) {
                     case TxInfo.ASSOCIATION_SUSPENDED: {
@@ -523,7 +522,7 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
 
                 return false;
             } finally {
-                TracingUtils.finishActiveSpan();
+                Tracing.finishActiveSpan();
             }
             // if (threadIsActive(xaRes))
             // return true; // this thread has already registered a resource for

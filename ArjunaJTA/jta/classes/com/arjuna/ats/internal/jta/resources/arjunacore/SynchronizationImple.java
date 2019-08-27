@@ -36,7 +36,7 @@ import com.arjuna.ats.arjuna.coordinator.SynchronizationRecord;
 import com.arjuna.ats.internal.jta.utils.arjunacore.StatusConverter;
 import com.arjuna.ats.jta.logging.jtaLogger;
 
-import io.narayana.tracing.TracingUtils;
+import io.narayana.tracing.Tracing;
 /**
  * Whenever a synchronization is registered, an instance of this class is used
  * to wrap it.

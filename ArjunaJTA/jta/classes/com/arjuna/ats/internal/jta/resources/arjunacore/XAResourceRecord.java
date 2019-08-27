@@ -74,10 +74,10 @@ import com.arjuna.ats.jta.xa.RecoverableXAConnection;
 import com.arjuna.ats.jta.xa.XidImple;
 import com.arjuna.common.internal.util.ClassloadingUtility;
 
-import io.narayana.tracing.ScopeBuilder;
 import io.narayana.tracing.SpanName;
 import io.narayana.tracing.TagName;
-import io.narayana.tracing.TracingUtils;
+import io.narayana.tracing.Tracing;
+import io.narayana.tracing.Tracing.ScopeBuilder;
 import io.opentracing.Scope;
 
 /**
@@ -205,7 +205,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
             return TwoPhaseOutcome.PREPARE_NOTOK;
         }
 
-        try(Scope scope = new ScopeBuilder(SpanName.LOCAL_PREPARE)
+        try(Scope scope = new Tracing.ScopeBuilder(SpanName.LOCAL_PREPARE)
                 .tag(TagName.XARES, _theXAResource)
                 .start(get_uid().toString())) {
             endAssociation(XAResource.TMSUCCESS, TxInfo.NOT_ASSOCIATED);
@@ -261,7 +261,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
 
             return TwoPhaseOutcome.PREPARE_NOTOK;
         } finally {
-            TracingUtils.finishActiveSpan();
+            Tracing.finishActiveSpan();
         }
     }
 
@@ -409,7 +409,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
                 .tag(TagName.XARES, _theXAResource)
                 .start(get_uid().toString())) {
         } finally {
-            TracingUtils.finishActiveSpan();
+            Tracing.finishActiveSpan();
         }
         if (!_prepared)
             return TwoPhaseOutcome.NOT_PREPARED;
@@ -502,7 +502,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
                     return TwoPhaseOutcome.FINISH_ERROR;
                 } finally {
                     removeConnection();
-                    TracingUtils.finishActiveSpan();
+                    Tracing.finishActiveSpan();
                 }
             } else {
                 jtaLogger.i18NLogger.warn_resources_arjunacore_noresource(XAHelper.xidToString(_tranID));

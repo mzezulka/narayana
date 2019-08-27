@@ -46,13 +46,6 @@ import com.arjuna.ats.arjuna.coordinator.TxControl;
 import com.arjuna.ats.jta.common.jtaPropertyManager;
 import com.arjuna.ats.jta.logging.jtaLogger;
 
-import io.narayana.tracing.ScopeBuilder;
-import io.narayana.tracing.SpanName;
-import io.narayana.tracing.TracingUtils;
-import io.opentracing.Scope;
-import io.opentracing.Span;
-import io.opentracing.util.GlobalTracer;
-
 public class BaseTransaction {
 
     public void begin() throws javax.transaction.NotSupportedException, javax.transaction.SystemException {
@@ -167,6 +160,7 @@ public class BaseTransaction {
             return 0;
     }
 
+    @Override
     public String toString() {
         TransactionImple theTransaction = TransactionImple.getTransaction();
 
@@ -238,6 +232,7 @@ public class BaseTransaction {
 
         AtomicAction.suspend();
         return wrap(new Callable<Void>() {
+            @Override
             public Void call() throws InvalidTransactionException, javax.transaction.RollbackException,
                     javax.transaction.HeuristicMixedException, javax.transaction.HeuristicRollbackException,
                     java.lang.SecurityException, javax.transaction.SystemException, java.lang.IllegalStateException {

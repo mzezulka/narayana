@@ -11,7 +11,7 @@ public enum SpanName {
     /*
      * The root span of the whole trace representing the transaction.
      */
-    TX_BEGIN("Transaction '%s'"),
+    TX_ROOT("Transaction '%s'"),
 
     RESOURCE_ENLISTMENT("Resource enlistment"),
 

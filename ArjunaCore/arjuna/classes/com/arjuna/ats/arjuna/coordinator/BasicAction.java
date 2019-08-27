@@ -55,10 +55,10 @@ import com.arjuna.ats.arjuna.utils.Utility;
 import com.arjuna.ats.internal.arjuna.Header;
 import com.arjuna.ats.internal.arjuna.thread.ThreadActionData;
 
-import io.narayana.tracing.ScopeBuilder;
 import io.narayana.tracing.SpanName;
 import io.narayana.tracing.TagName;
-import io.narayana.tracing.TracingUtils;
+import io.narayana.tracing.Tracing;
+import io.narayana.tracing.Tracing.ScopeBuilder;
 import io.narayana.tracing.TransactionStatus;
 import io.opentracing.Scope;
 import io.opentracing.log.Fields;
@@ -1267,8 +1267,7 @@ public class BasicAction extends StateManager {
      */
 
     protected synchronized int Begin(BasicAction parentAct) {
-        new ScopeBuilder(SpanName.TX_BEGIN, get_uid()).tag(TagName.UID, get_uid())
-                .startRootSpan(get_uid().toString());
+        new Tracing.RootScopeBuilder(get_uid()).tag(TagName.UID, get_uid()).startRootSpan(get_uid().toString());
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("BasicAction::Begin() for action-id " + get_uid());
         }
@@ -1344,7 +1343,7 @@ public class BasicAction extends StateManager {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("BasicAction::End() for action-id " + get_uid());
         }
-        ScopeBuilder.finish(get_uid().toString());
+        Tracing.finish(get_uid().toString());
 
         /* Check for superfluous invocation */
 
@@ -1390,9 +1389,9 @@ public class BasicAction extends StateManager {
 
                 if (prepareStatus == TwoPhaseOutcome.PREPARE_NOTOK
                         || prepareStatus == TwoPhaseOutcome.ONE_PHASE_ERROR) {
-                    TracingUtils.addCurrentSpanTag(Tags.ERROR, true);
-                    TracingUtils.log(Fields.EVENT, "error");
-                    TracingUtils.log(Fields.ERROR_KIND, TwoPhaseOutcome.stringForm(prepareStatus));
+                    Tracing.addCurrentSpanTag(Tags.ERROR, true);
+                    Tracing.log(Fields.EVENT, "error");
+                    Tracing.log(Fields.ERROR_KIND, TwoPhaseOutcome.stringForm(prepareStatus));
 
                     tsLogger.i18NLogger.warn_coordinator_BasicAction_36(get_uid());
 
@@ -1430,10 +1429,10 @@ public class BasicAction extends StateManager {
         }
 
         if (actionStatus == ActionStatus.COMMITTED) {
-            ScopeBuilder.setTransactionStatus(get_uid().toString(), TransactionStatus.COMMITTED);
+            Tracing.setTransactionStatus(get_uid().toString(), TransactionStatus.COMMITTED);
         }
-        TracingUtils.log("this is the place where we want to close the whole transaction");
-        TracingUtils.finishRootScope(get_uid().toString());
+        Tracing.log("this is the place where we want to close the whole transaction");
+        Tracing.finish(get_uid().toString());
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.tracef("BasicAction::End() result for action-id (%s) is (%s) node id: (%s)", get_uid(),
                     TwoPhaseOutcome.stringForm(heuristicDecision),
@@ -1562,7 +1561,7 @@ public class BasicAction extends StateManager {
             }
 
             ActionManager.manager().remove(get_uid());
-            ScopeBuilder.setTransactionStatus(get_uid().toString(), TransactionStatus.ABORTED);
+            Tracing.setTransactionStatus(get_uid().toString(), TransactionStatus.ABORTED);
             actionStatus = ActionStatus.ABORTED;
 
             if (TxStats.enabled()) {
@@ -1574,8 +1573,8 @@ public class BasicAction extends StateManager {
 
             return actionStatus;
         } finally {
-            ScopeBuilder.markTransactionFailed(get_uid().toString());
-            ScopeBuilder.finish(get_uid().toString());
+            Tracing.markTransactionFailed(get_uid().toString());
+            Tracing.finish(get_uid().toString());
         }
     }
 
@@ -1810,7 +1809,7 @@ public class BasicAction extends StateManager {
 
             }
         } finally {
-            TracingUtils.finishActiveSpan();
+            Tracing.finishActiveSpan();
         }
     }
 
@@ -1822,7 +1821,7 @@ public class BasicAction extends StateManager {
      * The pendingList is processed because it may not be empty - since prepare()
      * stops processing the list at the first PREPARE_NOTOK result.
      *
-     * By default, records that responsed PREPARE_READONLY will not be contacted
+     * By default, records that responded PREPARE_READONLY will not be contacted
      * during second-phase abort, just as they are not during second-phase commit.
      * This can be overridden at runtime using the READONLY_OPTIMISATION variable.
      */
@@ -1831,7 +1830,7 @@ public class BasicAction extends StateManager {
         try (Scope _s = new ScopeBuilder(SpanName.GLOBAL_ABORT)
                 .tag(TagName.REPORT_HEURISTICS, String.valueOf(reportHeuristics)).tag(TagName.APPLICATION_ABORT, false)
                 .tag(TagName.ASYNCHRONOUS, false).tag(TagName.UID, this.get_uid()).start(get_uid().toString())) {
-            ScopeBuilder.markTransactionFailed(get_uid().toString());
+            Tracing.markTransactionFailed(get_uid().toString());
 
             if (tsLogger.logger.isTraceEnabled()) {
                 tsLogger.logger.trace("BasicAction::phase2Abort() for action-id " + get_uid());
@@ -1864,10 +1863,9 @@ public class BasicAction extends StateManager {
             forgetHeuristics();
 
             actionStatus = abortStatus();
-            ScopeBuilder.setTransactionStatus(get_uid().toString(), TransactionStatus.ABORTED);
-            ScopeBuilder.markTransactionFailed(get_uid().toString());
-            updateState(); // we may end up saving more than the heuristic list
-            // here!
+            Tracing.setTransactionStatus(get_uid().toString(), TransactionStatus.ABORTED);
+            Tracing.markTransactionFailed(get_uid().toString());
+            updateState(); // we may end up saving more than the heuristic list here!
 
             ActionManager.manager().remove(get_uid());
 
@@ -1886,7 +1884,7 @@ public class BasicAction extends StateManager {
                 TxStats.getInstance().incrementAbortedTransactions();
             }
         } finally {
-            TracingUtils.finishActiveSpan();
+            Tracing.finishActiveSpan();
         }
     }
 
@@ -2194,7 +2192,7 @@ public class BasicAction extends StateManager {
             else
                 return TwoPhaseOutcome.PREPARE_OK;
         } finally {
-            TracingUtils.finishActiveSpan();
+            Tracing.finishActiveSpan();
         }
     }
 
