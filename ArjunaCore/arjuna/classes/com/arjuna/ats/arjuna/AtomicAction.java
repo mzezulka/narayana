@@ -89,7 +89,6 @@ public class AtomicAction extends TwoPhaseCoordinator {
      *
      * @return <code>ActionStatus</code> indicating outcome.
      */
-
     public int begin() {
         return begin(AtomicAction.NO_TIMEOUT);
     }
@@ -183,6 +182,7 @@ public class AtomicAction extends TwoPhaseCoordinator {
         return status;
     }
 
+    @Override
     public int end(boolean report_heuristics) {
         int outcome = super.end(report_heuristics);
 
@@ -196,6 +196,7 @@ public class AtomicAction extends TwoPhaseCoordinator {
         return outcome;
     }
 
+    @Override
     public int cancel() {
         int outcome = super.cancel();
 
@@ -227,6 +228,7 @@ public class AtomicAction extends TwoPhaseCoordinator {
      *         logs in the transaction object store.
      */
 
+    @Override
     public String type() {
         return "/StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction";
     }
@@ -352,6 +354,7 @@ public class AtomicAction extends TwoPhaseCoordinator {
      *         terminated by the right thread.
      */
 
+    @Override
     protected boolean checkForCurrent() {
         return true;
     }

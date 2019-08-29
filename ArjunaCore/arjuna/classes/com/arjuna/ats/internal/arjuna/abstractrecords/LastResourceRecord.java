@@ -41,6 +41,12 @@ import com.arjuna.ats.arjuna.coordinator.RecordType;
 import com.arjuna.ats.arjuna.coordinator.TwoPhaseOutcome;
 import com.arjuna.ats.arjuna.logging.tsLogger;
 
+import io.narayana.tracing.SpanName;
+import io.narayana.tracing.TagName;
+import io.narayana.tracing.Tracing;
+import io.narayana.tracing.Tracing.ScopeBuilder;
+import io.opentracing.Scope;
+
 /**
  * AbstractRecord that helps us do the last resource commit optimization.
  * Basically this is something that is used to allow a *single* resource that is
@@ -72,14 +78,17 @@ public class LastResourceRecord extends AbstractRecord {
         _lro = opr;
     }
 
+    @Override
     public boolean propagateOnCommit() {
         return false;
     }
 
+    @Override
     public int typeIs() {
         return RecordType.LASTRESOURCE;
     }
 
+    @Override
     public int nestedAbort() {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("LastResourceRecord::nestedAbort() for " + order());
@@ -88,6 +97,7 @@ public class LastResourceRecord extends AbstractRecord {
         return TwoPhaseOutcome.FINISH_OK;
     }
 
+    @Override
     public int nestedCommit() {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("LastResourceRecord::nestedCommit() for " + order());
@@ -100,6 +110,7 @@ public class LastResourceRecord extends AbstractRecord {
      * Not allowed to participate in nested transactions.
      */
 
+    @Override
     public int nestedPrepare() {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("LastResourceRecord::nestedPrepare() for " + order());
@@ -108,6 +119,7 @@ public class LastResourceRecord extends AbstractRecord {
         return TwoPhaseOutcome.PREPARE_NOTOK;
     }
 
+    @Override
     public int topLevelAbort() {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("LastResourceRecord::topLevelAbort() for " + order());
@@ -120,14 +132,21 @@ public class LastResourceRecord extends AbstractRecord {
         }
     }
 
+    @Override
     public int topLevelCommit() {
-        if (tsLogger.logger.isTraceEnabled()) {
-            tsLogger.logger.trace("LastResourceRecord::topLevelCommit() for " + order());
+        try(Scope _s = new ScopeBuilder(SpanName.LOCAL_COMMIT_LAST_RESOURCE)
+                .tag(TagName.UID, this.get_uid())
+                .start()) {
+            if (tsLogger.logger.isTraceEnabled()) {
+                tsLogger.logger.trace("LastResourceRecord::topLevelCommit() for " + order());
+            }
+            return TwoPhaseOutcome.FINISH_OK;
+        } finally {
+            Tracing.finishActiveSpan();
         }
-
-        return TwoPhaseOutcome.FINISH_OK;
     }
 
+    @Override
     public int topLevelPrepare() {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("LastResourceRecord::topLevelPrepare() for " + order());
@@ -146,6 +165,7 @@ public class LastResourceRecord extends AbstractRecord {
         }
     }
 
+    @Override
     public int topLevelOnePhaseCommit() {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("LastResourceRecord::topLevelOnePhase() for " + order());
@@ -179,15 +199,18 @@ public class LastResourceRecord extends AbstractRecord {
         return "LastResourceRecord(" + _lro + ")";
     }
 
+    @Override
     public void print(PrintWriter strm) {
         strm.println("LastResource for:");
         super.print(strm);
     }
 
+    @Override
     public String type() {
         return "/StateManager/AbstractRecord/LastResourceRecord";
     }
 
+    @Override
     public boolean shouldAdd(AbstractRecord a) {
         if (a.typeIs() == typeIs()) {
             if (ALLOW_MULTIPLE_LAST_RESOURCES) {
@@ -207,21 +230,26 @@ public class LastResourceRecord extends AbstractRecord {
         }
     }
 
+    @Override
     public boolean shouldMerge(AbstractRecord a) {
         return false;
     }
 
+    @Override
     public boolean shouldReplace(AbstractRecord a) {
         return false;
     }
 
+    @Override
     public boolean shouldAlter(AbstractRecord a) {
         return false;
     }
 
+    @Override
     public void merge(AbstractRecord a) {
     }
 
+    @Override
     public void alter(AbstractRecord a) {
     }
 
@@ -229,10 +257,12 @@ public class LastResourceRecord extends AbstractRecord {
      * @return <code>Object</code> to be used to order.
      */
 
+    @Override
     public Object value() {
         return _lro;
     }
 
+    @Override
     public void setValue(Object o) {
     }
 

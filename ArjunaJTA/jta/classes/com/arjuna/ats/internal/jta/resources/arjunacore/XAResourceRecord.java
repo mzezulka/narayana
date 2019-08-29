@@ -205,9 +205,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
             return TwoPhaseOutcome.PREPARE_NOTOK;
         }
 
-        try(Scope scope = new Tracing.ScopeBuilder(SpanName.LOCAL_PREPARE)
-                .tag(TagName.XARES, _theXAResource)
-                .start(get_uid().toString())) {
+        try {
             endAssociation(XAResource.TMSUCCESS, TxInfo.NOT_ASSOCIATED);
 
             _prepared = true;
@@ -260,8 +258,6 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
                 removeConnection();
 
             return TwoPhaseOutcome.PREPARE_NOTOK;
-        } finally {
-            Tracing.finishActiveSpan();
         }
     }
 
@@ -335,7 +331,8 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
                     throw e;
                 }
 
-                try {
+                try (Scope scope = new ScopeBuilder(SpanName.LOCAL_ROLLBACK).tag(TagName.XARES, _theXAResource)
+                        .start()) {
                     _theXAResource.rollback(_tranID);
                 } catch (XAException e1) {
                     if (notAProblem(e1, false)) {
@@ -384,6 +381,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
                 } finally {
                     if (!_prepared)
                         removeConnection();
+                    Tracing.finishActiveSpan();
                 }
             } else {
                 jtaLogger.i18NLogger.warn_resources_arjunacore_noresource(XAHelper.xidToString(_tranID));
@@ -404,12 +402,6 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
     public int topLevelCommit() {
         if (jtaLogger.logger.isTraceEnabled()) {
             jtaLogger.logger.trace("XAResourceRecord.topLevelCommit for " + this + ", record id=" + order());
-        }
-        try(Scope scope = new ScopeBuilder(SpanName.LOCAL_COMMIT)
-                .tag(TagName.XARES, _theXAResource)
-                .start(get_uid().toString())) {
-        } finally {
-            Tracing.finishActiveSpan();
         }
         if (!_prepared)
             return TwoPhaseOutcome.NOT_PREPARED;
@@ -452,8 +444,8 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
                             _heuristic = TwoPhaseOutcome.HEURISTIC_HAZARD;
                             return TwoPhaseOutcome.HEURISTIC_HAZARD;
                         case XAException.XA_HEURCOM: // what about forget?
-                                                        // OTS doesn't support
-                                                        // this code here.
+                                                     // OTS doesn't support
+                                                     // this code here.
                             break;
                         case XAException.XA_HEURRB:
                         case XAException.XA_RBROLLBACK: // could really do with an ABORTED status in TwoPhaseOutcome
@@ -671,7 +663,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
                     case XAException.XAER_NOTA:
                         _heuristic = TwoPhaseOutcome.HEURISTIC_HAZARD;
                         return TwoPhaseOutcome.HEURISTIC_HAZARD; // something committed or rolled back without asking
-                                                                    // us!
+                                                                 // us!
                     // Some RMs do (or did) one-phase commit but interpreting end as prepare and
                     // once you’ve prepared (in end) you can commit or rollback when a timeout goes
                     // off
@@ -688,7 +680,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
                     case XAException.XAER_PROTO:
                         return TwoPhaseOutcome.ONE_PHASE_ERROR; // assume rollback
                     case XAException.XAER_RMFAIL: // This was modified as part of JBTM-XYZ - although RMFAIL is not
-                                                    // clear there is a rollback/commit we are flagging this to the user
+                                                  // clear there is a rollback/commit we are flagging this to the user
                         _heuristic = TwoPhaseOutcome.HEURISTIC_HAZARD;
                         return TwoPhaseOutcome.HEURISTIC_HAZARD;
                     default:

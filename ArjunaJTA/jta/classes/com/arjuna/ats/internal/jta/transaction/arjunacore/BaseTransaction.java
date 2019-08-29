@@ -49,7 +49,6 @@ import com.arjuna.ats.jta.logging.jtaLogger;
 public class BaseTransaction {
 
     public void begin() throws javax.transaction.NotSupportedException, javax.transaction.SystemException {
-
         if (jtaLogger.logger.isTraceEnabled()) {
             jtaLogger.logger.trace("BaseTransaction.begin");
         }

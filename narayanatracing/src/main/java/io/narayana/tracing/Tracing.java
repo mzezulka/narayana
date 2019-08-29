@@ -21,15 +21,48 @@ import io.opentracing.util.GlobalTracer;
  */
 public class Tracing {
 
-    private static final Map<String, Span> TX_UID_TO_SPAN_MAP = new HashMap<>();
+    private static final Map<TxString, Span> TX_UID_TO_SPAN_MAP = new HashMap<>();
+
+    private static class TxString {
+
+        private String txUid;
+
+        private TxString(String rawTxUid) {
+            this.txUid = cutFinestTxIdentifier(rawTxUid);
+        }
+
+        private final String cutFinestTxIdentifier(String txUid) {
+            return txUid.substring(0, txUid.lastIndexOf(':'));
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((txUid == null) ? 0 : txUid.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (!(obj instanceof TxString))
+                return false;
+            TxString other = (TxString) obj;
+            return txUid != null && txUid.equals(other.txUid);
+        }
+    }
 
     /**
-     * Create a new root span which represents the whole transaction.
-     * Any other spans created in the Narayana code base should be attached to this root scope
+     * Create a new root span which represents the whole transaction. Any other
+     * spans created in the Narayana code base should be attached to this root scope
      * using the "ordinary" ScopeBuilder.
      *
-     * Usage: as the transaction will always begin and start at two different methods, we need to manage (de)activation of
-     * the span manually, schematically like this:
+     * Usage: as the transaction will always begin and start at two different
+     * methods, we need to manage (de)activation of the span manually, schematically
+     * like this:
+     *
      * <pre>
      * <code>public void transactionStart(Uid uid, ...) {
      *     new ScopeBuilder(SpanName.TX_BEGIN, uid)
@@ -48,7 +81,7 @@ public class Tracing {
 
         private SpanBuilder spanBldr;
 
-        public RootScopeBuilder(Object...args) {
+        public RootScopeBuilder(Object... args) {
             this.spanBldr = prepareSpan(SpanName.TX_ROOT, args);
         }
 
@@ -72,26 +105,25 @@ public class Tracing {
             return this;
         }
 
-        public Scope start(String txUid) {
-            spanBldr.asChildOf(TX_UID_TO_SPAN_MAP.get(txUid));
-            return getTracer().scopeManager().activate(spanBldr.withTag(Tags.COMPONENT, "narayana").start());
-        }
-
         /**
-         * @throws IllegalArgumentException {@code txUid} is null or a span with this ID already exists
+         * Build and activate this span. Any possible active spans are ignored as this
+         * is the root of a new transaction trace.
+         * @throws IllegalArgumentException {@code txUid} is null or a span with this ID
+         *                                  already exists
          * @param txUid UID of the new transaction
          * @return
          */
-        public Scope startRootSpan(String txUid) {
+        public Scope start(String txUid) {
             Span span = spanBldr.withTag(Tags.COMPONENT, "narayana").ignoreActiveSpan().start();
-            TX_UID_TO_SPAN_MAP.put(txUid, span);
+            TX_UID_TO_SPAN_MAP.put(new TxString(txUid), span);
             return getTracer().scopeManager().activate(span);
         }
     }
 
     /**
-     * Responsibility of this class: create a new span and activate it under scope of one root scope representing
-     * the transaction.
+     * Responsibility of this class: create a new span and activate it under scope
+     * of one root scope representing the transaction.
+     *
      * <pre>
      * <code>try (Scope s = new ScopeBuilder(SpanName.TX_BEGIN).start()) {
      *     // this is where 's' is active
@@ -104,11 +136,14 @@ public class Tracing {
     public static class ScopeBuilder {
 
         private SpanBuilder spanBldr;
+        private SpanName name;
+
         /**
          * @param name name of the span which will be activated in the scope
          */
-        public ScopeBuilder(SpanName name, Object...args) {
+        public ScopeBuilder(SpanName name, Object... args) {
             this.spanBldr = prepareSpan(name, args);
+            this.name = name;
         }
 
         private static SpanBuilder prepareSpan(SpanName name, Object... args) {
@@ -131,20 +166,32 @@ public class Tracing {
             return this;
         }
 
+        /**
+         * Attach span to the transaction with id {@code txUid}.
+         * @param txUid id of a transaction which already has a root span
+         * @throws IllegalStateException no root span for {@code txUid} does not exist
+         * @return activated span, represented by scope
+         */
         public Scope start(String txUid) {
-            spanBldr.asChildOf(TX_UID_TO_SPAN_MAP.get(txUid));
+            Span root = TX_UID_TO_SPAN_MAP.get(new TxString(txUid));
+            if (root == null) {
+                throw new IllegalStateException(String.format(
+                        "There was an attempt to build span belonging to tx '%s' but no root span registered for it found! Span name: '%s', span map: '%s'",
+                        txUid, name, TX_UID_TO_SPAN_MAP));
+            }
+            spanBldr.asChildOf(root);
             return getTracer().scopeManager().activate(spanBldr.withTag(Tags.COMPONENT, "narayana").start());
         }
 
         /**
-         * @throws IllegalArgumentException {@code txUid} is null or a span with this ID already exists
-         * @param txUid UID of the new transaction
+         * Attach span to the currently active span. Useful for nesting spans into a tree structure.
+         * @throws IllegalStateException there is currently no active span
          * @return
          */
-        public Scope startRootSpan(String txUid) {
-            Span span = spanBldr.withTag(Tags.COMPONENT, "narayana").ignoreActiveSpan().start();
-            TX_UID_TO_SPAN_MAP.put(txUid, span);
-            return getTracer().scopeManager().activate(span);
+        public Scope start() {
+            activeSpan().orElseThrow(() -> new IllegalStateException(String
+                    .format("The span '%s' could not be nested into enclosing span because there is none.", name)));
+            return getTracer().scopeManager().activate(spanBldr.withTag(Tags.COMPONENT, "narayana").start());
         }
     }
 
@@ -153,44 +200,48 @@ public class Tracing {
 
     /**
      * Finishes root span representing the transaction with id {@code txUid}
+     *
      * @param txUid
      */
     public static void finish(String txUid) {
-        TX_UID_TO_SPAN_MAP.get(txUid).finish();
+        TX_UID_TO_SPAN_MAP.get(new TxString(txUid)).finish();
     }
 
     /**
-     * This is different from setting the transaction status as failed.
-     * Using this method, the span itself is marked as failed (in terms of
-     * the OpenTracing API).
+     * This is different from setting the transaction status as failed. Using this
+     * method, the span itself is marked as failed (in terms of the OpenTracing
+     * API).
+     *
      * @param txUid
      */
     public static void markTransactionFailed(String txUid) {
-        TX_UID_TO_SPAN_MAP.get(txUid).setTag(Tags.ERROR, true);
+        TX_UID_TO_SPAN_MAP.get(new TxString(txUid)).setTag(Tags.ERROR, true);
     }
 
     /**
-     * Sets TagName.STATUS tag of the root span. If this method is called more than once,
-     * the value is overwritten.
-     * @throws IllegalArgumentException {@code txUid} does not represent any currently managed transaction
-     * @param txUid UID of the transaction
+     * Sets TagName.STATUS tag of the root span. If this method is called more than
+     * once, the value is overwritten.
+     *
+     * @throws IllegalArgumentException {@code txUid} does not represent any
+     *                                  currently managed transaction
+     * @param txUid  UID of the transaction
      * @param status one of the possible states any transaction could be in
      */
     public static void setTransactionStatus(String txUid, TransactionStatus status) {
-        TX_UID_TO_SPAN_MAP.get(txUid).setTag(TagName.STATUS.toString(), status.toString().toLowerCase());
+        TX_UID_TO_SPAN_MAP.get(new TxString(txUid)).setTag(TagName.STATUS.toString(), status.toString().toLowerCase());
     }
 
     /**
-     * Sets tag which is currently activated by the scope manager.
-     * Useful when the user wishes to add tags whose existence / value
-     * is dependent on the context (i.e. status of the transaction).
+     * Sets tag which is currently activated by the scope manager. Useful when the
+     * user wishes to add tags whose existence / value is dependent on the context
+     * (i.e. status of the transaction).
      */
-    public static void addActiveSpanTag(TagName name, String val) {
+    public static void addCurrentSpanTag(TagName name, String val) {
         activeSpan().ifPresent(s -> s.setTag(name.toString(), val));
     }
 
     public static void addCurrentSpanTag(TagName name, Object obj) {
-        addActiveSpanTag(name, obj == null ? "null" : obj.toString());
+        addCurrentSpanTag(name, obj == null ? "null" : obj.toString());
     }
 
     public static <T> void addCurrentSpanTag(Tag<T> tag, T obj) {
@@ -218,7 +269,9 @@ public class Tracing {
     }
 
     /**
-     * This is package private on purpose. Users of the tracing module shouldn't be encumbered with tracers.
+     * This is package private on purpose. Users of the tracing module shouldn't be
+     * encumbered with tracers.
+     *
      * @return registered tracer
      */
     static Tracer getTracer() {

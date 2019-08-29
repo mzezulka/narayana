@@ -119,7 +119,6 @@ public class BasicAction extends StateManager {
 
     public BasicAction() {
         super(ObjectType.NEITHER);
-
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("BasicAction::BasicAction()");
         }
@@ -1267,7 +1266,7 @@ public class BasicAction extends StateManager {
      */
 
     protected synchronized int Begin(BasicAction parentAct) {
-        new Tracing.RootScopeBuilder(get_uid()).tag(TagName.UID, get_uid()).startRootSpan(get_uid().toString());
+        new Tracing.RootScopeBuilder().tag(TagName.UID, get_uid()).start(get_uid().toString());
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("BasicAction::Begin() for action-id " + get_uid());
         }
@@ -2664,97 +2663,103 @@ public class BasicAction extends StateManager {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("BasicAction::doCommit (" + record + ")");
         }
+        try (Scope scope = new Tracing.ScopeBuilder(SpanName.LOCAL_COMMIT).tag(TagName.XARES, record).start()) {
+            /*
+             * To get heuristics right, as soon as we manage to commit the first record we
+             * set the heuristic to HEURISTIC_COMMIT. Then, if any other heuristics are
+             * raised we can manage the final outcome correctly.
+             */
 
-        /*
-         * To get heuristics right, as soon as we manage to commit the first record we
-         * set the heuristic to HEURISTIC_COMMIT. Then, if any other heuristics are
-         * raised we can manage the final outcome correctly.
-         */
+            int ok = TwoPhaseOutcome.FINISH_ERROR;
 
-        int ok = TwoPhaseOutcome.FINISH_ERROR;
+            recordBeingHandled = record;
 
-        recordBeingHandled = record;
+            if (recordBeingHandled != null) {
+                if (actionType == ActionType.TOP_LEVEL) {
+                    if ((ok = recordBeingHandled.topLevelCommit()) == TwoPhaseOutcome.FINISH_OK) {
+                        /*
+                         * Record successfully committed, we can delete it now.
+                         */
 
-        if (recordBeingHandled != null) {
-            if (actionType == ActionType.TOP_LEVEL) {
-                if ((ok = recordBeingHandled.topLevelCommit()) == TwoPhaseOutcome.FINISH_OK) {
-                    /*
-                     * Record successfully committed, we can delete it now.
-                     */
+                        recordBeingHandled = null;
 
-                    recordBeingHandled = null;
-
-                    updateHeuristic(TwoPhaseOutcome.FINISH_OK, true); // must
-                    // remember
-                    // that
-                    // something
-                    // has
-                    // committed
-                } else {
-                    if (tsLogger.logger.isTraceEnabled()) {
-                        tsLogger.logger.trace(
-                                "BasicAction.doCommit for " + get_uid() + " received " + TwoPhaseOutcome.stringForm(ok)
-                                        + " from " + RecordType.typeToClass(recordBeingHandled.typeIs()));
-                    }
-
-                    if ((reportHeuristics) && ((ok == TwoPhaseOutcome.HEURISTIC_ROLLBACK)
-                            || (ok == TwoPhaseOutcome.HEURISTIC_COMMIT) || (ok == TwoPhaseOutcome.HEURISTIC_MIXED)
-                            || (ok == TwoPhaseOutcome.HEURISTIC_HAZARD))) {
-                        updateHeuristic(ok, true);
-                        heuristicList.insert(recordBeingHandled);
-                        addDeferredThrowables(recordBeingHandled, deferredThrowables);
+                        updateHeuristic(TwoPhaseOutcome.FINISH_OK, true); // must
+                        // remember
+                        // that
+                        // something
+                        // has
+                        // committed
                     } else {
-                        if (ok == TwoPhaseOutcome.NOT_PREPARED) {
-                            /*
-                             * If this is the first resource then rollback, otherwise promote to
-                             * HEURISTIC_HAZARD, but don't add to heuristicList.
-                             */
+                        if (tsLogger.logger.isTraceEnabled()) {
+                            tsLogger.logger.trace("BasicAction.doCommit for " + get_uid() + " received "
+                                    + TwoPhaseOutcome.stringForm(ok) + " from "
+                                    + RecordType.typeToClass(recordBeingHandled.typeIs()));
+                        }
 
-                            updateHeuristic(TwoPhaseOutcome.HEURISTIC_HAZARD, true);
-                        } else {
-                            /*
-                             * The commit failed. Add this record to the failed list to indicate this.
-                             * Covers statuses like FAILED_ERROR.
-                             */
-
-                            if ((ok == TwoPhaseOutcome.HEURISTIC_ROLLBACK) || (ok == TwoPhaseOutcome.HEURISTIC_COMMIT)
-                                    || (ok == TwoPhaseOutcome.HEURISTIC_MIXED)
-                                    || (ok == TwoPhaseOutcome.HEURISTIC_HAZARD)) {
-                                updateHeuristic(ok, true);
-                            }
-
-                            failedList.insert(recordBeingHandled);
+                        if ((reportHeuristics) && ((ok == TwoPhaseOutcome.HEURISTIC_ROLLBACK)
+                                || (ok == TwoPhaseOutcome.HEURISTIC_COMMIT) || (ok == TwoPhaseOutcome.HEURISTIC_MIXED)
+                                || (ok == TwoPhaseOutcome.HEURISTIC_HAZARD))) {
+                            updateHeuristic(ok, true);
+                            heuristicList.insert(recordBeingHandled);
                             addDeferredThrowables(recordBeingHandled, deferredThrowables);
+                        } else {
+                            if (ok == TwoPhaseOutcome.NOT_PREPARED) {
+                                /*
+                                 * If this is the first resource then rollback, otherwise promote to
+                                 * HEURISTIC_HAZARD, but don't add to heuristicList.
+                                 */
+
+                                updateHeuristic(TwoPhaseOutcome.HEURISTIC_HAZARD, true);
+                            } else {
+                                /*
+                                 * The commit failed. Add this record to the failed list to indicate this.
+                                 * Covers statuses like FAILED_ERROR.
+                                 */
+
+                                if ((ok == TwoPhaseOutcome.HEURISTIC_ROLLBACK)
+                                        || (ok == TwoPhaseOutcome.HEURISTIC_COMMIT)
+                                        || (ok == TwoPhaseOutcome.HEURISTIC_MIXED)
+                                        || (ok == TwoPhaseOutcome.HEURISTIC_HAZARD)) {
+                                    updateHeuristic(ok, true);
+                                }
+
+                                failedList.insert(recordBeingHandled);
+                                addDeferredThrowables(recordBeingHandled, deferredThrowables);
+                            }
                         }
                     }
-                }
-            } else {
-                /*
-                 * Thankfully nested actions cannot raise heuristics!
-                 */
-
-                ok = recordBeingHandled.nestedCommit();
-
-                if (recordBeingHandled.propagateOnCommit()) {
-                    merge(recordBeingHandled);
                 } else {
-                    recordBeingHandled = null;
+                    /*
+                     * Thankfully nested actions cannot raise heuristics!
+                     */
+
+                    ok = recordBeingHandled.nestedCommit();
+
+                    if (recordBeingHandled.propagateOnCommit()) {
+                        merge(recordBeingHandled);
+                    } else {
+                        recordBeingHandled = null;
+                    }
                 }
-            }
 
-            if (ok != TwoPhaseOutcome.FINISH_OK) {
-                /* Preserve error messages */
-            }
+                if (ok != TwoPhaseOutcome.FINISH_OK) {
+                    /* Preserve error messages */
+                }
 
-            if (tsLogger.logger.isTraceEnabled()) {
-                tsLogger.logger.tracef(
-                        "BasicAction::doCommit() result for action-id (%s) on record id: (%s) is (%s) node id: (%s)",
-                        get_uid(), record.order(), TwoPhaseOutcome.stringForm(ok),
-                        arjPropertyManager.getCoreEnvironmentBean().getNodeIdentifier());
-            }
+                if (tsLogger.logger.isTraceEnabled()) {
+                    tsLogger.logger.tracef(
+                            "BasicAction::doCommit() result for action-id (%s) on record id: (%s) is (%s) node id: (%s)",
+                            get_uid(), record.order(), TwoPhaseOutcome.stringForm(ok),
+                            arjPropertyManager.getCoreEnvironmentBean().getNodeIdentifier());
+                }
 
+            }
+            Tracing.addCurrentSpanTag(TagName.COMMIT_OUTCOME, TwoPhaseOutcome.stringForm(ok));
+            return ok;
+
+        } finally {
+            Tracing.finishActiveSpan();
         }
-        return ok;
     }
 
     /*
@@ -2777,71 +2782,75 @@ public class BasicAction extends StateManager {
             tsLogger.logger.trace("BasicAction::doAbort (" + record + ")");
         }
 
-        int ok = TwoPhaseOutcome.FINISH_OK;
+        try (Scope scope = new Tracing.ScopeBuilder(SpanName.LOCAL_ROLLBACK).tag(TagName.XARES, record).start()) {
+            int ok = TwoPhaseOutcome.FINISH_OK;
 
-        recordBeingHandled = record;
+            recordBeingHandled = record;
 
-        if (recordBeingHandled != null) {
-            if (actionType == ActionType.TOP_LEVEL)
-                ok = recordBeingHandled.topLevelAbort();
-            else
-                ok = recordBeingHandled.nestedAbort();
+            if (recordBeingHandled != null) {
+                if (actionType == ActionType.TOP_LEVEL)
+                    ok = recordBeingHandled.topLevelAbort();
+                else
+                    ok = recordBeingHandled.nestedAbort();
 
-            if ((actionType != ActionType.TOP_LEVEL) && (recordBeingHandled.propagateOnAbort())) {
-                merge(recordBeingHandled);
-            } else {
-                if (ok == TwoPhaseOutcome.FINISH_OK) {
-                    updateHeuristic(TwoPhaseOutcome.FINISH_OK, false); // remember
-                    // that
-                    // something
-                    // aborted
-                    // ok
+                if ((actionType != ActionType.TOP_LEVEL) && (recordBeingHandled.propagateOnAbort())) {
+                    merge(recordBeingHandled);
                 } else {
-                    if ((reportHeuristics) && ((ok == TwoPhaseOutcome.HEURISTIC_ROLLBACK)
-                            || (ok == TwoPhaseOutcome.HEURISTIC_COMMIT) || (ok == TwoPhaseOutcome.HEURISTIC_MIXED)
-                            || (ok == TwoPhaseOutcome.HEURISTIC_HAZARD))) {
-                        if (actionType == ActionType.TOP_LEVEL)
-                            tsLogger.i18NLogger.warn_coordinator_BasicAction_52(get_uid(),
-                                    TwoPhaseOutcome.stringForm(ok));
-                        else
-                            tsLogger.i18NLogger.warn_coordinator_BasicAction_53(get_uid(),
-                                    TwoPhaseOutcome.stringForm(ok));
-
-                        updateHeuristic(ok, false);
-                        heuristicList.insert(recordBeingHandled);
-                        addDeferredThrowables(recordBeingHandled, deferredThrowables);
+                    if (ok == TwoPhaseOutcome.FINISH_OK) {
+                        updateHeuristic(TwoPhaseOutcome.FINISH_OK, false); // remember
+                        // that
+                        // something
+                        // aborted
+                        // ok
                     } else {
-                        if (ok != TwoPhaseOutcome.FINISH_OK) {
+                        if ((reportHeuristics) && ((ok == TwoPhaseOutcome.HEURISTIC_ROLLBACK)
+                                || (ok == TwoPhaseOutcome.HEURISTIC_COMMIT) || (ok == TwoPhaseOutcome.HEURISTIC_MIXED)
+                                || (ok == TwoPhaseOutcome.HEURISTIC_HAZARD))) {
                             if (actionType == ActionType.TOP_LEVEL)
-                                tsLogger.i18NLogger.warn_coordinator_BasicAction_54(get_uid(),
-                                        TwoPhaseOutcome.stringForm(ok),
-                                        RecordType.typeToClass(recordBeingHandled.typeIs()).getCanonicalName());
+                                tsLogger.i18NLogger.warn_coordinator_BasicAction_52(get_uid(),
+                                        TwoPhaseOutcome.stringForm(ok));
                             else
-                                tsLogger.i18NLogger.warn_coordinator_BasicAction_55(get_uid(),
-                                        TwoPhaseOutcome.stringForm(ok),
-                                        RecordType.typeToClass(recordBeingHandled.typeIs()).getCanonicalName());
+                                tsLogger.i18NLogger.warn_coordinator_BasicAction_53(get_uid(),
+                                        TwoPhaseOutcome.stringForm(ok));
+
+                            updateHeuristic(ok, false);
+                            heuristicList.insert(recordBeingHandled);
+                            addDeferredThrowables(recordBeingHandled, deferredThrowables);
+                        } else {
+                            if (ok != TwoPhaseOutcome.FINISH_OK) {
+                                if (actionType == ActionType.TOP_LEVEL)
+                                    tsLogger.i18NLogger.warn_coordinator_BasicAction_54(get_uid(),
+                                            TwoPhaseOutcome.stringForm(ok),
+                                            RecordType.typeToClass(recordBeingHandled.typeIs()).getCanonicalName());
+                                else
+                                    tsLogger.i18NLogger.warn_coordinator_BasicAction_55(get_uid(),
+                                            TwoPhaseOutcome.stringForm(ok),
+                                            RecordType.typeToClass(recordBeingHandled.typeIs()).getCanonicalName());
+                            }
                         }
                     }
+
+                    /*
+                     * Don't need a canDelete as in the C++ version since Java's garbage collection
+                     * will deal with things for us.
+                     */
+
+                    recordBeingHandled = null;
                 }
 
-                /*
-                 * Don't need a canDelete as in the C++ version since Java's garbage collection
-                 * will deal with things for us.
-                 */
+                if (tsLogger.logger.isTraceEnabled()) {
+                    tsLogger.logger.tracef(
+                            "BasicAction::doAbort() result for action-id (%s) on record id: (%s) is (%s) node id: (%s)",
+                            get_uid(), record.order(), TwoPhaseOutcome.stringForm(ok),
+                            arjPropertyManager.getCoreEnvironmentBean().getNodeIdentifier());
+                }
 
-                recordBeingHandled = null;
             }
-
-            if (tsLogger.logger.isTraceEnabled()) {
-                tsLogger.logger.tracef(
-                        "BasicAction::doAbort() result for action-id (%s) on record id: (%s) is (%s) node id: (%s)",
-                        get_uid(), record.order(), TwoPhaseOutcome.stringForm(ok),
-                        arjPropertyManager.getCoreEnvironmentBean().getNodeIdentifier());
-            }
-
+            Tracing.addCurrentSpanTag(TagName.COMMIT_OUTCOME, TwoPhaseOutcome.stringForm(ok));
+            return ok;
+        } finally {
+            Tracing.finishActiveSpan();
         }
-
-        return ok;
     }
 
     protected AbstractRecord insertRecord(RecordList reclist, AbstractRecord record) {

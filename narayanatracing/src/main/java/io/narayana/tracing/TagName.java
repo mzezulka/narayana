@@ -14,6 +14,7 @@ public enum TagName {
     STATUS("status"),
     TXINFO("info"),
     APPLICATION_ABORT("app_abrt"),
+    COMMIT_OUTCOME("res_commit"),
     REPORT_HEURISTICS("report");
 
     private static final String TX_PREFIX = "transaction";

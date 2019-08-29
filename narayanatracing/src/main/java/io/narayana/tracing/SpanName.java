@@ -11,7 +11,7 @@ public enum SpanName {
     /*
      * The root span of the whole trace representing the transaction.
      */
-    TX_ROOT("Transaction '%s'"),
+    TX_ROOT("Transaction"),
 
     RESOURCE_ENLISTMENT("Resource enlistment"),
 
@@ -23,7 +23,9 @@ public enum SpanName {
     GLOBAL_ROLLBACK("Rollback (2nd phase)"),
 
     LOCAL_PREPARE("Branch prepare"),
+    LOCAL_PREPARE_LAST_RESOURCE("Branch prepare - last resource commit optimization"),
     LOCAL_COMMIT("Branch commit"),
+    LOCAL_COMMIT_LAST_RESOURCE("Branch commit - last resource commit optimization"),
     LOCAL_ROLLBACK("Branch rollback"),
 
     RECOVERY("RECOVERY");
