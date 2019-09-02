@@ -2486,111 +2486,115 @@ public class BasicAction extends StateManager {
         int p = TwoPhaseOutcome.PREPARE_NOTOK;
 
         p = ((actionType == ActionType.TOP_LEVEL) ? record.topLevelPrepare() : record.nestedPrepare());
+        try (Scope scope = new Tracing.ScopeBuilder(SpanName.LOCAL_PREPARE).tag(TagName.XARES, record).start()) {
+            if (tsLogger.logger.isTraceEnabled()) {
+                tsLogger.logger.tracef(
+                        "BasicAction::doPrepare() result for action-id (%s) on record id: (%s) is (%s) node id: (%s)",
+                        get_uid(), record.order(), TwoPhaseOutcome.stringForm(p),
+                        arjPropertyManager.getCoreEnvironmentBean().getNodeIdentifier());
+            }
 
-        if (tsLogger.logger.isTraceEnabled()) {
-            tsLogger.logger.tracef(
-                    "BasicAction::doPrepare() result for action-id (%s) on record id: (%s) is (%s) node id: (%s)",
-                    get_uid(), record.order(), TwoPhaseOutcome.stringForm(p),
-                    arjPropertyManager.getCoreEnvironmentBean().getNodeIdentifier());
-        }
-
-        if (p == TwoPhaseOutcome.PREPARE_OK) {
-            record = insertRecord(preparedList, record);
-        } else {
-            if (p == TwoPhaseOutcome.PREPARE_READONLY) {
-                record = insertRecord(readonlyList, record);
+            if (p == TwoPhaseOutcome.PREPARE_OK) {
+                record = insertRecord(preparedList, record);
             } else {
-                if ((p == TwoPhaseOutcome.PREPARE_NOTOK) || (p == TwoPhaseOutcome.ONE_PHASE_ERROR)
-                        || (!reportHeuristics)) {
-                    /*
-                     * If we are a subtransaction and this is an OTS resource then we may be in
-                     * trouble: we may have already told other records to commit.
-                     */
+                if (p == TwoPhaseOutcome.PREPARE_READONLY) {
+                    record = insertRecord(readonlyList, record);
+                } else {
+                    if ((p == TwoPhaseOutcome.PREPARE_NOTOK) || (p == TwoPhaseOutcome.ONE_PHASE_ERROR)
+                            || (!reportHeuristics)) {
+                        /*
+                         * If we are a subtransaction and this is an OTS resource then we may be in
+                         * trouble: we may have already told other records to commit.
+                         */
 
-                    if (actionType == ActionType.NESTED) {
-                        if ((preparedList.size() > 0) && (p == TwoPhaseOutcome.ONE_PHASE_ERROR)) {
-                            tsLogger.i18NLogger.warn_coordinator_BasicAction_49(get_uid());
+                        if (actionType == ActionType.NESTED) {
+                            if ((preparedList.size() > 0) && (p == TwoPhaseOutcome.ONE_PHASE_ERROR)) {
+                                tsLogger.i18NLogger.warn_coordinator_BasicAction_49(get_uid());
 
+                                /*
+                                 * Force parent to rollback. If this is not the desired result then we may need
+                                 * to check some environment variable (either here or in the OTS) and act
+                                 * accordingly. If we check in the OTS then we need to return something other
+                                 * than PREPARE_NOTOK.
+                                 */
+
+                                /*
+                                 * For the OTS we must merge those records told to commit with the parent, as
+                                 * the rollback invocation must come from that since they have already been told
+                                 * this transaction has committed!
+                                 *
+                                 * However, since we may be multi-threaded (asynchronous prepare) we don't do
+                                 * the merging yet. Wait until all threads have terminated and then do it.
+                                 *
+                                 * Therefore, can't force parent to rollback state at present, or merge will
+                                 * fail.
+                                 */
+                            }
+                        }
+
+                        addDeferredThrowables(record, deferredThrowables);
+
+                        /*
+                         * Prepare on this record failed - we are in trouble. Add the record back onto
+                         * the pendingList and return.
+                         */
+
+                        record = insertRecord(pendingList, record);
+
+                        record = null;
+
+                        actionStatus = ActionStatus.PREPARED;
+
+                        return p;
+                    } else {
+                        /*
+                         * Heuristic decision!!
+                         */
+
+                        /*
+                         * Only report if request to do so.
+                         */
+
+                        tsLogger.i18NLogger.warn_coordinator_BasicAction_50(get_uid(), TwoPhaseOutcome.stringForm(p));
+
+                        if (reportHeuristics)
+                            updateHeuristic(p, false);
+
+                        addDeferredThrowables(record, deferredThrowables);
+
+                        /*
+                         * Don't add to the prepared list. We process heuristics separately during phase
+                         * 2. The processing of records will not be in the same order as during phase 1,
+                         * but does this matter for heuristic decisions? If so, then we need to modify
+                         * RecordList so that records can appear on multiple lists at the same time.
+                         */
+
+                        record = insertRecord(heuristicList, record);
+
+                        /*
+                         * If we have had a heuristic decision, then attempt to make the action outcome
+                         * the same. If we have a conflict, then we will abort.
+                         */
+
+                        if (heuristicDecision != TwoPhaseOutcome.HEURISTIC_COMMIT) {
+                            actionStatus = ActionStatus.PREPARED;
+
+                            return TwoPhaseOutcome.PREPARE_NOTOK;
+                        } else {
                             /*
-                             * Force parent to rollback. If this is not the desired result then we may need
-                             * to check some environment variable (either here or in the OTS) and act
-                             * accordingly. If we check in the OTS then we need to return something other
-                             * than PREPARE_NOTOK.
-                             */
-
-                            /*
-                             * For the OTS we must merge those records told to commit with the parent, as
-                             * the rollback invocation must come from that since they have already been told
-                             * this transaction has committed!
-                             *
-                             * However, since we may be multi-threaded (asynchronous prepare) we don't do
-                             * the merging yet. Wait until all threads have terminated and then do it.
-                             *
-                             * Therefore, can't force parent to rollback state at present, or merge will
-                             * fail.
+                             * Heuristic commit, which is ok since we want to commit anyway! So, ignore it
+                             * (but remember the resource so we can tell it to forget later.)
                              */
                         }
                     }
-
-                    addDeferredThrowables(record, deferredThrowables);
-
-                    /*
-                     * Prepare on this record failed - we are in trouble. Add the record back onto
-                     * the pendingList and return.
-                     */
-
-                    record = insertRecord(pendingList, record);
-
-                    record = null;
-
-                    actionStatus = ActionStatus.PREPARED;
-
-                    return p;
-                } else {
-                    /*
-                     * Heuristic decision!!
-                     */
-
-                    /*
-                     * Only report if request to do so.
-                     */
-
-                    tsLogger.i18NLogger.warn_coordinator_BasicAction_50(get_uid(), TwoPhaseOutcome.stringForm(p));
-
-                    if (reportHeuristics)
-                        updateHeuristic(p, false);
-
-                    addDeferredThrowables(record, deferredThrowables);
-
-                    /*
-                     * Don't add to the prepared list. We process heuristics separately during phase
-                     * 2. The processing of records will not be in the same order as during phase 1,
-                     * but does this matter for heuristic decisions? If so, then we need to modify
-                     * RecordList so that records can appear on multiple lists at the same time.
-                     */
-
-                    record = insertRecord(heuristicList, record);
-
-                    /*
-                     * If we have had a heuristic decision, then attempt to make the action outcome
-                     * the same. If we have a conflict, then we will abort.
-                     */
-
-                    if (heuristicDecision != TwoPhaseOutcome.HEURISTIC_COMMIT) {
-                        actionStatus = ActionStatus.PREPARED;
-
-                        return TwoPhaseOutcome.PREPARE_NOTOK;
-                    } else {
-                        /*
-                         * Heuristic commit, which is ok since we want to commit anyway! So, ignore it
-                         * (but remember the resource so we can tell it to forget later.)
-                         */
-                    }
                 }
             }
-        }
 
-        return p;
+            return p;
+        } finally {
+            Tracing.addCurrentSpanTag(TagName.STATUS, TwoPhaseOutcome.stringForm(p));
+            Tracing.finishActiveSpan();
+        }
     }
 
     /**

@@ -168,7 +168,7 @@ public class Tracing {
                             txUid, name, TX_UID_TO_SPAN));
                 }
             }
-            spanBldr.asChildOf(parent);
+            spanBldr = spanBldr.asChildOf(parent);
             return getTracer().scopeManager().activate(spanBldr.withTag(Tags.COMPONENT, "narayana").start());
         }
 
