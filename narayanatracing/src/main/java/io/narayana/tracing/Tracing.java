@@ -1,10 +1,10 @@
 package io.narayana.tracing;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import io.opentracing.Scope;
 import io.opentracing.Span;
@@ -21,38 +21,8 @@ import io.opentracing.util.GlobalTracer;
  */
 public class Tracing {
 
-    private static final Map<TxString, Span> TX_UID_TO_SPAN_MAP = new HashMap<>();
-
-    private static class TxString {
-
-        private String txUid;
-
-        private TxString(String rawTxUid) {
-            this.txUid = cutFinestTxIdentifier(rawTxUid);
-        }
-
-        private final String cutFinestTxIdentifier(String txUid) {
-            return txUid.substring(0, txUid.lastIndexOf(':'));
-        }
-
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + ((txUid == null) ? 0 : txUid.hashCode());
-            return result;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj)
-                return true;
-            if (!(obj instanceof TxString))
-                return false;
-            TxString other = (TxString) obj;
-            return txUid != null && txUid.equals(other.txUid);
-        }
-    }
+    private static final ConcurrentMap<String, Span> TX_UID_TO_SPAN = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<String, Span> TX_UID_TO_PRE2PC_SPAN = new ConcurrentHashMap<>();
 
     /**
      * Create a new root span which represents the whole transaction. Any other
@@ -80,9 +50,11 @@ public class Tracing {
     public static class RootScopeBuilder {
 
         private SpanBuilder spanBldr;
+        private SpanBuilder pre2PCspanBldr;
 
         public RootScopeBuilder(Object... args) {
-            this.spanBldr = prepareSpan(SpanName.TX_ROOT, args);
+            spanBldr = prepareSpan(SpanName.TX_ROOT, args);
+            pre2PCspanBldr = prepareSpan(SpanName.GLOBAL_PRE_2PC, args);
         }
 
         private static SpanBuilder prepareSpan(SpanName name, Object... args) {
@@ -106,17 +78,23 @@ public class Tracing {
         }
 
         /**
-         * Build and activate this span. Any possible active spans are ignored as this
+         * Build and activate the root span. Any possible active (=parent) spans are ignored as this
          * is the root of a new transaction trace.
+         *
          * @throws IllegalArgumentException {@code txUid} is null or a span with this ID
          *                                  already exists
          * @param txUid UID of the new transaction
          * @return
          */
         public Scope start(String txUid) {
-            Span span = spanBldr.withTag(Tags.COMPONENT, "narayana").ignoreActiveSpan().start();
-            TX_UID_TO_SPAN_MAP.put(new TxString(txUid), span);
-            return getTracer().scopeManager().activate(span);
+            Span rootSpan = spanBldr.withTag(Tags.COMPONENT, "narayana").ignoreActiveSpan().start();
+            TX_UID_TO_SPAN.put(txUid, rootSpan);
+            getTracer().scopeManager().activate(rootSpan);
+
+            pre2PCspanBldr.asChildOf(rootSpan);
+            Span pre2PCSpan = pre2PCspanBldr.withTag(Tags.COMPONENT, "narayana").start();
+            TX_UID_TO_PRE2PC_SPAN.put(txUid, pre2PCSpan);
+            return getTracer().scopeManager().activate(pre2PCSpan);
         }
     }
 
@@ -168,23 +146,36 @@ public class Tracing {
 
         /**
          * Attach span to the transaction with id {@code txUid}.
+         *
          * @param txUid id of a transaction which already has a root span
          * @throws IllegalStateException no root span for {@code txUid} does not exist
          * @return activated span, represented by scope
          */
         public Scope start(String txUid) {
-            Span root = TX_UID_TO_SPAN_MAP.get(new TxString(txUid));
-            if (root == null) {
-                throw new IllegalStateException(String.format(
-                        "There was an attempt to build span belonging to tx '%s' but no root span registered for it found! Span name: '%s', span map: '%s'",
-                        txUid, name, TX_UID_TO_SPAN_MAP));
+            if(name == SpanName.GLOBAL_PREPARE || name == SpanName.GLOBAL_ABORT) {
+                begin2PC(txUid);
             }
-            spanBldr.asChildOf(root);
+            Span pre2PCSpan = TX_UID_TO_PRE2PC_SPAN.get(txUid);
+            Span parent = pre2PCSpan == null ? TX_UID_TO_SPAN.get(txUid) : pre2PCSpan;
+
+            if (parent == null) {
+                // Superflous calls of BasicAction.Abort can happen, ignore those
+                if(name == SpanName.GLOBAL_ABORT) {
+                    return null;
+                } else {
+                    throw new IllegalStateException(String.format(
+                            "There was an attempt to build span belonging to tx '%s' but no root span registered for it found! Span name: '%s', span map: '%s'",
+                            txUid, name, TX_UID_TO_SPAN));
+                }
+            }
+            spanBldr.asChildOf(parent);
             return getTracer().scopeManager().activate(spanBldr.withTag(Tags.COMPONENT, "narayana").start());
         }
 
         /**
-         * Attach span to the currently active span. Useful for nesting spans into a tree structure.
+         * Attach span to the currently active span. Useful for nesting spans into a
+         * tree structure.
+         *
          * @throws IllegalStateException there is currently no active span
          * @return
          */
@@ -198,13 +189,23 @@ public class Tracing {
     private Tracing() {
     }
 
+    /*
+     *
+     */
+    private static void begin2PC(String txUid) {
+        Span span = TX_UID_TO_PRE2PC_SPAN.remove(txUid);
+        if(span != null) span.finish();
+    }
+
     /**
      * Finishes root span representing the transaction with id {@code txUid}
      *
      * @param txUid
      */
     public static void finish(String txUid) {
-        TX_UID_TO_SPAN_MAP.get(new TxString(txUid)).finish();
+        // We need to check for superfluous calls to this method
+        Span span = TX_UID_TO_SPAN.remove(txUid);
+        if(span != null) span.finish();
     }
 
     /**
@@ -215,7 +216,8 @@ public class Tracing {
      * @param txUid
      */
     public static void markTransactionFailed(String txUid) {
-        TX_UID_TO_SPAN_MAP.get(new TxString(txUid)).setTag(Tags.ERROR, true);
+        Span span = TX_UID_TO_SPAN.get(txUid);
+        if(span != null) span.setTag(Tags.ERROR, true);
     }
 
     /**
@@ -228,7 +230,8 @@ public class Tracing {
      * @param status one of the possible states any transaction could be in
      */
     public static void setTransactionStatus(String txUid, TransactionStatus status) {
-        TX_UID_TO_SPAN_MAP.get(new TxString(txUid)).setTag(TagName.STATUS.toString(), status.toString().toLowerCase());
+        Span span = TX_UID_TO_SPAN.get(txUid);
+        if(span != null) span.setTag(TagName.STATUS.toString(), status.toString().toLowerCase());
     }
 
     /**

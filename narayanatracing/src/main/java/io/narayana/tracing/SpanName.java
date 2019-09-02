@@ -16,7 +16,6 @@ public enum SpanName {
     RESOURCE_ENLISTMENT("Resource enlistment"),
 
     GLOBAL_PRE_2PC("Pre 2PC"),
-    GLOBAL_BEGIN("TX - begin"),
     GLOBAL_PREPARE("Global prepare (1st phase)"),
     GLOBAL_COMMIT("Commit (2nd phase)"),
     GLOBAL_ABORT("Abort (2nd phase)"),

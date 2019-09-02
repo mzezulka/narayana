@@ -1342,7 +1342,6 @@ public class BasicAction extends StateManager {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("BasicAction::End() for action-id " + get_uid());
         }
-        Tracing.finish(get_uid().toString());
 
         /* Check for superfluous invocation */
 
