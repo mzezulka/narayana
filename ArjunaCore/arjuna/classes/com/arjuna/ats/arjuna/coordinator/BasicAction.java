@@ -1504,6 +1504,7 @@ public class BasicAction extends StateManager {
      * @return <code>ActionStatus</code> indicating outcome.
      */
     protected synchronized int Abort(boolean applicationAbort) {
+        Tracing.begin2PC(get_uid().toString());
         try (Scope _s = new ScopeBuilder(SpanName.GLOBAL_ABORT)
                 .tag(TagName.APPLICATION_ABORT, String.valueOf(applicationAbort)).tag(TagName.UID, get_uid())
                 .tag(TagName.ASYNCHRONOUS, false).start(get_uid().toString())) {
@@ -1825,6 +1826,7 @@ public class BasicAction extends StateManager {
      */
 
     protected final synchronized void phase2Abort(boolean reportHeuristics) {
+        Tracing.begin2PC(get_uid().toString());
         try (Scope _s = new ScopeBuilder(SpanName.GLOBAL_ABORT)
                 .tag(TagName.REPORT_HEURISTICS, String.valueOf(reportHeuristics)).tag(TagName.APPLICATION_ABORT, false)
                 .tag(TagName.ASYNCHRONOUS, false).tag(TagName.UID, this.get_uid()).start(get_uid().toString())) {
@@ -1960,8 +1962,7 @@ public class BasicAction extends StateManager {
      */
 
     protected final synchronized int prepare(boolean reportHeuristics) {
-        // Finish the pre 2PC wrapping span
-        // TracingUtils.finishActiveSpan();
+        Tracing.begin2PC(get_uid().toString());
         try (Scope _s = new ScopeBuilder(SpanName.GLOBAL_PREPARE)
                 .tag(TagName.REPORT_HEURISTICS, String.valueOf(reportHeuristics)).tag(TagName.UID, get_uid())
                 .start(get_uid().toString())) {
@@ -2493,7 +2494,12 @@ public class BasicAction extends StateManager {
                         get_uid(), record.order(), TwoPhaseOutcome.stringForm(p),
                         arjPropertyManager.getCoreEnvironmentBean().getNodeIdentifier());
             }
-
+            try (Scope s = new Tracing.ScopeBuilder(SpanName.LOCAL_PREPARE).tag(TagName.XARES, record).start()) {
+                //noop
+            } finally {
+                //Tracing.addCurrentSpanTag(TagName.STATUS, TwoPhaseOutcome.stringForm(p));
+                Tracing.finishActiveSpan();
+            }
             if (p == TwoPhaseOutcome.PREPARE_OK) {
                 record = insertRecord(preparedList, record);
             } else {
@@ -2589,7 +2595,6 @@ public class BasicAction extends StateManager {
                     }
                 }
             }
-
             return p;
         } finally {
             Tracing.addCurrentSpanTag(TagName.STATUS, TwoPhaseOutcome.stringForm(p));

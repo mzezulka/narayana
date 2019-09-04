@@ -78,8 +78,8 @@ public class Tracing {
         }
 
         /**
-         * Build and activate the root span. Any possible active (=parent) spans are ignored as this
-         * is the root of a new transaction trace.
+         * Build and activate the root span. Any possible active (=parent) spans are
+         * ignored as this is the root of a new transaction trace.
          *
          * @throws IllegalArgumentException {@code txUid} is null or a span with this ID
          *                                  already exists
@@ -152,15 +152,12 @@ public class Tracing {
          * @return activated span, represented by scope
          */
         public Scope start(String txUid) {
-            if(name == SpanName.GLOBAL_PREPARE || name == SpanName.GLOBAL_ABORT) {
-                begin2PC(txUid);
-            }
             Span pre2PCSpan = TX_UID_TO_PRE2PC_SPAN.get(txUid);
             Span parent = pre2PCSpan == null ? TX_UID_TO_SPAN.get(txUid) : pre2PCSpan;
 
             if (parent == null) {
                 // Superflous calls of BasicAction.Abort can happen, ignore those
-                if(name == SpanName.GLOBAL_ABORT) {
+                if (name == SpanName.GLOBAL_ABORT) {
                     return null;
                 } else {
                     throw new IllegalStateException(String.format(
@@ -180,9 +177,10 @@ public class Tracing {
          * @return
          */
         public Scope start() {
-            activeSpan().orElseThrow(() -> new IllegalStateException(String
-                    .format("The span '%s' could not be nested into enclosing span because there is none.", name)));
-            return getTracer().scopeManager().activate(spanBldr.withTag(Tags.COMPONENT, "narayana").start());
+            return getTracer().scopeManager().activate(spanBldr.withTag(Tags.COMPONENT, "narayana")
+                    .asChildOf(activeSpan().orElseThrow(() -> new IllegalStateException(String.format(
+                            "The span '%s' could not be nested into enclosing span because there is none.", name))))
+                    .start());
         }
     }
 
@@ -190,11 +188,12 @@ public class Tracing {
     }
 
     /*
-     *
+     * This method switches from the "pre-2PC" phase to the "core" commit phase.
      */
-    private static void begin2PC(String txUid) {
+    public static void begin2PC(String txUid) {
         Span span = TX_UID_TO_PRE2PC_SPAN.remove(txUid);
-        if(span != null) span.finish();
+        if (span != null)
+            span.finish();
     }
 
     /**
@@ -205,7 +204,8 @@ public class Tracing {
     public static void finish(String txUid) {
         // We need to check for superfluous calls to this method
         Span span = TX_UID_TO_SPAN.remove(txUid);
-        if(span != null) span.finish();
+        if (span != null)
+            span.finish();
     }
 
     /**
@@ -217,7 +217,8 @@ public class Tracing {
      */
     public static void markTransactionFailed(String txUid) {
         Span span = TX_UID_TO_SPAN.get(txUid);
-        if(span != null) span.setTag(Tags.ERROR, true);
+        if (span != null)
+            span.setTag(Tags.ERROR, true);
     }
 
     /**
@@ -231,7 +232,8 @@ public class Tracing {
      */
     public static void setTransactionStatus(String txUid, TransactionStatus status) {
         Span span = TX_UID_TO_SPAN.get(txUid);
-        if(span != null) span.setTag(TagName.STATUS.toString(), status.toString().toLowerCase());
+        if (span != null)
+            span.setTag(TagName.STATUS.toString(), status.toString().toLowerCase());
     }
 
     /**
@@ -263,6 +265,8 @@ public class Tracing {
     }
 
     public static void finishActiveSpan() {
+        // TODO is it necessary to even consider finishing the span if
+        // we are currently executed under the transaction reaper thread? (recovery?)
         activeSpan().ifPresent(s -> s.finish());
     }
 
