@@ -78,6 +78,7 @@ import io.narayana.tracing.SpanName;
 import io.narayana.tracing.TagName;
 import io.narayana.tracing.Tracing;
 import io.narayana.tracing.Tracing.ScopeBuilder;
+import io.narayana.tracing.Tracing.SpanHandle;
 import io.opentracing.Scope;
 
 /**
@@ -331,8 +332,9 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
                     throw e;
                 }
 
-                try (Scope scope = new ScopeBuilder(SpanName.LOCAL_ROLLBACK).tag(TagName.XARES, _theXAResource)
-                        .start()) {
+                SpanHandle span = new ScopeBuilder(SpanName.LOCAL_ROLLBACK).tag(TagName.XARES, _theXAResource)
+                        .start();
+                try (Scope scope = Tracing.activateSpan(span)) {
                     _theXAResource.rollback(_tranID);
                 } catch (XAException e1) {
                     if (notAProblem(e1, false)) {
@@ -381,7 +383,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
                 } finally {
                     if (!_prepared)
                         removeConnection();
-                    Tracing.finishActiveSpan();
+                    span.finish();
                 }
             } else {
                 jtaLogger.i18NLogger.warn_resources_arjunacore_noresource(XAHelper.xidToString(_tranID));
@@ -494,7 +496,6 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
                     return TwoPhaseOutcome.FINISH_ERROR;
                 } finally {
                     removeConnection();
-                    Tracing.finishActiveSpan();
                 }
             } else {
                 jtaLogger.i18NLogger.warn_resources_arjunacore_noresource(XAHelper.xidToString(_tranID));

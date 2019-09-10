@@ -82,6 +82,7 @@ import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
 import io.narayana.tracing.SpanName;
 import io.narayana.tracing.TagName;
 import io.narayana.tracing.Tracing;
+import io.narayana.tracing.Tracing.SpanHandle;
 import io.opentracing.Scope;
 
 /*
@@ -430,8 +431,9 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
                 }
             }
         }
-        try (Scope scope = new Tracing.ScopeBuilder(SpanName.RESOURCE_ENLISTMENT)
-                .tag(TagName.XARES, xaRes).start(get_uid().toString())) {
+        SpanHandle span = new Tracing.ScopeBuilder(SpanName.RESOURCE_ENLISTMENT)
+                .tag(TagName.XARES, xaRes).start(get_uid().toString());
+        try (Scope scope = Tracing.activateSpan(span)) {
             /*
              * For each transaction we maintain a list of resources registered with it. Each
              * element on this list also contains a list of threads which have registered
@@ -457,7 +459,7 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
                         info = (TxInfo) _duplicateResources.get(xaRes);
                     }
                 }
-                Tracing.addCurrentSpanTag(TagName.TXINFO, info);
+                Tracing.addTag(TagName.TXINFO, info);
                 if (info != null) {
                     switch (info.getState()) {
                     case TxInfo.ASSOCIATION_SUSPENDED: {
@@ -522,7 +524,7 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
 
                 return false;
             } finally {
-                Tracing.finishActiveSpan();
+                span.finish();
             }
             // if (threadIsActive(xaRes))
             // return true; // this thread has already registered a resource for

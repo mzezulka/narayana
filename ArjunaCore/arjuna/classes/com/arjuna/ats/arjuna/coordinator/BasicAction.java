@@ -59,6 +59,7 @@ import io.narayana.tracing.SpanName;
 import io.narayana.tracing.TagName;
 import io.narayana.tracing.Tracing;
 import io.narayana.tracing.Tracing.ScopeBuilder;
+import io.narayana.tracing.Tracing.SpanHandle;
 import io.narayana.tracing.TransactionStatus;
 import io.opentracing.Scope;
 import io.opentracing.log.Fields;
@@ -1387,7 +1388,7 @@ public class BasicAction extends StateManager {
 
                 if (prepareStatus == TwoPhaseOutcome.PREPARE_NOTOK
                         || prepareStatus == TwoPhaseOutcome.ONE_PHASE_ERROR) {
-                    Tracing.addCurrentSpanTag(Tags.ERROR, true);
+                    Tracing.addTag(Tags.ERROR, true);
                     Tracing.log(Fields.EVENT, "error");
                     Tracing.log(Fields.ERROR_KIND, TwoPhaseOutcome.stringForm(prepareStatus));
 
@@ -1505,9 +1506,10 @@ public class BasicAction extends StateManager {
      */
     protected synchronized int Abort(boolean applicationAbort) {
         Tracing.begin2PC(get_uid().toString());
-        try (Scope _s = new ScopeBuilder(SpanName.GLOBAL_ABORT_USER)
+        SpanHandle s = new ScopeBuilder(SpanName.GLOBAL_ABORT_USER)
                 .tag(TagName.APPLICATION_ABORT, String.valueOf(applicationAbort)).tag(TagName.UID, get_uid())
-                .tag(TagName.ASYNCHRONOUS, false).start(get_uid().toString())) {
+                .tag(TagName.ASYNCHRONOUS, false).start(get_uid().toString());
+        try (Scope _s = Tracing.activateSpan(s)) {
 
             if (tsLogger.logger.isTraceEnabled()) {
                 tsLogger.logger.trace("BasicAction::Abort() for action-id " + get_uid());
@@ -1528,7 +1530,7 @@ public class BasicAction extends StateManager {
                     tsLogger.i18NLogger.warn_coordinator_BasicAction_41(get_uid());
                     break;
                 }
-                Tracing.addCurrentSpanTag(TagName.STATUS, ActionStatus.stringForm(actionStatus));
+                Tracing.addTag(TagName.STATUS, ActionStatus.stringForm(actionStatus));
                 return actionStatus;
             }
 
@@ -1569,7 +1571,7 @@ public class BasicAction extends StateManager {
                 if (applicationAbort)
                     TxStats.getInstance().incrementApplicationRollbacks();
             }
-            Tracing.addCurrentSpanTag(TagName.STATUS, ActionStatus.stringForm(actionStatus));
+            Tracing.addTag(TagName.STATUS, ActionStatus.stringForm(actionStatus));
             return actionStatus;
         } finally {
             Tracing.finish(get_uid().toString());
@@ -1713,9 +1715,10 @@ public class BasicAction extends StateManager {
      */
 
     protected final synchronized void phase2Commit(boolean reportHeuristics) throws Error {
-        try (Scope _s = new ScopeBuilder(SpanName.GLOBAL_COMMIT)
+        SpanHandle s = new ScopeBuilder(SpanName.GLOBAL_COMMIT)
                 .tag(TagName.REPORT_HEURISTICS, String.valueOf(reportHeuristics)).tag(TagName.UID, this.get_uid())
-                .start(get_uid().toString())) {
+                .start(get_uid().toString());
+        try (Scope _s = Tracing.activateSpan(s)) {
 
             if (tsLogger.logger.isTraceEnabled()) {
                 tsLogger.logger.trace("BasicAction::phase2Commit() for action-id " + get_uid());
@@ -1807,7 +1810,7 @@ public class BasicAction extends StateManager {
 
             }
         } finally {
-            Tracing.finishActiveSpan();
+            s.finish();
         }
     }
 
@@ -1826,9 +1829,10 @@ public class BasicAction extends StateManager {
 
     protected final synchronized void phase2Abort(boolean reportHeuristics) {
         Tracing.begin2PC(get_uid().toString());
-        try (Scope _s = new ScopeBuilder(SpanName.GLOBAL_ABORT)
+        SpanHandle span = new ScopeBuilder(SpanName.GLOBAL_ABORT)
                 .tag(TagName.REPORT_HEURISTICS, String.valueOf(reportHeuristics)).tag(TagName.APPLICATION_ABORT, false)
-                .tag(TagName.ASYNCHRONOUS, false).tag(TagName.UID, this.get_uid()).start(get_uid().toString())) {
+                .tag(TagName.ASYNCHRONOUS, false).tag(TagName.UID, this.get_uid()).start(get_uid().toString());
+        try (Scope _s = Tracing.activateSpan(span)) {
             Tracing.markTransactionFailed(get_uid().toString());
 
             if (tsLogger.logger.isTraceEnabled()) {
@@ -1883,7 +1887,7 @@ public class BasicAction extends StateManager {
                 TxStats.getInstance().incrementAbortedTransactions();
             }
         } finally {
-            Tracing.finishActiveSpan();
+            span.finish();
         }
     }
 
@@ -1962,9 +1966,10 @@ public class BasicAction extends StateManager {
 
     protected final synchronized int prepare(boolean reportHeuristics) {
         Tracing.begin2PC(get_uid().toString());
-        try (Scope _s = new ScopeBuilder(SpanName.GLOBAL_PREPARE)
+        SpanHandle span = new ScopeBuilder(SpanName.GLOBAL_PREPARE)
                 .tag(TagName.REPORT_HEURISTICS, String.valueOf(reportHeuristics)).tag(TagName.UID, get_uid())
-                .start(get_uid().toString())) {
+                .start(get_uid().toString());
+        try (Scope _s = Tracing.activateSpan(span)) {
             if (tsLogger.logger.isTraceEnabled()) {
                 tsLogger.logger.trace("BasicAction::prepare () for action-id " + get_uid());
             }
@@ -2190,7 +2195,7 @@ public class BasicAction extends StateManager {
             else
                 return TwoPhaseOutcome.PREPARE_OK;
         } finally {
-            Tracing.finishActiveSpan();
+            span.finish();
         }
     }
 
@@ -2435,16 +2440,19 @@ public class BasicAction extends StateManager {
              * If a failure occurs then the record will be put back on to the pending list.
              * Otherwise it is moved to another list or dropped if readonly.
              */
+            SpanHandle span = new Tracing.ScopeBuilder(SpanName.LOCAL_PREPARE).tag(TagName.XARES, record).start();
+            try (Scope scope = Tracing.activateSpan(span)) {
+                int individualTwoPhaseOutcome = doPrepare(reportHeuristics, record);
+                if (individualTwoPhaseOutcome != TwoPhaseOutcome.PREPARE_READONLY) {
+                    overallTwoPhaseOutcome = individualTwoPhaseOutcome;
+                }
 
-            int individualTwoPhaseOutcome = doPrepare(reportHeuristics, record);
-
-            if (individualTwoPhaseOutcome != TwoPhaseOutcome.PREPARE_READONLY) {
-                overallTwoPhaseOutcome = individualTwoPhaseOutcome;
+                keepGoing = (individualTwoPhaseOutcome == TwoPhaseOutcome.PREPARE_OK)
+                        || (individualTwoPhaseOutcome == TwoPhaseOutcome.PREPARE_READONLY);
+                Tracing.addTag(TagName.STATUS, TwoPhaseOutcome.stringForm(individualTwoPhaseOutcome));
+            } finally {
+                span.finish();
             }
-
-            keepGoing = (individualTwoPhaseOutcome == TwoPhaseOutcome.PREPARE_OK)
-                    || (individualTwoPhaseOutcome == TwoPhaseOutcome.PREPARE_READONLY);
-
             /*
              * If we are allowed to do dynamic 1PC optimisation then check to see if the
              * first N-1 participants returned read-only and there's a single entry left on
@@ -2486,119 +2494,108 @@ public class BasicAction extends StateManager {
         int p = TwoPhaseOutcome.PREPARE_NOTOK;
 
         p = ((actionType == ActionType.TOP_LEVEL) ? record.topLevelPrepare() : record.nestedPrepare());
-        try (Scope scope = new Tracing.ScopeBuilder(SpanName.LOCAL_PREPARE).tag(TagName.XARES, record).start()) {
-            if (tsLogger.logger.isTraceEnabled()) {
-                tsLogger.logger.tracef(
-                        "BasicAction::doPrepare() result for action-id (%s) on record id: (%s) is (%s) node id: (%s)",
-                        get_uid(), record.order(), TwoPhaseOutcome.stringForm(p),
-                        arjPropertyManager.getCoreEnvironmentBean().getNodeIdentifier());
-            }
-            try (Scope s = new Tracing.ScopeBuilder(SpanName.LOCAL_PREPARE).tag(TagName.XARES, record).start()) {
-                //noop
-            } finally {
-                Tracing.addCurrentSpanTag(TagName.STATUS, TwoPhaseOutcome.stringForm(p));
-                Tracing.finishActiveSpan();
-            }
-            if (p == TwoPhaseOutcome.PREPARE_OK) {
-                record = insertRecord(preparedList, record);
+        if (tsLogger.logger.isTraceEnabled()) {
+            tsLogger.logger.tracef(
+                    "BasicAction::doPrepare() result for action-id (%s) on record id: (%s) is (%s) node id: (%s)",
+                    get_uid(), record.order(), TwoPhaseOutcome.stringForm(p),
+                    arjPropertyManager.getCoreEnvironmentBean().getNodeIdentifier());
+        }
+        if (p == TwoPhaseOutcome.PREPARE_OK) {
+            record = insertRecord(preparedList, record);
+        } else {
+            if (p == TwoPhaseOutcome.PREPARE_READONLY) {
+                record = insertRecord(readonlyList, record);
             } else {
-                if (p == TwoPhaseOutcome.PREPARE_READONLY) {
-                    record = insertRecord(readonlyList, record);
-                } else {
-                    if ((p == TwoPhaseOutcome.PREPARE_NOTOK) || (p == TwoPhaseOutcome.ONE_PHASE_ERROR)
-                            || (!reportHeuristics)) {
-                        /*
-                         * If we are a subtransaction and this is an OTS resource then we may be in
-                         * trouble: we may have already told other records to commit.
-                         */
+                if ((p == TwoPhaseOutcome.PREPARE_NOTOK) || (p == TwoPhaseOutcome.ONE_PHASE_ERROR)
+                        || (!reportHeuristics)) {
+                    /*
+                     * If we are a subtransaction and this is an OTS resource then we may be in
+                     * trouble: we may have already told other records to commit.
+                     */
 
-                        if (actionType == ActionType.NESTED) {
-                            if ((preparedList.size() > 0) && (p == TwoPhaseOutcome.ONE_PHASE_ERROR)) {
-                                tsLogger.i18NLogger.warn_coordinator_BasicAction_49(get_uid());
+                    if (actionType == ActionType.NESTED) {
+                        if ((preparedList.size() > 0) && (p == TwoPhaseOutcome.ONE_PHASE_ERROR)) {
+                            tsLogger.i18NLogger.warn_coordinator_BasicAction_49(get_uid());
 
-                                /*
-                                 * Force parent to rollback. If this is not the desired result then we may need
-                                 * to check some environment variable (either here or in the OTS) and act
-                                 * accordingly. If we check in the OTS then we need to return something other
-                                 * than PREPARE_NOTOK.
-                                 */
-
-                                /*
-                                 * For the OTS we must merge those records told to commit with the parent, as
-                                 * the rollback invocation must come from that since they have already been told
-                                 * this transaction has committed!
-                                 *
-                                 * However, since we may be multi-threaded (asynchronous prepare) we don't do
-                                 * the merging yet. Wait until all threads have terminated and then do it.
-                                 *
-                                 * Therefore, can't force parent to rollback state at present, or merge will
-                                 * fail.
-                                 */
-                            }
-                        }
-
-                        addDeferredThrowables(record, deferredThrowables);
-
-                        /*
-                         * Prepare on this record failed - we are in trouble. Add the record back onto
-                         * the pendingList and return.
-                         */
-
-                        record = insertRecord(pendingList, record);
-
-                        record = null;
-
-                        actionStatus = ActionStatus.PREPARED;
-
-                        return p;
-                    } else {
-                        /*
-                         * Heuristic decision!!
-                         */
-
-                        /*
-                         * Only report if request to do so.
-                         */
-
-                        tsLogger.i18NLogger.warn_coordinator_BasicAction_50(get_uid(), TwoPhaseOutcome.stringForm(p));
-
-                        if (reportHeuristics)
-                            updateHeuristic(p, false);
-
-                        addDeferredThrowables(record, deferredThrowables);
-
-                        /*
-                         * Don't add to the prepared list. We process heuristics separately during phase
-                         * 2. The processing of records will not be in the same order as during phase 1,
-                         * but does this matter for heuristic decisions? If so, then we need to modify
-                         * RecordList so that records can appear on multiple lists at the same time.
-                         */
-
-                        record = insertRecord(heuristicList, record);
-
-                        /*
-                         * If we have had a heuristic decision, then attempt to make the action outcome
-                         * the same. If we have a conflict, then we will abort.
-                         */
-
-                        if (heuristicDecision != TwoPhaseOutcome.HEURISTIC_COMMIT) {
-                            actionStatus = ActionStatus.PREPARED;
-
-                            return TwoPhaseOutcome.PREPARE_NOTOK;
-                        } else {
                             /*
-                             * Heuristic commit, which is ok since we want to commit anyway! So, ignore it
-                             * (but remember the resource so we can tell it to forget later.)
+                             * Force parent to rollback. If this is not the desired result then we may need
+                             * to check some environment variable (either here or in the OTS) and act
+                             * accordingly. If we check in the OTS then we need to return something other
+                             * than PREPARE_NOTOK.
+                             */
+
+                            /*
+                             * For the OTS we must merge those records told to commit with the parent, as
+                             * the rollback invocation must come from that since they have already been told
+                             * this transaction has committed!
+                             *
+                             * However, since we may be multi-threaded (asynchronous prepare) we don't do
+                             * the merging yet. Wait until all threads have terminated and then do it.
+                             *
+                             * Therefore, can't force parent to rollback state at present, or merge will
+                             * fail.
                              */
                         }
                     }
+
+                    addDeferredThrowables(record, deferredThrowables);
+
+                    /*
+                     * Prepare on this record failed - we are in trouble. Add the record back onto
+                     * the pendingList and return.
+                     */
+
+                    record = insertRecord(pendingList, record);
+
+                    record = null;
+
+                    actionStatus = ActionStatus.PREPARED;
+
+                    return p;
+                } else {
+                    /*
+                     * Heuristic decision!!
+                     */
+
+                    /*
+                     * Only report if request to do so.
+                     */
+
+                    tsLogger.i18NLogger.warn_coordinator_BasicAction_50(get_uid(), TwoPhaseOutcome.stringForm(p));
+
+                    if (reportHeuristics)
+                        updateHeuristic(p, false);
+
+                    addDeferredThrowables(record, deferredThrowables);
+
+                    /*
+                     * Don't add to the prepared list. We process heuristics separately during phase
+                     * 2. The processing of records will not be in the same order as during phase 1,
+                     * but does this matter for heuristic decisions? If so, then we need to modify
+                     * RecordList so that records can appear on multiple lists at the same time.
+                     */
+
+                    record = insertRecord(heuristicList, record);
+
+                    /*
+                     * If we have had a heuristic decision, then attempt to make the action outcome
+                     * the same. If we have a conflict, then we will abort.
+                     */
+
+                    if (heuristicDecision != TwoPhaseOutcome.HEURISTIC_COMMIT) {
+                        actionStatus = ActionStatus.PREPARED;
+
+                        return TwoPhaseOutcome.PREPARE_NOTOK;
+                    } else {
+                        /*
+                         * Heuristic commit, which is ok since we want to commit anyway! So, ignore it
+                         * (but remember the resource so we can tell it to forget later.)
+                         */
+                    }
                 }
             }
-            return p;
-        } finally {
-            Tracing.addCurrentSpanTag(TagName.STATUS, TwoPhaseOutcome.stringForm(p));
-            Tracing.finishActiveSpan();
         }
+        return p;
     }
 
     /**
@@ -2670,7 +2667,8 @@ public class BasicAction extends StateManager {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("BasicAction::doCommit (" + record + ")");
         }
-        try (Scope scope = new Tracing.ScopeBuilder(SpanName.LOCAL_COMMIT).tag(TagName.XARES, record).start()) {
+        SpanHandle span = new Tracing.ScopeBuilder(SpanName.LOCAL_COMMIT).tag(TagName.XARES, record).start();
+        try (Scope scope = Tracing.activateSpan(span)) {
             /*
              * To get heuristics right, as soon as we manage to commit the first record we
              * set the heuristic to HEURISTIC_COMMIT. Then, if any other heuristics are
@@ -2761,11 +2759,11 @@ public class BasicAction extends StateManager {
                 }
 
             }
-            Tracing.addCurrentSpanTag(TagName.COMMIT_OUTCOME, TwoPhaseOutcome.stringForm(ok));
+            Tracing.addTag(TagName.COMMIT_OUTCOME, TwoPhaseOutcome.stringForm(ok));
             return ok;
 
         } finally {
-            Tracing.finishActiveSpan();
+            span.finish();
         }
     }
 
@@ -2789,7 +2787,8 @@ public class BasicAction extends StateManager {
             tsLogger.logger.trace("BasicAction::doAbort (" + record + ")");
         }
 
-        try (Scope scope = new Tracing.ScopeBuilder(SpanName.LOCAL_ROLLBACK).tag(TagName.XARES, record).start()) {
+        SpanHandle span = new Tracing.ScopeBuilder(SpanName.LOCAL_ROLLBACK).tag(TagName.XARES, record).start();
+        try (Scope scope = Tracing.activateSpan(span)) {
             int ok = TwoPhaseOutcome.FINISH_OK;
 
             recordBeingHandled = record;
@@ -2853,10 +2852,10 @@ public class BasicAction extends StateManager {
                 }
 
             }
-            Tracing.addCurrentSpanTag(TagName.COMMIT_OUTCOME, TwoPhaseOutcome.stringForm(ok));
+            Tracing.addTag(TagName.COMMIT_OUTCOME, TwoPhaseOutcome.stringForm(ok));
             return ok;
         } finally {
-            Tracing.finishActiveSpan();
+            span.finish();
         }
     }
 

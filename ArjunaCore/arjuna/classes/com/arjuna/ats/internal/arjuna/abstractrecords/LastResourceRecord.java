@@ -45,6 +45,7 @@ import io.narayana.tracing.SpanName;
 import io.narayana.tracing.TagName;
 import io.narayana.tracing.Tracing;
 import io.narayana.tracing.Tracing.ScopeBuilder;
+import io.narayana.tracing.Tracing.SpanHandle;
 import io.opentracing.Scope;
 
 /**
@@ -134,15 +135,16 @@ public class LastResourceRecord extends AbstractRecord {
 
     @Override
     public int topLevelCommit() {
-        try(Scope _s = new ScopeBuilder(SpanName.LOCAL_COMMIT_LAST_RESOURCE)
+        SpanHandle span = new ScopeBuilder(SpanName.LOCAL_COMMIT_LAST_RESOURCE)
                 .tag(TagName.UID, this.get_uid())
-                .start()) {
+                .start();
+        try(Scope _s = Tracing.activateSpan(span)) {
             if (tsLogger.logger.isTraceEnabled()) {
                 tsLogger.logger.trace("LastResourceRecord::topLevelCommit() for " + order());
             }
             return TwoPhaseOutcome.FINISH_OK;
         } finally {
-            Tracing.finishActiveSpan();
+            span.finish();
         }
     }
 
