@@ -29,7 +29,7 @@ public class Tracing {
      * spans created in the Narayana code base should be attached to this root scope
      * using the "ordinary" ScopeBuilder.
      *
-     * Usage: as the transaction will always begin and start at two different
+     * Usage: as the transaction will always begin and end at two different
      * methods, we need to manage (de)activation of the span manually, schematically
      * like this:
      *
@@ -130,7 +130,7 @@ public class Tracing {
         }
 
         /**
-         * Adds tag to the started span.
+         * Adds tag to the started span and simply calls the {@code toString} method on {@code val}.
          */
         public ScopeBuilder tag(TagName name, Object val) {
             Objects.requireNonNull(name, "Name of the tag cannot be null");
@@ -147,6 +147,12 @@ public class Tracing {
         /**
          * Attach span to the transaction with id {@code txUid}.
          *
+         * Note: if the "real" part of a transaction processing hasn't
+         * started yet and the transaction manager needs to do some preparations
+         * (i.e. XAResource enlistment), the trace is in a pseudo "pre-2PC"
+         * state where every span is hooked at a SpanName.GLOBAL_PRE_2PC
+         * span.
+         *
          * @param txUid id of a transaction which already has a root span
          * @throws IllegalStateException no root span for {@code txUid} does not exist
          * @return activated span, represented by scope
@@ -156,8 +162,8 @@ public class Tracing {
             Span parent = pre2PCSpan == null ? TX_UID_TO_SPAN.get(txUid) : pre2PCSpan;
 
             if (parent == null) {
-                // Superflous calls of BasicAction.Abort can happen, ignore those
-                if (name == SpanName.GLOBAL_ABORT) {
+                // Superflous calls of abort can happen, ignore those
+                if (name.isAbortAction()) {
                     return null;
                 } else {
                     throw new IllegalStateException(String.format(
@@ -166,6 +172,11 @@ public class Tracing {
                 }
             }
             spanBldr = spanBldr.asChildOf(parent);
+
+            // for the time being, ignore the Narayana reaper thread and do not activate any spans
+            if(runningInReaperThread()) {
+                return null;
+            }
             return getTracer().scopeManager().activate(spanBldr.withTag(Tags.COMPONENT, "narayana").start());
         }
 
@@ -185,6 +196,10 @@ public class Tracing {
     }
 
     private Tracing() {
+    }
+
+    private static boolean runningInReaperThread() {
+        return Thread.currentThread().getName().toLowerCase().contains("reaper");
     }
 
     /*
@@ -267,6 +282,9 @@ public class Tracing {
     public static void finishActiveSpan() {
         // TODO is it necessary to even consider finishing the span if
         // we are currently executed under the transaction reaper thread? (recovery?)
+        if(runningInReaperThread()) {
+            return;
+        }
         activeSpan().ifPresent(s -> s.finish());
     }
 

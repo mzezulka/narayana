@@ -19,7 +19,7 @@ public enum SpanName {
     GLOBAL_PREPARE("Global prepare"),
     GLOBAL_COMMIT("Commit"),
     GLOBAL_ABORT("Abort"),
-    GLOBAL_ROLLBACK("Rollback (2nd phase)"),
+    GLOBAL_ABORT_USER("User initiated abort"),
 
     LOCAL_PREPARE("Branch prepare"),
     LOCAL_PREPARE_LAST_RESOURCE("Branch prepare - last resource commit optimization"),
@@ -38,5 +38,9 @@ public enum SpanName {
     @Override
     public String toString() {
         return name;
+    }
+
+    public boolean isAbortAction() {
+        return this == GLOBAL_ABORT || this == GLOBAL_ABORT_USER;
     }
 }

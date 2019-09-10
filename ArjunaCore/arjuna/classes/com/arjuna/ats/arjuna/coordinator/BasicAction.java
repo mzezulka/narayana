@@ -1505,7 +1505,7 @@ public class BasicAction extends StateManager {
      */
     protected synchronized int Abort(boolean applicationAbort) {
         Tracing.begin2PC(get_uid().toString());
-        try (Scope _s = new ScopeBuilder(SpanName.GLOBAL_ABORT)
+        try (Scope _s = new ScopeBuilder(SpanName.GLOBAL_ABORT_USER)
                 .tag(TagName.APPLICATION_ABORT, String.valueOf(applicationAbort)).tag(TagName.UID, get_uid())
                 .tag(TagName.ASYNCHRONOUS, false).start(get_uid().toString())) {
 
@@ -1528,7 +1528,7 @@ public class BasicAction extends StateManager {
                     tsLogger.i18NLogger.warn_coordinator_BasicAction_41(get_uid());
                     break;
                 }
-
+                Tracing.addCurrentSpanTag(TagName.STATUS, ActionStatus.stringForm(actionStatus));
                 return actionStatus;
             }
 
@@ -1569,10 +1569,9 @@ public class BasicAction extends StateManager {
                 if (applicationAbort)
                     TxStats.getInstance().incrementApplicationRollbacks();
             }
-
+            Tracing.addCurrentSpanTag(TagName.STATUS, ActionStatus.stringForm(actionStatus));
             return actionStatus;
         } finally {
-            Tracing.markTransactionFailed(get_uid().toString());
             Tracing.finish(get_uid().toString());
         }
     }
@@ -2497,7 +2496,7 @@ public class BasicAction extends StateManager {
             try (Scope s = new Tracing.ScopeBuilder(SpanName.LOCAL_PREPARE).tag(TagName.XARES, record).start()) {
                 //noop
             } finally {
-                //Tracing.addCurrentSpanTag(TagName.STATUS, TwoPhaseOutcome.stringForm(p));
+                Tracing.addCurrentSpanTag(TagName.STATUS, TwoPhaseOutcome.stringForm(p));
                 Tracing.finishActiveSpan();
             }
             if (p == TwoPhaseOutcome.PREPARE_OK) {

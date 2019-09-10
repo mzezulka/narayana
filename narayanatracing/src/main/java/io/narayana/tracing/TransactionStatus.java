@@ -3,7 +3,7 @@ package io.narayana.tracing;
 
 /**
  * Copied from com.arjuna.ats.arjuna.coordinator.ActionStatus
- * (and transformed so that the class is a proper enum).
+ * (and transformed into a proper enum).
  * @author Miloslav Zezulka (mzezulka@redhat.com)
  *
  */
