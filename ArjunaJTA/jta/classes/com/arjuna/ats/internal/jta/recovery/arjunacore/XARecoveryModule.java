@@ -47,14 +47,16 @@ import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
+import org.jboss.tm.XAResourceWrapper;
+
 import com.arjuna.ats.arjuna.common.Uid;
 import com.arjuna.ats.arjuna.exceptions.ObjectStoreException;
 import com.arjuna.ats.arjuna.objectstore.RecoveryStore;
 import com.arjuna.ats.arjuna.objectstore.StateStatus;
 import com.arjuna.ats.arjuna.objectstore.StoreManager;
+import com.arjuna.ats.arjuna.recovery.ExtendedRecoveryModule;
 import com.arjuna.ats.arjuna.recovery.RecoveryManager;
 import com.arjuna.ats.arjuna.recovery.RecoveryModule;
-import com.arjuna.ats.arjuna.recovery.ExtendedRecoveryModule;
 import com.arjuna.ats.arjuna.state.InputObjectState;
 import com.arjuna.ats.internal.arjuna.common.UidHelper;
 import com.arjuna.ats.internal.jta.resources.arjunacore.XAResourceRecord;
@@ -69,7 +71,11 @@ import com.arjuna.ats.jta.recovery.XAResourceRecoveryHelper;
 import com.arjuna.ats.jta.utils.XAHelper;
 import com.arjuna.ats.jta.utils.XARecoveryResourceHelper;
 
-import org.jboss.tm.XAResourceWrapper;
+import io.narayana.tracing.SpanName;
+import io.narayana.tracing.Tracing;
+import io.narayana.tracing.Tracing.SpanHandle;
+import io.narayana.tracing.Tracing.SpanHandleBuilder;
+import io.opentracing.Scope;
 
 /**
  * Designed to be able to recover any XAResource.
@@ -167,6 +173,7 @@ public class XARecoveryModule implements ExtendedRecoveryModule
         return _seriablizableXAResourceDeserializers;
     }
 
+    @Override
     public synchronized void periodicWorkFirstPass() {
         periodicWorkFirstPass(ScanStates.BETWEEN_PASSES);
     }
@@ -231,10 +238,13 @@ public class XARecoveryModule implements ExtendedRecoveryModule
 
         if (endState != ScanStates.BETWEEN_PASSES) {
             for (XAResource xaResource : resources) {
-                try {
+                SpanHandle handle = new SpanHandleBuilder(SpanName.LOCAL_RECOVERY).build();
+                try(Scope _s = Tracing.activateSpan(handle)) {
                     xaResource.recover(XAResource.TMENDRSCAN);
                 } catch (Exception ex) {
                     jtaLogger.i18NLogger.warn_recovery_getxaresource(ex);
+                } finally {
+                    handle.finish();
                 }
             }
         }
@@ -242,6 +252,7 @@ public class XARecoveryModule implements ExtendedRecoveryModule
         setScanState(endState);
     }
 
+    @Override
     public synchronized void periodicWorkSecondPass()
     {
         if (getScanState() == ScanStates.IDLE) {

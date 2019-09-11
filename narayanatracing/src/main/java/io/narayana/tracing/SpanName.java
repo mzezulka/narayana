@@ -17,15 +17,16 @@ public enum SpanName {
 
     GLOBAL_PRE_2PC("Pre 2PC"),
     GLOBAL_PREPARE("Global prepare"),
-    GLOBAL_COMMIT("Commit"),
-    GLOBAL_ABORT("Abort"),
-    GLOBAL_ABORT_USER("User initiated abort"),
+    GLOBAL_COMMIT("Global commit"),
+    GLOBAL_ABORT("Global abort"),
+    GLOBAL_ABORT_USER("Global abort - user initiated"),
 
     LOCAL_PREPARE("Branch prepare"),
     LOCAL_PREPARE_LAST_RESOURCE("Branch prepare - last resource commit optimization"),
     LOCAL_COMMIT("Branch commit"),
     LOCAL_COMMIT_LAST_RESOURCE("Branch commit - last resource commit optimization"),
     LOCAL_ROLLBACK("Branch rollback"),
+    LOCAL_RECOVERY("Resource recovery"),
 
     RECOVERY("RECOVERY");
 

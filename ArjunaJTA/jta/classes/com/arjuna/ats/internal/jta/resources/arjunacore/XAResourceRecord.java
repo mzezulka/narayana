@@ -74,13 +74,6 @@ import com.arjuna.ats.jta.xa.RecoverableXAConnection;
 import com.arjuna.ats.jta.xa.XidImple;
 import com.arjuna.common.internal.util.ClassloadingUtility;
 
-import io.narayana.tracing.SpanName;
-import io.narayana.tracing.TagName;
-import io.narayana.tracing.Tracing;
-import io.narayana.tracing.Tracing.SpanHandleBuilder;
-import io.narayana.tracing.Tracing.SpanHandle;
-import io.opentracing.Scope;
-
 /**
  * @author Mark Little (mark_little@hp.com)
  * @version $Id: XAResourceRecord.java 2342 2006-03-30 13:06:17Z $
@@ -332,9 +325,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
                     throw e;
                 }
 
-                SpanHandle span = new SpanHandleBuilder(SpanName.LOCAL_ROLLBACK).tag(TagName.XARES, _theXAResource)
-                        .build();
-                try (Scope scope = Tracing.activateSpan(span)) {
+                try {
                     _theXAResource.rollback(_tranID);
                 } catch (XAException e1) {
                     if (notAProblem(e1, false)) {
@@ -383,7 +374,6 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
                 } finally {
                     if (!_prepared)
                         removeConnection();
-                    span.finish();
                 }
             } else {
                 jtaLogger.i18NLogger.warn_resources_arjunacore_noresource(XAHelper.xidToString(_tranID));

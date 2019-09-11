@@ -185,9 +185,9 @@ public class Tracing {
             Span parent = pre2PCSpan == null ? TX_UID_TO_SPAN.get(txUid) : pre2PCSpan;
 
             if (parent == null) {
-                // superfluous calls of abort can happen, ignore those
+                // superfluous calls of abort can happen, ignore those and return fake handle
                 if (name.isAbortAction()) {
-                    return null;
+                    return SpanHandle.noop();
                 } else {
                     throw new IllegalStateException(String.format(
                             "There was an attempt to build span belonging to tx '%s' but no root span registered for it found! Span name: '%s', span map: '%s'",
@@ -195,11 +195,6 @@ public class Tracing {
                 }
             }
             spanBldr = spanBldr.asChildOf(parent);
-
-            // ignore the Narayana reaper thread and do not activate any spans
-            if (isRunningInReaperThread()) {
-                return null;
-            }
             return new SpanHandle(spanBldr.withTag(Tags.COMPONENT, "narayana").start());
         }
 
@@ -220,9 +215,19 @@ public class Tracing {
 
     public static class SpanHandle {
         private final Span span;
+        private final boolean noop;
 
         public SpanHandle(Span span) {
+            this(span, false);
+        }
+
+        public static SpanHandle noop() {
+            return new SpanHandle(null, true);
+        }
+
+        public SpanHandle(Span span, boolean noop) {
             this.span = span;
+            this.noop = noop;
         }
 
         Span getSpan() {
@@ -230,7 +235,9 @@ public class Tracing {
         }
 
         public void finish() {
-            span.finish();
+            if(!noop) {
+                span.finish();
+            }
         }
     }
 
@@ -242,6 +249,11 @@ public class Tracing {
     }
 
     public static Scope activateSpan(SpanHandle spanHandle) {
+        Objects.requireNonNull(spanHandle);
+        // ignore the Narayana reaper thread and do not activate any spans
+        if (isRunningInReaperThread()) {
+            return null;
+        }
         return getTracer().scopeManager().activate(spanHandle.getSpan());
     }
 
