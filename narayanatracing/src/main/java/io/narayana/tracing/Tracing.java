@@ -18,6 +18,23 @@ import io.opentracing.util.GlobalTracer;
  * Class enabling to utilise tracing in the code by providing an instantiated
  * and setup Tracer class.
  *
+ * Instead of accessing the tracing code directly, much of the work is done
+ * "behind the scenes" in this class and the intention is to provide as thin API
+ * to the user as possible.
+ *
+ * Three classes should be taken into consideration: i) SpanHandle, an
+ * abstraction of the OpenTracing span providing only the {@code close} method
+ * with which the user declares that the span is no longer active and should be
+ * reported; all the other functionality is provided via static methods of this
+ * class
+ *
+ * ii) RootSpanHandleBuilder, responsible for building a SpanHandle which
+ * represents the root of a transaction trace, all other spans created under
+ * Narayana will be (direct or indirect) children of this span
+ *
+ * iii) SpanHandleBuilder - responsible for building regular spans
+ *
+ * @author Miloslav Zezulka (mzezulka@redhat.com)
  */
 public class Tracing {
 
@@ -25,9 +42,9 @@ public class Tracing {
     private static final ConcurrentMap<String, Span> TX_UID_TO_PRE2PC_SPAN = new ConcurrentHashMap<>();
 
     /**
-     * Create a new root span which represents the whole transaction. Any other
-     * spans created in the Narayana code base should be attached to this root scope
-     * using the "ordinary" ScopeBuilder.
+     * Build a new root span handle which represents the whole transaction. Any
+     * other span handles created in the Narayana code base should be attached to
+     * this root scope using the "ordinary" SpanHandleBuilder.
      *
      * Usage: as the transaction will always begin and end at two different methods,
      * we need to manage (de)activation of the span manually, schematically like
@@ -35,24 +52,28 @@ public class Tracing {
      *
      * <pre>
      * <code>public void transactionStart(Uid uid, ...) {
-     *     new ScopeBuilder(SpanName.TX_BEGIN, uid)
+     *     new SpanHandleBuilder(SpanName.TX_BEGIN, uid)
      *            ...
-     *           .startRootSpan(uid);
+     *           .build(uid);
      *     ...
      *}
      *
      *public void transactionEnd(Uid uid, ...) {
-     *     TracingUtils.finish(uid);
+     *     Tracing.finish(uid);
      *     ...
      * </code>}
      * </pre>
+     *
+     * Note: we're not using the Uid class as this would create a cyclic dependency
+     * between narayanatracing arjuna modules. Strings (which should always
+     * represent a Uid!) are used instead.
      */
-    public static class RootScopeBuilder {
+    public static class RootSpanHandleBuilder {
 
         private SpanBuilder spanBldr;
         private SpanBuilder pre2PCspanBldr;
 
-        public RootScopeBuilder(Object... args) {
+        public RootSpanHandleBuilder(Object... args) {
             spanBldr = prepareSpan(SpanName.TX_ROOT, args);
             pre2PCspanBldr = prepareSpan(SpanName.GLOBAL_PRE_2PC, args);
         }
@@ -65,28 +86,28 @@ public class Tracing {
         /**
          * Adds tag to the started span.
          */
-        public RootScopeBuilder tag(TagName name, Object val) {
+        public RootSpanHandleBuilder tag(TagName name, Object val) {
             Objects.requireNonNull(name, "Name of the tag cannot be null");
             spanBldr = spanBldr.withTag(name.toString(), val == null ? "null" : val.toString());
             return this;
         }
 
-        public <T> RootScopeBuilder tag(Tag<T> tag, T value) {
+        public <T> RootSpanHandleBuilder tag(Tag<T> tag, T value) {
             Objects.requireNonNull(tag, "Tag cannot be null.");
             spanBldr = spanBldr.withTag(tag, value);
             return this;
         }
 
         /**
-         * Build and activate the root span. Any possible active (=parent) spans are
-         * ignored as this is the root of a new transaction trace.
+         * Build the root span and propagate it as a handle. Any possible active
+         * (=parent) spans are ignored as this is the root of a new transaction trace.
          *
          * @throws IllegalArgumentException {@code txUid} is null or a span with this ID
          *                                  already exists
          * @param txUid UID of the new transaction
          * @return
          */
-        public Scope start(String txUid) {
+        public SpanHandle build(String txUid) {
             Span rootSpan = spanBldr.withTag(Tags.COMPONENT, "narayana").ignoreActiveSpan().start();
             TX_UID_TO_SPAN.put(txUid, rootSpan);
             getTracer().scopeManager().activate(rootSpan);
@@ -94,32 +115,33 @@ public class Tracing {
             pre2PCspanBldr.asChildOf(rootSpan);
             Span pre2PCSpan = pre2PCspanBldr.withTag(Tags.COMPONENT, "narayana").start();
             TX_UID_TO_PRE2PC_SPAN.put(txUid, pre2PCSpan);
-            return getTracer().scopeManager().activate(pre2PCSpan);
+            return new SpanHandle(pre2PCSpan);
         }
     }
 
     /**
-     * Responsibility of this class: create a new span and activate it under scope
-     * of one root scope representing the transaction.
+     * Responsibility of this class: create a new span handle. When building it,
+     * make sure that the appropriate root span has already been created.
      *
+     * Example of usage:
      * <pre>
-     * <code>try (Scope s = new ScopeBuilder(SpanName.TX_BEGIN).start()) {
+     * <code>SpanHandle handle = new SpanHandleBuilder(SpanName.XYZ)
+     *    .tag(TagName.UID, get_uid())
+     *    .build(get_uid().toString());
+     * try (Scope s = Tracing.activateHandle(handle)) {
      *     // this is where 's' is active
      * } finally {
-     *     TracingUtils.finishActiveSpan();
+     *     handle.finish();
      * }
      * </code>
      * </pre>
      */
-    public static class ScopeBuilder {
+    public static class SpanHandleBuilder {
 
         private SpanBuilder spanBldr;
         private SpanName name;
 
-        /**
-         * @param name name of the span which will be activated in the scope
-         */
-        public ScopeBuilder(SpanName name, Object... args) {
+        public SpanHandleBuilder(SpanName name, Object... args) {
             this.spanBldr = prepareSpan(name, args);
             this.name = name;
         }
@@ -133,36 +155,37 @@ public class Tracing {
          * Adds tag to the started span and simply calls the {@code toString} method on
          * {@code val}.
          */
-        public ScopeBuilder tag(TagName name, Object val) {
+        public SpanHandleBuilder tag(TagName name, Object val) {
             Objects.requireNonNull(name, "Name of the tag cannot be null");
             spanBldr = spanBldr.withTag(name.toString(), val == null ? "null" : val.toString());
             return this;
         }
 
-        public <T> ScopeBuilder tag(Tag<T> tag, T value) {
+        public <T> SpanHandleBuilder tag(Tag<T> tag, T value) {
             Objects.requireNonNull(tag, "Tag cannot be null.");
             spanBldr = spanBldr.withTag(tag, value);
             return this;
         }
 
         /**
-         * Attach span to the transaction with id {@code txUid}.
+         * Build a regular span and attach it to the transaction with id {@code txUid}.
          *
          * Note: if the "real" part of a transaction processing hasn't started yet and
          * the transaction manager needs to do some preparations (i.e. XAResource
          * enlistment), the trace is in a pseudo "pre-2PC" state where every span is
-         * hooked at a SpanName.GLOBAL_PRE_2PC span.
+         * hooked to a SpanName.GLOBAL_PRE_2PC span (which is always a child of a root
+         * span).
          *
          * @param txUid id of a transaction which already has a root span
-         * @throws IllegalStateException no root span for {@code txUid} does not exist
-         * @return activated span, represented by scope
+         * @throws IllegalStateException no appropriate span for {@code txUid} exists
+         * @return {@code SpanHandle with a started span}
          */
-        public SpanHandle start(String txUid) {
+        public SpanHandle build(String txUid) {
             Span pre2PCSpan = TX_UID_TO_PRE2PC_SPAN.get(txUid);
             Span parent = pre2PCSpan == null ? TX_UID_TO_SPAN.get(txUid) : pre2PCSpan;
 
             if (parent == null) {
-                // Superflous calls of abort can happen, ignore those
+                // superfluous calls of abort can happen, ignore those
                 if (name.isAbortAction()) {
                     return null;
                 } else {
@@ -173,8 +196,7 @@ public class Tracing {
             }
             spanBldr = spanBldr.asChildOf(parent);
 
-            // for the time being, ignore the Narayana reaper thread and do not activate any
-            // spans
+            // ignore the Narayana reaper thread and do not activate any spans
             if (isRunningInReaperThread()) {
                 return null;
             }
@@ -182,15 +204,15 @@ public class Tracing {
         }
 
         /**
-         * Attach span to the currently active span. Useful for nesting spans into a
-         * tree structure.
+         * Build a span which has no explicit parent set. Useful for creating nested
+         * traces. See the OpenTracing documentation on what the implicit reference is.
          *
          * @throws IllegalStateException there is currently no active span
-         * @return
          */
-        public SpanHandle start() {
+        public SpanHandle build() {
             if (!activeSpan().isPresent()) {
-                throw new IllegalStateException(String.format("The span '%s' could not be nested into enclosing span because there is none.", name));
+                throw new IllegalStateException(String
+                        .format("The span '%s' could not be nested into enclosing span because there is none.", name));
             }
             return new SpanHandle(spanBldr.withTag(Tags.COMPONENT, "narayana").start());
         }
@@ -224,7 +246,7 @@ public class Tracing {
     }
 
     /*
-     * This method switches from the "pre-2PC" phase to the "core" commit phase.
+     * This method switches from the "pre-2PC" phase to the protocol phase.
      */
     public static void begin2PC(String txUid) {
         Span span = TX_UID_TO_PRE2PC_SPAN.remove(txUid);
@@ -246,10 +268,8 @@ public class Tracing {
 
     /**
      * This is different from setting the transaction status as failed. Using this
-     * method, the span itself is marked as failed (in terms of the OpenTracing
-     * API).
+     * method, the span itself in terms of opentracing is marked as failed.
      *
-     * @param txUid
      */
     public static void markTransactionFailed(String txUid) {
         Span span = TX_UID_TO_SPAN.get(txUid);
@@ -274,8 +294,8 @@ public class Tracing {
 
     /**
      * Sets tag which for a span which is currently activated by the scope manager.
-     * Useful when a user wishes to add tags whose existence / value is dependent
-     * on the context (i.e. status of the transaction inside of the method call).
+     * Useful when a user wishes to add tags whose existence / value is dependent on
+     * the context (i.e. status of the transaction inside of the method call).
      */
     public static void addTag(TagName name, String val) {
         activeSpan().ifPresent(s -> s.setTag(name.toString(), val));
@@ -309,7 +329,7 @@ public class Tracing {
      * This is package private on purpose. Users of the tracing module shouldn't be
      * encumbered with tracers.
      *
-     * @return registered tracer
+     * @return registered tracer or any default tracer provided by the opentracing implementation
      */
     static Tracer getTracer() {
         return GlobalTracer.get();

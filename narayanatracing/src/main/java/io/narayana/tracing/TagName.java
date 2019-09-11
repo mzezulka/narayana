@@ -1,7 +1,6 @@
 package io.narayana.tracing;
 
 /**
- *
  * String constants to be used when creating span tags.
  * @author Miloslav Zezulka (mzezulka@redhat.com)
  */

@@ -431,8 +431,8 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
                 }
             }
         }
-        SpanHandle span = new Tracing.ScopeBuilder(SpanName.RESOURCE_ENLISTMENT)
-                .tag(TagName.XARES, xaRes).start(get_uid().toString());
+        SpanHandle span = new Tracing.SpanHandleBuilder(SpanName.RESOURCE_ENLISTMENT)
+                .tag(TagName.XARES, xaRes).build(get_uid().toString());
         try (Scope scope = Tracing.activateSpan(span)) {
             /*
              * For each transaction we maintain a list of resources registered with it. Each

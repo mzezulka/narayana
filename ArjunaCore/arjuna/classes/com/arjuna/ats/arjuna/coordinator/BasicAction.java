@@ -58,7 +58,7 @@ import com.arjuna.ats.internal.arjuna.thread.ThreadActionData;
 import io.narayana.tracing.SpanName;
 import io.narayana.tracing.TagName;
 import io.narayana.tracing.Tracing;
-import io.narayana.tracing.Tracing.ScopeBuilder;
+import io.narayana.tracing.Tracing.SpanHandleBuilder;
 import io.narayana.tracing.Tracing.SpanHandle;
 import io.narayana.tracing.TransactionStatus;
 import io.opentracing.Scope;
@@ -1267,7 +1267,7 @@ public class BasicAction extends StateManager {
      */
 
     protected synchronized int Begin(BasicAction parentAct) {
-        new Tracing.RootScopeBuilder().tag(TagName.UID, get_uid()).start(get_uid().toString());
+        new Tracing.RootSpanHandleBuilder().tag(TagName.UID, get_uid()).build(get_uid().toString());
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("BasicAction::Begin() for action-id " + get_uid());
         }
@@ -1506,9 +1506,9 @@ public class BasicAction extends StateManager {
      */
     protected synchronized int Abort(boolean applicationAbort) {
         Tracing.begin2PC(get_uid().toString());
-        SpanHandle s = new ScopeBuilder(SpanName.GLOBAL_ABORT_USER)
+        SpanHandle s = new SpanHandleBuilder(SpanName.GLOBAL_ABORT_USER)
                 .tag(TagName.APPLICATION_ABORT, String.valueOf(applicationAbort)).tag(TagName.UID, get_uid())
-                .tag(TagName.ASYNCHRONOUS, false).start(get_uid().toString());
+                .tag(TagName.ASYNCHRONOUS, false).build(get_uid().toString());
         try (Scope _s = Tracing.activateSpan(s)) {
 
             if (tsLogger.logger.isTraceEnabled()) {
@@ -1715,9 +1715,9 @@ public class BasicAction extends StateManager {
      */
 
     protected final synchronized void phase2Commit(boolean reportHeuristics) throws Error {
-        SpanHandle s = new ScopeBuilder(SpanName.GLOBAL_COMMIT)
+        SpanHandle s = new SpanHandleBuilder(SpanName.GLOBAL_COMMIT)
                 .tag(TagName.REPORT_HEURISTICS, String.valueOf(reportHeuristics)).tag(TagName.UID, this.get_uid())
-                .start(get_uid().toString());
+                .build(get_uid().toString());
         try (Scope _s = Tracing.activateSpan(s)) {
 
             if (tsLogger.logger.isTraceEnabled()) {
@@ -1829,9 +1829,9 @@ public class BasicAction extends StateManager {
 
     protected final synchronized void phase2Abort(boolean reportHeuristics) {
         Tracing.begin2PC(get_uid().toString());
-        SpanHandle span = new ScopeBuilder(SpanName.GLOBAL_ABORT)
+        SpanHandle span = new SpanHandleBuilder(SpanName.GLOBAL_ABORT)
                 .tag(TagName.REPORT_HEURISTICS, String.valueOf(reportHeuristics)).tag(TagName.APPLICATION_ABORT, false)
-                .tag(TagName.ASYNCHRONOUS, false).tag(TagName.UID, this.get_uid()).start(get_uid().toString());
+                .tag(TagName.ASYNCHRONOUS, false).tag(TagName.UID, this.get_uid()).build(get_uid().toString());
         try (Scope _s = Tracing.activateSpan(span)) {
             Tracing.markTransactionFailed(get_uid().toString());
 
@@ -1966,9 +1966,9 @@ public class BasicAction extends StateManager {
 
     protected final synchronized int prepare(boolean reportHeuristics) {
         Tracing.begin2PC(get_uid().toString());
-        SpanHandle span = new ScopeBuilder(SpanName.GLOBAL_PREPARE)
+        SpanHandle span = new SpanHandleBuilder(SpanName.GLOBAL_PREPARE)
                 .tag(TagName.REPORT_HEURISTICS, String.valueOf(reportHeuristics)).tag(TagName.UID, get_uid())
-                .start(get_uid().toString());
+                .build(get_uid().toString());
         try (Scope _s = Tracing.activateSpan(span)) {
             if (tsLogger.logger.isTraceEnabled()) {
                 tsLogger.logger.trace("BasicAction::prepare () for action-id " + get_uid());
@@ -2440,7 +2440,7 @@ public class BasicAction extends StateManager {
              * If a failure occurs then the record will be put back on to the pending list.
              * Otherwise it is moved to another list or dropped if readonly.
              */
-            SpanHandle span = new Tracing.ScopeBuilder(SpanName.LOCAL_PREPARE).tag(TagName.XARES, record).start();
+            SpanHandle span = new Tracing.SpanHandleBuilder(SpanName.LOCAL_PREPARE).tag(TagName.XARES, record).build();
             try (Scope scope = Tracing.activateSpan(span)) {
                 int individualTwoPhaseOutcome = doPrepare(reportHeuristics, record);
                 if (individualTwoPhaseOutcome != TwoPhaseOutcome.PREPARE_READONLY) {
@@ -2667,7 +2667,7 @@ public class BasicAction extends StateManager {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("BasicAction::doCommit (" + record + ")");
         }
-        SpanHandle span = new Tracing.ScopeBuilder(SpanName.LOCAL_COMMIT).tag(TagName.XARES, record).start();
+        SpanHandle span = new Tracing.SpanHandleBuilder(SpanName.LOCAL_COMMIT).tag(TagName.XARES, record).build();
         try (Scope scope = Tracing.activateSpan(span)) {
             /*
              * To get heuristics right, as soon as we manage to commit the first record we
@@ -2787,7 +2787,7 @@ public class BasicAction extends StateManager {
             tsLogger.logger.trace("BasicAction::doAbort (" + record + ")");
         }
 
-        SpanHandle span = new Tracing.ScopeBuilder(SpanName.LOCAL_ROLLBACK).tag(TagName.XARES, record).start();
+        SpanHandle span = new Tracing.SpanHandleBuilder(SpanName.LOCAL_ROLLBACK).tag(TagName.XARES, record).build();
         try (Scope scope = Tracing.activateSpan(span)) {
             int ok = TwoPhaseOutcome.FINISH_OK;
 

@@ -44,7 +44,7 @@ import com.arjuna.ats.arjuna.logging.tsLogger;
 import io.narayana.tracing.SpanName;
 import io.narayana.tracing.TagName;
 import io.narayana.tracing.Tracing;
-import io.narayana.tracing.Tracing.ScopeBuilder;
+import io.narayana.tracing.Tracing.SpanHandleBuilder;
 import io.narayana.tracing.Tracing.SpanHandle;
 import io.opentracing.Scope;
 
@@ -135,9 +135,9 @@ public class LastResourceRecord extends AbstractRecord {
 
     @Override
     public int topLevelCommit() {
-        SpanHandle span = new ScopeBuilder(SpanName.LOCAL_COMMIT_LAST_RESOURCE)
+        SpanHandle span = new SpanHandleBuilder(SpanName.LOCAL_COMMIT_LAST_RESOURCE)
                 .tag(TagName.UID, this.get_uid())
-                .start();
+                .build();
         try(Scope _s = Tracing.activateSpan(span)) {
             if (tsLogger.logger.isTraceEnabled()) {
                 tsLogger.logger.trace("LastResourceRecord::topLevelCommit() for " + order());

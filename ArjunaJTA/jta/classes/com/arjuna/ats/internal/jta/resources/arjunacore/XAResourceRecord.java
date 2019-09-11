@@ -77,7 +77,7 @@ import com.arjuna.common.internal.util.ClassloadingUtility;
 import io.narayana.tracing.SpanName;
 import io.narayana.tracing.TagName;
 import io.narayana.tracing.Tracing;
-import io.narayana.tracing.Tracing.ScopeBuilder;
+import io.narayana.tracing.Tracing.SpanHandleBuilder;
 import io.narayana.tracing.Tracing.SpanHandle;
 import io.opentracing.Scope;
 
@@ -332,8 +332,8 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
                     throw e;
                 }
 
-                SpanHandle span = new ScopeBuilder(SpanName.LOCAL_ROLLBACK).tag(TagName.XARES, _theXAResource)
-                        .start();
+                SpanHandle span = new SpanHandleBuilder(SpanName.LOCAL_ROLLBACK).tag(TagName.XARES, _theXAResource)
+                        .build();
                 try (Scope scope = Tracing.activateSpan(span)) {
                     _theXAResource.rollback(_tranID);
                 } catch (XAException e1) {
