@@ -300,6 +300,7 @@ public class PeriodicRecovery extends Thread {
      * Implements the background thread which performs the periodic recovery
      */
 
+    @Override
     public void run() {
         doInitialWait();
 
@@ -767,12 +768,11 @@ public class PeriodicRecovery extends Thread {
 
         while (modules.hasMoreElements()) {
             RecoveryModule m = (RecoveryModule) modules.nextElement();
-
             // we need to ensure we use the class loader context of the recovery module
             // while we are executing
             // its methods
-
             ClassLoader cl = switchClassLoader(m);
+
             try {
                 m.periodicWorkFirstPass();
             } finally {

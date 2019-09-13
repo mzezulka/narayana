@@ -69,13 +69,13 @@ public class AtomicActionRecoveryModule implements RecoveryModule {
     /**
      * This is called periodically by the RecoveryManager
      */
+    @Override
     public void periodicWorkFirstPass() {
         // Transaction type
         boolean AtomicActions = false;
 
         // uids per transaction type
         InputObjectState aa_uids = new InputObjectState();
-
         try {
             if (tsLogger.logger.isDebugEnabled()) {
                 tsLogger.logger.debug("AtomicActionRecoveryModule first pass");
@@ -92,6 +92,7 @@ public class AtomicActionRecoveryModule implements RecoveryModule {
         }
     }
 
+    @Override
     public void periodicWorkSecondPass() {
         if (tsLogger.logger.isDebugEnabled()) {
             tsLogger.logger.debug("AtomicActionRecoveryModule second pass");

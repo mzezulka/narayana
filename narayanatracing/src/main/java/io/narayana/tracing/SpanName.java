@@ -20,6 +20,7 @@ public enum SpanName {
     GLOBAL_COMMIT("Global commit"),
     GLOBAL_ABORT("Global abort"),
     GLOBAL_ABORT_USER("Global abort - user initiated"),
+    GLOBAL_RECOVERY("Global recovery"),
 
     LOCAL_PREPARE("Branch prepare"),
     LOCAL_PREPARE_LAST_RESOURCE("Branch prepare - last resource commit optimization"),

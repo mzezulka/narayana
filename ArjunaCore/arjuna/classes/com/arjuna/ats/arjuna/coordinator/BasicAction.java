@@ -58,8 +58,8 @@ import com.arjuna.ats.internal.arjuna.thread.ThreadActionData;
 import io.narayana.tracing.SpanName;
 import io.narayana.tracing.TagName;
 import io.narayana.tracing.Tracing;
-import io.narayana.tracing.Tracing.SpanHandleBuilder;
 import io.narayana.tracing.Tracing.SpanHandle;
+import io.narayana.tracing.Tracing.SpanHandleBuilder;
 import io.narayana.tracing.TransactionStatus;
 import io.opentracing.Scope;
 import io.opentracing.log.Fields;
@@ -1574,7 +1574,8 @@ public class BasicAction extends StateManager {
             Tracing.addTag(TagName.STATUS, ActionStatus.stringForm(actionStatus));
             return actionStatus;
         } finally {
-            Tracing.finish(get_uid().toString());
+            s.finish();
+            Tracing.finishWithoutRemoval(get_uid().toString());
         }
     }
 
@@ -1888,6 +1889,7 @@ public class BasicAction extends StateManager {
             }
         } finally {
             span.finish();
+            Tracing.finishWithoutRemoval(get_uid().toString());
         }
     }
 

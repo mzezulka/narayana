@@ -13,6 +13,7 @@ public enum TagName {
     STATUS("status"),
     TXINFO("info"),
     APPLICATION_ABORT("app_abrt"),
+    RECOVERY_MODULE_TYPE("recovery_type"),
     COMMIT_OUTCOME("res_commit"),
     REPORT_HEURISTICS("report");
 

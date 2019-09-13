@@ -115,6 +115,7 @@ public class Tracing {
             pre2PCspanBldr.asChildOf(rootSpan);
             Span pre2PCSpan = pre2PCspanBldr.withTag(Tags.COMPONENT, "narayana").start();
             TX_UID_TO_PRE2PC_SPAN.put(txUid, pre2PCSpan);
+
             return new SpanHandle(pre2PCSpan);
         }
     }
@@ -124,6 +125,7 @@ public class Tracing {
      * make sure that the appropriate root span has already been created.
      *
      * Example of usage:
+     *
      * <pre>
      * <code>SpanHandle handle = new SpanHandleBuilder(SpanName.XYZ)
      *    .tag(TagName.UID, get_uid())
@@ -184,15 +186,12 @@ public class Tracing {
             Span pre2PCSpan = TX_UID_TO_PRE2PC_SPAN.get(txUid);
             Span parent = pre2PCSpan == null ? TX_UID_TO_SPAN.get(txUid) : pre2PCSpan;
 
+            // we're either outside of trace reach now or the trace has never been
+            // registered - panic
             if (parent == null) {
-                // superfluous calls of abort can happen, ignore those and return fake handle
-                if (name.isAbortAction()) {
-                    return SpanHandle.noop();
-                } else {
-                    throw new IllegalStateException(String.format(
-                            "There was an attempt to build span belonging to tx '%s' but no root span registered for it found! Span name: '%s', span map: '%s'",
-                            txUid, name, TX_UID_TO_SPAN));
-                }
+                throw new IllegalStateException(String.format(
+                        "There was an attempt to build span belonging to tx '%s' but no root span registered for it found! Span name: '%s', span map: '%s'",
+                        txUid, name, TX_UID_TO_SPAN));
             }
             spanBldr = spanBldr.asChildOf(parent);
             return new SpanHandle(spanBldr.withTag(Tags.COMPONENT, "narayana").start());
@@ -215,29 +214,18 @@ public class Tracing {
 
     public static class SpanHandle {
         private final Span span;
-        private final boolean noop;
 
         public SpanHandle(Span span) {
-            this(span, false);
-        }
-
-        public static SpanHandle noop() {
-            return new SpanHandle(null, true);
-        }
-
-        public SpanHandle(Span span, boolean noop) {
             this.span = span;
-            this.noop = noop;
         }
 
+        // package private on purpose
         Span getSpan() {
             return span;
         }
 
         public void finish() {
-            if(!noop) {
-                span.finish();
-            }
+            span.finish();
         }
     }
 
@@ -266,16 +254,30 @@ public class Tracing {
             span.finish();
     }
 
+    private static void finish(String txUid, boolean remove) {
+        // We need to check for superfluous calls to this method
+        Span span = remove ? TX_UID_TO_SPAN.remove(txUid) : TX_UID_TO_SPAN.get(txUid);
+        if (span != null)
+            span.finish();
+    }
+
     /**
-     * Finishes root span representing the transaction with id {@code txUid}
+     * Finishes the root span representing the transaction with id {@code txUid}
      *
      * @param txUid
      */
     public static void finish(String txUid) {
-        // We need to check for superfluous calls to this method
-        Span span = TX_UID_TO_SPAN.remove(txUid);
-        if (span != null)
-            span.finish();
+        finish(txUid, true);
+    }
+
+    /**
+     * Finishes the root span but still keeps it in the collection, making it
+     * possible to attach async spans (which are outside of the reach of the trace).
+     *
+     * @param txUid
+     */
+    public static void finishWithoutRemoval(String txUid) {
+        finish(txUid, false);
     }
 
     /**
@@ -341,7 +343,8 @@ public class Tracing {
      * This is package private on purpose. Users of the tracing module shouldn't be
      * encumbered with tracers.
      *
-     * @return registered tracer or any default tracer provided by the opentracing implementation
+     * @return registered tracer or any default tracer provided by the opentracing
+     *         implementation
      */
     static Tracer getTracer() {
         return GlobalTracer.get();
