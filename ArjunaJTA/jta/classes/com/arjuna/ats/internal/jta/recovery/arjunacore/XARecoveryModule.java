@@ -70,6 +70,15 @@ import com.arjuna.ats.jta.recovery.XAResourceRecovery;
 import com.arjuna.ats.jta.recovery.XAResourceRecoveryHelper;
 import com.arjuna.ats.jta.utils.XAHelper;
 import com.arjuna.ats.jta.utils.XARecoveryResourceHelper;
+import com.arjuna.ats.jta.xa.XATxConverter;
+import com.arjuna.ats.jta.xa.XidImple;
+
+import io.narayana.tracing.SpanName;
+import io.narayana.tracing.TagName;
+import io.narayana.tracing.Tracing;
+import io.narayana.tracing.Tracing.SpanHandle;
+import io.narayana.tracing.Tracing.SpanHandleBuilder;
+import io.opentracing.Scope;
 
 /**
  * Designed to be able to recover any XAResource.
@@ -575,11 +584,26 @@ public class XARecoveryModule implements ExtendedRecoveryModule {
         try {
             trans = xares.recover(XAResource.TMSTARTRSCAN);
 
+            for (Xid xid : trans) {
+                Uid uid = XATxConverter.getUid(((XidImple) xid).getXID());
+                if (uid.equals(Uid.nullUid())) {
+                    continue;
+                }
+                SpanHandle h = new SpanHandleBuilder(SpanName.LOCAL_RECOVERY).tag(TagName.UID, uid.toString())
+                        .tag(TagName.XARES, xares.toString()).build(uid.toString());
+                try (Scope _s = Tracing.activateSpan(h)) {
+                    // noop, might want to place it someplace better
+                } finally {
+                    h.finish();
+                }
+            }
+
             if (jtaLogger.logger.isDebugEnabled()) {
                 jtaLogger.logger.debug("Found " + ((trans != null) ? trans.length : 0) + " xids in doubt");
             }
             if (jtaLogger.logger.isTraceEnabled()) {
                 for (Xid xid : trans) {
+
                     byte[] globalTransactionId = xid.getGlobalTransactionId();
                     byte[] branchQualifier = xid.getBranchQualifier();
 
@@ -635,7 +659,6 @@ public class XARecoveryModule implements ExtendedRecoveryModule {
 
                 while (elements.hasMoreElements()) {
                     xidsToRecover = elements.nextElement();
-
                     if (xidsToRecover.isSameRM(xares)) {
                         found = true;
 
@@ -666,71 +689,71 @@ public class XARecoveryModule implements ExtendedRecoveryModule {
 
         RecoveryXids xidsToRecover = _xidScans.get(xares);
         if (xidsToRecover != null) {
+
             try {
                 Xid[] xids = xidsToRecover.toRecover();
-
                 if (xids != null) {
                     if (jtaLogger.logger.isDebugEnabled()) {
                         jtaLogger.logger.debug("Have " + xids.length + " Xids to recover on this pass.");
                     }
-
                     for (int j = 0; j < xids.length; j++) {
-                        boolean doForget = false;
+                        Uid uid = XATxConverter.getUid(((XidImple) xids[j]).getXID());
+                        SpanHandle h = new SpanHandleBuilder(SpanName.LOCAL_RECOVERY).tag(TagName.UID, uid.toString())
+                                .tag(TagName.XARES, xares.toString()).build(uid.toString());
+                        try(Scope _s = Tracing.activateSpan(h)) {
+                            boolean doForget = false;
 
-                        /*
-                         * Check if in failure list.
-                         */
+                            /*
+                             * Check if in failure list.
+                             */
+                            Uid recordUid = null;
+                            boolean foundTransaction = false;
 
-                        Uid recordUid = null;
-                        boolean foundTransaction = false;
+                            do {
+                                // is the xid known to be one that couldn't be recovered
+                                recordUid = previousFailure(xids[j]);
 
-                        do {
-                            // is the xid known to be one that couldn't be recovered
+                                if ((recordUid == null) && (foundTransaction))
+                                    break; // end
+                                // of
+                                // recovery
+                                // for
+                                // this
+                                // transaction
+                                if (recordUid == null) {
+                                    /*
+                                     * It wasn't an xid that we couldn't recover, so the RM knows about it, but we
+                                     * don't. Therefore it may have to be rolled back.
+                                     */
+                                    doForget = handleOrphan(xares, xids[j]);
+                                } else {
+                                    foundTransaction = true;
 
-                            recordUid = previousFailure(xids[j]);
+                                    /*
+                                     * In the failures list so it may be that we just need another XAResource to be
+                                     * able to recover this.
+                                     */
 
-                            if ((recordUid == null) && (foundTransaction))
-                                break; // end
-                            // of
-                            // recovery
-                            // for
-                            // this
-                            // transaction
+                                    XARecoveryResource record = _recoveryManagerClass.getResource(recordUid, xares);
+                                    int recoveryStatus = record.recover();
 
-                            if (recordUid == null) {
-                                /*
-                                 * It wasn't an xid that we couldn't recover, so the RM knows about it, but we
-                                 * don't. Therefore it may have to be rolled back.
-                                 */
-                                doForget = handleOrphan(xares, xids[j]);
-                            } else {
-                                foundTransaction = true;
+                                    if (recoveryStatus != XARecoveryResource.RECOVERED_OK) {
+                                        jtaLogger.i18NLogger.warn_recovery_failedtorecover(_logName + ".xaRecovery",
+                                                XARecoveryResourceHelper.stringForm(recoveryStatus));
+                                    }
 
-                                /*
-                                 * In the failures list so it may be that we just need another XAResource to be
-                                 * able to recover this.
-                                 */
+                                    removeFailure(record.getXid(), record.get_uid());
 
-                                XARecoveryResource record = _recoveryManagerClass.getResource(recordUid, xares);
-                                int recoveryStatus = record.recover();
-
-                                if (recoveryStatus != XARecoveryResource.RECOVERED_OK) {
-                                    jtaLogger.i18NLogger.warn_recovery_failedtorecover(_logName + ".xaRecovery",
-                                            XARecoveryResourceHelper.stringForm(recoveryStatus));
                                 }
-
-                                removeFailure(record.getXid(), record.get_uid());
-                            }
-
-                            if (doForget) {
-                                try {
-                                    xares.forget(xids[j]);
-                                } catch (Exception e) {
-                                    jtaLogger.i18NLogger.warn_recovery_forgetfailed(_logName + ".xaRecovery", e);
+                                if (doForget) {
+                                    try {
+                                        xares.forget(xids[j]);
+                                    } catch (Exception e) {
+                                        jtaLogger.i18NLogger.warn_recovery_forgetfailed(_logName + ".xaRecovery", e);
+                                    }
                                 }
-                            }
-
-                        } while (recordUid != null);
+                            } while (recordUid != null);
+                        }
                     }
                 }
             } catch (Exception e) {

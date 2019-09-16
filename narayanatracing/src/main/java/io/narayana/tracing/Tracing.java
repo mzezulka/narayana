@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.jboss.logging.Logger;
+
 import io.opentracing.Scope;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
@@ -40,6 +42,7 @@ public class Tracing {
 
     private static final ConcurrentMap<String, Span> TX_UID_TO_SPAN = new ConcurrentHashMap<>();
     private static final ConcurrentMap<String, Span> TX_UID_TO_PRE2PC_SPAN = new ConcurrentHashMap<>();
+    private static final Logger LOG = Logger.getLogger(Tracing.class);
 
     /**
      * Build a new root span handle which represents the whole transaction. Any
@@ -74,7 +77,7 @@ public class Tracing {
         private SpanBuilder pre2PCspanBldr;
 
         public RootSpanHandleBuilder(Object... args) {
-            spanBldr = prepareSpan(SpanName.TX_ROOT, args);
+            spanBldr = prepareSpan(SpanName.TX_ROOT, args).withTag(Tags.ERROR, false);
             pre2PCspanBldr = prepareSpan(SpanName.GLOBAL_PRE_2PC, args);
         }
 
@@ -187,11 +190,11 @@ public class Tracing {
             Span parent = pre2PCSpan == null ? TX_UID_TO_SPAN.get(txUid) : pre2PCSpan;
 
             // we're either outside of trace reach now or the trace has never been
-            // registered - panic
+            // registered - the span will be reported but not to an existing trace
             if (parent == null) {
-                throw new IllegalStateException(String.format(
+                LOG.warnf(
                         "There was an attempt to build span belonging to tx '%s' but no root span registered for it found! Span name: '%s', span map: '%s'",
-                        txUid, name, TX_UID_TO_SPAN));
+                        txUid, name, TX_UID_TO_SPAN);
             }
             spanBldr = spanBldr.asChildOf(parent);
             return new SpanHandle(spanBldr.withTag(Tags.COMPONENT, "narayana").start());
@@ -267,7 +270,7 @@ public class Tracing {
      * @param txUid
      */
     public static void finish(String txUid) {
-        finish(txUid, true);
+        finish(txUid, false);
     }
 
     /**
