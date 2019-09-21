@@ -37,6 +37,12 @@ import com.arjuna.ats.arjuna.coordinator.ActionStatus;
 import com.arjuna.ats.arjuna.logging.tsLogger;
 import com.arjuna.ats.internal.arjuna.recovery.AtomicActionExpiryScanner;
 
+import io.narayana.tracing.SpanName;
+import io.narayana.tracing.Tracing;
+import io.narayana.tracing.Tracing.SpanHandle;
+import io.narayana.tracing.Tracing.SpanHandleBuilder;
+import io.opentracing.Scope;
+
 public class RecoverAtomicAction extends AtomicAction {
     /**
      * Re-creates/activates an AtomicAction for the specified transaction Uid.
@@ -57,16 +63,22 @@ public class RecoverAtomicAction extends AtomicAction {
         }
 
         if (_activated) {
-            if ((_theStatus == ActionStatus.PREPARED) || (_theStatus == ActionStatus.COMMITTING)
-                    || (_theStatus == ActionStatus.COMMITTED) || (_theStatus == ActionStatus.H_COMMIT)
-                    || (_theStatus == ActionStatus.H_MIXED) || (_theStatus == ActionStatus.H_HAZARD)) {
-                super.phase2Commit(_reportHeuristics);
-            } else if ((_theStatus == ActionStatus.ABORTED) || (_theStatus == ActionStatus.H_ROLLBACK)
-                    || (_theStatus == ActionStatus.ABORTING) || (_theStatus == ActionStatus.ABORT_ONLY)) {
-                super.phase2Abort(_reportHeuristics);
-            } else {
-                tsLogger.i18NLogger.warn_recovery_RecoverAtomicAction_2(ActionStatus.stringForm(_theStatus));
+            SpanHandle h = new SpanHandleBuilder(SpanName.LOCAL_RECOVERY).build(get_uid().toString());
+            try(Scope _s = Tracing.activateSpan(h)) {
+                if ((_theStatus == ActionStatus.PREPARED) || (_theStatus == ActionStatus.COMMITTING)
+                        || (_theStatus == ActionStatus.COMMITTED) || (_theStatus == ActionStatus.H_COMMIT)
+                        || (_theStatus == ActionStatus.H_MIXED) || (_theStatus == ActionStatus.H_HAZARD)) {
+                    super.phase2Commit(_reportHeuristics);
+                } else if ((_theStatus == ActionStatus.ABORTED) || (_theStatus == ActionStatus.H_ROLLBACK)
+                        || (_theStatus == ActionStatus.ABORTING) || (_theStatus == ActionStatus.ABORT_ONLY)) {
+                    super.phase2Abort(_reportHeuristics);
+                } else {
+                    tsLogger.i18NLogger.warn_recovery_RecoverAtomicAction_2(ActionStatus.stringForm(_theStatus));
+                }
+            } finally {
+                h.finish();
             }
+
 
             if (tsLogger.logger.isDebugEnabled()) {
                 tsLogger.logger.debug("RecoverAtomicAction.replayPhase2( " + get_uid() + " )  finished");

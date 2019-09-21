@@ -78,7 +78,7 @@ public class Tracing {
 
         public RootSpanHandleBuilder(Object... args) {
             spanBldr = prepareSpan(SpanName.TX_ROOT, args).withTag(Tags.ERROR, false);
-            pre2PCspanBldr = prepareSpan(SpanName.GLOBAL_PRE_2PC, args);
+            pre2PCspanBldr = prepareSpan(SpanName.GLOBAL_ENLISTMENTS, args);
         }
 
         private static SpanBuilder prepareSpan(SpanName name, Object... args) {

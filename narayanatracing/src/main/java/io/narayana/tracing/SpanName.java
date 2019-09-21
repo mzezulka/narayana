@@ -3,6 +3,12 @@ package io.narayana.tracing;
 /**
  * String constants and string formatters to be used as names when creating spans.
  *
+ * Naming conventions:
+ * Spans starting with the "GLOBAL" prefix should be attached to a TX_ROOT span.
+ * Spans starting with the "LOCAL" prefix suppose that there is a GLOBAL span created
+ *     and is currently activated by the scope manager. In other words, they always
+ *     belong to a superior, more abstract action which is not TX_ROOT.
+ *
  * @author Miloslav Zezulka (mzezulka@redhat.com)
  *
  */
@@ -13,23 +19,20 @@ public enum SpanName {
      */
     TX_ROOT("Transaction"),
 
-    RESOURCE_ENLISTMENT("Resource enlistment"),
+    GLOBAL_ENLISTMENTS("XAResource Enlistments"),
+    GLOBAL_PREPARE("Global Prepare"),
+    GLOBAL_COMMIT("Global Commit"),
+    GLOBAL_ABORT("Global Abort"),
+    GLOBAL_ABORT_USER("Global Abort - User Initiated"),
+    //TODO - is this span even necessary?
+    GLOBAL_RECOVERY("Global Recovery"),
 
-    GLOBAL_PRE_2PC("Pre 2PC"),
-    GLOBAL_PREPARE("Global prepare"),
-    GLOBAL_COMMIT("Global commit"),
-    GLOBAL_ABORT("Global abort"),
-    GLOBAL_ABORT_USER("Global abort - user initiated"),
-    GLOBAL_RECOVERY("Global recovery"),
-
-    LOCAL_PREPARE("Branch prepare"),
-    LOCAL_PREPARE_LAST_RESOURCE("Branch prepare - last resource commit optimization"),
-    LOCAL_COMMIT("Branch commit"),
-    LOCAL_COMMIT_LAST_RESOURCE("Branch commit - last resource commit optimization"),
-    LOCAL_ROLLBACK("Branch rollback"),
-    LOCAL_RECOVERY("Resource recovery"),
-
-    RECOVERY("RECOVERY");
+    LOCAL_PREPARE("Branch Prepare"),
+    LOCAL_COMMIT("Branch Commit"),
+    LOCAL_COMMIT_LAST_RESOURCE("Branch Commit - Last Resource Commit Optimization"),
+    LOCAL_ROLLBACK("Branch Rollback"),
+    LOCAL_RECOVERY("XAResource Recovery"),
+    LOCAL_RESOURCE_ENLISTMENT("Enlistment");
 
     private final String name;
 
@@ -40,9 +43,5 @@ public enum SpanName {
     @Override
     public String toString() {
         return name;
-    }
-
-    public boolean isAbortAction() {
-        return this == GLOBAL_ABORT || this == GLOBAL_ABORT_USER;
     }
 }

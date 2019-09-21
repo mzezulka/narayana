@@ -592,7 +592,7 @@ public class XARecoveryModule implements ExtendedRecoveryModule {
                 SpanHandle h = new SpanHandleBuilder(SpanName.LOCAL_RECOVERY).tag(TagName.UID, uid.toString())
                         .tag(TagName.XARES, xares.toString()).build(uid.toString());
                 try (Scope _s = Tracing.activateSpan(h)) {
-                    // noop, might want to place it someplace better
+                    Tracing.log("first pass of the periodic recovery");
                 } finally {
                     h.finish();
                 }
@@ -701,6 +701,7 @@ public class XARecoveryModule implements ExtendedRecoveryModule {
                         SpanHandle h = new SpanHandleBuilder(SpanName.LOCAL_RECOVERY).tag(TagName.UID, uid.toString())
                                 .tag(TagName.XARES, xares.toString()).build(uid.toString());
                         try(Scope _s = Tracing.activateSpan(h)) {
+                            Tracing.log("second pass of the periodic recovery");
                             boolean doForget = false;
 
                             /*
@@ -804,8 +805,14 @@ public class XARecoveryModule implements ExtendedRecoveryModule {
         try {
             if (votingOutcome == XAResourceOrphanFilter.Vote.ROLLBACK) {
                 jtaLogger.i18NLogger.info_recovery_rollingback(XAHelper.xidToString(xid));
-
-                xares.rollback(xid);
+                Uid uid = XATxConverter.getUid(((XidImple) xid).getXID());
+                SpanHandle h = new SpanHandleBuilder(SpanName.LOCAL_RECOVERY).tag(TagName.UID, uid.toString())
+                        .tag(TagName.XARES, xares.toString()).build(uid.toString());
+                try(Scope _s = Tracing.activateSpan(h)) {
+                    xares.rollback(xid);
+                } finally {
+                    h.finish();
+                }
             }
         } catch (XAException e1) {
             if (e1.errorCode == XAException.XAER_NOTA) {
