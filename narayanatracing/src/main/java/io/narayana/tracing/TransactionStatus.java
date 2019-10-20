@@ -1,6 +1,5 @@
 package io.narayana.tracing;
 
-
 /**
  * Copied from com.arjuna.ats.arjuna.coordinator.ActionStatus
  * (and transformed into a proper enum).

@@ -82,8 +82,9 @@ import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
 import io.narayana.tracing.SpanName;
 import io.narayana.tracing.TagName;
 import io.narayana.tracing.Tracing;
-import io.narayana.tracing.Tracing.SpanHandle;
+import io.narayana.tracing.Tracing.DefaultSpanBuilder;
 import io.opentracing.Scope;
+import io.opentracing.Span;
 
 /*
  * Is given an AtomicAction, but uses the TwoPhaseCoordinator aspects of it to
@@ -431,7 +432,7 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
                 }
             }
         }
-        SpanHandle span = new Tracing.SpanHandleBuilder(SpanName.LOCAL_RESOURCE_ENLISTMENT)
+        Span span = new DefaultSpanBuilder(SpanName.LOCAL_RESOURCE_ENLISTMENT)
                 .tag(TagName.XARES, xaRes).build(get_uid().toString());
         try (Scope scope = Tracing.activateSpan(span)) {
             /*

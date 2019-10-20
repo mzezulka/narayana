@@ -10,6 +10,7 @@ import org.jboss.logging.Logger;
 
 import io.opentracing.Scope;
 import io.opentracing.Span;
+import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.opentracing.Tracer.SpanBuilder;
 import io.opentracing.tag.Tag;
@@ -36,18 +37,26 @@ import io.opentracing.util.GlobalTracer;
  *
  * iii) SpanHandleBuilder - responsible for building regular spans
  *
+ * Note: spans are always activated at the point of span creation (we tightly couple
+ * the events again because of the goal of having a thin API).
+ *
  * @author Miloslav Zezulka (mzezulka@redhat.com)
  */
 public class Tracing {
 
+    // transaction ID -> its relevant root span (of the whole trace)
     private static final ConcurrentMap<String, Span> TX_UID_TO_SPAN = new ConcurrentHashMap<>();
+    /*
+     * transaction ID -> wrapping span of all the actions preceding the actual
+     * execution of 2PC
+     */
     private static final ConcurrentMap<String, Span> TX_UID_TO_PRE2PC_SPAN = new ConcurrentHashMap<>();
     private static final Logger LOG = Logger.getLogger(Tracing.class);
 
     /**
      * Build a new root span handle which represents the whole transaction. Any
      * other span handles created in the Narayana code base should be attached to
-     * this root scope using the "ordinary" SpanHandleBuilder.
+     * this root scope using the "ordinary" SpanBuilder.
      *
      * Usage: as the transaction will always begin and end at two different methods,
      * we need to manage (de)activation of the span manually, schematically like
@@ -55,7 +64,7 @@ public class Tracing {
      *
      * <pre>
      * <code>public void transactionStart(Uid uid, ...) {
-     *     new SpanHandleBuilder(SpanName.TX_BEGIN, uid)
+     *     new SpanBuilder(SpanName.TX_BEGIN, uid)
      *            ...
      *           .build(uid);
      *     ...
@@ -71,12 +80,12 @@ public class Tracing {
      * between narayanatracing arjuna modules. Strings (which should always
      * represent a Uid!) are used instead.
      */
-    public static class RootSpanHandleBuilder {
+    public static class RootSpanBuilder {
 
         private SpanBuilder spanBldr;
         private SpanBuilder pre2PCspanBldr;
 
-        public RootSpanHandleBuilder(Object... args) {
+        public RootSpanBuilder(Object... args) {
             spanBldr = prepareSpan(SpanName.TX_ROOT, args).withTag(Tags.ERROR, false);
             pre2PCspanBldr = prepareSpan(SpanName.GLOBAL_ENLISTMENTS, args);
         }
@@ -89,13 +98,13 @@ public class Tracing {
         /**
          * Adds tag to the started span.
          */
-        public RootSpanHandleBuilder tag(TagName name, Object val) {
+        public RootSpanBuilder tag(TagName name, Object val) {
             Objects.requireNonNull(name, "Name of the tag cannot be null");
             spanBldr = spanBldr.withTag(name.toString(), val == null ? "null" : val.toString());
             return this;
         }
 
-        public <T> RootSpanHandleBuilder tag(Tag<T> tag, T value) {
+        public <T> RootSpanBuilder tag(Tag<T> tag, T value) {
             Objects.requireNonNull(tag, "Tag cannot be null.");
             spanBldr = spanBldr.withTag(tag, value);
             return this;
@@ -110,7 +119,7 @@ public class Tracing {
          * @param txUid UID of the new transaction
          * @return
          */
-        public SpanHandle build(String txUid) {
+        public Span build(String txUid) {
             Span rootSpan = spanBldr.withTag(Tags.COMPONENT, "narayana").ignoreActiveSpan().start();
             TX_UID_TO_SPAN.put(txUid, rootSpan);
             getTracer().scopeManager().activate(rootSpan);
@@ -119,7 +128,7 @@ public class Tracing {
             Span pre2PCSpan = pre2PCspanBldr.withTag(Tags.COMPONENT, "narayana").start();
             TX_UID_TO_PRE2PC_SPAN.put(txUid, pre2PCSpan);
 
-            return new SpanHandle(pre2PCSpan);
+            return pre2PCSpan;
         }
     }
 
@@ -141,12 +150,12 @@ public class Tracing {
      * </code>
      * </pre>
      */
-    public static class SpanHandleBuilder {
+    public static class DefaultSpanBuilder {
 
         private SpanBuilder spanBldr;
         private SpanName name;
 
-        public SpanHandleBuilder(SpanName name, Object... args) {
+        public DefaultSpanBuilder(SpanName name, Object... args) {
             this.spanBldr = prepareSpan(name, args);
             this.name = name;
         }
@@ -160,13 +169,13 @@ public class Tracing {
          * Adds tag to the started span and simply calls the {@code toString} method on
          * {@code val}.
          */
-        public SpanHandleBuilder tag(TagName name, Object val) {
+        public DefaultSpanBuilder tag(TagName name, Object val) {
             Objects.requireNonNull(name, "Name of the tag cannot be null");
             spanBldr = spanBldr.withTag(name.toString(), val == null ? "null" : val.toString());
             return this;
         }
 
-        public <T> SpanHandleBuilder tag(Tag<T> tag, T value) {
+        public <T> DefaultSpanBuilder tag(Tag<T> tag, T value) {
             Objects.requireNonNull(tag, "Tag cannot be null.");
             spanBldr = spanBldr.withTag(tag, value);
             return this;
@@ -183,9 +192,9 @@ public class Tracing {
          *
          * @param txUid id of a transaction which already has a root span
          * @throws IllegalStateException no appropriate span for {@code txUid} exists
-         * @return {@code SpanHandle with a started span}
+         * @return {@code SpanHandle} with a started span
          */
-        public SpanHandle build(String txUid) {
+        public Span build(String txUid) {
             Span pre2PCSpan = TX_UID_TO_PRE2PC_SPAN.get(txUid);
             Span parent = pre2PCSpan == null ? TX_UID_TO_SPAN.get(txUid) : pre2PCSpan;
 
@@ -196,8 +205,32 @@ public class Tracing {
                         "There was an attempt to build span belonging to tx '%s' but no root span registered for it found! Span name: '%s', span map: '%s'",
                         txUid, name, TX_UID_TO_SPAN);
             }
-            spanBldr = spanBldr.asChildOf(parent);
-            return new SpanHandle(spanBldr.withTag(Tags.COMPONENT, "narayana").start());
+            return spanBldr.asChildOf(parent).withTag(Tags.COMPONENT, "narayana").start();
+        }
+
+        /**
+         * Build a regular span and attach it to the transaction with id {@code txUid}.
+         *
+         * It is expected that the trace is currently on an entirely different node
+         * and tracing context needs to be extracted from a remote party and then this
+         * context {@code spanContext} will be used as a "gluing" span
+         * for the spans in the remote (coordinating) and spans on the node calling this
+         * method, presumably a node on which a subordinate transaction is executed.
+         *
+         * If the span has already been registered, we only retrieve the existing span.
+         *
+         * @return {@code SpanHandle} with a started span
+         */
+        public Span buildSubordinateIfAbsent(String txUid, SpanContext spanContext) {
+            Span span = TX_UID_TO_SPAN.get(txUid);
+            if(span != null) {
+                return span;
+            }
+            Objects.requireNonNull(spanContext);
+            spanBldr = spanBldr.asChildOf(spanContext);
+            span = spanBldr.withTag(Tags.COMPONENT, "narayana").start();
+            TX_UID_TO_SPAN.put(txUid, span);
+            return span;
         }
 
         /**
@@ -206,48 +239,21 @@ public class Tracing {
          *
          * @throws IllegalStateException there is currently no active span
          */
-        public SpanHandle build() {
+        public Span build() {
             if (!activeSpan().isPresent()) {
                 throw new IllegalStateException(String
                         .format("The span '%s' could not be nested into enclosing span because there is none.", name));
             }
-            return new SpanHandle(spanBldr.withTag(Tags.COMPONENT, "narayana").start());
+            return spanBldr.withTag(Tags.COMPONENT, "narayana").start();
         }
     }
 
-    public static class SpanHandle {
-        private final Span span;
-
-        public SpanHandle(Span span) {
-            this.span = span;
-        }
-
-        // package private on purpose
-        Span getSpan() {
-            return span;
-        }
-
-        public void finish() {
-            span.finish();
-        }
+    public static Scope activateSpan(Span span) {
+        return getTracer().activateSpan(span);
     }
 
     private Tracing() {
     }
-
-    private static boolean isRunningInReaperThread() {
-        return Thread.currentThread().getName().toLowerCase().contains("reaper");
-    }
-
-    public static Scope activateSpan(SpanHandle spanHandle) {
-        Objects.requireNonNull(spanHandle);
-        // ignore the Narayana reaper thread and do not activate any spans
-        if (isRunningInReaperThread()) {
-            return null;
-        }
-        return getTracer().scopeManager().activate(spanHandle.getSpan());
-    }
-
     /*
      * This method switches from the "pre-2PC" phase to the protocol phase.
      */

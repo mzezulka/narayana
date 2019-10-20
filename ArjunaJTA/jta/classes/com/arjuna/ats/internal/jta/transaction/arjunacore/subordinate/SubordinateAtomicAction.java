@@ -75,6 +75,7 @@ public class SubordinateAtomicAction extends
      * @return <code>ActionStatus</code> indicating outcome.
      */
 
+    @Override
     public int commit ()
     {
         return commit(true);
@@ -90,6 +91,7 @@ public class SubordinateAtomicAction extends
      * @return <code>ActionStatus</code> indicating outcome.
      */
 
+    @Override
     public int commit (boolean report_heuristics)
     {
         return ActionStatus.INVALID;
@@ -104,6 +106,7 @@ public class SubordinateAtomicAction extends
      * @return <code>ActionStatus</code> indicating outcome.
      */
 
+    @Override
     public int abort ()
     {
         return ActionStatus.INVALID;
@@ -119,6 +122,7 @@ public class SubordinateAtomicAction extends
      *         logs in the transaction object store.
      */
 
+    @Override
     public String type ()
     {
         return "/StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction/SubordinateAtomicAction";
@@ -313,6 +317,7 @@ public class SubordinateAtomicAction extends
      *         be terminated by the right thread.
      */
 
+    @Override
     protected boolean checkForCurrent ()
     {
         return false;

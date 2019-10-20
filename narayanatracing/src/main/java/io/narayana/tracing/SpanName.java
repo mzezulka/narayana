@@ -18,14 +18,13 @@ public enum SpanName {
      * The root span of the whole trace representing the transaction.
      */
     TX_ROOT("Transaction"),
+    SUBORD_ROOT("Subordinate transaction"),
 
     GLOBAL_ENLISTMENTS("XAResource Enlistments"),
     GLOBAL_PREPARE("Global Prepare"),
     GLOBAL_COMMIT("Global Commit"),
     GLOBAL_ABORT("Global Abort"),
     GLOBAL_ABORT_USER("Global Abort - User Initiated"),
-    //TODO - is this span even necessary?
-    GLOBAL_RECOVERY("Global Recovery"),
 
     LOCAL_PREPARE("Branch Prepare"),
     LOCAL_COMMIT("Branch Commit"),
