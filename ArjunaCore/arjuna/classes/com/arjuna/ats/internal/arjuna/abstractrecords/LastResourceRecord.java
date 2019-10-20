@@ -39,14 +39,8 @@ import com.arjuna.ats.arjuna.coordinator.AbstractRecord;
 import com.arjuna.ats.arjuna.coordinator.OnePhaseResource;
 import com.arjuna.ats.arjuna.coordinator.RecordType;
 import com.arjuna.ats.arjuna.coordinator.TwoPhaseOutcome;
+import com.arjuna.ats.arjuna.logging.BenchmarkLogger;
 import com.arjuna.ats.arjuna.logging.tsLogger;
-
-import io.narayana.tracing.SpanName;
-import io.narayana.tracing.TagName;
-import io.narayana.tracing.Tracing;
-import io.narayana.tracing.Tracing.DefaultSpanBuilder;
-import io.opentracing.Scope;
-import io.opentracing.Span;
 
 /**
  * AbstractRecord that helps us do the last resource commit optimization.
@@ -135,17 +129,11 @@ public class LastResourceRecord extends AbstractRecord {
 
     @Override
     public int topLevelCommit() {
-        Span span = new DefaultSpanBuilder(SpanName.LOCAL_COMMIT_LAST_RESOURCE)
-                .tag(TagName.UID, this.get_uid())
-                .build();
-        try(Scope _s = Tracing.activateSpan(span)) {
-            if (tsLogger.logger.isTraceEnabled()) {
-                tsLogger.logger.trace("LastResourceRecord::topLevelCommit() for " + order());
-            }
-            return TwoPhaseOutcome.FINISH_OK;
-        } finally {
-            span.finish();
+        BenchmarkLogger.logMessage();
+        if (tsLogger.logger.isTraceEnabled()) {
+            tsLogger.logger.trace("LastResourceRecord::topLevelCommit() for " + order());
         }
+        return TwoPhaseOutcome.FINISH_OK;
     }
 
     @Override

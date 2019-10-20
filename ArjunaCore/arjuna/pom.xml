@@ -90,11 +90,6 @@
       <version>1.8.13</version>
     </dependency>
     <dependency>
-      <groupId>io.jaegertracing</groupId>
-      <artifactId>jaeger-core</artifactId>
-      <version>0.35.5</version>
-    </dependency>
-    <dependency>
       <groupId>org.jboss.narayana</groupId>
       <artifactId>common</artifactId>
       <version>${project.version}</version>
@@ -110,12 +105,6 @@
           <artifactId>netty</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>io.narayana.tracing</groupId>
-      <artifactId>narayanatracing</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.logging</groupId>
