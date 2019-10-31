@@ -524,8 +524,6 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
                         XAHelper.printXAErrorCode(exp));
 
                 return false;
-            } finally {
-                span.finish();
             }
             // if (threadIsActive(xaRes))
             // return true; // this thread has already registered a resource for
