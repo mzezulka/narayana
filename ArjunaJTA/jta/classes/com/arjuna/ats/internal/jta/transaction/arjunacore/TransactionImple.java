@@ -709,6 +709,8 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
              */
             markRollbackOnly();
             return false;
+        } finally {
+            span.finish();
         }
     }
 
