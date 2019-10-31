@@ -754,6 +754,8 @@ public class XARecoveryModule implements ExtendedRecoveryModule {
                                     }
                                 }
                             } while (recordUid != null);
+                        } finally {
+                            h.finish();
                         }
                     }
                 }
