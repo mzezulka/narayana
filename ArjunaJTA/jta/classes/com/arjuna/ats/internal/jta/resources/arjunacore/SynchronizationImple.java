@@ -28,7 +28,6 @@
  *
  * $Id: SynchronizationImple.java 2342 2006-03-30 13:06:17Z  $
  */
-
 package com.arjuna.ats.internal.jta.resources.arjunacore;
 
 import com.arjuna.ats.arjuna.common.Uid;
@@ -36,7 +35,6 @@ import com.arjuna.ats.arjuna.coordinator.SynchronizationRecord;
 import com.arjuna.ats.internal.jta.utils.arjunacore.StatusConverter;
 import com.arjuna.ats.jta.logging.jtaLogger;
 
-import io.narayana.tracing.Tracing;
 /**
  * Whenever a synchronization is registered, an instance of this class is used
  * to wrap it.
@@ -45,7 +43,6 @@ import io.narayana.tracing.Tracing;
  * @version $Id: SynchronizationImple.java 2342 2006-03-30 13:06:17Z $
  * @since JTS 1.2.4.
  */
-
 public class SynchronizationImple implements SynchronizationRecord, Comparable {
 
     public SynchronizationImple(javax.transaction.Synchronization ptr) {
@@ -65,39 +62,34 @@ public class SynchronizationImple implements SynchronizationRecord, Comparable {
 
     public boolean beforeCompletion() {
         if (jtaLogger.logger.isTraceEnabled()) {
-            jtaLogger.logger.trace("SynchronizationImple.beforeCompletion - Class: " + _theSynch.getClass()
-                    + " HashCode: " + _theSynch.hashCode() + " toString: " + _theSynch);
+            jtaLogger.logger.trace("SynchronizationImple.beforeCompletion - Class: " + _theSynch.getClass() + " HashCode: " + _theSynch.hashCode() + " toString: " + _theSynch);
         }
-
         if (_theSynch != null) {
             _theSynch.beforeCompletion();
             return true;
-            // Don't catch and swallow unchecked exceptions here, they may be useful to the
-            // caller.
+        // Don't catch and swallow unchecked exceptions here, they may be useful to the
+        // caller.
         } else
             return false;
     }
 
     public boolean afterCompletion(int status) {
         if (jtaLogger.logger.isTraceEnabled()) {
-            jtaLogger.logger.trace("SynchronizationImple.afterCompletion - Class: " + _theSynch.getClass()
-                    + " HashCode: " + _theSynch.hashCode() + " toString: " + _theSynch);
+            jtaLogger.logger.trace("SynchronizationImple.afterCompletion - Class: " + _theSynch.getClass() + " HashCode: " + _theSynch.hashCode() + " toString: " + _theSynch);
         }
-
         if (_theSynch != null) {
             int s = StatusConverter.convert(status);
-
             try {
                 _theSynch.afterCompletion(s);
-
                 return true;
             } catch (Exception e) {
                 jtaLogger.i18NLogger.warn_resources_arjunacore_SynchronizationImple(_theSynch.toString(), e);
-
-                return false; // should not cause any affect!
+                // should not cause any affect!
+                return false;
             }
         } else
-            return false; // should not cause any affect!
+            // should not cause any affect!
+            return false;
     }
 
     /*
@@ -115,9 +107,8 @@ public class SynchronizationImple implements SynchronizationRecord, Comparable {
      */
     public int compareTo(Object object) {
         // register synch but always after some other one
-        //
+        // 
         SynchronizationImple other = (SynchronizationImple) object;
-
         if (this._isInterposed && (!other._isInterposed)) {
             return 1;
         } else if ((!this._isInterposed) && other._isInterposed) {
@@ -138,6 +129,8 @@ public class SynchronizationImple implements SynchronizationRecord, Comparable {
     }
 
     private javax.transaction.Synchronization _theSynch;
+
     private Uid _theUid;
+
     private boolean _isInterposed;
 }

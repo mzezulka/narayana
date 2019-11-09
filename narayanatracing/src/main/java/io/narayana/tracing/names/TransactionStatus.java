@@ -1,4 +1,4 @@
-package io.narayana.tracing;
+package io.narayana.tracing.names;
 
 /**
  * Copied from com.arjuna.ats.arjuna.coordinator.ActionStatus

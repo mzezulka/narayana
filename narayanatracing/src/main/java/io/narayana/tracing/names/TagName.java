@@ -1,4 +1,4 @@
-package io.narayana.tracing;
+package io.narayana.tracing.names;
 
 /**
  * String constants to be used when creating span tags.

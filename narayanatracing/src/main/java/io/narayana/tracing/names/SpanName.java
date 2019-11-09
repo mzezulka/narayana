@@ -1,4 +1,4 @@
-package io.narayana.tracing;
+package io.narayana.tracing.names;
 
 /**
  * String constants and string formatters to be used as names when creating spans.

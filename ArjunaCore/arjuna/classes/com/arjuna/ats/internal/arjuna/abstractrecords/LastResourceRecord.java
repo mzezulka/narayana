@@ -28,11 +28,9 @@
  *
  * $Id: LastResourceRecord.java 2342 2006-03-30 13:06:17Z  $
  */
-
 package com.arjuna.ats.internal.arjuna.abstractrecords;
 
 import java.io.PrintWriter;
-
 import com.arjuna.ats.arjuna.common.Uid;
 import com.arjuna.ats.arjuna.common.arjPropertyManager;
 import com.arjuna.ats.arjuna.coordinator.AbstractRecord;
@@ -40,13 +38,6 @@ import com.arjuna.ats.arjuna.coordinator.OnePhaseResource;
 import com.arjuna.ats.arjuna.coordinator.RecordType;
 import com.arjuna.ats.arjuna.coordinator.TwoPhaseOutcome;
 import com.arjuna.ats.arjuna.logging.tsLogger;
-
-import io.narayana.tracing.SpanName;
-import io.narayana.tracing.TagName;
-import io.narayana.tracing.Tracing;
-import io.narayana.tracing.Tracing.DefaultSpanBuilder;
-import io.opentracing.Scope;
-import io.opentracing.Span;
 
 /**
  * AbstractRecord that helps us do the last resource commit optimization.
@@ -66,16 +57,13 @@ import io.opentracing.Span;
  * @version $Id: LastResourceRecord.java 2342 2006-03-30 13:06:17Z $
  * @since ATS 3.2.
  */
-
 public class LastResourceRecord extends AbstractRecord {
 
     public LastResourceRecord(OnePhaseResource opr) {
         super(ONE_PHASE_RESOURCE_UID);
-
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("LastResourceRecord()");
         }
-
         _lro = opr;
     }
 
@@ -94,7 +82,6 @@ public class LastResourceRecord extends AbstractRecord {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("LastResourceRecord::nestedAbort() for " + order());
         }
-
         return TwoPhaseOutcome.FINISH_OK;
     }
 
@@ -103,20 +90,17 @@ public class LastResourceRecord extends AbstractRecord {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("LastResourceRecord::nestedCommit() for " + order());
         }
-
         return TwoPhaseOutcome.FINISH_ERROR;
     }
 
     /**
      * Not allowed to participate in nested transactions.
      */
-
     @Override
     public int nestedPrepare() {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("LastResourceRecord::nestedPrepare() for " + order());
         }
-
         return TwoPhaseOutcome.PREPARE_NOTOK;
     }
 
@@ -125,7 +109,6 @@ public class LastResourceRecord extends AbstractRecord {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("LastResourceRecord::topLevelAbort() for " + order());
         }
-
         if (_lro != null) {
             return _lro.rollback();
         } else {
@@ -135,16 +118,12 @@ public class LastResourceRecord extends AbstractRecord {
 
     @Override
     public int topLevelCommit() {
-        Span span = new DefaultSpanBuilder(SpanName.LOCAL_COMMIT_LAST_RESOURCE)
-                .tag(TagName.UID, this.get_uid())
-                .build();
-        try(Scope _s = Tracing.activateSpan(span)) {
+        com.arjuna.ats.arjuna.logging.BenchmarkLogger.logMessage();
+        {
             if (tsLogger.logger.isTraceEnabled()) {
                 tsLogger.logger.trace("LastResourceRecord::topLevelCommit() for " + order());
             }
             return TwoPhaseOutcome.FINISH_OK;
-        } finally {
-            span.finish();
         }
     }
 
@@ -153,17 +132,15 @@ public class LastResourceRecord extends AbstractRecord {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("LastResourceRecord::topLevelPrepare() for " + order());
         }
-
         if (_lro == null)
             return TwoPhaseOutcome.PREPARE_NOTOK;
-
-        switch (_lro.commit()) {
-        case TwoPhaseOutcome.FINISH_OK:
-            return TwoPhaseOutcome.PREPARE_OK;
-        case TwoPhaseOutcome.ONE_PHASE_ERROR:
-            return TwoPhaseOutcome.ONE_PHASE_ERROR;
-        default:
-            return TwoPhaseOutcome.PREPARE_NOTOK;
+        switch(_lro.commit()) {
+            case TwoPhaseOutcome.FINISH_OK:
+                return TwoPhaseOutcome.PREPARE_OK;
+            case TwoPhaseOutcome.ONE_PHASE_ERROR:
+                return TwoPhaseOutcome.ONE_PHASE_ERROR;
+            default:
+                return TwoPhaseOutcome.PREPARE_NOTOK;
         }
     }
 
@@ -172,32 +149,29 @@ public class LastResourceRecord extends AbstractRecord {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("LastResourceRecord::topLevelOnePhase() for " + order());
         }
-
         if (_lro == null)
             return TwoPhaseOutcome.PREPARE_NOTOK;
-
-        switch (_lro.commit()) {
-        case TwoPhaseOutcome.FINISH_OK:
-            return TwoPhaseOutcome.FINISH_OK;
-        case TwoPhaseOutcome.ONE_PHASE_ERROR:
-            return TwoPhaseOutcome.ONE_PHASE_ERROR;
-        default:
-            // in case of error
-            // FINISH_ERROR is used for 2PC there was an error and expecting recovery will
-            // retry (not available here)
-            // no exception thrown to the caller
-            // ONE_PHASE_ERROR assuming rollback but we don't know the outcome (was
-            // rolled-back or committed in the RM)
-            // javax.transaction.RollbackException thrown to the caller
-            // HEURISTIC_MIXED used to get javax.transaction.HeuristicMixedException to the
-            // caller
-            return TwoPhaseOutcome.HEURISTIC_MIXED;
+        switch(_lro.commit()) {
+            case TwoPhaseOutcome.FINISH_OK:
+                return TwoPhaseOutcome.FINISH_OK;
+            case TwoPhaseOutcome.ONE_PHASE_ERROR:
+                return TwoPhaseOutcome.ONE_PHASE_ERROR;
+            default:
+                // in case of error
+                // FINISH_ERROR is used for 2PC there was an error and expecting recovery will
+                // retry (not available here)
+                // no exception thrown to the caller
+                // ONE_PHASE_ERROR assuming rollback but we don't know the outcome (was
+                // rolled-back or committed in the RM)
+                // javax.transaction.RollbackException thrown to the caller
+                // HEURISTIC_MIXED used to get javax.transaction.HeuristicMixedException to the
+                // caller
+                return TwoPhaseOutcome.HEURISTIC_MIXED;
         }
     }
 
     @Override
     public String toString() {
-
         return "LastResourceRecord(" + _lro + ")";
     }
 
@@ -220,11 +194,9 @@ public class LastResourceRecord extends AbstractRecord {
                     tsLogger.i18NLogger.warn_lastResource_multipleWarning(a.toString());
                     _issuedWarning = true;
                 }
-
                 return true;
             } else {
                 tsLogger.i18NLogger.warn_lastResource_disallow(this.toString(), a.toString());
-
                 return false;
             }
         } else {
@@ -258,7 +230,6 @@ public class LastResourceRecord extends AbstractRecord {
     /**
      * @return <code>Object</code> to be used to order.
      */
-
     @Override
     public Object value() {
         return _lro;
@@ -270,7 +241,6 @@ public class LastResourceRecord extends AbstractRecord {
 
     public LastResourceRecord() {
         super();
-
         _lro = null;
     }
 
@@ -278,11 +248,9 @@ public class LastResourceRecord extends AbstractRecord {
 
     private static final Uid ONE_PHASE_RESOURCE_UID = Uid.lastResourceUid();
 
-    private static final boolean ALLOW_MULTIPLE_LAST_RESOURCES = arjPropertyManager.getCoreEnvironmentBean()
-            .isAllowMultipleLastResources();
+    private static final boolean ALLOW_MULTIPLE_LAST_RESOURCES = arjPropertyManager.getCoreEnvironmentBean().isAllowMultipleLastResources();
 
-    private static final boolean _disableMLRWarning = arjPropertyManager.getCoreEnvironmentBean()
-            .isDisableMultipleLastResourcesWarning();
+    private static final boolean _disableMLRWarning = arjPropertyManager.getCoreEnvironmentBean().isDisableMultipleLastResourcesWarning();
 
     private static boolean _issuedWarning = false;
 
@@ -294,7 +262,6 @@ public class LastResourceRecord extends AbstractRecord {
         if (ALLOW_MULTIPLE_LAST_RESOURCES) {
             tsLogger.i18NLogger.warn_lastResource_startupWarning();
         }
-
         if (_disableMLRWarning) {
             tsLogger.i18NLogger.warn_lastResource_disableWarning();
         }
