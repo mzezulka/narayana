@@ -28,6 +28,7 @@
  *
  * $Id: RecoverAtomicAction.java 2342 2006-03-30 13:06:17Z  $
  */
+
 package com.arjuna.ats.arjuna.recovery;
 
 import com.arjuna.ats.arjuna.AtomicAction;
@@ -36,8 +37,13 @@ import com.arjuna.ats.arjuna.coordinator.ActionStatus;
 import com.arjuna.ats.arjuna.logging.tsLogger;
 import com.arjuna.ats.internal.arjuna.recovery.AtomicActionExpiryScanner;
 
-public class RecoverAtomicAction extends AtomicAction {
+import io.narayana.tracing.DefaultSpanBuilder;
+import io.narayana.tracing.TracingUtils;
+import io.narayana.tracing.names.SpanName;
+import io.opentracing.Scope;
+import io.opentracing.Span;
 
+public class RecoverAtomicAction extends AtomicAction {
     /**
      * Re-creates/activates an AtomicAction for the specified transaction Uid.
      */
@@ -52,28 +58,40 @@ public class RecoverAtomicAction extends AtomicAction {
      */
     public void replayPhase2() {
         if (tsLogger.logger.isDebugEnabled()) {
-            tsLogger.logger.debug("RecoverAtomicAction.replayPhase2 recovering " + get_uid() + " ActionStatus is " + ActionStatus.stringForm(_theStatus));
+            tsLogger.logger.debug("RecoverAtomicAction.replayPhase2 recovering " + get_uid() + " ActionStatus is "
+                    + ActionStatus.stringForm(_theStatus));
         }
+
         if (_activated) {
-            com.arjuna.ats.arjuna.logging.BenchmarkLogger.logMessage();
-            {
-                if ((_theStatus == ActionStatus.PREPARED) || (_theStatus == ActionStatus.COMMITTING) || (_theStatus == ActionStatus.COMMITTED) || (_theStatus == ActionStatus.H_COMMIT) || (_theStatus == ActionStatus.H_MIXED) || (_theStatus == ActionStatus.H_HAZARD)) {
+            Span h = new DefaultSpanBuilder(SpanName.LOCAL_RECOVERY).build(get_uid().toString());
+            try(Scope _s = TracingUtils.activateSpan(h)) {
+                if ((_theStatus == ActionStatus.PREPARED) || (_theStatus == ActionStatus.COMMITTING)
+                        || (_theStatus == ActionStatus.COMMITTED) || (_theStatus == ActionStatus.H_COMMIT)
+                        || (_theStatus == ActionStatus.H_MIXED) || (_theStatus == ActionStatus.H_HAZARD)) {
                     super.phase2Commit(_reportHeuristics);
-                } else if ((_theStatus == ActionStatus.ABORTED) || (_theStatus == ActionStatus.H_ROLLBACK) || (_theStatus == ActionStatus.ABORTING) || (_theStatus == ActionStatus.ABORT_ONLY)) {
+                } else if ((_theStatus == ActionStatus.ABORTED) || (_theStatus == ActionStatus.H_ROLLBACK)
+                        || (_theStatus == ActionStatus.ABORTING) || (_theStatus == ActionStatus.ABORT_ONLY)) {
                     super.phase2Abort(_reportHeuristics);
                 } else {
                     tsLogger.i18NLogger.warn_recovery_RecoverAtomicAction_2(ActionStatus.stringForm(_theStatus));
                 }
+            } finally {
+                h.finish();
             }
+
+
             if (tsLogger.logger.isDebugEnabled()) {
                 tsLogger.logger.debug("RecoverAtomicAction.replayPhase2( " + get_uid() + " )  finished");
             }
         } else {
             tsLogger.i18NLogger.warn_recovery_RecoverAtomicAction_4(get_uid());
+
             /*
              * Failure to activate so move the log. Unlikely to get better automatically!
              */
+
             AtomicActionExpiryScanner scanner = new AtomicActionExpiryScanner();
+
             try {
                 scanner.moveEntry(get_uid());
             } catch (final Exception ex) {
@@ -92,4 +110,5 @@ public class RecoverAtomicAction extends AtomicAction {
 
     // whether heuristic reporting on phase 2 commit is enabled.
     private boolean _reportHeuristics = true;
+
 }
