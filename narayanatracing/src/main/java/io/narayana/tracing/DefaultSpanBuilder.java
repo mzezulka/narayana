@@ -9,8 +9,6 @@ import org.jboss.logging.Logger;
 
 import io.narayana.tracing.names.SpanName;
 import io.narayana.tracing.names.TagName;
-import io.narayana.tracing.registry.RegistryType;
-import io.narayana.tracing.registry.SpanRegistry;
 import io.opentracing.Span;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer.SpanBuilder;
@@ -81,8 +79,8 @@ public class DefaultSpanBuilder {
      * @return {@code SpanHandle} with a started span
      */
     public Span build(String txUid) {
-        Span parent = SpanRegistry.get(RegistryType.PRE_2PC, txUid)
-                .orElse(SpanRegistry.get(RegistryType.ROOT, txUid)
+        Span parent = SpanRegistry.getPre2pc(txUid)
+                .orElse(SpanRegistry.getRoot(txUid)
                 .orElseThrow(() -> new IllegalArgumentException(String.format(
                         "No root span found for '%s' when building span with name '%s'.", txUid, name))));
         return spanBldr.asChildOf(parent).withTag(Tags.COMPONENT, "narayana").start();
@@ -102,10 +100,10 @@ public class DefaultSpanBuilder {
      * @return {@code SpanHandle} with a started span
      */
     public Span buildSubordinateIfAbsent(String txUid, SpanContext spanContext) {
-        return SpanRegistry.get(RegistryType.ROOT, txUid).orElseGet(() -> {
+        return SpanRegistry.getRoot(txUid).orElseGet(() -> {
             Objects.requireNonNull(spanContext);
             Span span = spanBldr.asChildOf(spanContext).withTag(Tags.COMPONENT, "narayana").start();
-            SpanRegistry.insert(RegistryType.ROOT, txUid, span);
+            SpanRegistry.insertRoot(txUid, span);
             return span;
         });
     }

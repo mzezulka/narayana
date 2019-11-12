@@ -6,8 +6,6 @@ import java.util.Objects;
 
 import io.narayana.tracing.names.SpanName;
 import io.narayana.tracing.names.TagName;
-import io.narayana.tracing.registry.RegistryType;
-import io.narayana.tracing.registry.SpanRegistry;
 import io.opentracing.Span;
 import io.opentracing.Tracer.SpanBuilder;
 import io.opentracing.tag.Tag;
@@ -81,12 +79,12 @@ public class RootSpanBuilder {
      */
     public Span build(String txUid) {
         Span rootSpan = spanBldr.withTag(Tags.COMPONENT, "narayana").ignoreActiveSpan().start();
-        SpanRegistry.insert(RegistryType.ROOT, txUid, rootSpan);
+        SpanRegistry.insertRoot(txUid, rootSpan);
         getTracer().scopeManager().activate(rootSpan);
 
         pre2PCspanBldr.asChildOf(rootSpan);
         Span pre2PCSpan = pre2PCspanBldr.withTag(Tags.COMPONENT, "narayana").start();
-        SpanRegistry.insert(RegistryType.PRE_2PC, txUid, pre2PCSpan);
+        SpanRegistry.insertPre2pc(txUid, pre2PCSpan);
 
         return pre2PCSpan;
     }
