@@ -1,9 +1,9 @@
 package io.narayana.tracing;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import org.jboss.logging.Logger;
 
@@ -42,12 +42,12 @@ import io.opentracing.util.GlobalTracer;
  * @author Miloslav Zezulka (mzezulka@redhat.com)
  */
 public class TracingUtils {
-    private static final ConcurrentMap<String, Span> ROOT_SPANS = new ConcurrentHashMap<>();
+    private static final Map<String, Span> ROOT_SPANS = new HashMap<>();
     /*
      * transaction ID -> wrapping span of all the actions preceding the actual
      * execution of 2PC
      */
-    private static final ConcurrentMap<String, Span> PRE2PC_SPANS = new ConcurrentHashMap<>();
+    private static final Map<String, Span> PRE2PC_SPANS = new HashMap<>();
     private static final Logger LOG = Logger.getLogger(TracingUtils.class);
 
     private TracingUtils() {
