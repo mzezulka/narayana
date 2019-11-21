@@ -43,6 +43,8 @@ import io.opentracing.util.GlobalTracer;
  */
 public class TracingUtils {
     private static final Map<String, Span> ROOT_SPANS = new HashMap<>();
+    static final boolean TRACING_ACTIVATED = Boolean.valueOf(System.getProperty("org.jboss.narayana.tracingActivated", "true"));
+    static final Span DUMMY_SPAN = new DummySpan();
     /*
      * transaction ID -> wrapping span of all the actions preceding the actual
      * execution of 2PC
@@ -54,6 +56,7 @@ public class TracingUtils {
     }
 
     public static Scope activateSpan(Span span) {
+        if(!TRACING_ACTIVATED) return null;
         return getTracer().activateSpan(span);
     }
 
@@ -61,12 +64,14 @@ public class TracingUtils {
      * This method switches from the "pre-2PC" phase to the protocol phase.
      */
     public static void begin2PC(String txUid) {
+        if(!TRACING_ACTIVATED) return;
         Span span = PRE2PC_SPANS.remove(txUid);
         if (span != null)
             span.finish();
     }
 
     private static void finish(String txUid, boolean remove) {
+        if(!TRACING_ACTIVATED) return;
         // We need to check for superfluous calls to this method
         Span span = remove ? ROOT_SPANS.remove(txUid) : ROOT_SPANS.get(txUid);
         if (span != null)
@@ -79,6 +84,7 @@ public class TracingUtils {
      * @param txUid
      */
     public static void finish(String txUid) {
+        if(!TRACING_ACTIVATED) return;
         finish(txUid, false);
     }
 
@@ -89,6 +95,7 @@ public class TracingUtils {
      * @param txUid
      */
     public static void finishWithoutRemoval(String txUid) {
+        if(!TRACING_ACTIVATED) return;
         finish(txUid, false);
     }
 
@@ -98,6 +105,7 @@ public class TracingUtils {
      *
      */
     public static void markTransactionFailed(String txUid) {
+        if(!TRACING_ACTIVATED) return;
         Span span = ROOT_SPANS.get(txUid);
         if (span != null)
             span.setTag(Tags.ERROR, true);
@@ -113,6 +121,7 @@ public class TracingUtils {
      * @param status one of the possible states any transaction could be in
      */
     public static void setTransactionStatus(String txUid, TransactionStatus status) {
+        if(!TRACING_ACTIVATED) return;
         Span span = ROOT_SPANS.get(txUid);
         if (span != null)
             span.setTag(TagName.STATUS.toString(), status.toString().toLowerCase());
@@ -124,14 +133,17 @@ public class TracingUtils {
      * the context (i.e. status of the transaction inside of the method call).
      */
     public static void addTag(TagName name, String val) {
+        if(!TRACING_ACTIVATED) return;
         activeSpan().ifPresent(s -> s.setTag(name.toString(), val));
     }
 
     public static void addTag(TagName name, Object obj) {
+        if(!TRACING_ACTIVATED) return;
         addTag(name, obj == null ? "null" : obj.toString());
     }
 
     public static <T> void addTag(Tag<T> tag, T obj) {
+        if(!TRACING_ACTIVATED) return;
         activeSpan().ifPresent((s) -> s.setTag(tag, obj));
     }
 
@@ -139,14 +151,17 @@ public class TracingUtils {
      * Log a message for the currently active span.
      */
     public static void log(String message) {
+        if(!TRACING_ACTIVATED) return;
         activeSpan().ifPresent(s -> s.log(message));
     }
 
     public static <T> void log(String fld, String value) {
+        if(!TRACING_ACTIVATED) return;
         activeSpan().ifPresent(s -> s.log(Collections.singletonMap(fld, value)));
     }
 
     static Optional<Span> activeSpan() {
+        if(!TRACING_ACTIVATED) return Optional.of(DUMMY_SPAN);
         Span span = getTracer().activeSpan();
         return span == null ? Optional.empty() : Optional.of(span);
     }
@@ -159,6 +174,9 @@ public class TracingUtils {
      *         implementation
      */
     static Tracer getTracer() {
+        // return null here on purpose, when tracing is deactivated, tracer calls shouldn't
+        // be even activated
+        if(!TRACING_ACTIVATED) return null;
         return GlobalTracer.get();
     }
 }

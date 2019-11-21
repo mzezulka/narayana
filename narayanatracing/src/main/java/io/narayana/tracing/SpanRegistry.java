@@ -1,5 +1,8 @@
 package io.narayana.tracing;
 
+import static io.narayana.tracing.TracingUtils.DUMMY_SPAN;
+import static io.narayana.tracing.TracingUtils.TRACING_ACTIVATED;
+
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,6 +28,7 @@ public class SpanRegistry {
     }
 
     private static Optional<Span> get(ConcurrentMap<String, Span> map, String id) {
+        if(!TRACING_ACTIVATED) return Optional.of(DUMMY_SPAN);
         Objects.requireNonNull(id);
         Span span = map.get(id);
         return span == null ? Optional.empty() : Optional.of(span);
@@ -36,6 +40,7 @@ public class SpanRegistry {
      * @return {@code Span} from the registry of root spans
      */
     public static Optional<Span> getRoot(String id) {
+        if(!TRACING_ACTIVATED) return Optional.of(DUMMY_SPAN);
         return get(ROOT_SPANS, id);
     }
 
@@ -45,10 +50,12 @@ public class SpanRegistry {
      * @return {@code Span} from the registry of wrapper pre-2PC spans
      */
     public static Optional<Span> getPre2pc(String id) {
+        if(!TRACING_ACTIVATED) return Optional.of(DUMMY_SPAN);
         return get(PRE2PC_SPANS, id);
     }
 
     private static Span remove(ConcurrentMap<String, Span> map, String id) {
+        if(!TRACING_ACTIVATED) return DUMMY_SPAN;
         Objects.requireNonNull(id);
         return map.remove(id);
     }
@@ -63,6 +70,7 @@ public class SpanRegistry {
      * @return the deleted {@code Span}
      */
     public static Span removeRoot(String id) {
+        if(!TRACING_ACTIVATED) return DUMMY_SPAN;
         return remove(ROOT_SPANS, id);
     }
 
@@ -76,10 +84,12 @@ public class SpanRegistry {
      * @return the deleted {@code Span}
      */
     public static Span removePre2pc(String id) {
+        if(!TRACING_ACTIVATED) return DUMMY_SPAN;
         return remove(PRE2PC_SPANS, id);
     }
 
     private static void insert(ConcurrentMap<String, Span> map, String id, Span span) {
+        if(!TRACING_ACTIVATED) return;
         Objects.requireNonNull(id);
         Objects.requireNonNull(span);
         if (map.putIfAbsent(id, span) != null)
@@ -96,6 +106,7 @@ public class SpanRegistry {
      *                                  id {@code id} is already registered.
      */
     public static void insertRoot(String id, Span span) {
+        if(!TRACING_ACTIVATED) return;
         insert(ROOT_SPANS, id, span);
     }
 
@@ -108,6 +119,7 @@ public class SpanRegistry {
      *                                  id {@code id} is already registered.
      */
     public static void insertPre2pc(String id, Span span) {
+        if(!TRACING_ACTIVATED) return;
         insert(PRE2PC_SPANS, id, span);
     }
 

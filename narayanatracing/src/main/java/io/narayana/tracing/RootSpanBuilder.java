@@ -1,5 +1,7 @@
 package io.narayana.tracing;
 
+import static io.narayana.tracing.TracingUtils.DUMMY_SPAN;
+import static io.narayana.tracing.TracingUtils.TRACING_ACTIVATED;
 import static io.narayana.tracing.TracingUtils.getTracer;
 
 import java.util.Objects;
@@ -57,12 +59,14 @@ public class RootSpanBuilder {
      * Adds tag to the started span.
      */
     public RootSpanBuilder tag(TagName name, Object val) {
+        if(!TRACING_ACTIVATED) return this;
         Objects.requireNonNull(name, "Name of the tag cannot be null");
         spanBldr = spanBldr.withTag(name.toString(), val == null ? "null" : val.toString());
         return this;
     }
 
     public <T> RootSpanBuilder tag(Tag<T> tag, T value) {
+        if(!TRACING_ACTIVATED) return this;
         Objects.requireNonNull(tag, "Tag cannot be null.");
         spanBldr = spanBldr.withTag(tag, value);
         return this;
@@ -78,6 +82,7 @@ public class RootSpanBuilder {
      * @return
      */
     public Span build(String txUid) {
+        if(!TRACING_ACTIVATED) return DUMMY_SPAN;
         Span rootSpan = spanBldr.withTag(Tags.COMPONENT, "narayana").ignoreActiveSpan().start();
         SpanRegistry.insertRoot(txUid, rootSpan);
         getTracer().scopeManager().activate(rootSpan);

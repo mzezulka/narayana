@@ -1,5 +1,7 @@
 package io.narayana.tracing;
 
+import static io.narayana.tracing.TracingUtils.DUMMY_SPAN;
+import static io.narayana.tracing.TracingUtils.TRACING_ACTIVATED;
 import static io.narayana.tracing.TracingUtils.activeSpan;
 import static io.narayana.tracing.TracingUtils.getTracer;
 
@@ -54,12 +56,14 @@ public class DefaultSpanBuilder {
      * {@code val}.
      */
     public DefaultSpanBuilder tag(TagName name, Object val) {
+        if(!TRACING_ACTIVATED) return this;
         Objects.requireNonNull(name);
         spanBldr = spanBldr.withTag(name.toString(), val == null ? "null" : val.toString());
         return this;
     }
 
     public <T> DefaultSpanBuilder tag(Tag<T> tag, T value) {
+        if(!TRACING_ACTIVATED) return this;
         Objects.requireNonNull(tag);
         spanBldr = spanBldr.withTag(tag, value);
         return this;
@@ -79,6 +83,7 @@ public class DefaultSpanBuilder {
      * @return {@code SpanHandle} with a started span
      */
     public Span build(String txUid) {
+        if(!TRACING_ACTIVATED) return DUMMY_SPAN;
         Span parent = SpanRegistry.getPre2pc(txUid)
                 .orElse(SpanRegistry.getRoot(txUid)
                 .orElseThrow(() -> new IllegalArgumentException(String.format(
@@ -100,6 +105,7 @@ public class DefaultSpanBuilder {
      * @return {@code SpanHandle} with a started span
      */
     public Span buildSubordinateIfAbsent(String txUid, SpanContext spanContext) {
+        if(!TRACING_ACTIVATED) return DUMMY_SPAN;
         return SpanRegistry.getRoot(txUid).orElseGet(() -> {
             Objects.requireNonNull(spanContext);
             Span span = spanBldr.asChildOf(spanContext).withTag(Tags.COMPONENT, "narayana").start();
@@ -115,6 +121,7 @@ public class DefaultSpanBuilder {
      * @throws IllegalStateException there is currently no active span
      */
     public Span build() {
+        if(!TRACING_ACTIVATED) return DUMMY_SPAN;
         if (!activeSpan().isPresent()) {
             throw new IllegalStateException(String
                     .format("The span '%s' could not be nested into enclosing span because there is none.", name));
