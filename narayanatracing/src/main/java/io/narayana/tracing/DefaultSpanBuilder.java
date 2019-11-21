@@ -42,6 +42,7 @@ public class DefaultSpanBuilder {
     private static final Logger LOG = Logger.getLogger(DefaultSpanBuilder.class);
 
     public DefaultSpanBuilder(SpanName name, Object... args) {
+        if(!TRACING_ACTIVATED) return;
         this.spanBldr = prepareSpan(name, args);
         this.name = name;
     }
