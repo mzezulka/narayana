@@ -2443,7 +2443,7 @@ public class BasicAction extends StateManager {
              * If a failure occurs then the record will be put back on to the pending list.
              * Otherwise it is moved to another list or dropped if readonly.
              */
-            Span span = new DefaultSpanBuilder(SpanName.LOCAL_PREPARE).tag(TagName.XARES, record).build();
+            Span span = new DefaultSpanBuilder(SpanName.LOCAL_PREPARE).tag(TagName.XARES, record.type()).build();
             try (Scope scope = TracingUtils.activateSpan(span)) {
                 int individualTwoPhaseOutcome = doPrepare(reportHeuristics, record);
                 if (individualTwoPhaseOutcome != TwoPhaseOutcome.PREPARE_READONLY) {
@@ -2670,7 +2670,7 @@ public class BasicAction extends StateManager {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("BasicAction::doCommit (" + record + ")");
         }
-        Span span = new DefaultSpanBuilder(SpanName.LOCAL_COMMIT).tag(TagName.XARES, record).build();
+        Span span = new DefaultSpanBuilder(SpanName.LOCAL_COMMIT).tag(TagName.XARES, record.type()).build();
         try (Scope scope = TracingUtils.activateSpan(span)) {
             /*
              * To get heuristics right, as soon as we manage to commit the first record we
@@ -2789,8 +2789,7 @@ public class BasicAction extends StateManager {
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("BasicAction::doAbort (" + record + ")");
         }
-
-        Span span = new DefaultSpanBuilder(SpanName.LOCAL_ROLLBACK).tag(TagName.XARES, record).build();
+        Span span = new DefaultSpanBuilder(SpanName.LOCAL_ROLLBACK).tag(TagName.XARES, record.type()).build();
         try (Scope scope = TracingUtils.activateSpan(span)) {
             int ok = TwoPhaseOutcome.FINISH_OK;
 
