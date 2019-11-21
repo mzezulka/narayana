@@ -46,6 +46,7 @@ public class RootSpanBuilder {
     private SpanBuilder pre2PCspanBldr;
 
     public RootSpanBuilder(Object... args) {
+        if(!TRACING_ACTIVATED) return;
         spanBldr = prepareSpan(SpanName.TX_ROOT, args).withTag(Tags.ERROR, false);
         pre2PCspanBldr = prepareSpan(SpanName.GLOBAL_ENLISTMENTS, args);
     }

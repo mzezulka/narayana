@@ -45,6 +45,7 @@ public class TracingUtils {
     private static final Map<String, Span> ROOT_SPANS = new HashMap<>();
     static final boolean TRACING_ACTIVATED = Boolean.valueOf(System.getProperty("org.jboss.narayana.tracingActivated", "true"));
     static final Span DUMMY_SPAN = new DummySpan();
+    static final Scope DUMMY_SCOPE = new DummyScope();
     /*
      * transaction ID -> wrapping span of all the actions preceding the actual
      * execution of 2PC
@@ -56,7 +57,7 @@ public class TracingUtils {
     }
 
     public static Scope activateSpan(Span span) {
-        if(!TRACING_ACTIVATED) return null;
+        if(!TRACING_ACTIVATED) return DUMMY_SCOPE;
         return getTracer().activateSpan(span);
     }
 
