@@ -432,8 +432,7 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
                 }
             }
         }
-        Span span = new DefaultSpanBuilder(SpanName.LOCAL_RESOURCE_ENLISTMENT)
-                .tag(TagName.XARES, xaRes).build(get_uid().toString());
+        Span span = new DefaultSpanBuilder(SpanName.LOCAL_RESOURCE_ENLISTMENT).build(get_uid().toString());
         try (Scope scope = TracingUtils.activateSpan(span)) {
             /*
              * For each transaction we maintain a list of resources registered with it. Each
