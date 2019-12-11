@@ -7,10 +7,16 @@
         <Pattern>%d %p %c{1.} [%t] %m %ex%n</Pattern>
       </PatternLayout>
     </RandomAccessFile>
+    <Console name="STDOUT" target="SYSTEM_OUT">
+      <PatternLayout pattern="%m%n"/>
+    </Console>
   </Appenders>
   <Loggers>
     <Root level="info" includeLocation="false">
       <AppenderRef ref="RandomAccessFile"/>
+    </Root>
+    <Root level="off" includeLocation="false">
+      <AppenderRef ref="STDOUT"/>
     </Root>
   </Loggers>
 </Configuration>
