@@ -15,8 +15,8 @@
     <Root level="info" includeLocation="false">
       <AppenderRef ref="RandomAccessFile"/>
     </Root>
-    <Root level="off" includeLocation="false">
+    <Logger level="off" includeLocation="false">
       <AppenderRef ref="STDOUT"/>
-    </Root>
+    </Logger>
   </Loggers>
 </Configuration>
