@@ -12,10 +12,11 @@
     </Console>
   </Appenders>
   <Loggers>
-    <Root level="info" includeLocation="false">
+    <Root level="off" />
+    <Logger level="info" includeLocation="false">
       <AppenderRef ref="RandomAccessFile"/>
-    </Root>
-    <Logger level="off" includeLocation="false">
+    </Logger>
+    <Logger level="off">
       <AppenderRef ref="STDOUT"/>
     </Logger>
   </Loggers>
