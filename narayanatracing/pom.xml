@@ -11,11 +11,28 @@
   <artifactId>narayanatracing</artifactId>
   <name>OpenTracing facade for Narayana</name>
 
+  <properties>
+    <version.io.jaegertracing>0.35.5</version.io.jaegertracing>
+    <version.io.opentracing>0.32.0</version.io.opentracing>
+    <version.org.assert>3.14.0</version.org.assert>
+    <version.org.mockito>3.2.0</version.org.mockito>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.jaegertracing</groupId>
       <artifactId>jaeger-core</artifactId>
-      <version>0.35.5</version>
+      <version>${version.io.jaegertracing}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentracing</groupId>
+      <artifactId>opentracing-util</artifactId>
+      <version>${version.io.opentracing}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentracing</groupId>
+      <artifactId>opentracing-noop</artifactId>
+      <version>${version.io.opentracing}</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -27,6 +44,24 @@
       <groupId>org.jboss.narayana</groupId>
       <artifactId>test-utils</artifactId>
       <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>${version.org.mockito}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>${version.org.assert}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.opentracing</groupId>
+      <artifactId>opentracing-mock</artifactId>
+      <version>${version.io.opentracing}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
