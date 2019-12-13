@@ -168,13 +168,10 @@ public class TracingUtils {
     }
 
     /**
-     * This is package private on purpose. Users of the tracing module shouldn't be
-     * encumbered with tracers.
-     *
      * @return registered tracer or any default tracer provided by the opentracing
      *         implementation
      */
-    static Tracer getTracer() {
+    public static Tracer getTracer() {
         // return null here on purpose, when tracing is deactivated, tracer calls shouldn't
         // be even activated
         if(!TRACING_ACTIVATED) return null;
