@@ -271,6 +271,7 @@ public class Uid implements Cloneable, Serializable {
      * generateHash should have been called by now.
      */
 
+    @Override
     public int hashCode() {
         return _hashValue;
     }
@@ -344,6 +345,7 @@ public class Uid implements Cloneable, Serializable {
      * Same as stringForm()
      */
 
+    @Override
     public String toString() {
         return stringForm();
     }
@@ -359,6 +361,7 @@ public class Uid implements Cloneable, Serializable {
      * Create a copy of this instance.
      */
 
+    @Override
     public Object clone() throws CloneNotSupportedException {
         return new Uid(this);
     }
@@ -387,6 +390,7 @@ public class Uid implements Cloneable, Serializable {
      * Override Object.equals
      */
 
+    @Override
     public boolean equals(Object o) {
         if (o instanceof Uid)
             return this.equals((Uid) o);

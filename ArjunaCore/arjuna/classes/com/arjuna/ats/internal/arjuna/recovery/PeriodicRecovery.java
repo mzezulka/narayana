@@ -775,6 +775,7 @@ public class PeriodicRecovery extends Thread {
 
             try {
                 m.periodicWorkFirstPass();
+
             } finally {
                 restoreClassLoader(cl);
             }

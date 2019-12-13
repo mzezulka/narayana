@@ -1,4 +1,4 @@
-package io.narayana.tracing;
+package com.hp.mwtests.ts.arjuna;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -40,15 +40,17 @@ public class TracingTest {
       MockitoAnnotations.initMocks(this);
       when(mockTracer.buildSpan(anyString())).thenReturn(mockSpanBuilder);
       when(mockSpanBuilder.asChildOf(any(SpanContext.class))).thenReturn(mockSpanBuilder);
-      when(mockSpanBuilder.startActive(true)).thenReturn(mockScope);
+      when(mockSpanBuilder.start()).thenReturn(mockSpan);
+      when(mockScopeManager.activate(mockSpan)).thenReturn(mockScope);
       when(mockTracer.scopeManager()).thenReturn(mockScopeManager);
-      when(mockScope.span()).thenReturn(mockSpan);
+      when(mockScopeManager.activeSpan()).thenReturn(mockSpan);
       when(mockSpanBuilder.withTag(anyString(), anyString())).thenReturn(mockSpanBuilder);
       when(mockSpan.context()).thenReturn(mockSpanContext);
     }
 
     @Test
-    public void test() {
+    public void commit() {
+
 
     }
 
