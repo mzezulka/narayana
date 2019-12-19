@@ -42,7 +42,6 @@ import io.opentracing.util.GlobalTracer;
  * @author Miloslav Zezulka (mzezulka@redhat.com)
  */
 public class TracingUtils {
-    private static final Map<String, Span> ROOT_SPANS = new HashMap<>();
     static final boolean TRACING_ACTIVATED = Boolean.valueOf(System.getProperty("org.jboss.narayana.tracingActivated", "true"));
     static final Span DUMMY_SPAN = new DummySpan();
     static final Scope DUMMY_SCOPE = new DummyScope();
@@ -74,9 +73,8 @@ public class TracingUtils {
     private static void finish(String txUid, boolean remove) {
         if(!TRACING_ACTIVATED) return;
         // We need to check for superfluous calls to this method
-        Span span = remove ? ROOT_SPANS.remove(txUid) : ROOT_SPANS.get(txUid);
-        if (span != null)
-            span.finish();
+        Optional<Span> span = remove ? Optional.of(SpanRegistry.removeRoot(txUid)) : SpanRegistry.getRoot(txUid);
+        span.ifPresent(s -> s.finish());
     }
 
     /**
@@ -107,9 +105,7 @@ public class TracingUtils {
      */
     public static void markTransactionFailed(String txUid) {
         if(!TRACING_ACTIVATED) return;
-        Span span = ROOT_SPANS.get(txUid);
-        if (span != null)
-            span.setTag(Tags.ERROR, true);
+        SpanRegistry.getRoot(txUid).ifPresent(s -> s.setTag(Tags.ERROR, true));
     }
 
     /**
@@ -123,9 +119,7 @@ public class TracingUtils {
      */
     public static void setTransactionStatus(String txUid, TransactionStatus status) {
         if(!TRACING_ACTIVATED) return;
-        Span span = ROOT_SPANS.get(txUid);
-        if (span != null)
-            span.setTag(TagName.STATUS.toString(), status.toString().toLowerCase());
+        SpanRegistry.getRoot(txUid).ifPresent(s -> s.setTag(TagName.STATUS.toString(), status.toString().toLowerCase()));
     }
 
     /**
