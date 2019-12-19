@@ -1,8 +1,6 @@
 package io.narayana.tracing;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import org.jboss.logging.Logger;
@@ -45,11 +43,6 @@ public class TracingUtils {
     static final boolean TRACING_ACTIVATED = Boolean.valueOf(System.getProperty("org.jboss.narayana.tracingActivated", "true"));
     static final Span DUMMY_SPAN = new DummySpan();
     static final Scope DUMMY_SCOPE = new DummyScope();
-    /*
-     * transaction ID -> wrapping span of all the actions preceding the actual
-     * execution of 2PC
-     */
-    private static final Map<String, Span> PRE2PC_SPANS = new HashMap<>();
     private static final Logger LOG = Logger.getLogger(TracingUtils.class);
 
     private TracingUtils() {
@@ -65,9 +58,8 @@ public class TracingUtils {
      */
     public static void begin2PC(String txUid) {
         if(!TRACING_ACTIVATED) return;
-        Span span = PRE2PC_SPANS.remove(txUid);
-        if (span != null)
-            span.finish();
+        Span span = SpanRegistry.removePre2pc(txUid);
+        span.finish();
     }
 
     private static void finish(String txUid, boolean remove) {
