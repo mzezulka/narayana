@@ -36,7 +36,7 @@ import io.opentracing.tag.Tags;
  * </code>}
  * </pre>
  *
- * Note: we're not using the Uid class as this would create a cyclic dependency
+ * Note: we're not using the Uid class as a key as this would create a cyclic dependency
  * between narayanatracing arjuna modules. Strings (which should always
  * represent a Uid!) are used instead.
  */
@@ -88,9 +88,9 @@ public class RootSpanBuilder {
         SpanRegistry.insertRoot(txUid, rootSpan);
         getTracer().scopeManager().activate(rootSpan);
 
-        pre2PCspanBldr.asChildOf(rootSpan);
-        Span pre2PCSpan = pre2PCspanBldr.withTag(Tags.COMPONENT, "narayana").start();
+        Span pre2PCSpan = pre2PCspanBldr.asChildOf(rootSpan).withTag(Tags.COMPONENT, "narayana").start();
         SpanRegistry.insertPre2pc(txUid, pre2PCSpan);
+        getTracer().scopeManager().activate(pre2PCSpan);
 
         return pre2PCSpan;
     }

@@ -58,8 +58,10 @@ public class TracingUtils {
      */
     public static void begin2PC(String txUid) {
         if(!TRACING_ACTIVATED) return;
-        Span span = SpanRegistry.removePre2pc(txUid);
-        span.finish();
+        SpanRegistry.removePre2pc(txUid).finish();
+        if(getTracer().activeSpan() == null) {
+            throw new IllegalStateException("Pre2PC span was deactivated but no parent active span found.");
+        }
     }
 
     private static void finish(String txUid, boolean remove) {
