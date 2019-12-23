@@ -1429,8 +1429,8 @@ public class BasicAction extends StateManager {
 
         if (actionStatus == ActionStatus.COMMITTED) {
             TracingUtils.setTransactionStatus(get_uid().toString(), TransactionStatus.COMMITTED);
+            TracingUtils.finish(get_uid().toString());
         }
-        TracingUtils.finish(get_uid().toString());
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.tracef("BasicAction::End() result for action-id (%s) is (%s) node id: (%s)", get_uid(),
                     TwoPhaseOutcome.stringForm(heuristicDecision),

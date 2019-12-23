@@ -34,13 +34,14 @@ import io.opentracing.util.GlobalTracer;
  *
  * iii) SpanHandleBuilder - responsible for building regular spans
  *
- * Note: spans are always activated at the point of span creation (we tightly couple
- * the events again because of the goal of having a thin API).
+ * Note: spans are always activated at the point of span creation (we tightly
+ * couple the events again because of the goal of having a thin API).
  *
  * @author Miloslav Zezulka (mzezulka@redhat.com)
  */
 public class TracingUtils {
-    static final boolean TRACING_ACTIVATED = Boolean.valueOf(System.getProperty("org.jboss.narayana.tracingActivated", "true"));
+    static final boolean TRACING_ACTIVATED = Boolean
+            .valueOf(System.getProperty("org.jboss.narayana.tracingActivated", "true"));
     static final Span DUMMY_SPAN = new DummySpan();
     static final Scope DUMMY_SCOPE = new DummyScope();
     private static final Logger LOG = Logger.getLogger(TracingUtils.class);
@@ -49,23 +50,31 @@ public class TracingUtils {
     }
 
     public static Scope activateSpan(Span span) {
-        if(!TRACING_ACTIVATED) return DUMMY_SCOPE;
+        if (!TRACING_ACTIVATED)
+            return DUMMY_SCOPE;
         return getTracer().activateSpan(span);
     }
 
     /*
      * This method switches from the "pre-2PC" phase to the protocol phase.
+     *
+     * It is possible (and highly probable) that this method will be called more
+     * than once during a transaction's existence.
+     *
+     * Therefore, we always must explicitly check that if a root span with {@code
+     * txUid} still exists but there is none corresponding in the pre2pc registry,
+     * we must have already called therefore can simply ignore such calls.
      */
     public static void begin2PC(String txUid) {
-        if(!TRACING_ACTIVATED) return;
-        SpanRegistry.removePre2pc(txUid).finish();
-        if(getTracer().activeSpan() == null) {
-            throw new IllegalStateException("Pre2PC span was deactivated but no parent active span found.");
+        if (!TRACING_ACTIVATED) return;
+        SpanRegistry.removePre2pc(txUid).ifPresent(s -> s.finish());
+        if (!SpanRegistry.getRoot(txUid).isPresent()) {
+            throw new IllegalStateException(String.format("Pre2PC span with id '%s' was deactivated but no corresponding parent span found.", txUid));
         }
     }
 
     private static void finish(String txUid, boolean remove) {
-        if(!TRACING_ACTIVATED) return;
+        if (!TRACING_ACTIVATED) return;
         // We need to check for superfluous calls to this method
         Optional<Span> span = remove ? Optional.of(SpanRegistry.removeRoot(txUid)) : SpanRegistry.getRoot(txUid);
         span.ifPresent(s -> s.finish());
@@ -77,8 +86,8 @@ public class TracingUtils {
      * @param txUid
      */
     public static void finish(String txUid) {
-        if(!TRACING_ACTIVATED) return;
-        finish(txUid, false);
+        if (!TRACING_ACTIVATED) return;
+        finish(txUid, true);
     }
 
     /**
@@ -88,7 +97,7 @@ public class TracingUtils {
      * @param txUid
      */
     public static void finishWithoutRemoval(String txUid) {
-        if(!TRACING_ACTIVATED) return;
+        if (!TRACING_ACTIVATED) return;
         finish(txUid, false);
     }
 
@@ -98,7 +107,7 @@ public class TracingUtils {
      *
      */
     public static void markTransactionFailed(String txUid) {
-        if(!TRACING_ACTIVATED) return;
+        if (!TRACING_ACTIVATED) return;
         SpanRegistry.getRoot(txUid).ifPresent(s -> s.setTag(Tags.ERROR, true));
     }
 
@@ -112,8 +121,9 @@ public class TracingUtils {
      * @param status one of the possible states any transaction could be in
      */
     public static void setTransactionStatus(String txUid, TransactionStatus status) {
-        if(!TRACING_ACTIVATED) return;
-        SpanRegistry.getRoot(txUid).ifPresent(s -> s.setTag(TagName.STATUS.toString(), status.toString().toLowerCase()));
+        if (!TRACING_ACTIVATED) return;
+        SpanRegistry.getRoot(txUid)
+                .ifPresent(s -> s.setTag(TagName.STATUS.toString(), status.toString().toLowerCase()));
     }
 
     /**
@@ -122,17 +132,17 @@ public class TracingUtils {
      * the context (i.e. status of the transaction inside of the method call).
      */
     public static void addTag(TagName name, String val) {
-        if(!TRACING_ACTIVATED) return;
+        if (!TRACING_ACTIVATED) return;
         activeSpan().ifPresent(s -> s.setTag(name.toString(), val));
     }
 
     public static void addTag(TagName name, Object obj) {
-        if(!TRACING_ACTIVATED) return;
+        if (!TRACING_ACTIVATED) return;
         addTag(name, obj == null ? "null" : obj.toString());
     }
 
     public static <T> void addTag(Tag<T> tag, T obj) {
-        if(!TRACING_ACTIVATED) return;
+        if (!TRACING_ACTIVATED) return;
         activeSpan().ifPresent((s) -> s.setTag(tag, obj));
     }
 
@@ -140,17 +150,17 @@ public class TracingUtils {
      * Log a message for the currently active span.
      */
     public static void log(String message) {
-        if(!TRACING_ACTIVATED) return;
+        if (!TRACING_ACTIVATED) return;
         activeSpan().ifPresent(s -> s.log(message));
     }
 
     public static <T> void log(String fld, String value) {
-        if(!TRACING_ACTIVATED) return;
+        if (!TRACING_ACTIVATED) return;
         activeSpan().ifPresent(s -> s.log(Collections.singletonMap(fld, value)));
     }
 
     static Optional<Span> activeSpan() {
-        if(!TRACING_ACTIVATED) return Optional.of(DUMMY_SPAN);
+        if (!TRACING_ACTIVATED) return Optional.of(DUMMY_SPAN);
         Span span = getTracer().activeSpan();
         return span == null ? Optional.empty() : Optional.of(span);
     }
@@ -160,9 +170,9 @@ public class TracingUtils {
      *         implementation
      */
     public static Tracer getTracer() {
-        // return null here on purpose, when tracing is deactivated, tracer calls shouldn't
-        // be even activated
-        if(!TRACING_ACTIVATED) return null;
+        // when tracing is deactivated,
+        // no tracer code should be called
+        if (!TRACING_ACTIVATED) return null;
         return GlobalTracer.get();
     }
 }

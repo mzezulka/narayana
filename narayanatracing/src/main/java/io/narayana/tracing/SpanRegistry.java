@@ -76,16 +76,15 @@ public class SpanRegistry {
 
     /**
      * Same as {@link #getPre2pc(String) get} but with the effect of
-     * removing the span from the registry.
+     * removing the span from the registry if there is span with the id {@code}.
      *
      * @param id id of the span (i.e. transaction ID), must not be null
-     * @throws NullPointerException {@code id} does not exist in the registry of
-     *                                  type {@code type}
-     * @return the deleted {@code Span}
+     * @return the deleted {@code Span} wrapped in {@code Optional} if it exists, empty otherwise
      */
-    public static Span removePre2pc(String id) {
-        if(!TRACING_ACTIVATED) return DUMMY_SPAN;
-        return remove(PRE2PC_SPANS, id);
+    public static Optional<Span> removePre2pc(String id) {
+        if(!TRACING_ACTIVATED) return Optional.of(DUMMY_SPAN);
+        Span span = remove(PRE2PC_SPANS, id);
+        return span == null ? Optional.empty() : Optional.of(span);
     }
 
     private static void insert(ConcurrentMap<String, Span> map, String id, Span span) {
