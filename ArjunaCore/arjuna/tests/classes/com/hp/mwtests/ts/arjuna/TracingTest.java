@@ -13,6 +13,7 @@ import org.junit.Test;
 import com.arjuna.ats.arjuna.AtomicAction;
 import com.hp.mwtests.ts.arjuna.resources.BasicRecord;
 
+import io.narayana.tracing.names.SpanName;
 import io.opentracing.mock.MockSpan;
 import io.opentracing.mock.MockTracer;
 import io.opentracing.util.GlobalTracer;
@@ -53,19 +54,8 @@ public class TracingTest {
         a.commit();
     }
 
-    @Test
-    public void commitAndCheckOperationNames() {
-        arjunaTwoPhaseCommit();
-        List<String> opNames = testTracer.finishedSpans().stream().map(s -> s.operationName()).collect(Collectors.toList());
-        List<String> opNamesExpected = Arrays.asList("XAResource Enlistments",
-                                                     "Branch Prepare",
-                                                     "Branch Prepare",
-                                                     "Global Prepare",
-                                                     "Branch Commit",
-                                                     "Branch Commit",
-                                                     "Global Commit",
-                                                     "Transaction");
-        assertThat(opNames).isEqualTo(opNamesExpected);
+    private List<String> operationEnumsToStrings(SpanName... ops) {
+        return Arrays.asList(ops).stream().map(s -> s.toString()).collect(Collectors.toList());
     }
 
     /**
@@ -102,7 +92,34 @@ public class TracingTest {
     }
 
     @Test
+    public void commitAndCheckOperationNames() {
+        arjunaTwoPhaseCommit();
+        List<String> opNames = testTracer.finishedSpans().stream().map(s -> s.operationName()).collect(Collectors.toList());
+        List<String> opNamesExpected = operationEnumsToStrings(SpanName.GLOBAL_ENLISTMENTS,
+                                                               SpanName.LOCAL_PREPARE,
+                                                               SpanName.LOCAL_PREPARE,
+                                                               SpanName.GLOBAL_PREPARE,
+                                                               SpanName.LOCAL_COMMIT,
+                                                               SpanName.LOCAL_COMMIT,
+                                                               SpanName.GLOBAL_COMMIT,
+                                                               SpanName.TX_ROOT);
+        assertThat(opNames).isEqualTo(opNamesExpected);
+    }
+
+    @Test
     public void abortAndCheckSpans() {
         arjunaAbort();
+    }
+
+    @Test
+    public void abortAndCheckOperationNames() {
+        arjunaAbort();
+        List<String> opNames = testTracer.finishedSpans().stream().map(s -> s.operationName()).collect(Collectors.toList());
+        List<String> opNamesExpected = operationEnumsToStrings(SpanName.GLOBAL_ENLISTMENTS,
+                                                               SpanName.LOCAL_ROLLBACK,
+                                                               SpanName.LOCAL_ROLLBACK,
+                                                               SpanName.GLOBAL_ABORT_USER,
+                                                               SpanName.TX_ROOT);
+        assertThat(opNames).isEqualTo(opNamesExpected);
     }
 }
