@@ -84,7 +84,6 @@ public class TracingTest {
     @Test
     public void commitAndCheckRootSpan() throws Exception {
         jtaTwoPhaseCommit();
-        assertThat(testTracer.finishedSpans().size()).isEqualTo(10);
         List<MockSpan> spans = testTracer.finishedSpans();
 
         MockSpan root = spans.get(9);
@@ -99,7 +98,6 @@ public class TracingTest {
     @Test
     public void commitAndCheckOperationNames() throws Exception {
         jtaTwoPhaseCommit();
-        List<String> opNames = testTracer.finishedSpans().stream().map(s -> s.operationName()).collect(Collectors.toList());
         List<String> opNamesExpected = operationEnumsToStrings(SpanName.LOCAL_RESOURCE_ENLISTMENT,
                                                                SpanName.LOCAL_RESOURCE_ENLISTMENT,
                                                                SpanName.GLOBAL_ENLISTMENTS,
@@ -110,6 +108,8 @@ public class TracingTest {
                                                                SpanName.LOCAL_COMMIT,
                                                                SpanName.GLOBAL_COMMIT,
                                                                SpanName.TX_ROOT);
+        assertThat(testTracer.finishedSpans().size()).isEqualTo(opNamesExpected.size());
+        List<String> opNames = testTracer.finishedSpans().stream().map(s -> s.operationName()).collect(Collectors.toList());
         assertThat(opNames).isEqualTo(opNamesExpected);
     }
 
@@ -121,7 +121,6 @@ public class TracingTest {
     @Test
     public void abortAndCheckOperationNames() throws Exception {
         jtaRollback();
-        List<String> opNames = testTracer.finishedSpans().stream().map(s -> s.operationName()).collect(Collectors.toList());
         List<String> opNamesExpected = operationEnumsToStrings(SpanName.LOCAL_RESOURCE_ENLISTMENT,
                                                                SpanName.LOCAL_RESOURCE_ENLISTMENT,
                                                                SpanName.GLOBAL_ENLISTMENTS,
@@ -129,6 +128,8 @@ public class TracingTest {
                                                                SpanName.LOCAL_ROLLBACK,
                                                                SpanName.GLOBAL_ABORT_USER,
                                                                SpanName.TX_ROOT);
+        assertThat(testTracer.finishedSpans().size()).isEqualTo(opNamesExpected.size());
+        List<String> opNames = testTracer.finishedSpans().stream().map(s -> s.operationName()).collect(Collectors.toList());
         assertThat(opNames).isEqualTo(opNamesExpected);
     }
 }
