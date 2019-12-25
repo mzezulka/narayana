@@ -1,5 +1,11 @@
 package com.arjuna.ats.internal.jta.opentracing;
 
+import static com.arjuna.ats.internal.jta.opentracing.TracingTestUtils.assertThatSpans;
+import static com.arjuna.ats.internal.jta.opentracing.TracingTestUtils.getRootSpanFrom;
+import static com.arjuna.ats.internal.jta.opentracing.TracingTestUtils.jtaRollback;
+import static com.arjuna.ats.internal.jta.opentracing.TracingTestUtils.jtaTwoPhaseCommit;
+import static com.arjuna.ats.internal.jta.opentracing.TracingTestUtils.operationEnumsToStrings;
+import static com.arjuna.ats.internal.jta.opentracing.TracingTestUtils.spansToOperationStrings;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
@@ -11,8 +17,6 @@ import javax.transaction.TransactionManager;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.hp.mwtests.ts.jta.common.XACreator;
 
 import io.narayana.tracing.names.SpanName;
 import io.opentracing.mock.MockSpan;
@@ -36,79 +40,9 @@ public class TracingTest {
         testTracer.reset();
     }
 
-    /**
-     *  Basic commit intermediated by JTA which makes use of two XAResources.
-     *  Spans are reported in the following order:
-     *
-     *    span index   id    parentid        op name
-     *    in 'spans'
-     *    ================================================
-     *        0        10       3         "Enlistment"
-     *        1        11       3         "Enlistment"
-     *        2         3       2         "XAResource Enlistments"
-     *        3         5       4         "Branch Prepare"
-     *        4         6       4         "Branch Prepare"
-     *        5         4       2         "Global Prepare"
-     *        6         8       7         "Branch Commit"
-     *        7         9       7         "Branch Commit"
-     *        8         7       2         "Global Commit"
-     *        9         2       0         "Transaction"
-     *  Please note that specific ids of spans may vary based on the mock implementation
-     *  of the tracer, the important bit is the relations between spans. This holds true
-     *  for any other test.
-     */
-    private void jtaTwoPhaseCommit() throws Exception {
-        String xaResource = "com.hp.mwtests.ts.jta.common.DummyCreator";
-        XACreator creator = (XACreator) Thread.currentThread().getContextClassLoader().loadClass(xaResource).newInstance();
-        String connectionString = null;
-
-        tm.begin();
-        tm.getTransaction().enlistResource(creator.create(connectionString, true));
-        tm.getTransaction().enlistResource(creator.create(connectionString, true));
-        tm.commit();
-    }
-
-    /**
-     *  User initiated JTA abort, making use of two XAResources.
-     *  Spans are reported in the following order:
-     *
-     *    span index   id    parentid        op name
-     *    in 'spans'
-     *    ================================================
-     *        0        6        5         "Enlistment"
-     *        1        7        5         "Enlistment"
-     *        2        5        4         "XAResource Enlistments"
-     *        3        9        8         "Branch Rollback"
-     *        4       10        8         "Branch Rollback"
-     *        5        8        4         "Global Abort - User Initiated"
-     *        6        4        0         "Transaction"
-     */
-    private void jtaRollback() throws Exception {
-        String xaResource = "com.hp.mwtests.ts.jta.common.DummyCreator";
-        XACreator creator = (XACreator) Thread.currentThread().getContextClassLoader().loadClass(xaResource).newInstance();
-        String connectionString = null;
-
-        tm.begin();
-        tm.getTransaction().enlistResource(creator.create(connectionString, true));
-        tm.getTransaction().enlistResource(creator.create(connectionString, true));
-        tm.rollback();
-    }
-
-    private List<String> operationEnumsToStrings(SpanName... ops) {
-        return Arrays.asList(ops).stream().map(s -> s.toString()).collect(Collectors.toList());
-    }
-
-    /*
-     * Retrieve the root span which must always sit at the very end of the collection (because
-     * spans are reported in a postorder fashion.
-     */
-    private MockSpan getRootSpanFrom(List<MockSpan> spans) {
-        return spans.get(spans.size()-1);
-    }
-
     @Test
     public void commitAndCheckRootSpan() throws Exception {
-        jtaTwoPhaseCommit();
+        jtaTwoPhaseCommit(tm);
         List<MockSpan> spans = testTracer.finishedSpans();
         MockSpan root = getRootSpanFrom(spans);
         // parent id 0 == no parent exists == the root of a trace
@@ -118,21 +52,30 @@ public class TracingTest {
 
     @Test
     public void commitAndCheckChildren() throws Exception {
-        jtaTwoPhaseCommit();
+        jtaTwoPhaseCommit(tm);
         List<MockSpan> spans = testTracer.finishedSpans();
         MockSpan root = getRootSpanFrom(spans);
-        //                                   tx-root
-        //                              /       |         \
-        //       "XAResource Enlistments" "Global Prepare" "Global Abort - User Initiated"
-        assertThat(Arrays.asList(spans.get(8).parentId(),
-                                 spans.get(5).parentId(),
-                                 spans.get(2).parentId()))
-                   .containsOnly(root.context().spanId());
+        MockSpan globalEnlist = spans.get(2);
+        MockSpan globalPrepare = spans.get(5);
+        MockSpan globalCommit = spans.get(8);
+        assertThatSpans(globalEnlist, globalPrepare, globalCommit).haveParent(root);
+
+        MockSpan enlistment1 = spans.get(0);
+        MockSpan enlistment2 = spans.get(1);
+        assertThatSpans(enlistment1, enlistment2).haveParent(globalEnlist);
+
+        MockSpan prepare1 = spans.get(3);
+        MockSpan prepare2 = spans.get(4);
+        assertThatSpans(prepare1, prepare2).haveParent(globalPrepare);
+
+        MockSpan commit1 = spans.get(6);
+        MockSpan commit2 = spans.get(7);
+        assertThatSpans(commit1, commit2).haveParent(globalCommit);
     }
 
     @Test
     public void commitAndCheckOperationNames() throws Exception {
-        jtaTwoPhaseCommit();
+        jtaTwoPhaseCommit(tm);
         List<String> opNamesExpected = operationEnumsToStrings(SpanName.LOCAL_RESOURCE_ENLISTMENT,
                                                                SpanName.LOCAL_RESOURCE_ENLISTMENT,
                                                                SpanName.GLOBAL_ENLISTMENTS,
@@ -145,24 +88,23 @@ public class TracingTest {
                                                                SpanName.TX_ROOT);
         List<MockSpan> spans = testTracer.finishedSpans();
         assertThat(spans.size()).isEqualTo(opNamesExpected.size());
-        List<String> opNames = spans.stream().map(s -> s.operationName()).collect(Collectors.toList());
-        assertThat(opNames).isEqualTo(opNamesExpected);
+        assertThat(spansToOperationStrings(spans)).isEqualTo(opNamesExpected);
     }
 
     @Test
     public void abortAndCheckRootSpan() throws Exception {
-        jtaRollback();
+        jtaRollback(tm);
         List<MockSpan> spans = testTracer.finishedSpans();
         MockSpan root = getRootSpanFrom(spans);
         // parent id 0 == no parent exists == the root of a trace
         assertThat(root.parentId()).isEqualTo(0);
         // this is *user-initiated* abort
         assertThat((boolean) root.tags().get(Tags.ERROR.getKey())).isFalse();
-        }
+    }
 
     @Test
     public void abortAndCheckChildren() throws Exception {
-        jtaRollback();
+        jtaRollback(tm);
         List<MockSpan> spans = testTracer.finishedSpans();
         MockSpan root = getRootSpanFrom(spans);
         //                               tx-root
@@ -174,7 +116,7 @@ public class TracingTest {
 
     @Test
     public void abortAndCheckOperationNames() throws Exception {
-        jtaRollback();
+        jtaRollback(tm);
         List<String> opNamesExpected = operationEnumsToStrings(SpanName.LOCAL_RESOURCE_ENLISTMENT,
                                                                SpanName.LOCAL_RESOURCE_ENLISTMENT,
                                                                SpanName.GLOBAL_ENLISTMENTS,

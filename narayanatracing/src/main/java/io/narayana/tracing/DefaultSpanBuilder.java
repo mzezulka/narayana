@@ -1,4 +1,4 @@
-package io.narayana.tracing;
+    package io.narayana.tracing;
 
 import static io.narayana.tracing.TracingUtils.DUMMY_SPAN;
 import static io.narayana.tracing.TracingUtils.TRACING_ACTIVATED;

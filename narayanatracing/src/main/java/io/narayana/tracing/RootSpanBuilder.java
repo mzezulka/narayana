@@ -88,7 +88,9 @@ public class RootSpanBuilder {
         SpanRegistry.insertRoot(txUid, rootSpan);
         getTracer().scopeManager().activate(rootSpan);
 
-        Span pre2PCSpan = pre2PCspanBldr.asChildOf(rootSpan).withTag(Tags.COMPONENT, "narayana").start();
+        Span pre2PCSpan = pre2PCspanBldr.asChildOf(rootSpan)
+                                        .withTag(Tags.COMPONENT, "narayana")
+                                        .start();
         SpanRegistry.insertPre2pc(txUid, pre2PCSpan);
         getTracer().scopeManager().activate(pre2PCSpan);
 
