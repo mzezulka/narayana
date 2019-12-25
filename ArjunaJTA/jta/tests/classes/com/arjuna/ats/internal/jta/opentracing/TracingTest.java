@@ -8,9 +8,7 @@ import static com.arjuna.ats.internal.jta.opentracing.TracingTestUtils.operation
 import static com.arjuna.ats.internal.jta.opentracing.TracingTestUtils.spansToOperationStrings;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.transaction.TransactionManager;
 
@@ -98,7 +96,7 @@ public class TracingTest {
         MockSpan root = getRootSpanFrom(spans);
         // parent id 0 == no parent exists == the root of a trace
         assertThat(root.parentId()).isEqualTo(0);
-        // this is *user-initiated* abort
+        // this is *user-initiated* abort, we don't want to mark this trace as failed
         assertThat((boolean) root.tags().get(Tags.ERROR.getKey())).isFalse();
     }
 
@@ -107,11 +105,17 @@ public class TracingTest {
         jtaRollback(tm);
         List<MockSpan> spans = testTracer.finishedSpans();
         MockSpan root = getRootSpanFrom(spans);
-        //                               tx-root
-        //                              /      \
-        //       "XAResource Enlistments"      "Global Commit"
-        assertThat(Arrays.asList(spans.get(2).parentId(), spans.get(5).parentId()))
-                  .containsOnly(root.context().spanId());
+        MockSpan globalEnlist = spans.get(2);
+        MockSpan globalAbort = spans.get(5);
+        assertThatSpans(globalEnlist, globalAbort).haveParent(root);
+
+        MockSpan enlist1 = spans.get(0);
+        MockSpan enlist2 = spans.get(1);
+        assertThatSpans(enlist1, enlist2).haveParent(globalEnlist);
+
+        MockSpan rollback1 = spans.get(3);
+        MockSpan rollback2 = spans.get(4);
+        assertThatSpans(rollback1, rollback2).haveParent(globalAbort);
     }
 
     @Test
@@ -126,7 +130,6 @@ public class TracingTest {
                                                                SpanName.TX_ROOT);
         List<MockSpan> spans = testTracer.finishedSpans();
         assertThat(spans.size()).isEqualTo(opNamesExpected.size());
-        List<String> opNames = spans.stream().map(s -> s.operationName()).collect(Collectors.toList());
-        assertThat(opNames).isEqualTo(opNamesExpected);
+        assertThat(spansToOperationStrings(spans)).isEqualTo(opNamesExpected);
     }
 }

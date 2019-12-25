@@ -89,7 +89,7 @@ public class TracingTestUtils {
         return spans.get(spans.size()-1);
     }
 
-
+    // AssertJ extension for easier manipulation with opentracing Spans
     static class SpanListAssert extends ListAssert<Long> {
         public SpanListAssert(List<? extends Long> actual) {
             super(actual);
