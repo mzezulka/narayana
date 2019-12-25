@@ -4,10 +4,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.transaction.RollbackException;
 import javax.transaction.TransactionManager;
 
 import org.assertj.core.api.ListAssert;
 
+import com.hp.mwtests.ts.jta.common.FailureXAResource;
 import com.hp.mwtests.ts.jta.common.XACreator;
 
 import io.narayana.tracing.names.SpanName;
@@ -63,7 +65,7 @@ public class TracingTestUtils {
      *        5        8        4         "Global Abort - User Initiated"
      *        6        4        0         "Transaction"
      */
-    static void jtaRollback(TransactionManager tm) throws Exception {
+    static void jtaUserRollback(TransactionManager tm) throws Exception {
         String xaResource = "com.hp.mwtests.ts.jta.common.DummyCreator";
         XACreator creator = (XACreator) Thread.currentThread().getContextClassLoader().loadClass(xaResource).newInstance();
         String connectionString = null;
@@ -72,6 +74,49 @@ public class TracingTestUtils {
         tm.getTransaction().enlistResource(creator.create(connectionString, true));
         tm.getTransaction().enlistResource(creator.create(connectionString, true));
         tm.rollback();
+    }
+
+    /*
+     * Make use of existing failing XAResources and force the JTA transaction to fail in the prepare phase.
+     *
+     *
+     *    span index   id    parentid        op name
+     *    in 'spans'
+     *    ================================================
+     *        0        10       3         "Enlistment"
+     *        1        11       3         "Enlistment"
+     *        2         3       2         "XAResource Enlistments"
+     *        3         5       4         "Branch Prepare"
+     *        4         6       4         "Branch Prepare"
+     *        5         4       2         "Global Prepare"
+     *        6         8       7         "Branch Rollback"
+     *        7         9       7         "Branch Rollback"
+     *        8         7       2         "Global Abort"
+     *        9         2       0         "Transaction"
+     */
+    static void jtaPrepareResFail(TransactionManager tm) throws Exception {
+        String xaResource = "com.hp.mwtests.ts.jta.common.DummyCreator";
+        XACreator creator = (XACreator) Thread.currentThread().getContextClassLoader().loadClass(xaResource).newInstance();
+        String connectionString = null;
+
+        tm.begin();
+        tm.getTransaction().enlistResource(creator.create(connectionString, true));
+        tm.getTransaction().enlistResource(new FailureXAResource(FailureXAResource.FailLocation.prepare));
+        try {
+            tm.commit();
+        } catch (RollbackException re) {
+            Class<?> cl = javax.transaction.xa.XAException.class;
+            if(re.getSuppressed().length < 1) {
+                throw new RuntimeException("Expected suppressed exceptions (especially XAException) but got none.");
+            }
+            for(Throwable t : re.getSuppressed()) {
+                if(t.getClass().equals(cl)) {
+                    // ok, we've found the suppressed exception corresponding to XAResource prepare fail
+                    return;
+                }
+            }
+            throw new RuntimeException("Did not find expected suppressed exception of type " + cl, re);
+        }
     }
 
     static List<String> operationEnumsToStrings(SpanName... ops) {

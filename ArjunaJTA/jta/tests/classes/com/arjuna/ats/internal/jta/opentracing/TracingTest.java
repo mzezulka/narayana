@@ -1,11 +1,6 @@
 package com.arjuna.ats.internal.jta.opentracing;
 
-import static com.arjuna.ats.internal.jta.opentracing.TracingTestUtils.assertThatSpans;
-import static com.arjuna.ats.internal.jta.opentracing.TracingTestUtils.getRootSpanFrom;
-import static com.arjuna.ats.internal.jta.opentracing.TracingTestUtils.jtaRollback;
-import static com.arjuna.ats.internal.jta.opentracing.TracingTestUtils.jtaTwoPhaseCommit;
-import static com.arjuna.ats.internal.jta.opentracing.TracingTestUtils.operationEnumsToStrings;
-import static com.arjuna.ats.internal.jta.opentracing.TracingTestUtils.spansToOperationStrings;
+import static com.arjuna.ats.internal.jta.opentracing.TracingTestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -41,8 +36,7 @@ public class TracingTest {
     @Test
     public void commitAndCheckRootSpan() throws Exception {
         jtaTwoPhaseCommit(tm);
-        List<MockSpan> spans = testTracer.finishedSpans();
-        MockSpan root = getRootSpanFrom(spans);
+        MockSpan root = getRootSpanFrom(testTracer.finishedSpans());
         // parent id 0 == no parent exists == the root of a trace
         assertThat(root.parentId()).isEqualTo(0);
         assertThat((boolean) root.tags().get(Tags.ERROR.getKey())).isFalse();
@@ -90,10 +84,9 @@ public class TracingTest {
     }
 
     @Test
-    public void abortAndCheckRootSpan() throws Exception {
-        jtaRollback(tm);
-        List<MockSpan> spans = testTracer.finishedSpans();
-        MockSpan root = getRootSpanFrom(spans);
+    public void userAbortAndCheckRootSpan() throws Exception {
+        jtaUserRollback(tm);
+        MockSpan root = getRootSpanFrom(testTracer.finishedSpans());
         // parent id 0 == no parent exists == the root of a trace
         assertThat(root.parentId()).isEqualTo(0);
         // this is *user-initiated* abort, we don't want to mark this trace as failed
@@ -101,8 +94,8 @@ public class TracingTest {
     }
 
     @Test
-    public void abortAndCheckChildren() throws Exception {
-        jtaRollback(tm);
+    public void userAbortAndCheckChildren() throws Exception {
+        jtaUserRollback(tm);
         List<MockSpan> spans = testTracer.finishedSpans();
         MockSpan root = getRootSpanFrom(spans);
         MockSpan globalEnlist = spans.get(2);
@@ -119,8 +112,8 @@ public class TracingTest {
     }
 
     @Test
-    public void abortAndCheckOperationNames() throws Exception {
-        jtaRollback(tm);
+    public void userAbortAndCheckOperationNames() throws Exception {
+        jtaUserRollback(tm);
         List<String> opNamesExpected = operationEnumsToStrings(SpanName.LOCAL_RESOURCE_ENLISTMENT,
                                                                SpanName.LOCAL_RESOURCE_ENLISTMENT,
                                                                SpanName.GLOBAL_ENLISTMENTS,
@@ -131,5 +124,57 @@ public class TracingTest {
         List<MockSpan> spans = testTracer.finishedSpans();
         assertThat(spans.size()).isEqualTo(opNamesExpected.size());
         assertThat(spansToOperationStrings(spans)).isEqualTo(opNamesExpected);
+    }
+
+    @Test
+    public void internalAbortAndCheckRootSpan() throws Exception {
+        jtaPrepareResFail(tm);
+        MockSpan root = getRootSpanFrom(testTracer.finishedSpans());
+        // parent id 0 == no parent exists == the root of a trace
+        assertThat(root.parentId()).isEqualTo(0);
+        assertThat((boolean) root.tags().get(Tags.ERROR.getKey())).isTrue();
+    }
+
+    @Test
+    public void internalAbortAndCheckOperationNames() throws Exception {
+        jtaPrepareResFail(tm);
+
+        List<String> opNamesExpected = operationEnumsToStrings(SpanName.LOCAL_RESOURCE_ENLISTMENT,
+                                                               SpanName.LOCAL_RESOURCE_ENLISTMENT,
+                                                               SpanName.GLOBAL_ENLISTMENTS,
+                                                               SpanName.LOCAL_PREPARE,
+                                                               SpanName.LOCAL_PREPARE,
+                                                               SpanName.GLOBAL_PREPARE,
+                                                               SpanName.LOCAL_ROLLBACK,
+                                                               SpanName.LOCAL_ROLLBACK,
+                                                               SpanName.GLOBAL_ABORT,
+                                                               SpanName.TX_ROOT);
+        List<MockSpan> spans = testTracer.finishedSpans();
+        assertThat(spans.size()).isEqualTo(opNamesExpected.size());
+        assertThat(spansToOperationStrings(spans)).isEqualTo(opNamesExpected);
+    }
+
+    @Test
+    public void internalAbortAndCheckChildren() throws Exception {
+        jtaPrepareResFail(tm);
+
+        List<MockSpan> spans = testTracer.finishedSpans();
+        MockSpan root = getRootSpanFrom(spans);
+        MockSpan globalEnlist = spans.get(2);
+        MockSpan globalPrepare = spans.get(5);
+        MockSpan globalAbort = spans.get(8);
+        assertThatSpans(globalEnlist, globalPrepare, globalAbort).haveParent(root);
+
+        MockSpan enlistment1 = spans.get(0);
+        MockSpan enlistment2 = spans.get(1);
+        assertThatSpans(enlistment1, enlistment2).haveParent(globalEnlist);
+
+        MockSpan prepare1 = spans.get(3);
+        MockSpan prepare2 = spans.get(4);
+        assertThatSpans(prepare1, prepare2).haveParent(globalPrepare);
+
+        MockSpan abort1 = spans.get(6);
+        MockSpan abort2 = spans.get(7);
+        assertThatSpans(abort1, abort2).haveParent(globalAbort);
     }
 }
