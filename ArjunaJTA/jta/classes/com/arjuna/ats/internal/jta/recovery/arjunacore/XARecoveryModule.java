@@ -592,7 +592,7 @@ public class XARecoveryModule implements ExtendedRecoveryModule {
                 Span h = new DefaultSpanBuilder(SpanName.LOCAL_RECOVERY).tag(TagName.UID, uid)
                         .tag(TagName.XARES, xares.toString()).build(uid.toString());
                 try (Scope _s = TracingUtils.activateSpan(h)) {
-                    TracingUtils.log("first pass of the periodic recovery");
+                    TracingUtils.log("first pass of the XAResource periodic recovery");
                 } finally {
                     h.finish();
                 }
@@ -701,7 +701,7 @@ public class XARecoveryModule implements ExtendedRecoveryModule {
                         Span h = new DefaultSpanBuilder(SpanName.LOCAL_RECOVERY).tag(TagName.UID, uid)
                                 .tag(TagName.XARES, xares.toString()).build(uid.toString());
                         try(Scope _s = TracingUtils.activateSpan(h)) {
-                            TracingUtils.log("second pass of the periodic recovery");
+                            TracingUtils.log("second pass of the XAResource periodic recovery");
                             boolean doForget = false;
 
                             /*

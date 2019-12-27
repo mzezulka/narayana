@@ -1,5 +1,6 @@
 package com.arjuna.ats.internal.jta.opentracing;
-
+import java.lang.reflect.Field;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,8 +10,17 @@ import javax.transaction.TransactionManager;
 
 import org.assertj.core.api.ListAssert;
 
+import com.arjuna.ats.arjuna.common.recoveryPropertyManager;
+import com.arjuna.ats.arjuna.recovery.RecoveryManager;
+import com.arjuna.ats.internal.jta.opentracing.xaresource.TestPersistentXAResource;
+import com.arjuna.ats.internal.jta.opentracing.xaresource.TestPersistentXAResource.FaultType;
+import com.arjuna.ats.internal.jta.opentracing.xaresource.TestPersistentXAResourceInitializer;
+import com.arjuna.ats.internal.jta.recovery.arjunacore.RecoveryXids;
+import com.arjuna.ats.internal.jta.recovery.arjunacore.XARecoveryModule;
 import com.hp.mwtests.ts.jta.common.FailureXAResource;
 import com.hp.mwtests.ts.jta.common.XACreator;
+import com.hp.mwtests.ts.jta.recovery.XARROne;
+import com.hp.mwtests.ts.jta.recovery.XARRTwo;
 
 import io.narayana.tracing.names.SpanName;
 import io.opentracing.mock.MockSpan;
@@ -51,6 +61,59 @@ public class TracingTestUtils {
     }
 
     /**
+     *
+     *    span index   id    parentid        op name
+     *    in 'spans'
+     *    ================================================
+     *        0        53      52          "Enlistment"
+     *        1        54      52          "Enlistment"
+     *        2        52      51          "XAResource Enlistments"
+     *        3        56      55          "Branch Prepare"
+     *        4        57      55          "Branch Prepare"
+     *        5        55      51          "Global Prepare"
+     *        6        59      58          "Branch Rollback"
+     *        7        60      58          "Branch Rollback"
+     *        8        58      51          "Global Abort"
+     *        9        51       0          "Transaction"
+     *       10        61      51          "XAResource Recovery"
+     *       11        62      51          "XAResource Recovery"
+     *
+     */
+    static void jtaWithRecovery(TransactionManager tm) throws Exception {
+          recoveryPropertyManager.getRecoveryEnvironmentBean().setRecoveryBackoffPeriod(1);
+          XARecoveryModule xaRecoveryModule = setupTestXaRecoveryModule(new XARecoveryModule());
+          RecoveryManager manager = RecoveryManager.manager(RecoveryManager.DIRECT_MANAGEMENT);
+          manager.addModule(xaRecoveryModule);
+
+          TestPersistentXAResourceInitializer initializer = TestPersistentXAResourceInitializer.getInstance();
+          initializer.initIfNecessary();
+
+          tm.begin();
+          Timestamp ts = new Timestamp(System.currentTimeMillis());
+          tm.getTransaction().enlistResource(new TestPersistentXAResource("demo" + ts.getTime(), FaultType.FIRST_ROLLBACK_RMFAIL));
+          tm.getTransaction().enlistResource(new TestPersistentXAResource("demo" + ts.getTime() + 1, FaultType.PREPARE_FAIL));
+          try {
+              tm.commit();
+          } catch(RollbackException re) {
+              // expected
+              manager.scan();
+          } finally {
+              initializer.cleaup();
+          }
+    }
+
+    private static XARecoveryModule setupTestXaRecoveryModule(XARecoveryModule xaRecoveryModule) throws Exception {
+        Field safetyIntervalMillis = RecoveryXids.class.getDeclaredField("safetyIntervalMillis");
+        safetyIntervalMillis.setAccessible(true);
+        safetyIntervalMillis.set(null, 0);
+        xaRecoveryModule.addXAResourceRecoveryHelper(new XARROne());
+        xaRecoveryModule.addXAResourceRecoveryHelper(new XARRTwo());
+        xaRecoveryModule.addXAResourceOrphanFilter(new com.arjuna.ats.internal.jta.recovery.arjunacore.JTATransactionLogXAResourceOrphanFilter());
+        xaRecoveryModule.addXAResourceOrphanFilter(new com.arjuna.ats.internal.jta.recovery.arjunacore.JTANodeNameXAResourceOrphanFilter());
+        return xaRecoveryModule;
+    }
+
+    /**
      *  User initiated JTA abort, making use of two XAResources.
      *  Spans are reported in the following order:
      *
@@ -76,7 +139,7 @@ public class TracingTestUtils {
         tm.rollback();
     }
 
-    /*
+    /**
      * Make use of existing failing XAResources and force the JTA transaction to fail in the prepare phase.
      *
      *

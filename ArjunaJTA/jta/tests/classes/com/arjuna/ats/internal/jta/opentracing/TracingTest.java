@@ -157,7 +157,6 @@ public class TracingTest {
     @Test
     public void internalAbortAndCheckChildren() throws Exception {
         jtaPrepareResFail(tm);
-
         List<MockSpan> spans = testTracer.finishedSpans();
         MockSpan root = getRootSpanFrom(spans);
         MockSpan globalEnlist = spans.get(2);
@@ -176,5 +175,44 @@ public class TracingTest {
         MockSpan abort1 = spans.get(6);
         MockSpan abort2 = spans.get(7);
         assertThatSpans(abort1, abort2).haveParent(globalAbort);
+    }
+
+    @Test
+    public void recovery() throws Exception {
+        jtaWithRecovery(tm);
+
+        List<String> opNamesExpected = operationEnumsToStrings(SpanName.LOCAL_RESOURCE_ENLISTMENT,
+                                                               SpanName.LOCAL_RESOURCE_ENLISTMENT,
+                                                               SpanName.GLOBAL_ENLISTMENTS,
+                                                               SpanName.LOCAL_PREPARE,
+                                                               SpanName.LOCAL_PREPARE,
+                                                               SpanName.GLOBAL_PREPARE,
+                                                               SpanName.LOCAL_ROLLBACK,
+                                                               SpanName.LOCAL_ROLLBACK,
+                                                               SpanName.GLOBAL_ABORT,
+                                                               SpanName.TX_ROOT,
+                                                               SpanName.LOCAL_RECOVERY,
+                                                               SpanName.LOCAL_RECOVERY);
+        List<MockSpan> spans = testTracer.finishedSpans();
+        assertThat(spans.size()).isEqualTo(opNamesExpected.size());
+        assertThat(spansToOperationStrings(spans)).isEqualTo(opNamesExpected);
+
+        MockSpan root = spans.get(spans.size() - 3);
+        // parent id 0 == no parent exists == the root of a trace
+        assertThat(root.parentId()).isEqualTo(0);
+        assertThat((boolean) root.tags().get(Tags.ERROR.getKey())).isTrue();
+
+        MockSpan rec1 = spans.get(spans.size() - 1);
+        MockSpan rec2 = spans.get(spans.size() - 2);
+        assertThatSpans(rec1, rec2).haveParent(root);
+        assertThat(rec1.logEntries()).isNotEmpty();
+        assertThat(rec2.logEntries()).isNotEmpty();
+
+        // this is how MockSpan logs events under the cover
+        String rec1LogMsg = (String) rec1.logEntries().get(0).fields().get("event");
+        String rec2LogMsg = (String) rec2.logEntries().get(0).fields().get("event");
+        // TODO: why is the second pass performed before the first one?
+        assertThat(rec1LogMsg).isEqualTo("second pass of the XAResource periodic recovery");
+        assertThat(rec2LogMsg).isEqualTo("first pass of the XAResource periodic recovery");
     }
 }
