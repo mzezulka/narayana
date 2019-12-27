@@ -3,8 +3,6 @@ package io.narayana.tracing;
 import java.util.Collections;
 import java.util.Optional;
 
-import org.jboss.logging.Logger;
-
 import io.narayana.tracing.names.TagName;
 import io.narayana.tracing.names.TransactionStatus;
 import io.opentracing.Scope;
@@ -42,16 +40,13 @@ import io.opentracing.util.GlobalTracer;
 public class TracingUtils {
     static final boolean TRACING_ACTIVATED = Boolean
             .valueOf(System.getProperty("org.jboss.narayana.tracingActivated", "true"));
-    static final Span DUMMY_SPAN = new DummySpan();
     static final Scope DUMMY_SCOPE = new DummyScope();
-    private static final Logger LOG = Logger.getLogger(TracingUtils.class);
 
     private TracingUtils() {
     }
 
     public static Scope activateSpan(Span span) {
-        if (!TRACING_ACTIVATED)
-            return DUMMY_SCOPE;
+        if (!TRACING_ACTIVATED) return DUMMY_SCOPE;
         return getTracer().activateSpan(span);
     }
 
@@ -76,7 +71,7 @@ public class TracingUtils {
     private static void finish(String txUid, boolean remove) {
         if (!TRACING_ACTIVATED) return;
         // We need to check for superfluous calls to this method
-        Optional<Span> span = remove ? Optional.of(SpanRegistry.removeRoot(txUid)) : SpanRegistry.getRoot(txUid);
+        Optional<Span> span = remove ? SpanRegistry.removeRoot(txUid) : SpanRegistry.getRoot(txUid);
         span.ifPresent(s -> s.finish());
     }
 
@@ -160,7 +155,7 @@ public class TracingUtils {
     }
 
     static Optional<Span> activeSpan() {
-        if (!TRACING_ACTIVATED) return Optional.of(DUMMY_SPAN);
+        if (!TRACING_ACTIVATED) return Optional.empty();
         Span span = getTracer().activeSpan();
         return span == null ? Optional.empty() : Optional.of(span);
     }

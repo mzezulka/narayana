@@ -1,6 +1,5 @@
 package io.narayana.tracing;
 
-import static io.narayana.tracing.TracingUtils.DUMMY_SPAN;
 import static io.narayana.tracing.TracingUtils.TRACING_ACTIVATED;
 import static io.narayana.tracing.TracingUtils.getTracer;
 
@@ -83,7 +82,7 @@ public class RootSpanBuilder {
      * @return
      */
     public Span build(String txUid) {
-        if(!TRACING_ACTIVATED) return DUMMY_SPAN;
+        if(!TRACING_ACTIVATED) return null;
         Span rootSpan = spanBldr.withTag(Tags.COMPONENT, "narayana").ignoreActiveSpan().start();
         SpanRegistry.insertRoot(txUid, rootSpan);
         getTracer().scopeManager().activate(rootSpan);

@@ -63,8 +63,6 @@ import io.narayana.tracing.names.TagName;
 import io.narayana.tracing.names.TransactionStatus;
 import io.opentracing.Scope;
 import io.opentracing.Span;
-import io.opentracing.log.Fields;
-import io.opentracing.tag.Tags;
 
 /**
  * BasicAction does most of the work of an atomic action, but does not manage
@@ -1388,9 +1386,8 @@ public class BasicAction extends StateManager {
 
                 if (prepareStatus == TwoPhaseOutcome.PREPARE_NOTOK
                         || prepareStatus == TwoPhaseOutcome.ONE_PHASE_ERROR) {
-                    TracingUtils.addTag(Tags.ERROR, true);
-                    TracingUtils.log(Fields.EVENT, "error");
-                    TracingUtils.log(Fields.ERROR_KIND, TwoPhaseOutcome.stringForm(prepareStatus));
+                    //TracingUtils.log(Fields.EVENT, "error");
+                    //TracingUtils.log(Fields.ERROR_KIND, TwoPhaseOutcome.stringForm(prepareStatus));
 
                     tsLogger.i18NLogger.warn_coordinator_BasicAction_36(get_uid());
 

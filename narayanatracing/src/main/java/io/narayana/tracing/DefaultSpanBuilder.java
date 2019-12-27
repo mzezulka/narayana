@@ -1,13 +1,8 @@
     package io.narayana.tracing;
 
-import static io.narayana.tracing.TracingUtils.DUMMY_SPAN;
-import static io.narayana.tracing.TracingUtils.TRACING_ACTIVATED;
-import static io.narayana.tracing.TracingUtils.activeSpan;
-import static io.narayana.tracing.TracingUtils.getTracer;
+import static io.narayana.tracing.TracingUtils.*;
 
 import java.util.Objects;
-
-import org.jboss.logging.Logger;
 
 import io.narayana.tracing.names.SpanName;
 import io.narayana.tracing.names.TagName;
@@ -39,7 +34,7 @@ public class DefaultSpanBuilder {
 
     private SpanBuilder spanBldr;
     private SpanName name;
-    private static final Logger LOG = Logger.getLogger(DefaultSpanBuilder.class);
+    private static final Span DUMMY_SPAN = new DummySpan();
 
     public DefaultSpanBuilder(SpanName name, Object... args) {
         if(!TRACING_ACTIVATED) return;

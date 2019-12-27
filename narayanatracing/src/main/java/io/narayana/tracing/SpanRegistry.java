@@ -1,6 +1,5 @@
 package io.narayana.tracing;
 
-import static io.narayana.tracing.TracingUtils.DUMMY_SPAN;
 import static io.narayana.tracing.TracingUtils.TRACING_ACTIVATED;
 
 import java.util.Objects;
@@ -28,7 +27,7 @@ public class SpanRegistry {
     }
 
     private static Optional<Span> get(ConcurrentMap<String, Span> map, String id) {
-        if(!TRACING_ACTIVATED) return Optional.of(DUMMY_SPAN);
+        if(!TRACING_ACTIVATED) return Optional.empty();
         Objects.requireNonNull(id);
         Span span = map.get(id);
         return span == null ? Optional.empty() : Optional.of(span);
@@ -40,7 +39,7 @@ public class SpanRegistry {
      * @return {@code Span} from the registry of root spans
      */
     public static Optional<Span> getRoot(String id) {
-        if(!TRACING_ACTIVATED) return Optional.of(DUMMY_SPAN);
+        if(!TRACING_ACTIVATED) return Optional.empty();
         return get(ROOT_SPANS, id);
     }
 
@@ -50,14 +49,15 @@ public class SpanRegistry {
      * @return {@code Span} from the registry of wrapper pre-2PC spans
      */
     public static Optional<Span> getPre2pc(String id) {
-        if(!TRACING_ACTIVATED) return Optional.of(DUMMY_SPAN);
+        if(!TRACING_ACTIVATED) return Optional.empty();
         return get(PRE2PC_SPANS, id);
     }
 
-    private static Span remove(ConcurrentMap<String, Span> map, String id) {
-        if(!TRACING_ACTIVATED) return DUMMY_SPAN;
+    private static Optional<Span> remove(ConcurrentMap<String, Span> map, String id) {
+        if(!TRACING_ACTIVATED) return Optional.empty();
         Objects.requireNonNull(id);
-        return map.remove(id);
+        Span rem = map.remove(id);
+        return rem == null ? Optional.empty() : Optional.of(rem);
     }
 
     /**
@@ -65,12 +65,10 @@ public class SpanRegistry {
      * removing the span from the registry.
      *
      * @param id id of the span (i.e. transaction ID), must not be null
-     * @throws NullPointerException {@code id} does not exist in the registry of
-     *                                  type {@code type}
-     * @return the deleted {@code Span}
+     * @return the deleted {@code Span} if tracing is activated, empty otherwise
      */
-    public static Span removeRoot(String id) {
-        if(!TRACING_ACTIVATED) return DUMMY_SPAN;
+    public static Optional<Span> removeRoot(String id) {
+        if(!TRACING_ACTIVATED) return null;
         return remove(ROOT_SPANS, id);
     }
 
@@ -82,9 +80,8 @@ public class SpanRegistry {
      * @return the deleted {@code Span} wrapped in {@code Optional} if it exists, empty otherwise
      */
     public static Optional<Span> removePre2pc(String id) {
-        if(!TRACING_ACTIVATED) return Optional.of(DUMMY_SPAN);
-        Span span = remove(PRE2PC_SPANS, id);
-        return span == null ? Optional.empty() : Optional.of(span);
+        if(!TRACING_ACTIVATED) return Optional.empty();
+        return remove(PRE2PC_SPANS, id);
     }
 
     private static void insert(ConcurrentMap<String, Span> map, String id, Span span) {
