@@ -1266,7 +1266,7 @@ public class BasicAction extends StateManager {
      */
 
     protected synchronized int Begin(BasicAction parentAct) {
-        new RootSpanBuilder().tag(TagName.UID, get_uid()).build(get_uid().toString());
+        new RootSpanBuilder().tag(TagName.UID, get_uid().toString()).build(get_uid().toString());
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("BasicAction::Begin() for action-id " + get_uid());
         }

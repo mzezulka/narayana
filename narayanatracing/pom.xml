@@ -52,5 +52,17 @@
       <version>${version.org.jboss.logging.jboss-logging}</version>
       <scope>provided</scope>
     </dependency>
+        <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>${version.org.assert}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.opentracing</groupId>
+      <artifactId>opentracing-mock</artifactId>
+      <version>${version.io.opentracing}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>
