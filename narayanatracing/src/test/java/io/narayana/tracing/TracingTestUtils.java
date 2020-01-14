@@ -1,4 +1,4 @@
-package com.arjuna.ats.internal.jta.opentracing;
+package io.narayana.tracing;
 
 import java.util.Arrays;
 import java.util.List;

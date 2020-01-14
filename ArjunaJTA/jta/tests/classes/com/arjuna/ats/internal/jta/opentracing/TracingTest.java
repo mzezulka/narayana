@@ -1,5 +1,6 @@
 package com.arjuna.ats.internal.jta.opentracing;
 
+import static com.arjuna.ats.internal.jta.opentracing.JtaTestUtils.*;
 import static com.arjuna.ats.internal.jta.opentracing.TracingTestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
