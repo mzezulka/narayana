@@ -73,7 +73,7 @@ import com.arjuna.ats.jta.utils.XARecoveryResourceHelper;
 import com.arjuna.ats.jta.xa.XATxConverter;
 import com.arjuna.ats.jta.xa.XidImple;
 
-import io.narayana.tracing.DefaultSpanBuilder;
+import io.narayana.tracing.NarayanaSpanBuilder;
 import io.narayana.tracing.TracingUtils;
 import io.narayana.tracing.names.SpanName;
 import io.narayana.tracing.names.TagName;
@@ -589,7 +589,7 @@ public class XARecoveryModule implements ExtendedRecoveryModule {
                 if (uid.equals(Uid.nullUid())) {
                     continue;
                 }
-                Span h = new DefaultSpanBuilder(SpanName.LOCAL_RECOVERY).tag(TagName.UID, uid)
+                Span h = new NarayanaSpanBuilder(SpanName.LOCAL_RECOVERY).tag(TagName.UID, uid)
                         .tag(TagName.XARES, xares.toString()).build(uid.toString());
                 try (Scope _s = TracingUtils.activateSpan(h)) {
                     TracingUtils.log("first pass of the XAResource periodic recovery");
@@ -698,7 +698,7 @@ public class XARecoveryModule implements ExtendedRecoveryModule {
                     }
                     for (int j = 0; j < xids.length; j++) {
                         Uid uid = XATxConverter.getUid(((XidImple) xids[j]).getXID());
-                        Span h = new DefaultSpanBuilder(SpanName.LOCAL_RECOVERY).tag(TagName.UID, uid)
+                        Span h = new NarayanaSpanBuilder(SpanName.LOCAL_RECOVERY).tag(TagName.UID, uid)
                                 .tag(TagName.XARES, xares.toString()).build(uid.toString());
                         try(Scope _s = TracingUtils.activateSpan(h)) {
                             TracingUtils.log("second pass of the XAResource periodic recovery");
@@ -808,7 +808,7 @@ public class XARecoveryModule implements ExtendedRecoveryModule {
             if (votingOutcome == XAResourceOrphanFilter.Vote.ROLLBACK) {
                 jtaLogger.i18NLogger.info_recovery_rollingback(XAHelper.xidToString(xid));
                 Uid uid = XATxConverter.getUid(((XidImple) xid).getXID());
-                Span h = new DefaultSpanBuilder(SpanName.LOCAL_RECOVERY).tag(TagName.UID, uid)
+                Span h = new NarayanaSpanBuilder(SpanName.LOCAL_RECOVERY).tag(TagName.UID, uid)
                         .tag(TagName.XARES, xares.toString()).build(uid.toString());
                 try(Scope _s = TracingUtils.activateSpan(h)) {
                     xares.rollback(xid);

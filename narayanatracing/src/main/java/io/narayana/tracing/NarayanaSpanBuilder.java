@@ -30,13 +30,13 @@ import io.opentracing.tag.Tags;
  * </code>
  * </pre>
  */
-public class DefaultSpanBuilder {
+public class NarayanaSpanBuilder {
 
     private SpanBuilder spanBldr;
     private SpanName name;
     private static final Span DUMMY_SPAN = new DummySpan();
 
-    public DefaultSpanBuilder(SpanName name, Object... args) {
+    public NarayanaSpanBuilder(SpanName name, Object... args) {
         if(!TRACING_ACTIVATED) return;
         this.spanBldr = prepareSpan(name, args);
         this.name = name;
@@ -51,14 +51,14 @@ public class DefaultSpanBuilder {
      * Adds tag to the started span and simply calls the {@code toString} method on
      * {@code val}.
      */
-    public DefaultSpanBuilder tag(TagName name, Object val) {
+    public NarayanaSpanBuilder tag(TagName name, Object val) {
         if(!TRACING_ACTIVATED) return this;
         Objects.requireNonNull(name);
         spanBldr = spanBldr.withTag(name.toString(), val == null ? "null" : val.toString());
         return this;
     }
 
-    public <T> DefaultSpanBuilder tag(Tag<T> tag, T value) {
+    public <T> NarayanaSpanBuilder tag(Tag<T> tag, T value) {
         if(!TRACING_ACTIVATED) return this;
         Objects.requireNonNull(tag);
         spanBldr = spanBldr.withTag(tag, value);

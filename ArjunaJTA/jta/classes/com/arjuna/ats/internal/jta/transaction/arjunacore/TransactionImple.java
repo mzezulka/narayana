@@ -79,10 +79,9 @@ import com.arjuna.ats.jta.xa.XAModifier;
 import com.arjuna.ats.jta.xa.XidImple;
 import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
 
-import io.narayana.tracing.DefaultSpanBuilder;
+import io.narayana.tracing.NarayanaSpanBuilder;
 import io.narayana.tracing.TracingUtils;
 import io.narayana.tracing.names.SpanName;
-import io.narayana.tracing.names.TagName;
 import io.opentracing.Scope;
 import io.opentracing.Span;
 
@@ -432,7 +431,7 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
                 }
             }
         }
-        Span span = new DefaultSpanBuilder(SpanName.LOCAL_RESOURCE_ENLISTMENT).build(get_uid().toString());
+        Span span = new NarayanaSpanBuilder(SpanName.LOCAL_RESOURCE_ENLISTMENT).build(get_uid().toString());
         try (Scope scope = TracingUtils.activateSpan(span)) {
             /*
              * For each transaction we maintain a list of resources registered with it. Each
@@ -459,7 +458,6 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
                         info = (TxInfo) _duplicateResources.get(xaRes);
                     }
                 }
-                TracingUtils.addTag(TagName.TXINFO, info);
                 if (info != null) {
                     switch (info.getState()) {
                     case TxInfo.ASSOCIATION_SUSPENDED: {

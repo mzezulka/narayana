@@ -41,7 +41,7 @@ import com.arjuna.ats.arjuna.coordinator.RecordType;
 import com.arjuna.ats.arjuna.coordinator.TwoPhaseOutcome;
 import com.arjuna.ats.arjuna.logging.tsLogger;
 
-import io.narayana.tracing.DefaultSpanBuilder;
+import io.narayana.tracing.NarayanaSpanBuilder;
 import io.narayana.tracing.TracingUtils;
 import io.narayana.tracing.names.SpanName;
 import io.narayana.tracing.names.TagName;
@@ -135,7 +135,7 @@ public class LastResourceRecord extends AbstractRecord {
 
     @Override
     public int topLevelCommit() {
-        Span span = new DefaultSpanBuilder(SpanName.LOCAL_COMMIT_LAST_RESOURCE)
+        Span span = new NarayanaSpanBuilder(SpanName.LOCAL_COMMIT_LAST_RESOURCE)
                 .tag(TagName.UID, this.get_uid())
                 .build();
         try(Scope _s = TracingUtils.activateSpan(span)) {

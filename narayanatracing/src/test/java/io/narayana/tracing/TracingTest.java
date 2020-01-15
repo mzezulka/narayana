@@ -2,6 +2,8 @@ package io.narayana.tracing;
 
 import static io.narayana.tracing.TracingTestUtils.operationEnumsToStrings;
 import static io.narayana.tracing.TracingTestUtils.spansToOperationStrings;
+import static io.narayana.tracing.TracingUtils.finish;
+import static io.narayana.tracing.TracingUtils.start;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -12,7 +14,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import io.narayana.tracing.names.SpanName;
-import io.narayana.tracing.names.TagName;
 import io.opentracing.mock.MockSpan;
 import io.opentracing.mock.MockTracer;
 import io.opentracing.util.GlobalTracer;
@@ -45,8 +46,8 @@ public class TracingTest {
 
     @Test
     public void simpleTrace() {
-        new RootSpanBuilder().tag(TagName.UID, TEST_ROOT_UID).build(TEST_ROOT_UID);
-        TracingUtils.finish(TEST_ROOT_UID);
+        start(TEST_ROOT_UID);
+        finish(TEST_ROOT_UID);
         List<String> opNamesExpected = operationEnumsToStrings(SpanName.TX_ROOT);
         List<MockSpan> spans = testTracer.finishedSpans();
         assertThat(spans.size()).isEqualTo(opNamesExpected.size());
@@ -55,35 +56,35 @@ public class TracingTest {
 
     @Test(expected = Test.None.class /* no exception is expected to be thrown */)
     public void simpleTraceFinishTwice() {
-        new RootSpanBuilder().tag(TagName.UID, TEST_ROOT_UID).build(TEST_ROOT_UID);
-        TracingUtils.finish(TEST_ROOT_UID);
-        TracingUtils.finish(TEST_ROOT_UID);
+        start(TEST_ROOT_UID);
+        finish(TEST_ROOT_UID);
+        finish(TEST_ROOT_UID);
     }
 
     @Test(expected = Test.None.class /* no exception is expected to be thrown */)
-    public void simpleTraceFinishTwoTransactions() {
+    public void simpleTraceFinishTwoTransactionsInSeries() {
         String firstUid = TEST_ROOT_UID + "1";
         String secondUid = TEST_ROOT_UID + "2";
-        new RootSpanBuilder().tag(TagName.UID, firstUid).build(firstUid);
-        TracingUtils.finish(firstUid);
-        new RootSpanBuilder().tag(TagName.UID, secondUid).build(secondUid);
-        TracingUtils.finish(secondUid);
+        start(firstUid);
+        finish(firstUid);
+        start(secondUid);
+        finish(secondUid);
     }
 
     @Test(expected = Test.None.class /* no exception is expected to be thrown */)
     public void simpleTraceFinishTwoTransactionsInterleaved() {
         String firstUid = TEST_ROOT_UID + "1";
         String secondUid = TEST_ROOT_UID + "2";
-        new RootSpanBuilder().tag(TagName.UID, firstUid).build(firstUid);
-        new RootSpanBuilder().tag(TagName.UID, secondUid).build(secondUid);
-        TracingUtils.finish(firstUid);
-        TracingUtils.finish(secondUid);
+        start(firstUid);
+        start(secondUid);
+        finish(firstUid);
+        finish(secondUid);
     }
 
     @Test(expected = IllegalArgumentException.class /* as per contract */)
     public void simpleTraceFinishTwoSameName() {
-        new RootSpanBuilder().tag(TagName.UID, TEST_ROOT_UID).build(TEST_ROOT_UID);
-        new RootSpanBuilder().tag(TagName.UID, TEST_ROOT_UID).build(TEST_ROOT_UID);
+        start(TEST_ROOT_UID);
+        start(TEST_ROOT_UID);
     }
 
 }

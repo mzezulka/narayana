@@ -1,14 +1,15 @@
 package io.narayana.tracing;
 
-import java.util.Collections;
+import java.util.Objects;
 import java.util.Optional;
 
+import io.narayana.tracing.names.SpanName;
 import io.narayana.tracing.names.TagName;
 import io.narayana.tracing.names.TransactionStatus;
 import io.opentracing.Scope;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
-import io.opentracing.tag.Tag;
+import io.opentracing.Tracer.SpanBuilder;
 import io.opentracing.tag.Tags;
 import io.opentracing.util.GlobalTracer;
 
@@ -20,17 +21,8 @@ import io.opentracing.util.GlobalTracer;
  * "behind the scenes" in this class and the intention is to provide as thin API
  * to the user as possible.
  *
- * Three classes should be taken into consideration: i) SpanHandle, an
- * abstraction of the OpenTracing span providing only the {@code close} method
- * with which the user declares that the span is no longer active and should be
- * reported; all the other functionality is provided via static methods of this
- * class
- *
- * ii) RootSpanHandleBuilder, responsible for building a SpanHandle which
- * represents the root of a transaction trace, all other spans created under
- * Narayana will be (direct or indirect) children of this span
- *
- * iii) SpanHandleBuilder - responsible for building regular spans
+ * Most of the opentracing functionality is to be accessed from this utility
+ * class.
  *
  * Note: spans are always activated at the point of span creation (we tightly
  * couple the events again because of the goal of having a thin API).
@@ -76,12 +68,101 @@ public class TracingUtils {
     }
 
     /**
+     * Starts a new root span of a trace representing one distributed transaction.
+     *
+     * @param txUid string representation of the transaction
+     */
+    public static void start(String txUid) {
+        Objects.requireNonNull(txUid);
+        new RootSpanBuilder().tag(TagName.UID, txUid).build(txUid);
+    }
+
+    /**
+     * Build a new root span which represents the whole transaction. Any
+     * other span handles created in the Narayana code base should be attached to
+     * this root scope using the "ordinary" SpanBuilder.
+     *
+     * Usage: as the transaction will always begin and end at two different methods,
+     * we need to manage (de)activation of the span manually, schematically like
+     * this:
+     *
+     * <pre>
+     * <code>public void transactionStart(Uid uid, ...) {
+     *     new RootSpanBuilder(uid)
+     *            ...
+     *           .build(uid);
+     *     ...
+     *}
+     *
+     *public void transactionEnd(Uid uid, ...) {
+     *     Tracing.finish(uid);
+     *     ...
+     * </code>}
+     * </pre>
+     *
+     * Note: we're not using the Uid class as a key as this would create a cyclic dependency
+     * between narayanatracing arjuna modules. Strings (which should always
+     * represent a Uid!) are used instead.
+     */
+    private static class RootSpanBuilder {
+
+        private SpanBuilder spanBldr;
+        private SpanBuilder pre2PCspanBldr;
+
+        RootSpanBuilder(Object... args) {
+            if(!TRACING_ACTIVATED) return;
+            spanBldr = prepareSpan(SpanName.TX_ROOT, args).withTag(Tags.ERROR, false);
+            pre2PCspanBldr = prepareSpan(SpanName.GLOBAL_ENLISTMENTS, args);
+        }
+
+        private static SpanBuilder prepareSpan(SpanName name, Object... args) {
+            Objects.requireNonNull(name, "Name of the span cannot be null");
+            return getTracer().buildSpan(String.format(name.toString(), args));
+        }
+
+        /**
+         * Adds tag to the started span.
+         */
+        public RootSpanBuilder tag(TagName name, Object val) {
+            if(!TRACING_ACTIVATED) return this;
+            Objects.requireNonNull(name, "Name of the tag cannot be null");
+            spanBldr = spanBldr.withTag(name.toString(), val == null ? "null" : val.toString());
+            return this;
+        }
+
+        /**
+         * Build the root span and propagate it as a handle. Any possible active
+         * (=parent) spans are ignored as this is the root of a new transaction trace.
+         *
+         * @throws IllegalArgumentException {@code txUid} is null or a span with this ID
+         *                                  already exists
+         * @param txUid UID of the new transaction
+         * @return
+         */
+        public Span build(String txUid) {
+            if(!TRACING_ACTIVATED) return null;
+            Span rootSpan = spanBldr.withTag(Tags.COMPONENT, "narayana").ignoreActiveSpan().start();
+            SpanRegistry.insertRoot(txUid, rootSpan);
+            getTracer().scopeManager().activate(rootSpan);
+
+            Span pre2PCSpan = pre2PCspanBldr.asChildOf(rootSpan)
+                                            .withTag(Tags.COMPONENT, "narayana")
+                                            .start();
+            SpanRegistry.insertPre2pc(txUid, pre2PCSpan);
+            getTracer().scopeManager().activate(pre2PCSpan);
+
+            return pre2PCSpan;
+        }
+    }
+
+    /**
      * Finishes the root span representing the transaction with id {@code txUid}
      *
-     * @param txUid
+     * @param txUid string representation of the transaction
      */
     public static void finish(String txUid) {
         if (!TRACING_ACTIVATED) return;
+        Objects.requireNonNull(txUid);
         finish(txUid, true);
     }
 
@@ -97,9 +178,9 @@ public class TracingUtils {
     }
 
     /**
-     * This is different from setting the transaction status as failed. Using this
-     * method, the span itself in terms of opentracing is marked as failed.
-     *
+     * Mark the span itself as failed in terms of opentracing.
+     * Hence this is different from setting the transaction
+     * status span tag as failed via calling {@code setTransactionStatus}.
      */
     public static void markTransactionFailed(String txUid) {
         if (!TRACING_ACTIVATED) return;
@@ -131,27 +212,12 @@ public class TracingUtils {
         activeSpan().ifPresent(s -> s.setTag(name.toString(), val));
     }
 
-    public static void addTag(TagName name, Object obj) {
-        if (!TRACING_ACTIVATED) return;
-        addTag(name, obj == null ? "null" : obj.toString());
-    }
-
-    public static <T> void addTag(Tag<T> tag, T obj) {
-        if (!TRACING_ACTIVATED) return;
-        activeSpan().ifPresent((s) -> s.setTag(tag, obj));
-    }
-
     /**
      * Log a message for the currently active span.
      */
     public static void log(String message) {
         if (!TRACING_ACTIVATED) return;
         activeSpan().ifPresent(s -> s.log(message));
-    }
-
-    public static <T> void log(String fld, String value) {
-        if (!TRACING_ACTIVATED) return;
-        activeSpan().ifPresent(s -> s.log(Collections.singletonMap(fld, value)));
     }
 
     static Optional<Span> activeSpan() {
@@ -164,7 +230,7 @@ public class TracingUtils {
      * @return registered tracer or any default tracer provided by the opentracing
      *         implementation
      */
-    public static Tracer getTracer() {
+    static Tracer getTracer() {
         // when tracing is deactivated,
         // no tracer code should be called
         if (!TRACING_ACTIVATED) return null;

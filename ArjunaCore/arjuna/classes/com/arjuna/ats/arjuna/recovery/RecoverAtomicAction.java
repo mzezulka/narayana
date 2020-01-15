@@ -37,7 +37,7 @@ import com.arjuna.ats.arjuna.coordinator.ActionStatus;
 import com.arjuna.ats.arjuna.logging.tsLogger;
 import com.arjuna.ats.internal.arjuna.recovery.AtomicActionExpiryScanner;
 
-import io.narayana.tracing.DefaultSpanBuilder;
+import io.narayana.tracing.NarayanaSpanBuilder;
 import io.narayana.tracing.TracingUtils;
 import io.narayana.tracing.names.SpanName;
 import io.opentracing.Scope;
@@ -63,7 +63,7 @@ public class RecoverAtomicAction extends AtomicAction {
         }
 
         if (_activated) {
-            Span h = new DefaultSpanBuilder(SpanName.LOCAL_RECOVERY).build(get_uid().toString());
+            Span h = new NarayanaSpanBuilder(SpanName.LOCAL_RECOVERY).build(get_uid().toString());
             try(Scope _s = TracingUtils.activateSpan(h)) {
                 if ((_theStatus == ActionStatus.PREPARED) || (_theStatus == ActionStatus.COMMITTING)
                         || (_theStatus == ActionStatus.COMMITTED) || (_theStatus == ActionStatus.H_COMMIT)
