@@ -13,7 +13,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import io.narayana.tracing.names.SpanName;
-import io.opentracing.mock.MockSpan;
 import io.opentracing.mock.MockTracer;
 import io.opentracing.util.GlobalTracer;
 
@@ -48,9 +47,7 @@ public class TracingTest {
         start(TEST_ROOT_UID);
         finish(TEST_ROOT_UID);
         List<String> opNamesExpected = operationEnumsToStrings(SpanName.TX_ROOT);
-        List<MockSpan> spans = testTracer.finishedSpans();
-        assertThat(spans.size()).isEqualTo(opNamesExpected.size());
-        assertThat(spansToOperationStrings(spans)).isEqualTo(opNamesExpected);
+        assertThat(spansToOperationStrings(testTracer.finishedSpans())).isEqualTo(opNamesExpected);
     }
 
     @Test(expected = Test.None.class /* no exception is expected to be thrown */)
@@ -90,6 +87,8 @@ public class TracingTest {
     public void simpleTraceFinishWithoutRemovalAndThenFinish() {
         start(TEST_ROOT_UID);
         finishWithoutRemoval(TEST_ROOT_UID);
+        List<String> opNamesExpected = operationEnumsToStrings(SpanName.TX_ROOT);
+        assertThat(spansToOperationStrings(testTracer.finishedSpans())).isEqualTo(opNamesExpected);
         finish(TEST_ROOT_UID);
     }
 }
