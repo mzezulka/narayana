@@ -24,6 +24,10 @@ import io.opentracing.util.GlobalTracer;
  * Most of the opentracing functionality is to be accessed from this utility
  * class.
  *
+ * Note: we're not using the Uid class as a key as this would create a cyclic dependency
+ * between narayanatracing and other arjuna modules. Strings (which should always
+ * represent a Uid!) are used instead.
+ *
  * Note: spans are always activated at the point of span creation (we tightly
  * couple the events again because of the goal of having a thin API).
  *
@@ -32,6 +36,9 @@ import io.opentracing.util.GlobalTracer;
 public class TracingUtils {
     static final boolean TRACING_ACTIVATED = Boolean
             .valueOf(System.getProperty("org.jboss.narayana.tracingActivated", "true"));
+    // we don't want to expose this baggage item as part of a public API since
+    // this is only for internal use
+    private static final String REMOVE_BAG_ITEM = "REMOVE_ASYNC";
     static final Scope DUMMY_SCOPE = new DummyScope();
 
     private TracingUtils() {
@@ -62,9 +69,17 @@ public class TracingUtils {
 
     private static void finish(String txUid, boolean remove) {
         if (!TRACING_ACTIVATED) return;
-        // We need to check for superfluous calls to this method
-        Optional<Span> span = remove ? SpanRegistry.removeRoot(txUid) : SpanRegistry.getRoot(txUid);
-        span.ifPresent(s -> s.finish());
+        if(!remove) {
+            SpanRegistry.getRoot(txUid).ifPresent(s -> {s.setBaggageItem(REMOVE_BAG_ITEM, String.valueOf(true)); s.finish();});
+            return;
+        }
+        SpanRegistry.removeRoot(txUid).ifPresent(s -> {
+            String r = s.getBaggageItem(REMOVE_BAG_ITEM);
+            // if the baggage item was set, this means that we finished
+            // this particular span before and only need to remove it
+            // from the span registry
+            if(!String.valueOf(true).equals(r)) s.finish();
+        });
     }
 
     /**
@@ -82,27 +97,6 @@ public class TracingUtils {
      * other span handles created in the Narayana code base should be attached to
      * this root scope using the "ordinary" SpanBuilder.
      *
-     * Usage: as the transaction will always begin and end at two different methods,
-     * we need to manage (de)activation of the span manually, schematically like
-     * this:
-     *
-     * <pre>
-     * <code>public void transactionStart(Uid uid, ...) {
-     *     new RootSpanBuilder(uid)
-     *            ...
-     *           .build(uid);
-     *     ...
-     *}
-     *
-     *public void transactionEnd(Uid uid, ...) {
-     *     Tracing.finish(uid);
-     *     ...
-     * </code>}
-     * </pre>
-     *
-     * Note: we're not using the Uid class as a key as this would create a cyclic dependency
-     * between narayanatracing arjuna modules. Strings (which should always
-     * represent a Uid!) are used instead.
      */
     private static class RootSpanBuilder {
 

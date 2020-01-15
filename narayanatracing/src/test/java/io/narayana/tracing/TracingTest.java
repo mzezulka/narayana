@@ -2,8 +2,7 @@ package io.narayana.tracing;
 
 import static io.narayana.tracing.TracingTestUtils.operationEnumsToStrings;
 import static io.narayana.tracing.TracingTestUtils.spansToOperationStrings;
-import static io.narayana.tracing.TracingUtils.finish;
-import static io.narayana.tracing.TracingUtils.start;
+import static io.narayana.tracing.TracingUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -87,4 +86,10 @@ public class TracingTest {
         start(TEST_ROOT_UID);
     }
 
+    @Test
+    public void simpleTraceFinishWithoutRemovalAndThenFinish() {
+        start(TEST_ROOT_UID);
+        finishWithoutRemoval(TEST_ROOT_UID);
+        finish(TEST_ROOT_UID);
+    }
 }
