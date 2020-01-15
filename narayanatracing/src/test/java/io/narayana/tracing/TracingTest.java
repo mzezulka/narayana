@@ -13,6 +13,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import io.narayana.tracing.names.SpanName;
+import io.opentracing.Scope;
+import io.opentracing.Span;
 import io.opentracing.mock.MockTracer;
 import io.opentracing.util.GlobalTracer;
 
@@ -90,5 +92,29 @@ public class TracingTest {
         List<String> opNamesExpected = operationEnumsToStrings(SpanName.TX_ROOT);
         assertThat(spansToOperationStrings(testTracer.finishedSpans())).isEqualTo(opNamesExpected);
         finish(TEST_ROOT_UID);
+    }
+
+    @Test
+    public void nestedSpansSimple() {
+        start(TEST_ROOT_UID);
+        begin2PC(TEST_ROOT_UID);
+        finish(TEST_ROOT_UID);
+        List<String> opNamesExpected = operationEnumsToStrings(SpanName.GLOBAL_ENLISTMENTS, SpanName.TX_ROOT);
+        assertThat(spansToOperationStrings(testTracer.finishedSpans())).isEqualTo(opNamesExpected);
+    }
+
+    @Test
+    public void nestedSpans() {
+        start(TEST_ROOT_UID);
+        begin2PC(TEST_ROOT_UID);
+        Span span = new NarayanaSpanBuilder(SpanName.GLOBAL_PREPARE).build(TEST_ROOT_UID);
+        try (Scope _s = TracingUtils.activateSpan(span)) {
+            //no-op
+        } finally {
+            span.finish();
+            finish(TEST_ROOT_UID);
+        }
+        List<String> opNamesExpected = operationEnumsToStrings(SpanName.GLOBAL_ENLISTMENTS, SpanName.GLOBAL_PREPARE, SpanName.TX_ROOT);
+        assertThat(spansToOperationStrings(testTracer.finishedSpans())).isEqualTo(opNamesExpected);
     }
 }
