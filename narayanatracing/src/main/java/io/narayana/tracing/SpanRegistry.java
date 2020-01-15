@@ -88,7 +88,7 @@ public class SpanRegistry {
         if(!TRACING_ACTIVATED) return;
         Objects.requireNonNull(id);
         Objects.requireNonNull(span);
-        if (map.putIfAbsent(id, span) != null)
+        if (map.put(id, span) != null)
             throw new IllegalArgumentException(
                     String.format("There is already an entry with id %s in the registry.", id));
     }
@@ -117,6 +117,12 @@ public class SpanRegistry {
     public static void insertPre2pc(String id, Span span) {
         if(!TRACING_ACTIVATED) return;
         insert(PRE2PC_SPANS, id, span);
+    }
+
+    // for testing purposes only
+    static void reset() {
+        ROOT_SPANS.clear();
+        PRE2PC_SPANS.clear();
     }
 
 }

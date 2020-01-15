@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -32,6 +33,11 @@ public class TracingTest {
         assertThat(GlobalTracer.registerIfAbsent(testTracer)).isTrue();
     }
 
+    @Before
+    public void prepare() {
+        SpanRegistry.reset();
+    }
+
     @After
     public void teardown() {
         testTracer.reset();
@@ -45,6 +51,39 @@ public class TracingTest {
         List<MockSpan> spans = testTracer.finishedSpans();
         assertThat(spans.size()).isEqualTo(opNamesExpected.size());
         assertThat(spansToOperationStrings(spans)).isEqualTo(opNamesExpected);
+    }
+
+    @Test(expected = Test.None.class /* no exception is expected to be thrown */)
+    public void simpleTraceFinishTwice() {
+        new RootSpanBuilder().tag(TagName.UID, TEST_ROOT_UID).build(TEST_ROOT_UID);
+        TracingUtils.finish(TEST_ROOT_UID);
+        TracingUtils.finish(TEST_ROOT_UID);
+    }
+
+    @Test(expected = Test.None.class /* no exception is expected to be thrown */)
+    public void simpleTraceFinishTwoTransactions() {
+        String firstUid = TEST_ROOT_UID + "1";
+        String secondUid = TEST_ROOT_UID + "2";
+        new RootSpanBuilder().tag(TagName.UID, firstUid).build(firstUid);
+        TracingUtils.finish(firstUid);
+        new RootSpanBuilder().tag(TagName.UID, secondUid).build(secondUid);
+        TracingUtils.finish(secondUid);
+    }
+
+    @Test(expected = Test.None.class /* no exception is expected to be thrown */)
+    public void simpleTraceFinishTwoTransactionsInterleaved() {
+        String firstUid = TEST_ROOT_UID + "1";
+        String secondUid = TEST_ROOT_UID + "2";
+        new RootSpanBuilder().tag(TagName.UID, firstUid).build(firstUid);
+        new RootSpanBuilder().tag(TagName.UID, secondUid).build(secondUid);
+        TracingUtils.finish(firstUid);
+        TracingUtils.finish(secondUid);
+    }
+
+    @Test(expected = IllegalArgumentException.class /* as per contract */)
+    public void simpleTraceFinishTwoSameName() {
+        new RootSpanBuilder().tag(TagName.UID, TEST_ROOT_UID).build(TEST_ROOT_UID);
+        new RootSpanBuilder().tag(TagName.UID, TEST_ROOT_UID).build(TEST_ROOT_UID);
     }
 
 }
