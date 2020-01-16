@@ -287,6 +287,7 @@ public abstract class AbstractRecord extends StateManager {
      * Re-implementation of abstract methods inherited from base class.
      */
 
+    @Override
     public String type() {
         return "/StateManager/AbstractRecord";
     }
@@ -297,6 +298,7 @@ public abstract class AbstractRecord extends StateManager {
      * @param strm the stream on which to output.
      */
 
+    @Override
     public void print(PrintWriter strm) {
         strm.println("Uid of Managed Object: " + uidOfObject);
         strm.println("Type of Managed Object: " + typeOfObject);
@@ -317,6 +319,7 @@ public abstract class AbstractRecord extends StateManager {
      * @return <code>true</code> if successful, <code>false</code> otherwise.
      */
 
+    @Override
     public boolean save_state(OutputObjectState os, int i) {
         try {
             UidHelper.packInto(uidOfObject, os);
@@ -340,6 +343,7 @@ public abstract class AbstractRecord extends StateManager {
      * @return <code>true</code> if successful, <code>false</code> otherwise.
      */
 
+    @Override
     public boolean restore_state(InputObjectState os, int i) {
         typeOfObject = null;
 

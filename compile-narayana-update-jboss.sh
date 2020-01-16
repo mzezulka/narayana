@@ -1,9 +1,8 @@
 #!/bin/sh
- 
 # trying to compile narayana sources
 # and then unpack full distro of narayana
 # and copy narayana jar files to modules of jboss home
- 
+set -eux 
 # Usage:
 # 1. go to Naryana source code folder
 # 2. export JBOSS_HOME=path/to/jboss
@@ -49,7 +48,6 @@ function updateJboss {
   updateModuleXml "$JBOSS_HOME/modules/system/layers/base/org/jboss/jts/integration/main" "narayana-jts-integration"
   updateModuleXml "$JBOSS_HOME/modules/system/layers/base/org/jboss/xts/main" 'jbossxts'
   updateModuleXml "$JBOSS_HOME/modules/system/layers/base/org/jboss/xts/main" 'jbosstxbridge'
-  updateModuleXml "$JBOSS_HOME/modules/system/layers/base/io/narayana/tracing/main" 'narayanatracing'
  
   popd > /dev/null
   pushd rts/at
