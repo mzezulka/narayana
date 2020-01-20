@@ -82,6 +82,7 @@ import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
 import io.narayana.tracing.NarayanaSpanBuilder;
 import io.narayana.tracing.TracingUtils;
 import io.narayana.tracing.names.SpanName;
+import io.narayana.tracing.names.TagName;
 import io.opentracing.Scope;
 import io.opentracing.Span;
 
@@ -411,7 +412,6 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
                     "TransactionImple.enlistResource - " + jtaLogger.i18NLogger.get_transaction_arjunacore_nullres());
 
         int status = getStatus();
-
         switch (status) {
         case javax.transaction.Status.STATUS_MARKED_ROLLBACK:
             throw new RollbackException("TransactionImple.enlistResource - "
@@ -431,7 +431,11 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
                 }
             }
         }
-        Span span = new NarayanaSpanBuilder(SpanName.LOCAL_RESOURCE_ENLISTMENT).build(get_uid().toString());
+        Span span = new NarayanaSpanBuilder(SpanName.LOCAL_RESOURCE_ENLISTMENT)
+                .tag(TagName.UID, get_uid())
+                .tag(TagName.TXINFO, getTxId())
+                .tag(TagName.XARES, xaRes)
+                .build();
         try (Scope scope = TracingUtils.activateSpan(span)) {
             /*
              * For each transaction we maintain a list of resources registered with it. Each

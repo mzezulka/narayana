@@ -589,8 +589,10 @@ public class XARecoveryModule implements ExtendedRecoveryModule {
                 if (uid.equals(Uid.nullUid())) {
                     continue;
                 }
-                Span h = new NarayanaSpanBuilder(SpanName.LOCAL_RECOVERY).tag(TagName.UID, uid)
-                        .tag(TagName.XARES, xares.toString()).build(uid.toString());
+                Span h = new NarayanaSpanBuilder(SpanName.LOCAL_RECOVERY)
+                        .tag(TagName.UID, uid)
+                        .tag(TagName.XARES, xares.toString())
+                        .build();
                 try (Scope _s = TracingUtils.activateSpan(h)) {
                     TracingUtils.log("first pass of the XAResource periodic recovery");
                 } finally {
