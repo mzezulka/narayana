@@ -117,4 +117,42 @@ public class TracingTest {
         List<String> opNamesExpected = operationEnumsToStrings(SpanName.GLOBAL_ENLISTMENTS, SpanName.GLOBAL_PREPARE, SpanName.TX_ROOT);
         assertThat(spansToOperationStrings(testTracer.finishedSpans())).isEqualTo(opNamesExpected);
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void spansWithExpectedRootMissing() {
+        Span span = new NarayanaSpanBuilder(SpanName.GLOBAL_PREPARE).build(TEST_ROOT_UID);
+    }
+
+    /**
+     * Some of the calls which demarcate the end of transaction processing
+     * might be called more than once.
+     */
+    @Test(expected = Test.None.class)
+    public void finishTxnWithoutStartingIt() {
+        start(TEST_ROOT_UID);
+        finish(TEST_ROOT_UID);
+        finish(TEST_ROOT_UID);
+    }
+
+    /*
+     * This test case makes sure that narayanatracing does not throw IAE
+     * when XARecoveryModule processes transactions which are
+     * unknown to tracing runtime (e.g. txns which are stored persistently
+     * in the object store and recovered after AS restart).
+     *
+     * Recovery is the most prominent example but the most important
+     * aspect of this test is that for the NarayanaSpanBuilder,
+     * we do not pass in any txn id.
+     */
+    @Test(expected = Test.None.class)
+    public void spansWithExpectedRootMissingNoFail() {
+        Span span = new NarayanaSpanBuilder(SpanName.LOCAL_RECOVERY).build();
+        try (Scope _s = TracingUtils.activateSpan(span)) {
+            //no-op
+        } finally {
+            span.finish();
+        }
+        List<String> opNamesExpected = operationEnumsToStrings(SpanName.LOCAL_RECOVERY);
+        assertThat(spansToOperationStrings(testTracer.finishedSpans())).isEqualTo(opNamesExpected);
+    }
 }

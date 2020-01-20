@@ -1,6 +1,7 @@
     package io.narayana.tracing;
 
-import static io.narayana.tracing.TracingUtils.*;
+import static io.narayana.tracing.TracingUtils.TRACING_ACTIVATED;
+import static io.narayana.tracing.TracingUtils.getTracer;
 
 import java.util.Objects;
 
@@ -111,17 +112,16 @@ public class NarayanaSpanBuilder {
     }
 
     /**
-     * Build a span which has no explicit parent set. Useful for creating nested
-     * traces. See the OpenTracing documentation on what the implicit reference is.
+     * Build a span which does not declare its parent explicitly.
+     * Useful for creating nested traces.
+     *
+     * Use with extreme caution as call to this method does not ensure
+     * that the span will be associated to any transaction trace.
      *
      * @throws IllegalStateException there is currently no active span
      */
     public Span build() {
         if(!TRACING_ACTIVATED) return DUMMY_SPAN;
-        if (!activeSpan().isPresent()) {
-            throw new IllegalStateException(String
-                    .format("The span '%s' could not be nested into enclosing span because there is none.", name));
-        }
         return spanBldr.withTag(Tags.COMPONENT, "narayana").start();
     }
 }
