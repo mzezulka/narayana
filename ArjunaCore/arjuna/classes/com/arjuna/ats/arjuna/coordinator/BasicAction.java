@@ -1500,7 +1500,6 @@ public class BasicAction extends StateManager {
      * @return <code>ActionStatus</code> indicating outcome.
      */
     protected synchronized int Abort(boolean applicationAbort) {
-        TracingUtils.begin2PC(get_uid().toString());
         Span s = new NarayanaSpanBuilder(SpanName.GLOBAL_ABORT_USER)
                 .tag(TagName.APPLICATION_ABORT, String.valueOf(applicationAbort)).tag(TagName.UID, get_uid())
                 .tag(TagName.ASYNCHRONOUS, false).build(get_uid().toString());
@@ -1824,7 +1823,6 @@ public class BasicAction extends StateManager {
      */
 
     protected final synchronized void phase2Abort(boolean reportHeuristics) {
-        TracingUtils.begin2PC(get_uid().toString());
         Span span = new NarayanaSpanBuilder(SpanName.GLOBAL_ABORT)
                 .tag(TagName.REPORT_HEURISTICS, String.valueOf(reportHeuristics)).tag(TagName.APPLICATION_ABORT, false)
                 .tag(TagName.ASYNCHRONOUS, false).tag(TagName.UID, this.get_uid()).build(get_uid().toString());
@@ -1962,7 +1960,6 @@ public class BasicAction extends StateManager {
      */
 
     protected final synchronized int prepare(boolean reportHeuristics) {
-        TracingUtils.begin2PC(get_uid().toString());
         Span span = new NarayanaSpanBuilder(SpanName.GLOBAL_PREPARE)
                 .tag(TagName.REPORT_HEURISTICS, String.valueOf(reportHeuristics)).tag(TagName.UID, get_uid())
                 .build(get_uid().toString());
@@ -2219,131 +2216,135 @@ public class BasicAction extends StateManager {
         Long startTime = TxStats.enabled() ? System.nanoTime() : null;
 
         actionStatus = ActionStatus.COMMITTING;
+        Span span = new NarayanaSpanBuilder(SpanName.ONE_PHASE_COMMIT).build();
+        try (Scope scope = TracingUtils.activateSpan(span)) {
+            criticalStart();
 
-        criticalStart();
+            if ((heuristicList == null) && reportHeuristics)
+                heuristicList = new RecordList();
 
-        if ((heuristicList == null) && reportHeuristics)
-            heuristicList = new RecordList();
+            if (failedList == null)
+                failedList = new RecordList();
 
-        if (failedList == null)
-            failedList = new RecordList();
+            /*
+             * Since it is one-phase, the outcome from the record is the outcome of the
+             * transaction. Therefore, we don't need to save much intermediary transaction
+             * state - only heuristics in the case of interposition.
+             */
 
-        /*
-         * Since it is one-phase, the outcome from the record is the outcome of the
-         * transaction. Therefore, we don't need to save much intermediary transaction
-         * state - only heuristics in the case of interposition.
-         */
+            boolean stateToSave = false;
 
-        boolean stateToSave = false;
+            recordBeingHandled = pendingList.getFront();
 
-        recordBeingHandled = pendingList.getFront();
+            int p = ((actionType == ActionType.TOP_LEVEL) ? recordBeingHandled.topLevelOnePhaseCommit()
+                    : recordBeingHandled.nestedOnePhaseCommit());
 
-        int p = ((actionType == ActionType.TOP_LEVEL) ? recordBeingHandled.topLevelOnePhaseCommit()
-                : recordBeingHandled.nestedOnePhaseCommit());
-
-        if ((p == TwoPhaseOutcome.FINISH_OK) || (p == TwoPhaseOutcome.PREPARE_READONLY)) {
-            if ((actionType == ActionType.NESTED) && recordBeingHandled.propagateOnCommit()) {
-                merge(recordBeingHandled);
-            } else {
-                recordBeingHandled = null;
-            }
-
-            actionStatus = ActionStatus.COMMITTED;
-        } else {
-            if ((p == TwoPhaseOutcome.FINISH_ERROR) || (p == TwoPhaseOutcome.ONE_PHASE_ERROR)) {
-                /*
-                 * If ONE_PHASE_ERROR then the resource has rolled back. Otherwise we don't know
-                 * and will ask recovery to keep trying. We differentiate this kind of failure
-                 * from a heuristic failure so that we can allow recovery to retry the commit
-                 * attempt periodically.
-                 */
-
-                if (p == TwoPhaseOutcome.ONE_PHASE_ERROR) {
-                    addDeferredThrowables(recordBeingHandled, deferredThrowables);
+            if ((p == TwoPhaseOutcome.FINISH_OK) || (p == TwoPhaseOutcome.PREPARE_READONLY)) {
+                if ((actionType == ActionType.NESTED) && recordBeingHandled.propagateOnCommit()) {
+                    merge(recordBeingHandled);
+                } else {
+                    recordBeingHandled = null;
                 }
 
-                if (p == TwoPhaseOutcome.FINISH_ERROR) {
+                actionStatus = ActionStatus.COMMITTED;
+            } else {
+                if ((p == TwoPhaseOutcome.FINISH_ERROR) || (p == TwoPhaseOutcome.ONE_PHASE_ERROR)) {
                     /*
-                     * We still add to the failed list because this may not mean that the
-                     * transaction has aborted.
+                     * If ONE_PHASE_ERROR then the resource has rolled back. Otherwise we don't know
+                     * and will ask recovery to keep trying. We differentiate this kind of failure
+                     * from a heuristic failure so that we can allow recovery to retry the commit
+                     * attempt periodically.
                      */
 
-                    if (!failedList.insert(recordBeingHandled))
-                        recordBeingHandled = null;
-                    else {
+                    if (p == TwoPhaseOutcome.ONE_PHASE_ERROR) {
                         addDeferredThrowables(recordBeingHandled, deferredThrowables);
-                        if (!stateToSave)
-                            stateToSave = recordBeingHandled.doSave();
                     }
 
+                    if (p == TwoPhaseOutcome.FINISH_ERROR) {
+                        /*
+                         * We still add to the failed list because this may not mean that the
+                         * transaction has aborted.
+                         */
+
+                        if (!failedList.insert(recordBeingHandled))
+                            recordBeingHandled = null;
+                        else {
+                            addDeferredThrowables(recordBeingHandled, deferredThrowables);
+                            if (!stateToSave)
+                                stateToSave = recordBeingHandled.doSave();
+                        }
+
+                        /*
+                         * There's been a problem and we need to retry later. Assume transaction has
+                         * committed until we have further information. This also ensures that recovery
+                         * will kick in periodically.
+                         */
+
+                        actionStatus = ActionStatus.COMMITTED;
+                    } else
+                        actionStatus = ActionStatus.ABORTED;
+                } else {
                     /*
-                     * There's been a problem and we need to retry later. Assume transaction has
-                     * committed until we have further information. This also ensures that recovery
-                     * will kick in periodically.
+                     * Heuristic decision!!
                      */
 
-                    actionStatus = ActionStatus.COMMITTED;
-                } else
-                    actionStatus = ActionStatus.ABORTED;
-            } else {
-                /*
-                 * Heuristic decision!!
-                 */
+                    tsLogger.i18NLogger.warn_coordinator_BasicAction_47(get_uid(), TwoPhaseOutcome.stringForm(p));
 
-                tsLogger.i18NLogger.warn_coordinator_BasicAction_47(get_uid(), TwoPhaseOutcome.stringForm(p));
+                    if (reportHeuristics) {
+                        updateHeuristic(p, true);
 
-                if (reportHeuristics) {
-                    updateHeuristic(p, true);
-
-                    if (!heuristicList.insert(recordBeingHandled))
-                        recordBeingHandled = null;
-                    else {
-                        addDeferredThrowables(recordBeingHandled, deferredThrowables);
-                        if (!stateToSave)
-                            stateToSave = recordBeingHandled.doSave();
+                        if (!heuristicList.insert(recordBeingHandled))
+                            recordBeingHandled = null;
+                        else {
+                            addDeferredThrowables(recordBeingHandled, deferredThrowables);
+                            if (!stateToSave)
+                                stateToSave = recordBeingHandled.doSave();
+                        }
                     }
+
+                    if (heuristicDecision == TwoPhaseOutcome.HEURISTIC_ROLLBACK) {
+                        /*
+                         * Signal that the action outcome is the same as the heuristic decision.
+                         */
+
+                        heuristicDecision = TwoPhaseOutcome.PREPARE_OK; // means no
+                        // heuristic
+                        // was
+                        // raised.
+
+                        actionStatus = ActionStatus.ABORTED;
+                    } else if (heuristicDecision == TwoPhaseOutcome.HEURISTIC_COMMIT) {
+                        heuristicDecision = TwoPhaseOutcome.PREPARE_OK;
+                        actionStatus = ActionStatus.COMMITTED;
+                    } else
+                        actionStatus = ActionStatus.H_HAZARD; // can't really say
+                    // (could have
+                    // aborted)
                 }
-
-                if (heuristicDecision == TwoPhaseOutcome.HEURISTIC_ROLLBACK) {
-                    /*
-                     * Signal that the action outcome is the same as the heuristic decision.
-                     */
-
-                    heuristicDecision = TwoPhaseOutcome.PREPARE_OK; // means no
-                    // heuristic
-                    // was
-                    // raised.
-
-                    actionStatus = ActionStatus.ABORTED;
-                } else if (heuristicDecision == TwoPhaseOutcome.HEURISTIC_COMMIT) {
-                    heuristicDecision = TwoPhaseOutcome.PREPARE_OK;
-                    actionStatus = ActionStatus.COMMITTED;
-                } else
-                    actionStatus = ActionStatus.H_HAZARD; // can't really say
-                // (could have
-                // aborted)
             }
-        }
 
-        if (actionType == ActionType.TOP_LEVEL) {
-            if (stateToSave && ((heuristicList.size() > 0) || (failedList.size() > 0))) {
-                if (getStore() == null) {
-                    tsLogger.i18NLogger.fatal_coordinator_BasicAction_48();
+            if (actionType == ActionType.TOP_LEVEL) {
+                if (stateToSave && ((heuristicList.size() > 0) || (failedList.size() > 0))) {
+                    if (getStore() == null) {
+                        tsLogger.i18NLogger.fatal_coordinator_BasicAction_48();
 
-                    throw new com.arjuna.ats.arjuna.exceptions.FatalError(
-                            tsLogger.i18NLogger.get_coordinator_BasicAction_69() + get_uid());
+                        throw new com.arjuna.ats.arjuna.exceptions.FatalError(
+                                tsLogger.i18NLogger.get_coordinator_BasicAction_69() + get_uid());
+                    }
+
+                    updateState();
                 }
-
-                updateState();
             }
+
+            forgetHeuristics();
+
+            ActionManager.manager().remove(get_uid());
+
+            criticalEnd();
+        } finally {
+            TracingUtils.addTag(TagName.STATUS, ActionStatus.stringForm(actionStatus));
+            span.finish();
         }
-
-        forgetHeuristics();
-
-        ActionManager.manager().remove(get_uid());
-
-        criticalEnd();
-
         if (TxStats.enabled()) {
             if (actionStatus == ActionStatus.ABORTED) {
                 TxStats.getInstance().incrementAbortedTransactions();

@@ -81,10 +81,9 @@ public class NarayanaSpanBuilder {
      */
     public Span build(String txUid) {
         if(!TRACING_ACTIVATED) return DUMMY_SPAN;
-        Span parent = SpanRegistry.getPre2pc(txUid)
-                .orElse(SpanRegistry.getRoot(txUid)
-                .orElseThrow(() -> new IllegalArgumentException(String.format(
-                        "No root span found for '%s' when building span with name '%s'.", txUid, name))));
+        Span parent = SpanRegistry.get(txUid)
+                        .orElseThrow(() -> new IllegalArgumentException(String.format(
+                        "No root span found for '%s' when building span with name '%s'.", txUid, name)));
         return spanBldr.asChildOf(parent).withTag(Tags.COMPONENT, "narayana").start();
     }
 
@@ -103,10 +102,10 @@ public class NarayanaSpanBuilder {
      */
     public Span buildSubordinateIfAbsent(String txUid, SpanContext spanContext) {
         if(!TRACING_ACTIVATED) return DUMMY_SPAN;
-        return SpanRegistry.getRoot(txUid).orElseGet(() -> {
+        return SpanRegistry.get(txUid).orElseGet(() -> {
             Objects.requireNonNull(spanContext);
             Span span = spanBldr.asChildOf(spanContext).withTag(Tags.COMPONENT, "narayana").start();
-            SpanRegistry.insertRoot(txUid, span);
+            SpanRegistry.insert(txUid, span);
             return span;
         });
     }

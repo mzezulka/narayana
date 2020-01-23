@@ -97,16 +97,14 @@ public class TracingTest {
     @Test
     public void nestedSpansSimple() {
         start(TEST_ROOT_UID);
-        begin2PC(TEST_ROOT_UID);
         finish(TEST_ROOT_UID);
-        List<String> opNamesExpected = operationEnumsToStrings(SpanName.GLOBAL_ENLISTMENTS, SpanName.TX_ROOT);
+        List<String> opNamesExpected = operationEnumsToStrings(SpanName.TX_ROOT);
         assertThat(spansToOperationStrings(testTracer.finishedSpans())).isEqualTo(opNamesExpected);
     }
 
     @Test
     public void nestedSpans() {
         start(TEST_ROOT_UID);
-        begin2PC(TEST_ROOT_UID);
         Span span = new NarayanaSpanBuilder(SpanName.GLOBAL_PREPARE).build(TEST_ROOT_UID);
         try (Scope _s = TracingUtils.activateSpan(span)) {
             //no-op
@@ -114,7 +112,7 @@ public class TracingTest {
             span.finish();
             finish(TEST_ROOT_UID);
         }
-        List<String> opNamesExpected = operationEnumsToStrings(SpanName.GLOBAL_ENLISTMENTS, SpanName.GLOBAL_PREPARE, SpanName.TX_ROOT);
+        List<String> opNamesExpected = operationEnumsToStrings(SpanName.GLOBAL_PREPARE, SpanName.TX_ROOT);
         assertThat(spansToOperationStrings(testTracer.finishedSpans())).isEqualTo(opNamesExpected);
     }
 

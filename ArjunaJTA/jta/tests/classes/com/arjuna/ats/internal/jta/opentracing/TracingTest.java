@@ -69,9 +69,8 @@ public class TracingTest {
     @Test
     public void commitAndCheckOperationNames() throws Exception {
         jtaTwoPhaseCommit(tm);
-        List<String> opNamesExpected = operationEnumsToStrings(SpanName.LOCAL_RESOURCE_ENLISTMENT,
-                                                               SpanName.LOCAL_RESOURCE_ENLISTMENT,
-                                                               SpanName.GLOBAL_ENLISTMENTS,
+        List<String> opNamesExpected = operationEnumsToStrings(SpanName.RESOURCE_ENLISTMENT,
+                                                               SpanName.RESOURCE_ENLISTMENT,
                                                                SpanName.LOCAL_PREPARE,
                                                                SpanName.LOCAL_PREPARE,
                                                                SpanName.GLOBAL_PREPARE,
@@ -115,9 +114,8 @@ public class TracingTest {
     @Test
     public void userAbortAndCheckOperationNames() throws Exception {
         jtaUserRollback(tm);
-        List<String> opNamesExpected = operationEnumsToStrings(SpanName.LOCAL_RESOURCE_ENLISTMENT,
-                                                               SpanName.LOCAL_RESOURCE_ENLISTMENT,
-                                                               SpanName.GLOBAL_ENLISTMENTS,
+        List<String> opNamesExpected = operationEnumsToStrings(SpanName.RESOURCE_ENLISTMENT,
+                                                               SpanName.RESOURCE_ENLISTMENT,
                                                                SpanName.LOCAL_ROLLBACK,
                                                                SpanName.LOCAL_ROLLBACK,
                                                                SpanName.GLOBAL_ABORT_USER,
@@ -140,9 +138,8 @@ public class TracingTest {
     public void internalAbortAndCheckOperationNames() throws Exception {
         jtaPrepareResFail(tm);
 
-        List<String> opNamesExpected = operationEnumsToStrings(SpanName.LOCAL_RESOURCE_ENLISTMENT,
-                                                               SpanName.LOCAL_RESOURCE_ENLISTMENT,
-                                                               SpanName.GLOBAL_ENLISTMENTS,
+        List<String> opNamesExpected = operationEnumsToStrings(SpanName.RESOURCE_ENLISTMENT,
+                                                               SpanName.RESOURCE_ENLISTMENT,
                                                                SpanName.LOCAL_PREPARE,
                                                                SpanName.LOCAL_PREPARE,
                                                                SpanName.GLOBAL_PREPARE,
@@ -182,9 +179,8 @@ public class TracingTest {
     public void recovery() throws Exception {
         jtaWithRecovery(tm);
 
-        List<String> opNamesExpected = operationEnumsToStrings(SpanName.LOCAL_RESOURCE_ENLISTMENT,
-                                                               SpanName.LOCAL_RESOURCE_ENLISTMENT,
-                                                               SpanName.GLOBAL_ENLISTMENTS,
+        List<String> opNamesExpected = operationEnumsToStrings(SpanName.RESOURCE_ENLISTMENT,
+                                                               SpanName.RESOURCE_ENLISTMENT,
                                                                SpanName.LOCAL_PREPARE,
                                                                SpanName.LOCAL_PREPARE,
                                                                SpanName.GLOBAL_PREPARE,

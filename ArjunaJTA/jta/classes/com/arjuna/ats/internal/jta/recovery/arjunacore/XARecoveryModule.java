@@ -811,16 +811,7 @@ public class XARecoveryModule implements ExtendedRecoveryModule {
         try {
             if (votingOutcome == XAResourceOrphanFilter.Vote.ROLLBACK) {
                 jtaLogger.i18NLogger.info_recovery_rollingback(XAHelper.xidToString(xid));
-                Uid uid = XATxConverter.getUid(((XidImple) xid).getXID());
-                Span h = new NarayanaSpanBuilder(SpanName.LOCAL_RECOVERY)
-                        .tag(TagName.UID, uid)
-                        .tag(TagName.XARES, xares.toString())
-                        .build();
-                try(Scope _s = TracingUtils.activateSpan(h)) {
-                    xares.rollback(xid);
-                } finally {
-                    h.finish();
-                }
+                xares.rollback(xid);
             }
         } catch (XAException e1) {
             if (e1.errorCode == XAException.XAER_NOTA) {

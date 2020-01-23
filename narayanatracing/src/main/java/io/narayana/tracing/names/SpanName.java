@@ -20,18 +20,19 @@ public enum SpanName {
     TX_ROOT("Transaction"),
     SUBORD_ROOT("Subordinate transaction"),
 
-    GLOBAL_ENLISTMENTS("XAResource Enlistments"),
     GLOBAL_PREPARE("Global Prepare"),
     GLOBAL_COMMIT("Global Commit"),
     GLOBAL_ABORT("Global Abort"),
     GLOBAL_ABORT_USER("Global Abort - User Initiated"),
+
+    ONE_PHASE_COMMIT("One phase commit"),
 
     LOCAL_PREPARE("Branch Prepare"),
     LOCAL_COMMIT("Branch Commit"),
     LOCAL_COMMIT_LAST_RESOURCE("Branch Commit - Last Resource Commit Optimization"),
     LOCAL_ROLLBACK("Branch Rollback"),
     LOCAL_RECOVERY("XAResource Recovery"),
-    LOCAL_RESOURCE_ENLISTMENT("Enlistment");
+    RESOURCE_ENLISTMENT("XAResource Enlistment");
 
     private final String name;
 

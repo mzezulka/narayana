@@ -49,31 +49,13 @@ public class TracingUtils {
         return getTracer().activateSpan(span);
     }
 
-    /*
-     * This method switches from the "pre-2PC" phase to the protocol phase.
-     *
-     * It is possible (and highly probable) that this method will be called more
-     * than once during a transaction's existence.
-     *
-     * Therefore, we always must explicitly check that if a root span with {@code
-     * txUid} still exists but there is none corresponding in the pre2pc registry,
-     * we must have already called therefore can simply ignore such calls.
-     */
-    public static void begin2PC(String txUid) {
-        if (!TRACING_ACTIVATED) return;
-        SpanRegistry.removePre2pc(txUid).ifPresent(s -> s.finish());
-        if (!SpanRegistry.getRoot(txUid).isPresent()) {
-            throw new IllegalStateException(String.format("Pre2PC span with id '%s' was deactivated but no corresponding parent span found.", txUid));
-        }
-    }
-
     private static void finish(String txUid, boolean remove) {
         if (!TRACING_ACTIVATED) return;
         if(!remove) {
-            SpanRegistry.getRoot(txUid).ifPresent(s -> {s.setBaggageItem(REMOVE_BAG_ITEM, String.valueOf(true)); s.finish();});
+            SpanRegistry.get(txUid).ifPresent(s -> {s.setBaggageItem(REMOVE_BAG_ITEM, String.valueOf(true)); s.finish();});
             return;
         }
-        SpanRegistry.removeRoot(txUid).ifPresent(s -> {
+        SpanRegistry.remove(txUid).ifPresent(s -> {
             String r = s.getBaggageItem(REMOVE_BAG_ITEM);
             // if the baggage item was set, this means that we finished
             // this particular span before and only need to remove it
@@ -101,12 +83,10 @@ public class TracingUtils {
     private static class RootSpanBuilder {
 
         private SpanBuilder spanBldr;
-        private SpanBuilder pre2PCspanBldr;
 
         RootSpanBuilder(Object... args) {
             if(!TRACING_ACTIVATED) return;
             spanBldr = prepareSpan(SpanName.TX_ROOT, args).withTag(Tags.ERROR, false);
-            pre2PCspanBldr = prepareSpan(SpanName.GLOBAL_ENLISTMENTS, args);
         }
 
         private static SpanBuilder prepareSpan(SpanName name, Object... args) {
@@ -136,16 +116,9 @@ public class TracingUtils {
         public Span build(String txUid) {
             if(!TRACING_ACTIVATED) return null;
             Span rootSpan = spanBldr.withTag(Tags.COMPONENT, "narayana").ignoreActiveSpan().start();
-            SpanRegistry.insertRoot(txUid, rootSpan);
+            SpanRegistry.insert(txUid, rootSpan);
             getTracer().scopeManager().activate(rootSpan);
-
-            Span pre2PCSpan = pre2PCspanBldr.asChildOf(rootSpan)
-                                            .withTag(Tags.COMPONENT, "narayana")
-                                            .start();
-            SpanRegistry.insertPre2pc(txUid, pre2PCSpan);
-            getTracer().scopeManager().activate(pre2PCSpan);
-
-            return pre2PCSpan;
+            return rootSpan;
         }
     }
 
@@ -178,7 +151,7 @@ public class TracingUtils {
      */
     public static void markTransactionFailed(String txUid) {
         if (!TRACING_ACTIVATED) return;
-        SpanRegistry.getRoot(txUid).ifPresent(s -> s.setTag(Tags.ERROR, true));
+        SpanRegistry.get(txUid).ifPresent(s -> s.setTag(Tags.ERROR, true));
     }
 
     /**
@@ -192,7 +165,7 @@ public class TracingUtils {
      */
     public static void setTransactionStatus(String txUid, TransactionStatus status) {
         if (!TRACING_ACTIVATED) return;
-        SpanRegistry.getRoot(txUid)
+        SpanRegistry.get(txUid)
                 .ifPresent(s -> s.setTag(TagName.STATUS.toString(), status.toString().toLowerCase()));
     }
 
