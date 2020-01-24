@@ -74,6 +74,11 @@ public class TracingUtils {
         new RootSpanBuilder().tag(TagName.UID, txUid).build(txUid);
     }
 
+    public static void startSubordinate(Class<?> cl, String txUid) {
+        Objects.requireNonNull(txUid);
+        new RootSpanBuilder().tag(TagName.UID, txUid).tag(TagName.TXINFO, cl).subordinate().build(txUid);
+    }
+
     /**
      * Build a new root span which represents the whole transaction. Any
      * other span handles created in the Narayana code base should be attached to
@@ -83,6 +88,7 @@ public class TracingUtils {
     private static class RootSpanBuilder {
 
         private SpanBuilder spanBldr;
+        private boolean isSubordinate = false;
 
         RootSpanBuilder(Object... args) {
             if(!TRACING_ACTIVATED) return;
@@ -105,8 +111,19 @@ public class TracingUtils {
         }
 
         /**
-         * Build the root span and propagate it as a handle. Any possible active
-         * (=parent) spans are ignored as this is the root of a new transaction trace.
+         * Designate this span as a subordinate txn. From the opentracing perspective,
+         * this means that the root span will be attached to active span and will not ignore it
+         * as it is the case for the uppermost txn.
+         * @return
+         */
+        public RootSpanBuilder subordinate() {
+            spanBldr = spanBldr.withTag("subordinate", "true");
+            isSubordinate = true;
+            return this;
+        }
+
+        /**
+         * Build the root span.
          *
          * @throws IllegalArgumentException {@code txUid} is null or a span with this ID
          *                                  already exists
@@ -115,7 +132,11 @@ public class TracingUtils {
          */
         public Span build(String txUid) {
             if(!TRACING_ACTIVATED) return null;
-            Span rootSpan = spanBldr.withTag(Tags.COMPONENT, "narayana").ignoreActiveSpan().start();
+            spanBldr = spanBldr.withTag(Tags.COMPONENT, "narayana");
+            if(!isSubordinate) {
+                spanBldr = spanBldr.ignoreActiveSpan();
+            }
+            Span rootSpan = spanBldr.start();
             SpanRegistry.insert(txUid, rootSpan);
             getTracer().scopeManager().activate(rootSpan);
             return rootSpan;

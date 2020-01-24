@@ -1265,7 +1265,11 @@ public class BasicAction extends StateManager {
      */
 
     protected synchronized int Begin(BasicAction parentAct) {
-        TracingUtils.start(get_uid().toString());
+        if(this.getClass().getName().equals("com.arjuna.ats.internal.jta.transaction.arjunacore.AtomicAction")) {
+            TracingUtils.start(get_uid().toString());
+        } else {
+            TracingUtils.startSubordinate(this.getClass(), get_uid().toString());
+        }
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("BasicAction::Begin() for action-id " + get_uid());
         }
