@@ -42,6 +42,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.transaction.RollbackException;
 import javax.transaction.Status;
+import javax.transaction.Synchronization;
 import javax.transaction.SystemException;
 import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
@@ -81,6 +82,7 @@ import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
 
 import io.narayana.tracing.NarayanaSpanBuilder;
 import io.narayana.tracing.TracingUtils;
+import io.narayana.tracing.XAResourceToStringCache;
 import io.narayana.tracing.names.SpanName;
 import io.narayana.tracing.names.TagName;
 import io.opentracing.Scope;
@@ -431,6 +433,18 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
                 }
             }
         }
+        registerSynchronization(new Synchronization() {
+
+            @Override
+            public void beforeCompletion() {
+                XAResourceToStringCache.get(xaRes);
+            }
+
+            @Override
+            public void afterCompletion(int status) {
+                XAResourceToStringCache.purge(xaRes);
+            }
+        });
         Span span = new NarayanaSpanBuilder(SpanName.RESOURCE_ENLISTMENT)
                 .tag(TagName.UID, get_uid())
                 .tag(TagName.TXINFO, getTxId())

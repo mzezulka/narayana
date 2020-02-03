@@ -47,6 +47,7 @@ public class Synchronization implements javax.transaction.Synchronization
         return _currentStatus;
     }
 
+    @Override
     public void beforeCompletion ()
     {
     try
@@ -66,6 +67,7 @@ public class Synchronization implements javax.transaction.Synchronization
     }
     }
 
+    @Override
     public void afterCompletion (int status)
     {
     try
@@ -76,7 +78,6 @@ public class Synchronization implements javax.transaction.Synchronization
         _currentStatus = ERROR_STATUS;
         else
         _currentStatus = AFTER_COMPLETION_STATUS;
-
         System.out.println("afterCompletion called: "+JTAHelper.stringForm(status)+" from "+tm.getTransaction());
     }
     catch (Exception ex)

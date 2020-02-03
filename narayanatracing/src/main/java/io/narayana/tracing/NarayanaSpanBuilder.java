@@ -5,6 +5,8 @@ import static io.narayana.tracing.TracingUtils.getTracer;
 
 import java.util.Objects;
 
+import javax.transaction.xa.XAResource;
+
 import io.narayana.tracing.names.SpanName;
 import io.narayana.tracing.names.TagName;
 import io.opentracing.Span;
@@ -55,7 +57,13 @@ public class NarayanaSpanBuilder {
     public NarayanaSpanBuilder tag(TagName name, Object val) {
         if(!TRACING_ACTIVATED) return this;
         Objects.requireNonNull(name);
-        spanBldr = spanBldr.withTag(name.toString(), val == null ? "null" : val.toString());
+        String stringForm;
+        if(name.equals(TagName.XARES)) {
+            stringForm = XAResourceToStringCache.get((XAResource)val);
+        } else {
+            stringForm = val == null ? "null" : val.toString();
+        }
+        spanBldr = spanBldr.withTag(name.toString(), stringForm);
         return this;
     }
 
