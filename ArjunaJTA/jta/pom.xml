@@ -126,7 +126,6 @@
       <groupId>io.narayana.tracing</groupId>
       <artifactId>narayanatracing</artifactId>
       <version>${project.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.spec.javax.interceptor</groupId>
