@@ -75,7 +75,6 @@ import com.arjuna.ats.jta.xa.RecoverableXAConnection;
 import com.arjuna.ats.jta.xa.XidImple;
 import com.arjuna.common.internal.util.ClassloadingUtility;
 
-
 /**
  * @author Mark Little (mark_little@hp.com)
  * @version $Id: XAResourceRecord.java 2342 2006-03-30 13:06:17Z $
