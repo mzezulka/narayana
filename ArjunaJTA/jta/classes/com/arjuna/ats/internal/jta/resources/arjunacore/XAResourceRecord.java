@@ -74,6 +74,8 @@ import com.arjuna.ats.jta.xa.RecoverableXAConnection;
 import com.arjuna.ats.jta.xa.XidImple;
 import com.arjuna.common.internal.util.ClassloadingUtility;
 
+import io.narayana.tracing.XAResourceToStringCache;
+
 /**
  * @author Mark Little (mark_little@hp.com)
  * @version $Id: XAResourceRecord.java 2342 2006-03-30 13:06:17Z $
@@ -1071,7 +1073,7 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
 
     @Override
     public String toString() {
-        return "XAResourceRecord < resource:" + _theXAResource + ", txid:" + _tranID + ", heuristic: "
+        return "XAResourceRecord < resource:" + XAResourceToStringCache.get(_theXAResource) + ", txid:" + _tranID + ", heuristic: "
                 + TwoPhaseOutcome.stringForm(_heuristic)
                 + ((_productName != null && _productVersion != null)
                         ? ", product: " + _productName + "/" + _productVersion

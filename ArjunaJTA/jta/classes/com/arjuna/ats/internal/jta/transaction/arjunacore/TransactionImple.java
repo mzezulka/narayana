@@ -440,7 +440,7 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
 
                 @Override
                 public void beforeCompletion() {
-                    XAResourceToStringCache.get(xaRes);
+                    // NO-OP
                 }
 
                 @Override
