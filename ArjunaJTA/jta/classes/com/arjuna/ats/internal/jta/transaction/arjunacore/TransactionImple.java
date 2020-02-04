@@ -82,7 +82,6 @@ import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
 
 import io.narayana.tracing.NarayanaSpanBuilder;
 import io.narayana.tracing.TracingUtils;
-import io.narayana.tracing.XAResourceToStringCache;
 import io.narayana.tracing.names.SpanName;
 import io.narayana.tracing.names.TagName;
 import io.opentracing.Scope;
@@ -93,6 +92,9 @@ import io.opentracing.Span;
  * ensure that the thread association continues.
  */
 public class TransactionImple implements javax.transaction.Transaction, com.arjuna.ats.jta.transaction.Transaction {
+
+    static final boolean TRACING_ACTIVATED = Boolean
+            .valueOf(System.getProperty("org.jboss.narayana.tracingActivated", "true"));
 
     /*
      * Only works with AtomicAction and TwoPhaseCoordinator.
@@ -433,18 +435,20 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
                 }
             }
         }
-        registerSynchronization(new Synchronization() {
+        if(TRACING_ACTIVATED) {
+            registerSynchronization(new Synchronization() {
 
-            @Override
-            public void beforeCompletion() {
-                XAResourceToStringCache.get(xaRes);
-            }
+                @Override
+                public void beforeCompletion() {
+                    XAResourceToStringCache.get(xaRes);
+                }
 
-            @Override
-            public void afterCompletion(int status) {
-                XAResourceToStringCache.purge(xaRes);
-            }
-        });
+                @Override
+                public void afterCompletion(int status) {
+                    XAResourceToStringCache.purge(xaRes);
+                }
+            });
+        }
         Span span = new NarayanaSpanBuilder(SpanName.RESOURCE_ENLISTMENT)
                 .tag(TagName.UID, get_uid())
                 .tag(TagName.TXINFO, getTxId())
