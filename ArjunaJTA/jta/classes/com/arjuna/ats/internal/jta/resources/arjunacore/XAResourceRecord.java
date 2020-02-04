@@ -64,6 +64,7 @@ import com.arjuna.ats.arjuna.state.OutputObjectState;
 import com.arjuna.ats.internal.jta.recovery.arjunacore.XARecoveryModule;
 import com.arjuna.ats.internal.jta.resources.XAResourceErrorHandler;
 import com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionImple;
+import com.arjuna.ats.internal.jta.transaction.arjunacore.XAResourceToStringCache;
 import com.arjuna.ats.internal.jta.xa.TxInfo;
 import com.arjuna.ats.jta.common.jtaPropertyManager;
 import com.arjuna.ats.jta.logging.jtaLogger;
@@ -73,6 +74,7 @@ import com.arjuna.ats.jta.utils.XAHelper;
 import com.arjuna.ats.jta.xa.RecoverableXAConnection;
 import com.arjuna.ats.jta.xa.XidImple;
 import com.arjuna.common.internal.util.ClassloadingUtility;
+
 
 /**
  * @author Mark Little (mark_little@hp.com)
@@ -1071,7 +1073,9 @@ public class XAResourceRecord extends AbstractRecord implements ExceptionDeferre
 
     @Override
     public String toString() {
-        return "XAResourceRecord < resource:" + _theXAResource + ", txid:" + _tranID + ", heuristic: "
+        return "XAResourceRecord < resource:"
+                + XAResourceToStringCache.get(_theXAResource)
+                + ", txid:" + _tranID + ", heuristic: "
                 + TwoPhaseOutcome.stringForm(_heuristic)
                 + ((_productName != null && _productVersion != null)
                         ? ", product: " + _productName + "/" + _productVersion
