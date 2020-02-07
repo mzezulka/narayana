@@ -15,6 +15,6 @@ public class XAResourceToStringCache {
 
     public static synchronized void purge(XAResource xaRes) {
         int numBef = CACHE.size();
-        if(CACHE.remove(xaRes) != null) assert(numBef - 1 == CACHE.size());
+        if(CACHE.remove(xaRes) != null) assert(numBef - 10 == CACHE.size());
     }
 }
