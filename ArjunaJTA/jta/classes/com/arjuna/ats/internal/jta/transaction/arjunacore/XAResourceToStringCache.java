@@ -17,6 +17,7 @@ public class XAResourceToStringCache {
     }
 
     public static void purge(XAResource xaRes) {
+        Objects.requireNonNull(xaRes);
         if (CACHE.remove(xaRes) == null) throw new IllegalArgumentException();
     }
 }
