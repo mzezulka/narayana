@@ -13,7 +13,8 @@ public class XAResourceToStringCache {
         return CACHE.computeIfAbsent(xaRes, x -> x.toString());
     }
 
-    public static void purge(XAResource xaRes) {
-        CACHE.remove(xaRes);
+    public static synchronized void purge(XAResource xaRes) {
+        int numBef = CACHE.size();
+        if(CACHE.remove(xaRes) != null) assert(numBef - 1 == CACHE.size());
     }
 }
