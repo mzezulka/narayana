@@ -436,7 +436,7 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
         }
         Span span = new NarayanaSpanBuilder(SpanName.RESOURCE_ENLISTMENT)
                 .tag(TagName.UID, get_uid())
-                .tag(TagName.TXINFO, getTxId())
+                .tag(TagName.XARES_CLASS, xaRes.getClass().getCanonicalName())
                 .build();
         Xid xid = null;
         try (Scope scope = TracingUtils.activateSpan(span)) {
@@ -712,9 +712,8 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
             markRollbackOnly();
             return false;
         } finally {
-            TracingUtils.addTag(TagName.XID, XAHelper.xidToString(xid));
-            TracingUtils.addTag(TagName.TXINFO, get_uid().toString());
-            TracingUtils.addTag(TagName.TRANSACTION_TIMEOUT, Integer.toString(_theTransaction.getTimeout()));
+            span.setTag(TagName.XID.name(), XAHelper.xidToString(xid));
+            span.setTag(TagName.TRANSACTION_TIMEOUT.name(), Integer.toString(_theTransaction.getTimeout()));
             span.finish();
         }
     }

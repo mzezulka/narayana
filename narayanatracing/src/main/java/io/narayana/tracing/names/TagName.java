@@ -10,6 +10,7 @@ public enum TagName {
     XID("xid"),
     ASYNCHRONOUS("async"),
     XARES("xares"),
+    XARES_CLASS("xares_class"),
     STATUS("status"),
     TXINFO("info"),
     APPLICATION_ABORT("app_abrt"),
