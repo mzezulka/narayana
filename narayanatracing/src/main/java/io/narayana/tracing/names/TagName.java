@@ -15,6 +15,7 @@ public enum TagName {
     APPLICATION_ABORT("app_abrt"),
     RECOVERY_MODULE_TYPE("recovery_type"),
     COMMIT_OUTCOME("res_commit"),
+    TRANSACTION_TIMEOUT("txn_timeout"),
     REPORT_HEURISTICS("report");
 
     private static final String TX_PREFIX = "transaction";

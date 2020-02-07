@@ -42,7 +42,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.transaction.RollbackException;
 import javax.transaction.Status;
-import javax.transaction.Synchronization;
 import javax.transaction.SystemException;
 import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
@@ -435,25 +434,11 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
                 }
             }
         }
-        if(TRACING_ACTIVATED) {
-            registerSynchronization(new Synchronization() {
-
-                @Override
-                public void beforeCompletion() {
-                    // NO-OP
-                }
-
-                @Override
-                public void afterCompletion(int status) {
-                    XAResourceToStringCache.purge(xaRes);
-                }
-            });
-        }
         Span span = new NarayanaSpanBuilder(SpanName.RESOURCE_ENLISTMENT)
                 .tag(TagName.UID, get_uid())
                 .tag(TagName.TXINFO, getTxId())
-                .tag(TagName.XARES, xaRes)
                 .build();
+        Xid xid = null;
         try (Scope scope = TracingUtils.activateSpan(span)) {
             /*
              * For each transaction we maintain a list of resources registered with it. Each
@@ -553,7 +538,7 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
              * doesn't mean that we haven't seen the RM it is connected to.
              */
 
-            Xid xid = null;
+            xid = null;
             TxInfo existingRM = isNewRM(xaRes);
 
             if (existingRM == null) {
@@ -727,6 +712,9 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
             markRollbackOnly();
             return false;
         } finally {
+            TracingUtils.addTag(TagName.XID, XAHelper.xidToString(xid));
+            TracingUtils.addTag(TagName.TXINFO, get_uid().toString());
+            TracingUtils.addTag(TagName.TRANSACTION_TIMEOUT, Integer.toString(_theTransaction.getTimeout()));
             span.finish();
         }
     }
