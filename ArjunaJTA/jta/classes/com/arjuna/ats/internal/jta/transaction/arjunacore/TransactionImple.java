@@ -436,7 +436,6 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
         }
         Span span = new NarayanaSpanBuilder(SpanName.RESOURCE_ENLISTMENT)
                 .tag(TagName.UID, get_uid())
-                .tag(TagName.XARES_CLASS, xaRes.getClass().getCanonicalName())
                 .build();
         Xid xid = null;
         try (Scope scope = TracingUtils.activateSpan(span)) {
