@@ -4,11 +4,11 @@ import static io.narayana.tracing.TracingTestUtils.operationEnumsToStrings;
 import static io.narayana.tracing.TracingTestUtils.spansToOperationStrings;
 import static io.narayana.tracing.TracingUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -34,13 +34,9 @@ public class TracingTest {
         assertThat(GlobalTracer.registerIfAbsent(testTracer)).isTrue();
     }
 
-    @Before
-    public void prepare() {
-        SpanRegistry.reset();
-    }
-
     @After
     public void teardown() {
+        assertThat(SpanRegistry.rootSpanCount()).isEqualTo(0);
         testTracer.reset();
     }
 
@@ -79,10 +75,17 @@ public class TracingTest {
         finish(secondUid);
     }
 
-    @Test(expected = IllegalArgumentException.class /* as per contract */)
+    @Test
     public void simpleTraceFinishTwoSameName() {
-        start(TEST_ROOT_UID);
-        start(TEST_ROOT_UID);
+        try {
+            start(TEST_ROOT_UID);
+            start(TEST_ROOT_UID);
+        } catch(IllegalArgumentException iae) {
+            SpanRegistry.reset();
+            //ok
+            return;
+        }
+        fail();
     }
 
     @Test

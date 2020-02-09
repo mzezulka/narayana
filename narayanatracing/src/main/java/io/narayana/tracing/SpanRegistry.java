@@ -73,4 +73,8 @@ public class SpanRegistry {
         ROOT_SPANS.clear();
     }
 
+    static int rootSpanCount() {
+        return ROOT_SPANS.size();
+    }
+
 }
