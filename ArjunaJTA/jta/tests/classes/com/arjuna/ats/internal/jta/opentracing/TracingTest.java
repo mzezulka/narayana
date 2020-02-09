@@ -48,21 +48,20 @@ public class TracingTest {
         jtaTwoPhaseCommit(tm);
         List<MockSpan> spans = testTracer.finishedSpans();
         MockSpan root = getRootSpanFrom(spans);
-        MockSpan globalEnlist = spans.get(2);
-        MockSpan globalPrepare = spans.get(5);
-        MockSpan globalCommit = spans.get(8);
-        assertThatSpans(globalEnlist, globalPrepare, globalCommit).haveParent(root);
+        MockSpan globalPrepare = spans.get(4);
+        MockSpan globalCommit = spans.get(7);
+        assertThatSpans(globalPrepare, globalCommit).haveParent(root);
 
         MockSpan enlistment1 = spans.get(0);
         MockSpan enlistment2 = spans.get(1);
-        assertThatSpans(enlistment1, enlistment2).haveParent(globalEnlist);
+        assertThatSpans(enlistment1, enlistment2).haveParent(root);
 
-        MockSpan prepare1 = spans.get(3);
-        MockSpan prepare2 = spans.get(4);
+        MockSpan prepare1 = spans.get(2);
+        MockSpan prepare2 = spans.get(3);
         assertThatSpans(prepare1, prepare2).haveParent(globalPrepare);
 
-        MockSpan commit1 = spans.get(6);
-        MockSpan commit2 = spans.get(7);
+        MockSpan commit1 = spans.get(5);
+        MockSpan commit2 = spans.get(6);
         assertThatSpans(commit1, commit2).haveParent(globalCommit);
     }
 
@@ -98,16 +97,15 @@ public class TracingTest {
         jtaUserRollback(tm);
         List<MockSpan> spans = testTracer.finishedSpans();
         MockSpan root = getRootSpanFrom(spans);
-        MockSpan globalEnlist = spans.get(2);
-        MockSpan globalAbort = spans.get(5);
-        assertThatSpans(globalEnlist, globalAbort).haveParent(root);
+        MockSpan globalAbort = spans.get(4);
+        assertThatSpans(globalAbort).haveParent(root);
 
         MockSpan enlist1 = spans.get(0);
         MockSpan enlist2 = spans.get(1);
-        assertThatSpans(enlist1, enlist2).haveParent(globalEnlist);
+        assertThatSpans(enlist1, enlist2).haveParent(root);
 
-        MockSpan rollback1 = spans.get(3);
-        MockSpan rollback2 = spans.get(4);
+        MockSpan rollback1 = spans.get(2);
+        MockSpan rollback2 = spans.get(3);
         assertThatSpans(rollback1, rollback2).haveParent(globalAbort);
     }
 
@@ -157,21 +155,20 @@ public class TracingTest {
         jtaPrepareResFail(tm);
         List<MockSpan> spans = testTracer.finishedSpans();
         MockSpan root = getRootSpanFrom(spans);
-        MockSpan globalEnlist = spans.get(2);
-        MockSpan globalPrepare = spans.get(5);
-        MockSpan globalAbort = spans.get(8);
-        assertThatSpans(globalEnlist, globalPrepare, globalAbort).haveParent(root);
+        MockSpan globalPrepare = spans.get(4);
+        MockSpan globalAbort = spans.get(7);
+        assertThatSpans(globalPrepare, globalAbort).haveParent(root);
 
         MockSpan enlistment1 = spans.get(0);
         MockSpan enlistment2 = spans.get(1);
-        assertThatSpans(enlistment1, enlistment2).haveParent(globalEnlist);
+        assertThatSpans(enlistment1, enlistment2).haveParent(root);
 
-        MockSpan prepare1 = spans.get(3);
-        MockSpan prepare2 = spans.get(4);
+        MockSpan prepare1 = spans.get(2);
+        MockSpan prepare2 = spans.get(3);
         assertThatSpans(prepare1, prepare2).haveParent(globalPrepare);
 
-        MockSpan abort1 = spans.get(6);
-        MockSpan abort2 = spans.get(7);
+        MockSpan abort1 = spans.get(5);
+        MockSpan abort2 = spans.get(6);
         assertThatSpans(abort1, abort2).haveParent(globalAbort);
     }
 
