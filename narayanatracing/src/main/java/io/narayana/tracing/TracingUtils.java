@@ -155,17 +155,6 @@ public class TracingUtils {
     }
 
     /**
-     * Finishes the root span but still keeps it in the collection, making it
-     * possible to attach async spans (which are outside of the reach of the trace).
-     *
-     * @param txUid
-     */
-    public static void finishWithoutRemoval(String txUid) {
-        if (!TRACING_ACTIVATED) return;
-        finish(txUid, false);
-    }
-
-    /**
      * Mark the span itself as failed in terms of opentracing.
      * Hence this is different from setting the transaction
      * status span tag as failed via calling {@code setTransactionStatus}.
