@@ -1573,7 +1573,7 @@ public class BasicAction extends StateManager {
             return actionStatus;
         } finally {
             s.finish();
-            TracingUtils.finishWithoutRemoval(get_uid().toString());
+            TracingUtils.finish(get_uid().toString());
         }
     }
 
@@ -1886,7 +1886,7 @@ public class BasicAction extends StateManager {
             }
         } finally {
             span.finish();
-            TracingUtils.finishWithoutRemoval(get_uid().toString());
+            TracingUtils.finish(get_uid().toString());
         }
     }
 

@@ -2,7 +2,8 @@ package io.narayana.tracing;
 
 import static io.narayana.tracing.TracingTestUtils.operationEnumsToStrings;
 import static io.narayana.tracing.TracingTestUtils.spansToOperationStrings;
-import static io.narayana.tracing.TracingUtils.*;
+import static io.narayana.tracing.TracingUtils.finish;
+import static io.narayana.tracing.TracingUtils.start;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
@@ -86,15 +87,6 @@ public class TracingTest {
             return;
         }
         fail();
-    }
-
-    @Test
-    public void simpleTraceFinishWithoutRemovalAndThenFinish() {
-        start(TEST_ROOT_UID);
-        finishWithoutRemoval(TEST_ROOT_UID);
-        List<String> opNamesExpected = operationEnumsToStrings(SpanName.TX_ROOT);
-        assertThat(spansToOperationStrings(testTracer.finishedSpans())).isEqualTo(opNamesExpected);
-        finish(TEST_ROOT_UID);
     }
 
     @Test

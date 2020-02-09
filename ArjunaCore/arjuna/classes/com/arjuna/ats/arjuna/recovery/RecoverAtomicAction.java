@@ -40,6 +40,7 @@ import com.arjuna.ats.internal.arjuna.recovery.AtomicActionExpiryScanner;
 import io.narayana.tracing.NarayanaSpanBuilder;
 import io.narayana.tracing.TracingUtils;
 import io.narayana.tracing.names.SpanName;
+import io.narayana.tracing.names.TagName;
 import io.opentracing.Scope;
 import io.opentracing.Span;
 
@@ -63,8 +64,11 @@ public class RecoverAtomicAction extends AtomicAction {
         }
 
         if (_activated) {
-            Span h = new NarayanaSpanBuilder(SpanName.LOCAL_RECOVERY).build(get_uid().toString());
-            try(Scope _s = TracingUtils.activateSpan(h)) {
+            Span s = new NarayanaSpanBuilder(SpanName.LOCAL_RECOVERY)
+                    .tag(TagName.UID, get_uid().toString())
+                    .tag(TagName.STATUS, ActionStatus.stringForm(_theStatus))
+                    .build();
+            try(Scope _s = TracingUtils.activateSpan(s)) {
                 if ((_theStatus == ActionStatus.PREPARED) || (_theStatus == ActionStatus.COMMITTING)
                         || (_theStatus == ActionStatus.COMMITTED) || (_theStatus == ActionStatus.H_COMMIT)
                         || (_theStatus == ActionStatus.H_MIXED) || (_theStatus == ActionStatus.H_HAZARD)) {
@@ -76,7 +80,7 @@ public class RecoverAtomicAction extends AtomicAction {
                     tsLogger.i18NLogger.warn_recovery_RecoverAtomicAction_2(ActionStatus.stringForm(_theStatus));
                 }
             } finally {
-                h.finish();
+                s.finish();
             }
 
 
