@@ -711,9 +711,11 @@ public class TransactionImple implements javax.transaction.Transaction, com.arju
             markRollbackOnly();
             return false;
         } finally {
-            span.setTag(TagName.XID.name(), XAHelper.xidToString(xid));
-            span.setTag(TagName.TRANSACTION_TIMEOUT.name(), Integer.toString(_theTransaction.getTimeout()));
-            span.finish();
+            if(TRACING_ACTIVATED) {
+                span.setTag(TagName.XID.name(), XAHelper.xidToString(xid));
+                span.setTag(TagName.TRANSACTION_TIMEOUT.name(), Integer.toString(_theTransaction.getTimeout()));
+                span.finish();
+            }
         }
     }
 
