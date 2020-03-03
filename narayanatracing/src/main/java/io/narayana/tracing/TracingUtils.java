@@ -39,7 +39,7 @@ public class TracingUtils {
     // we don't want to expose this baggage item as part of a public API since
     // this is only for internal use
     private static final String REMOVE_BAG_ITEM = "REMOVE_ASYNC";
-    static final Scope DUMMY_SCOPE = new DummyScope();
+    static final Scope DUMMY_SCOPE = () -> {};
 
     private TracingUtils() {
     }
