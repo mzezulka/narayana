@@ -39,8 +39,18 @@ public class TracingTest {
         jtaTwoPhaseCommit(tm);
         MockSpan root = getRootSpanFrom(testTracer.finishedSpans());
         // parent id 0 == no parent exists == the root of a trace
-        assertThat(root.parentId()).isEqualTo(0);
         assertThat((boolean) root.tags().get(Tags.ERROR.getKey())).isFalse();
+    }
+
+    @Test
+    public void commitAndCheckRootSpans() throws Exception {
+        jtaTwoPhaseCommit(tm);
+        MockSpan root1 = getRootSpanFrom(testTracer.finishedSpans());
+        assertThat(testTracer.activeSpan().context().toSpanId()).isNotEqualTo(root1.context().toSpanId());
+        jtaTwoPhaseCommit(tm);
+        MockSpan root2 = getRootSpanFrom(testTracer.finishedSpans());
+        // parent id 0 == no parent exists == the root of a trace
+        assertThat(root2.parentId()).isNotEqualTo(root1.context().spanId());
     }
 
     @Test
@@ -86,8 +96,6 @@ public class TracingTest {
     public void userAbortAndCheckRootSpan() throws Exception {
         jtaUserRollback(tm);
         MockSpan root = getRootSpanFrom(testTracer.finishedSpans());
-        // parent id 0 == no parent exists == the root of a trace
-        assertThat(root.parentId()).isEqualTo(0);
         // this is *user-initiated* abort, we don't want to mark this trace as failed
         assertThat((boolean) root.tags().get(Tags.ERROR.getKey())).isFalse();
     }
@@ -127,8 +135,6 @@ public class TracingTest {
     public void internalAbortAndCheckRootSpan() throws Exception {
         jtaPrepareResFail(tm);
         MockSpan root = getRootSpanFrom(testTracer.finishedSpans());
-        // parent id 0 == no parent exists == the root of a trace
-        assertThat(root.parentId()).isEqualTo(0);
         assertThat((boolean) root.tags().get(Tags.ERROR.getKey())).isTrue();
     }
 
@@ -192,8 +198,6 @@ public class TracingTest {
         assertThat(spansToOperationStrings(spans)).isEqualTo(opNamesExpected);
 
         MockSpan root = spans.get(spans.size() - 3);
-        // parent id 0 == no parent exists == the root of a trace
-        assertThat(root.parentId()).isEqualTo(0);
         assertThat((boolean) root.tags().get(Tags.ERROR.getKey())).isTrue();
 
         MockSpan rec1 = spans.get(spans.size() - 1);

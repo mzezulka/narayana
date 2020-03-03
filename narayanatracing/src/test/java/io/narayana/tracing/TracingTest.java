@@ -28,6 +28,7 @@ public class TracingTest {
 
     private static MockTracer testTracer = new MockTracer();
     private static final String TEST_ROOT_UID = "TEST-ROOT";
+    private static SpanRegistry spans = SpanRegistry.getInstance();
 
     @BeforeClass
     public static void init() {
@@ -37,7 +38,7 @@ public class TracingTest {
 
     @After
     public void teardown() {
-        assertThat(SpanRegistry.rootSpanCount()).isEqualTo(0);
+        assertThat(spans.rootSpanCount()).isEqualTo(0);
         testTracer.reset();
     }
 
@@ -62,6 +63,7 @@ public class TracingTest {
         String secondUid = TEST_ROOT_UID + "2";
         start(firstUid);
         finish(firstUid);
+        assertThat(spans.rootSpanCount()).isEqualTo(0);
         start(secondUid);
         finish(secondUid);
     }
@@ -72,7 +74,9 @@ public class TracingTest {
         String secondUid = TEST_ROOT_UID + "2";
         start(firstUid);
         start(secondUid);
+        assertThat(spans.rootSpanCount()).isEqualTo(2);
         finish(firstUid);
+        assertThat(spans.rootSpanCount()).isEqualTo(1);
         finish(secondUid);
     }
 
@@ -82,7 +86,7 @@ public class TracingTest {
             start(TEST_ROOT_UID);
             start(TEST_ROOT_UID);
         } catch(IllegalArgumentException iae) {
-            SpanRegistry.reset();
+            spans.reset();
             //ok
             return;
         }

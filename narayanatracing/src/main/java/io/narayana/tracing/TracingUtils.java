@@ -36,10 +36,8 @@ import io.opentracing.util.GlobalTracer;
 public class TracingUtils {
     static final boolean TRACING_ACTIVATED = Boolean
             .valueOf(System.getProperty("org.jboss.narayana.tracingActivated", "true"));
-    // we don't want to expose this baggage item as part of a public API since
-    // this is only for internal use
-    private static final String REMOVE_BAG_ITEM = "REMOVE_ASYNC";
     static final Scope DUMMY_SCOPE = () -> {};
+    private static SpanRegistry spans = SpanRegistry.getInstance();
 
     private TracingUtils() {
     }
@@ -49,19 +47,15 @@ public class TracingUtils {
         return getTracer().activateSpan(span);
     }
 
-    private static void finish(String txUid, boolean remove) {
+    /**
+     * Finishes the root span representing the transaction with id {@code txUid}
+     *
+     * @param txUid string representation of the transaction
+     */
+    public static void finish(String txUid) {
         if (!TRACING_ACTIVATED) return;
-        if(!remove) {
-            SpanRegistry.get(txUid).ifPresent(s -> {s.setBaggageItem(REMOVE_BAG_ITEM, String.valueOf(true)); s.finish();});
-            return;
-        }
-        SpanRegistry.remove(txUid).ifPresent(s -> {
-            String r = s.getBaggageItem(REMOVE_BAG_ITEM);
-            // if the baggage item was set, this means that we finished
-            // this particular span before and only need to remove it
-            // from the span registry
-            if(!String.valueOf(true).equals(r)) s.finish();
-        });
+        Objects.requireNonNull(txUid);
+        spans.remove(txUid).ifPresent(s -> s.finish());
     }
 
     /**
@@ -134,24 +128,13 @@ public class TracingUtils {
             if(!TRACING_ACTIVATED) return null;
             spanBldr = spanBldr.withTag(Tags.COMPONENT, "narayana");
             if(!isSubordinate) {
-                spanBldr = spanBldr.ignoreActiveSpan();
+                //spanBldr = spanBldr.ignoreActiveSpan();
             }
             Span rootSpan = spanBldr.start();
-            SpanRegistry.insert(txUid, rootSpan);
+            spans.insert(txUid, rootSpan);
             getTracer().scopeManager().activate(rootSpan);
             return rootSpan;
         }
-    }
-
-    /**
-     * Finishes the root span representing the transaction with id {@code txUid}
-     *
-     * @param txUid string representation of the transaction
-     */
-    public static void finish(String txUid) {
-        if (!TRACING_ACTIVATED) return;
-        Objects.requireNonNull(txUid);
-        finish(txUid, true);
     }
 
     /**
@@ -161,7 +144,7 @@ public class TracingUtils {
      */
     public static void markTransactionFailed(String txUid) {
         if (!TRACING_ACTIVATED) return;
-        SpanRegistry.get(txUid).ifPresent(s -> s.setTag(Tags.ERROR, true));
+        spans.get(txUid).ifPresent(s -> s.setTag(Tags.ERROR, true));
     }
 
     /**
@@ -175,7 +158,7 @@ public class TracingUtils {
      */
     public static void setTransactionStatus(String txUid, TransactionStatus status) {
         if (!TRACING_ACTIVATED) return;
-        SpanRegistry.get(txUid)
+        spans.get(txUid)
                 .ifPresent(s -> s.setTag(TagName.STATUS.toString(), status.toString().toLowerCase()));
     }
 
