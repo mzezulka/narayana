@@ -46,7 +46,7 @@ public class TracingTest {
     public void commitAndCheckRootSpans() throws Exception {
         jtaTwoPhaseCommit(tm);
         MockSpan root1 = getRootSpanFrom(testTracer.finishedSpans());
-        assertThat(testTracer.activeSpan().context().toSpanId()).isNotEqualTo(root1.context().toSpanId());
+        assertThat(testTracer.activeSpan()).isNull();
         jtaTwoPhaseCommit(tm);
         MockSpan root2 = getRootSpanFrom(testTracer.finishedSpans());
         // parent id 0 == no parent exists == the root of a trace
@@ -202,7 +202,7 @@ public class TracingTest {
 
         MockSpan rec1 = spans.get(spans.size() - 1);
         MockSpan rec2 = spans.get(spans.size() - 2);
-        assertThatSpans(rec1, rec2).haveParent(root);
+        assertThatSpans(rec1, rec2).doNotHaveParent(root);
         assertThat(rec1.logEntries()).isNotEmpty();
         assertThat(rec2.logEntries()).isNotEmpty();
 

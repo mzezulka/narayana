@@ -7,6 +7,14 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+/**
+ * Storage for objects which need to be finished manually.
+ *
+ * This class is thread safe.
+ *
+ * @author Miloslav Zezulka (mzezulka@redhat.com)
+ *
+ */
 public abstract class Registry<T> {
     protected final ConcurrentMap<String, T> store = new ConcurrentHashMap<>();
 
@@ -51,7 +59,7 @@ public abstract class Registry<T> {
         Objects.requireNonNull(t);
         if (store.put(id, t) != null)
             throw new IllegalArgumentException(
-                    String.format("There is already an entry with id %s in the registry.", id));
+                    String.format("There is already an entry with id %s of type %s in the registry.", id, t.getClass()));
     }
 
     // for testing purposes only
@@ -60,7 +68,7 @@ public abstract class Registry<T> {
     }
 
     // for testing purposes
-    int rootSpanCount() {
+    int elementsCount() {
         return store.size();
     }
 }

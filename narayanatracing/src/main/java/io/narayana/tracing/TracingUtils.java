@@ -36,8 +36,9 @@ import io.opentracing.util.GlobalTracer;
 public class TracingUtils {
     static final boolean TRACING_ACTIVATED = Boolean
             .valueOf(System.getProperty("org.jboss.narayana.tracingActivated", "true"));
-    static final Scope DUMMY_SCOPE = () -> {};
-    private static SpanRegistry spans = SpanRegistry.getInstance();
+    private static final Scope DUMMY_SCOPE = () -> {};
+    private static final SpanRegistry SPANS = SpanRegistry.getInstance();
+    private static final ScopeRegistry SCOPES = ScopeRegistry.getInstance();
 
     private TracingUtils() {
     }
@@ -55,7 +56,8 @@ public class TracingUtils {
     public static void finish(String txUid) {
         if (!TRACING_ACTIVATED) return;
         Objects.requireNonNull(txUid);
-        spans.remove(txUid).ifPresent(s -> s.finish());
+        SCOPES.remove(txUid).ifPresent(s -> s.close());
+        SPANS.remove(txUid).ifPresent(s -> s.finish());
     }
 
     /**
@@ -82,7 +84,6 @@ public class TracingUtils {
     private static class RootSpanBuilder {
 
         private SpanBuilder spanBldr;
-        private boolean isSubordinate = false;
 
         RootSpanBuilder(Object... args) {
             if(!TRACING_ACTIVATED) return;
@@ -105,14 +106,11 @@ public class TracingUtils {
         }
 
         /**
-         * Designate this span as a subordinate txn. From the opentracing perspective,
-         * this means that the root span will be attached to active span and will not ignore it
-         * as it is the case for the uppermost txn.
+         * Mark this span as a subordinate txn.
          * @return
          */
         public RootSpanBuilder subordinate() {
             spanBldr = spanBldr.withTag("subordinate", "true");
-            isSubordinate = true;
             return this;
         }
 
@@ -127,12 +125,9 @@ public class TracingUtils {
         public Span build(String txUid) {
             if(!TRACING_ACTIVATED) return null;
             spanBldr = spanBldr.withTag(Tags.COMPONENT, "narayana");
-            if(!isSubordinate) {
-                //spanBldr = spanBldr.ignoreActiveSpan();
-            }
             Span rootSpan = spanBldr.start();
-            spans.insert(txUid, rootSpan);
-            getTracer().scopeManager().activate(rootSpan);
+            SPANS.insert(txUid, rootSpan);
+            SCOPES.insert(txUid, getTracer().scopeManager().activate(rootSpan));
             return rootSpan;
         }
     }
@@ -144,7 +139,7 @@ public class TracingUtils {
      */
     public static void markTransactionFailed(String txUid) {
         if (!TRACING_ACTIVATED) return;
-        spans.get(txUid).ifPresent(s -> s.setTag(Tags.ERROR, true));
+        SPANS.get(txUid).ifPresent(s -> s.setTag(Tags.ERROR, true));
     }
 
     /**
@@ -158,7 +153,7 @@ public class TracingUtils {
      */
     public static void setTransactionStatus(String txUid, TransactionStatus status) {
         if (!TRACING_ACTIVATED) return;
-        spans.get(txUid)
+        SPANS.get(txUid)
                 .ifPresent(s -> s.setTag(TagName.STATUS.toString(), status.toString().toLowerCase()));
     }
 

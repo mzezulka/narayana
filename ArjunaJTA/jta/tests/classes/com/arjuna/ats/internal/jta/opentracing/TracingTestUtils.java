@@ -34,6 +34,10 @@ public class TracingTestUtils {
         public ListAssert<Long> haveParent(MockSpan span) {
             return super.containsOnly(span.context().spanId());
         }
+
+        public ListAssert<Long> doNotHaveParent(MockSpan span) {
+            return super.doesNotContain(span.context().spanId());
+        }
     }
 
     public static SpanListAssert assertThatSpans(MockSpan... spans) {
