@@ -38,7 +38,6 @@ public class TracingTest {
     public void commitAndCheckRootSpan() throws Exception {
         jtaTwoPhaseCommit(tm);
         MockSpan root = getRootSpanFrom(testTracer.finishedSpans());
-        // parent id 0 == no parent exists == the root of a trace
         assertThat((boolean) root.tags().get(Tags.ERROR.getKey())).isFalse();
     }
 
@@ -49,7 +48,6 @@ public class TracingTest {
         assertThat(testTracer.activeSpan()).isNull();
         jtaTwoPhaseCommit(tm);
         MockSpan root2 = getRootSpanFrom(testTracer.finishedSpans());
-        // parent id 0 == no parent exists == the root of a trace
         assertThat(root2.parentId()).isNotEqualTo(root1.context().spanId());
     }
 
@@ -209,7 +207,6 @@ public class TracingTest {
         // this is how MockSpan logs events under the cover
         String rec1LogMsg = (String) rec1.logEntries().get(0).fields().get("event");
         String rec2LogMsg = (String) rec2.logEntries().get(0).fields().get("event");
-        // TODO: why is the second pass performed before the first one?
         assertThat(rec1LogMsg).isEqualTo("second pass of the XAResource periodic recovery");
         assertThat(rec2LogMsg).isEqualTo("first pass of the XAResource periodic recovery");
     }

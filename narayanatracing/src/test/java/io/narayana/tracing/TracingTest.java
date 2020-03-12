@@ -1,9 +1,9 @@
 package io.narayana.tracing;
 
-import static io.narayana.tracing.TracingTestUtils.operationEnumsToStrings;
-import static io.narayana.tracing.TracingTestUtils.spansToOperationStrings;
+import static io.narayana.tracing.TracingTestUtils.*;
 import static io.narayana.tracing.TracingUtils.finish;
 import static io.narayana.tracing.TracingUtils.start;
+import static io.narayana.tracing.names.StringConstants.NARAYANA_COMPONENT_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
@@ -50,6 +50,7 @@ public class TracingTest {
         finish(TEST_ROOT_UID);
         List<String> opNamesExpected = operationEnumsToStrings(SpanName.TX_ROOT);
         assertThat(spansToOperationStrings(testTracer.finishedSpans())).isEqualTo(opNamesExpected);
+        assertThat(spansToComponentNames(testTracer.finishedSpans())).containsOnly(NARAYANA_COMPONENT_NAME);
     }
 
     @Test(expected = Test.None.class /* no exception is expected to be thrown */)
@@ -115,6 +116,7 @@ public class TracingTest {
         }
         List<String> opNamesExpected = operationEnumsToStrings(SpanName.GLOBAL_PREPARE, SpanName.TX_ROOT);
         assertThat(spansToOperationStrings(testTracer.finishedSpans())).isEqualTo(opNamesExpected);
+        assertThat(spansToComponentNames(testTracer.finishedSpans())).containsOnly(NARAYANA_COMPONENT_NAME);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -153,5 +155,6 @@ public class TracingTest {
         }
         List<String> opNamesExpected = operationEnumsToStrings(SpanName.LOCAL_RECOVERY);
         assertThat(spansToOperationStrings(testTracer.finishedSpans())).isEqualTo(opNamesExpected);
+        assertThat(spansToComponentNames(testTracer.finishedSpans())).containsOnly(NARAYANA_COMPONENT_NAME);
     }
 }

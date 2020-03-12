@@ -2,6 +2,7 @@
 
 import static io.narayana.tracing.TracingUtils.TRACING_ACTIVATED;
 import static io.narayana.tracing.TracingUtils.getTracer;
+import static io.narayana.tracing.names.StringConstants.NARAYANA_COMPONENT_NAME;
 
 import java.util.Objects;
 
@@ -106,7 +107,7 @@ public class NarayanaSpanBuilder {
         if(!TRACING_ACTIVATED) return DUMMY_SPAN;
         return spans.get(txUid).orElseGet(() -> {
             Objects.requireNonNull(spanContext);
-            Span span = spanBldr.asChildOf(spanContext).withTag(Tags.COMPONENT, "narayana").start();
+            Span span = spanBldr.asChildOf(spanContext).withTag(Tags.COMPONENT, NARAYANA_COMPONENT_NAME).start();
             spans.insert(txUid, span);
             return span;
         });
@@ -123,6 +124,6 @@ public class NarayanaSpanBuilder {
      */
     public Span build() {
         if(!TRACING_ACTIVATED) return DUMMY_SPAN;
-        return spanBldr.withTag(Tags.COMPONENT, "narayana").start();
+        return spanBldr.withTag(Tags.COMPONENT, NARAYANA_COMPONENT_NAME).start();
     }
 }

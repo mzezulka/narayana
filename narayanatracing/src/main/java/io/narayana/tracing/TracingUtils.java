@@ -1,5 +1,8 @@
 package io.narayana.tracing;
 
+import static io.narayana.tracing.names.StringConstants.NARAYANA_COMPONENT_NAME;
+import static io.narayana.tracing.names.StringConstants.TRACING_ACTIVATED_SYSPROP_NAME;
+
 import java.util.Objects;
 import java.util.Optional;
 
@@ -35,7 +38,7 @@ import io.opentracing.util.GlobalTracer;
  */
 public class TracingUtils {
     static final boolean TRACING_ACTIVATED = Boolean
-            .valueOf(System.getProperty("org.jboss.narayana.tracingActivated", "true"));
+            .valueOf(System.getProperty(TRACING_ACTIVATED_SYSPROP_NAME, "true"));
     private static final Scope DUMMY_SCOPE = () -> {};
     private static final SpanRegistry SPANS = SpanRegistry.getInstance();
     private static final ScopeRegistry SCOPES = ScopeRegistry.getInstance();
@@ -124,7 +127,7 @@ public class TracingUtils {
          */
         public Span build(String txUid) {
             if(!TRACING_ACTIVATED) return null;
-            spanBldr = spanBldr.withTag(Tags.COMPONENT, "narayana");
+            spanBldr = spanBldr.withTag(Tags.COMPONENT, NARAYANA_COMPONENT_NAME);
             Span rootSpan = spanBldr.start();
             SPANS.insert(txUid, rootSpan);
             SCOPES.insert(txUid, getTracer().scopeManager().activate(rootSpan));

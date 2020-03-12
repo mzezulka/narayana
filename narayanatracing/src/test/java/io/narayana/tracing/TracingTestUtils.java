@@ -2,12 +2,14 @@ package io.narayana.tracing;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.assertj.core.api.ListAssert;
 
 import io.narayana.tracing.names.SpanName;
 import io.opentracing.mock.MockSpan;
+import io.opentracing.tag.Tags;
 
 public class TracingTestUtils {
     public static List<String> operationEnumsToStrings(SpanName... ops) {
@@ -17,6 +19,11 @@ public class TracingTestUtils {
     public static List<String> spansToOperationStrings(List<MockSpan> spans) {
         return spans.stream().map(s -> s.operationName()).collect(Collectors.toList());
     }
+
+    public static Set<String> spansToComponentNames(List<MockSpan> spans) {
+        return spans.stream().map(s -> (String) s.tags().get(Tags.COMPONENT.getKey())).collect(Collectors.toSet());
+    }
+
     /*
      * Retrieve the root span which must always sit at the very end of the collection (because
      * spans are reported in a postorder fashion.
