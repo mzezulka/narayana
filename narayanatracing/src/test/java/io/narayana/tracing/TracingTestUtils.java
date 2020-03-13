@@ -16,6 +16,11 @@ public class TracingTestUtils {
         return Arrays.asList(ops).stream().map(s -> s.toString()).collect(Collectors.toList());
     }
 
+    /**
+     * Takes a list of reported spans and maps them to their names under which they
+     * were reported. Order of the span names stays the same with regards to order of
+     * the input span list.
+     */
     public static List<String> spansToOperationStrings(List<MockSpan> spans) {
         return spans.stream().map(s -> s.operationName()).collect(Collectors.toList());
     }

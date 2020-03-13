@@ -16,11 +16,13 @@ import org.junit.Test;
 import io.narayana.tracing.names.SpanName;
 import io.opentracing.Scope;
 import io.opentracing.Span;
+import io.opentracing.mock.MockSpan;
 import io.opentracing.mock.MockTracer;
 import io.opentracing.util.GlobalTracer;
 
 /**
- * Unit tests for the opentracing Narayana facade.
+ * Unit tests for the opentracing Narayana facade. We do not incorporate Arjuna, only
+ * simulate transaction processing manually from the perspective of the OpenTracing API.
  * @author Miloslav Zezulka (mzezulka@redhat.com)
  *
  */
@@ -40,8 +42,8 @@ public class TracingTest {
     @After
     public void teardown() {
         testTracer.reset();
-        spans.reset();
-        scopes.reset();
+        //spans.reset();
+        //scopes.reset();
     }
 
     @Test
@@ -89,19 +91,11 @@ public class TracingTest {
             start(TEST_ROOT_UID);
             start(TEST_ROOT_UID);
         } catch(IllegalArgumentException iae) {
-            spans.reset();
-            //ok
+            assertThat(spans.elementsCount()).isEqualTo(1);
+            finish(TEST_ROOT_UID);
             return;
         }
         fail();
-    }
-
-    @Test
-    public void nestedSpansSimple() {
-        start(TEST_ROOT_UID);
-        finish(TEST_ROOT_UID);
-        List<String> opNamesExpected = operationEnumsToStrings(SpanName.TX_ROOT);
-        assertThat(spansToOperationStrings(testTracer.finishedSpans())).isEqualTo(opNamesExpected);
     }
 
     @Test
@@ -115,19 +109,22 @@ public class TracingTest {
             finish(TEST_ROOT_UID);
         }
         List<String> opNamesExpected = operationEnumsToStrings(SpanName.GLOBAL_PREPARE, SpanName.TX_ROOT);
+        MockSpan globalPrepareSpan = testTracer.finishedSpans().get(0);
+        MockSpan rootSpan = testTracer.finishedSpans().get(1);
+        assertThat(globalPrepareSpan.parentId()).isEqualTo(rootSpan.context().spanId());
         assertThat(spansToOperationStrings(testTracer.finishedSpans())).isEqualTo(opNamesExpected);
         assertThat(spansToComponentNames(testTracer.finishedSpans())).containsOnly(NARAYANA_COMPONENT_NAME);
     }
 
     @Test(expected = Test.None.class)
     public void spansWithExpectedRootMissing() {
-        // we only report a log warning and append the span to the active span (if any currently exists)
+        // we only report a log warning and proclaim the active span as the parent of the span (if any active span currently exists)
         Span span = new NarayanaSpanBuilder(SpanName.GLOBAL_PREPARE).build(TEST_ROOT_UID);
     }
 
     /**
      * Some of the calls which demarcate the end of transaction processing
-     * might be called more than once.
+     * might be called more than once (e.g. reaper thread). Let us simulate such scenario.
      */
     @Test(expected = Test.None.class)
     public void finishTxnWithoutStartingIt() {
@@ -140,7 +137,7 @@ public class TracingTest {
      * This test case makes sure that narayanatracing does not throw IAE
      * when XARecoveryModule processes transactions which are
      * unknown to tracing runtime (e.g. txns which are stored persistently
-     * in the object store and recovered after AS restart).
+     * in the object store and recovered after Narayana restart).
      *
      * Recovery is the most prominent example but the most important
      * aspect of this test is that for the NarayanaSpanBuilder,

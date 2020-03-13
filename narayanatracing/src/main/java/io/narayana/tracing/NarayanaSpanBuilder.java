@@ -11,7 +11,6 @@ import io.narayana.tracing.names.SpanName;
 import io.narayana.tracing.names.StringConstants;
 import io.narayana.tracing.names.TagName;
 import io.opentracing.Span;
-import io.opentracing.SpanContext;
 import io.opentracing.Tracer.SpanBuilder;
 import io.opentracing.tag.Tag;
 import io.opentracing.tag.Tags;
@@ -88,29 +87,6 @@ public class NarayanaSpanBuilder {
         if(!TRACING_ACTIVATED) return DUMMY_SPAN;
         Span parent = spans.get(txUid).orElseGet(() -> {TracingLogger.i18NLogger.warnNoRootSpan(txUid, name); return getTracer().activeSpan();});
         return spanBldr.asChildOf(parent).withTag(Tags.COMPONENT, StringConstants.NARAYANA_COMPONENT_NAME).start();
-    }
-
-    /**
-     * Build a regular span and attach it to the transaction with id {@code txUid}.
-     *
-     * It is expected that the trace is currently on an entirely different node and
-     * tracing context needs to be extracted from a remote party and then this
-     * context {@code spanContext} will be used as a "gluing" span for the spans in
-     * the remote (coordinating) and spans on the node calling this method,
-     * presumably a node on which a subordinate transaction is executed.
-     *
-     * If the span has already been registered, we only retrieve the existing span.
-     *
-     * @return {@code SpanHandle} with a started span
-     */
-    public Span buildSubordinateIfAbsent(String txUid, SpanContext spanContext) {
-        if(!TRACING_ACTIVATED) return DUMMY_SPAN;
-        return spans.get(txUid).orElseGet(() -> {
-            Objects.requireNonNull(spanContext);
-            Span span = spanBldr.asChildOf(spanContext).withTag(Tags.COMPONENT, NARAYANA_COMPONENT_NAME).start();
-            spans.insert(txUid, span);
-            return span;
-        });
     }
 
     /**

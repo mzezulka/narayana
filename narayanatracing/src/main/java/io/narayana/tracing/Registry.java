@@ -50,8 +50,8 @@ public abstract class Registry<T> {
      *
      * All parameters must be nonnull.
      *
-     * @throws IllegalArgumentException any parameter is null or {@code T} with
-     *                                  id {@code id} is already registered.
+     * @throws IllegalArgumentException any input parameter is null or
+     *                                  {@code T} with id {@code id} is already registered.
      */
     public void insert(String id, T t) {
         if(!TRACING_ACTIVATED) return;
@@ -67,7 +67,12 @@ public abstract class Registry<T> {
         store.clear();
     }
 
-    // for testing purposes
+    // for testing purposes only
+    boolean isEmpty() {
+        return store.size() == 0;
+    }
+
+    // for testing purposes only
     int elementsCount() {
         return store.size();
     }

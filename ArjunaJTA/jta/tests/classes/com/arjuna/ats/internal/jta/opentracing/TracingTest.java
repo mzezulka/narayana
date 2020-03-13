@@ -33,7 +33,8 @@ public class TracingTest {
 
     @BeforeClass
     public static void init() {
-        // we've successfully registered our mock tracer (the flag tells us exactly that)
+        // we've successfully registered our mock tracer
+        // (the return value of registerIfAbsent tells us exactly that)
         assertThat(GlobalTracer.registerIfAbsent(testTracer)).isTrue();
     }
 
@@ -58,6 +59,7 @@ public class TracingTest {
         assertThat(testTracer.activeSpan()).isNull();
         jtaTwoPhaseCommit(tm);
         MockSpan root2 = getRootSpanFrom(testTracer.finishedSpans());
+        // two different transactions are reported under different traces
         assertThat(root2.parentId()).isNotEqualTo(root1.context().spanId());
     }
 
@@ -143,6 +145,7 @@ public class TracingTest {
     public void internalAbortAndCheckRootSpan() throws Exception {
         jtaPrepareResFail(tm);
         MockSpan root = getRootSpanFrom(testTracer.finishedSpans());
+        // in the case of internal Narayana errors, we want to mark this trace as failed
         assertThat((boolean) root.tags().get(Tags.ERROR.getKey())).isTrue();
     }
 
@@ -217,6 +220,9 @@ public class TracingTest {
         // this is how MockSpan logs events under the cover
         String rec1LogMsg = (String) rec1.logEntries().get(0).fields().get("event");
         String rec2LogMsg = (String) rec2.logEntries().get(0).fields().get("event");
+        // let us explicitly check what the two reported spans are since we don't want
+        // the last one especially to be the root span (recovery spans are reported outside
+        // of the txn processing span)
         assertThat(rec1LogMsg).isEqualTo("second pass of the XAResource periodic recovery");
         assertThat(rec2LogMsg).isEqualTo("first pass of the XAResource periodic recovery");
     }
