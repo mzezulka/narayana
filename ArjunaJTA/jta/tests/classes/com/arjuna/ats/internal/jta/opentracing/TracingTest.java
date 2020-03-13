@@ -46,14 +46,15 @@ public class TracingTest {
     }
 
     @Test
-    public void commitAndCheckRootSpan() throws Exception {
+    public void successfullCommitAndCheckRootSpan() throws Exception {
         jtaTwoPhaseCommit(tm);
         MockSpan root = getRootSpanFrom(testTracer.finishedSpans());
+        // check that the transaction trace is not marked as failed
         assertThat((boolean) root.tags().get(Tags.ERROR.getKey())).isFalse();
     }
 
     @Test
-    public void commitAndCheckRootSpans() throws Exception {
+    public void successfullCommitAndCheckRootSpans() throws Exception {
         jtaTwoPhaseCommit(tm);
         MockSpan root1 = getRootSpanFrom(testTracer.finishedSpans());
         assertThat(testTracer.activeSpan()).isNull();
@@ -64,7 +65,7 @@ public class TracingTest {
     }
 
     @Test
-    public void commitAndCheckChildren() throws Exception {
+    public void successfullcommitAndCheckChildren() throws Exception {
         jtaTwoPhaseCommit(tm);
         List<MockSpan> spans = testTracer.finishedSpans();
         MockSpan root = getRootSpanFrom(spans);

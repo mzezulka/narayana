@@ -23,6 +23,7 @@ import io.opentracing.util.GlobalTracer;
 /**
  * Unit tests for the opentracing Narayana facade. We do not incorporate Arjuna, only
  * simulate transaction processing manually from the perspective of the OpenTracing API.
+ *
  * @author Miloslav Zezulka (mzezulka@redhat.com)
  *
  */
@@ -31,7 +32,6 @@ public class TracingTest {
     private static MockTracer testTracer = new MockTracer();
     private static final String TEST_ROOT_UID = "TEST-ROOT";
     private static SpanRegistry spans = SpanRegistry.getInstance();
-    private static ScopeRegistry scopes = ScopeRegistry.getInstance();
 
     @BeforeClass
     public static void init() {
@@ -41,9 +41,8 @@ public class TracingTest {
 
     @After
     public void teardown() {
+        // this makes sure that any spans reported during a test will be deleted
         testTracer.reset();
-        //spans.reset();
-        //scopes.reset();
     }
 
     @Test
