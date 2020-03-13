@@ -2,6 +2,7 @@ package com.arjuna.ats.internal.jta.opentracing;
 
 import static com.arjuna.ats.internal.jta.opentracing.JtaTestUtils.*;
 import static com.arjuna.ats.internal.jta.opentracing.TracingTestUtils.*;
+import static io.narayana.tracing.names.StringConstants.NARAYANA_COMPONENT_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -18,6 +19,13 @@ import io.opentracing.mock.MockTracer;
 import io.opentracing.tag.Tags;
 import io.opentracing.util.GlobalTracer;
 
+
+/**
+ * Integration tests of OpenTracing integration into Narayana.
+ *
+ * @author Miloslav Zezulka (mzezulka@redhat.com)
+ *
+ */
 public class TracingTest {
 
     private static MockTracer testTracer = new MockTracer();
@@ -31,6 +39,8 @@ public class TracingTest {
 
     @After
     public void teardown() {
+        // check that all spans ever reported in a test were reported under the "narayana" module
+        assertThat(spansToComponentNames(testTracer.finishedSpans())).containsOnly(NARAYANA_COMPONENT_NAME);
         testTracer.reset();
     }
 

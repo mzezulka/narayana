@@ -6,7 +6,9 @@ import static io.narayana.tracing.names.StringConstants.NARAYANA_COMPONENT_NAME;
 
 import java.util.Objects;
 
+import io.narayana.tracing.logging.TracingLogger;
 import io.narayana.tracing.names.SpanName;
+import io.narayana.tracing.names.StringConstants;
 import io.narayana.tracing.names.TagName;
 import io.opentracing.Span;
 import io.opentracing.SpanContext;
@@ -84,10 +86,8 @@ public class NarayanaSpanBuilder {
      */
     public Span build(String txUid) {
         if(!TRACING_ACTIVATED) return DUMMY_SPAN;
-        Span parent = spans.get(txUid)
-                        .orElseThrow(() -> new IllegalArgumentException(String.format(
-                        "No root span found for '%s' when building span with name '%s'.", txUid, name)));
-        return spanBldr.asChildOf(parent).withTag(Tags.COMPONENT, "narayana").start();
+        Span parent = spans.get(txUid).orElseGet(() -> {TracingLogger.i18NLogger.warnNoRootSpan(txUid, name); return getTracer().activeSpan();});
+        return spanBldr.asChildOf(parent).withTag(Tags.COMPONENT, StringConstants.NARAYANA_COMPONENT_NAME).start();
     }
 
     /**

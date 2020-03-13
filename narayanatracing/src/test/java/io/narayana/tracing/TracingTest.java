@@ -119,8 +119,9 @@ public class TracingTest {
         assertThat(spansToComponentNames(testTracer.finishedSpans())).containsOnly(NARAYANA_COMPONENT_NAME);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = Test.None.class)
     public void spansWithExpectedRootMissing() {
+        // we only report a log warning and append the span to the active span (if any currently exists)
         Span span = new NarayanaSpanBuilder(SpanName.GLOBAL_PREPARE).build(TEST_ROOT_UID);
     }
 

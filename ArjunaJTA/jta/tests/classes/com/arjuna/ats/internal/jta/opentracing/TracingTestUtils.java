@@ -2,16 +2,22 @@ package com.arjuna.ats.internal.jta.opentracing;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.assertj.core.api.ListAssert;
 
 import io.narayana.tracing.names.SpanName;
 import io.opentracing.mock.MockSpan;
+import io.opentracing.tag.Tags;
 
 public class TracingTestUtils {
     public static List<String> operationEnumsToStrings(SpanName... ops) {
         return Arrays.asList(ops).stream().map(s -> s.toString()).collect(Collectors.toList());
+    }
+
+    public static Set<String> spansToComponentNames(List<MockSpan> spans) {
+        return spans.stream().map(s -> (String) s.tags().get(Tags.COMPONENT.getKey())).collect(Collectors.toSet());
     }
 
     public static List<String> spansToOperationStrings(List<MockSpan> spans) {
