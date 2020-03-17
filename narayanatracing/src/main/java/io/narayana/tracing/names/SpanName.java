@@ -1,13 +1,12 @@
 package io.narayana.tracing.names;
 
 /**
- * String constants and string formatters to be used as names when creating spans.
+ * String constants to be used as action names when creating spans.
  *
  * Naming conventions:
  * Spans starting with the "GLOBAL" prefix should be attached to a TX_ROOT span.
- * Spans starting with the "LOCAL" prefix suppose that there is a GLOBAL span created
- *     and is currently activated by the scope manager. In other words, they always
- *     belong to a superior, more abstract action which is not TX_ROOT.
+ * Spans starting with the "LOCAL" prefix suppose that there is a an active span
+ *     present in the ThreadLocalScope to which this span is attached.
  *
  * @author Miloslav Zezulka (mzezulka@redhat.com)
  *
