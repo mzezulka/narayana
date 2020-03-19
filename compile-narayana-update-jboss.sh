@@ -43,7 +43,7 @@ function updateJboss {
   cd unzipped
  
   TXN_JAR='idlj'
-  if [ "x$1" = "xjacorb" ] || [ "x$2" = "xjacorb" ]; then TXN_JAR='-jacorb'; fi
+  if [ "x$1" = "xjacorb" ]; then TXN_JAR='-jacorb'; fi
   updateModuleXml "$JBOSS_HOME/modules/system/layers/base/org/jboss/jts/main" "$TXN_JAR"
   updateModuleXml "$JBOSS_HOME/modules/system/layers/base/org/jboss/jts/integration/main" "narayana-jts-integration"
   updateModuleXml "$JBOSS_HOME/modules/system/layers/base/org/jboss/xts/main" 'jbossxts'
@@ -83,7 +83,7 @@ fi
 JBOSS_HOME=${JBOSS_HOME%/}
 
 if [ "x$1" == "xjustupdate" ]; then
-  updateJboss "$1" "$2"
+  updateJboss "$1"
   exit 0
 fi
 
