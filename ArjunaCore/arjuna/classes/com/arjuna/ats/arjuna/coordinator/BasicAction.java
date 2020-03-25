@@ -116,6 +116,8 @@ public class BasicAction extends StateManager {
 
     protected boolean subordinate;
 
+    private Span rootSpan;
+
     public BasicAction() {
         super(ObjectType.NEITHER);
         if (tsLogger.logger.isTraceEnabled()) {
@@ -1266,9 +1268,9 @@ public class BasicAction extends StateManager {
 
     protected synchronized int Begin(BasicAction parentAct) {
         if(this.getClass().getName().equals("com.arjuna.ats.internal.jta.transaction.arjunacore.AtomicAction")) {
-            TracingUtils.start(get_uid().toString());
+            this.rootSpan = TracingUtils.start(get_uid().toString());
         } else {
-            TracingUtils.startSubordinate(this.getClass(), get_uid().toString());
+            this.rootSpan = TracingUtils.startSubordinate(this.getClass(), get_uid().toString());
         }
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("BasicAction::Begin() for action-id " + get_uid());
@@ -1506,7 +1508,7 @@ public class BasicAction extends StateManager {
     protected synchronized int Abort(boolean applicationAbort) {
         Span s = new NarayanaSpanBuilder(SpanName.GLOBAL_ABORT_USER)
                 .tag(TagName.APPLICATION_ABORT, String.valueOf(applicationAbort)).tag(TagName.UID, get_uid())
-                .tag(TagName.ASYNCHRONOUS, false).build(get_uid().toString());
+                .tag(TagName.ASYNCHRONOUS, false).build(rootSpan);
         try (Scope _s = TracingUtils.activateSpan(s)) {
 
             if (tsLogger.logger.isTraceEnabled()) {
@@ -1716,7 +1718,7 @@ public class BasicAction extends StateManager {
     protected final synchronized void phase2Commit(boolean reportHeuristics) throws Error {
         Span s = new NarayanaSpanBuilder(SpanName.GLOBAL_COMMIT)
                 .tag(TagName.REPORT_HEURISTICS, String.valueOf(reportHeuristics)).tag(TagName.UID, this.get_uid())
-                .build(get_uid().toString());
+                .build(rootSpan);
         try (Scope _s = TracingUtils.activateSpan(s)) {
 
             if (tsLogger.logger.isTraceEnabled()) {
@@ -1829,7 +1831,7 @@ public class BasicAction extends StateManager {
     protected final synchronized void phase2Abort(boolean reportHeuristics) {
         Span span = new NarayanaSpanBuilder(SpanName.GLOBAL_ABORT)
                 .tag(TagName.REPORT_HEURISTICS, String.valueOf(reportHeuristics)).tag(TagName.APPLICATION_ABORT, false)
-                .tag(TagName.ASYNCHRONOUS, false).tag(TagName.UID, this.get_uid()).build(get_uid().toString());
+                .tag(TagName.ASYNCHRONOUS, false).tag(TagName.UID, this.get_uid()).build(rootSpan);
         try (Scope _s = TracingUtils.activateSpan(span)) {
             TracingUtils.markTransactionFailed(get_uid().toString());
 
@@ -1966,7 +1968,7 @@ public class BasicAction extends StateManager {
     protected final synchronized int prepare(boolean reportHeuristics) {
         Span span = new NarayanaSpanBuilder(SpanName.GLOBAL_PREPARE)
                 .tag(TagName.REPORT_HEURISTICS, String.valueOf(reportHeuristics)).tag(TagName.UID, get_uid())
-                .build(get_uid().toString());
+                .build(rootSpan);
         try (Scope _s = TracingUtils.activateSpan(span)) {
             if (tsLogger.logger.isTraceEnabled()) {
                 tsLogger.logger.trace("BasicAction::prepare () for action-id " + get_uid());

@@ -67,15 +67,16 @@ public class TracingUtils {
      * Starts a new root span of a trace representing one distributed transaction.
      *
      * @param txUid string representation of the transaction
+     * @return root span of the transaction
      */
-    public static void start(String txUid) {
+    public static Span start(String txUid) {
         Objects.requireNonNull(txUid);
-        new RootSpanBuilder().tag(TagName.UID, txUid).build(txUid);
+        return new RootSpanBuilder().tag(TagName.UID, txUid).build(txUid);
     }
 
-    public static void startSubordinate(Class<?> cl, String txUid) {
+    public static Span startSubordinate(Class<?> cl, String txUid) {
         Objects.requireNonNull(txUid);
-        new RootSpanBuilder().tag(TagName.UID, txUid).tag(TagName.TXINFO, cl).subordinate().build(txUid);
+        return new RootSpanBuilder().tag(TagName.UID, txUid).tag(TagName.TXINFO, cl).subordinate().build(txUid);
     }
 
     /**

@@ -71,21 +71,13 @@ public class NarayanaSpanBuilder {
     }
 
     /**
-     * Build a regular span and attach it to the transaction with id {@code txUid}.
+     * Build a regular span and attach it to the parent {@code parent}.
      *
-     * Note: if the "real" part of a transaction processing hasn't started yet and
-     * the transaction manager needs to do some preparations (i.e. XAResource
-     * enlistment), the trace is in a pseudo "pre-2PC" state where every span is
-     * hooked to a SpanName.GLOBAL_PRE_2PC span (which is always a child of a root
-     * span).
-     *
-     * @param txUid id of a transaction which already has a root span
-     * @throws IllegalStateException no appropriate span for {@code txUid} exists
+     * @param parent parent span
      * @return {@code SpanHandle} with a started span
      */
-    public Span build(String txUid) {
+    public Span build(Span parent) {
         if(!TRACING_ACTIVATED) return DUMMY_SPAN;
-        Span parent = spans.get(txUid).orElseGet(() -> {TracingLogger.i18NLogger.warnNoRootSpan(txUid, name); return getTracer().activeSpan();});
         return spanBldr.asChildOf(parent).withTag(Tags.COMPONENT, StringConstants.NARAYANA_COMPONENT_NAME).start();
     }
 
