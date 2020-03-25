@@ -40,8 +40,6 @@ public class TracingUtils {
     static final boolean TRACING_ACTIVATED = Boolean
             .valueOf(System.getProperty(TRACING_ACTIVATED_SYSPROP_NAME, "true"));
     private static final Scope DUMMY_SCOPE = () -> {};
-    private static final SpanRegistry SPANS = SpanRegistry.getInstance();
-    private static final ScopeRegistry SCOPES = ScopeRegistry.getInstance();
 
     private TracingUtils() {
     }
@@ -52,18 +50,6 @@ public class TracingUtils {
     }
 
     /**
-     * Finishes the root span representing the transaction with id {@code txUid}
-     *
-     * @param txUid string representation of the transaction
-     */
-    public static void finish(String txUid) {
-        if (!TRACING_ACTIVATED) return;
-        Objects.requireNonNull(txUid);
-        SCOPES.remove(txUid).ifPresent(s -> s.close());
-        SPANS.remove(txUid).ifPresent(s -> s.finish());
-    }
-
-    /**
      * Starts a new root span of a trace representing one distributed transaction.
      *
      * @param txUid string representation of the transaction
@@ -71,12 +57,12 @@ public class TracingUtils {
      */
     public static Span start(String txUid) {
         Objects.requireNonNull(txUid);
-        return new RootSpanBuilder().tag(TagName.UID, txUid).build(txUid);
+        return new RootSpanBuilder().build(txUid);
     }
 
     public static Span startSubordinate(Class<?> cl, String txUid) {
         Objects.requireNonNull(txUid);
-        return new RootSpanBuilder().tag(TagName.UID, txUid).tag(TagName.TXINFO, cl).subordinate().build(txUid);
+        return new RootSpanBuilder().tag(TagName.TXINFO, cl).subordinate().build(txUid);
     }
 
     /**
@@ -89,14 +75,14 @@ public class TracingUtils {
 
         private SpanBuilder spanBldr;
 
-        RootSpanBuilder(Object... args) {
+        RootSpanBuilder() {
             if(!TRACING_ACTIVATED) return;
-            spanBldr = prepareSpan(SpanName.TX_ROOT, args).withTag(Tags.ERROR, false);
+            spanBldr = prepareSpan(SpanName.TX_ROOT).withTag(Tags.ERROR, false);
         }
 
-        private static SpanBuilder prepareSpan(SpanName name, Object... args) {
+        private static SpanBuilder prepareSpan(SpanName name) {
             Objects.requireNonNull(name, "Name of the span cannot be null");
-            return getTracer().buildSpan(String.format(name.toString(), args));
+            return getTracer().buildSpan(name.toString());
         }
 
         /**
@@ -124,15 +110,12 @@ public class TracingUtils {
          * @throws IllegalArgumentException {@code txUid} is null or a span with this ID
          *                                  already exists
          * @param txUid UID of the new transaction
-         * @return
+         * @return root span of the new transaction
          */
         public Span build(String txUid) {
             if(!TRACING_ACTIVATED) return null;
-            spanBldr = spanBldr.withTag(Tags.COMPONENT, NARAYANA_COMPONENT_NAME);
-            Span rootSpan = spanBldr.start();
-            SPANS.insert(txUid, rootSpan);
-            SCOPES.insert(txUid, getTracer().scopeManager().activate(rootSpan));
-            return rootSpan;
+            tag(TagName.UID, txUid);
+            return spanBldr.withTag(Tags.COMPONENT, NARAYANA_COMPONENT_NAME).start();
         }
     }
 
@@ -141,9 +124,9 @@ public class TracingUtils {
      * Hence this is different from setting the transaction
      * status span tag as failed via calling {@code setTransactionStatus}.
      */
-    public static void markTransactionFailed(String txUid) {
-        if (!TRACING_ACTIVATED) return;
-        SPANS.get(txUid).ifPresent(s -> s.setTag(Tags.ERROR, true));
+    public static void markTransactionFailed(Span rootSpan) {
+        if (!TRACING_ACTIVATED || rootSpan == null) return;
+        rootSpan.setTag(Tags.ERROR, true);
     }
 
     /**
@@ -152,13 +135,12 @@ public class TracingUtils {
      *
      * @throws IllegalArgumentException {@code txUid} does not represent any
      *                                  currently managed transaction
-     * @param txUid  UID of the transaction
+     * @param rootSpan
      * @param status one of the possible states any transaction could be in
      */
-    public static void setTransactionStatus(String txUid, TransactionStatus status) {
-        if (!TRACING_ACTIVATED) return;
-        SPANS.get(txUid)
-                .ifPresent(s -> s.setTag(TagName.STATUS.toString(), status.toString().toLowerCase()));
+    public static void setTransactionStatus(Span rootSpan, TransactionStatus status) {
+        if (!TRACING_ACTIVATED || rootSpan == null) return;
+        rootSpan.setTag(TagName.STATUS.toString(), status.toString().toLowerCase());
     }
 
     /**

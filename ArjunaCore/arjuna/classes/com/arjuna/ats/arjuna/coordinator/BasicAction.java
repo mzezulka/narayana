@@ -117,6 +117,7 @@ public class BasicAction extends StateManager {
     protected boolean subordinate;
 
     private Span rootSpan;
+    private Scope rootScope;
 
     public BasicAction() {
         super(ObjectType.NEITHER);
@@ -1272,6 +1273,7 @@ public class BasicAction extends StateManager {
         } else {
             this.rootSpan = TracingUtils.startSubordinate(this.getClass(), get_uid().toString());
         }
+        this.rootScope = TracingUtils.activateSpan(rootSpan);
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.trace("BasicAction::Begin() for action-id " + get_uid());
         }
@@ -1430,8 +1432,9 @@ public class BasicAction extends StateManager {
         }
 
         if (actionStatus == ActionStatus.COMMITTED) {
-            TracingUtils.setTransactionStatus(get_uid().toString(), TransactionStatus.COMMITTED);
-            TracingUtils.finish(get_uid().toString());
+            TracingUtils.setTransactionStatus(rootSpan, TransactionStatus.COMMITTED);
+            rootScope.close();
+            rootSpan.finish();
         }
         if (tsLogger.logger.isTraceEnabled()) {
             tsLogger.logger.tracef("BasicAction::End() result for action-id (%s) is (%s) node id: (%s)", get_uid(),
@@ -1562,7 +1565,7 @@ public class BasicAction extends StateManager {
             }
 
             ActionManager.manager().remove(get_uid());
-            TracingUtils.setTransactionStatus(get_uid().toString(), TransactionStatus.ABORTED);
+            TracingUtils.setTransactionStatus(rootSpan, TransactionStatus.ABORTED);
             actionStatus = ActionStatus.ABORTED;
 
             if (TxStats.enabled()) {
@@ -1575,7 +1578,8 @@ public class BasicAction extends StateManager {
             return actionStatus;
         } finally {
             s.finish();
-            TracingUtils.finish(get_uid().toString());
+            rootScope.close();
+            rootSpan.finish();
         }
     }
 
@@ -1833,7 +1837,7 @@ public class BasicAction extends StateManager {
                 .tag(TagName.REPORT_HEURISTICS, String.valueOf(reportHeuristics)).tag(TagName.APPLICATION_ABORT, false)
                 .tag(TagName.ASYNCHRONOUS, false).tag(TagName.UID, this.get_uid()).build(rootSpan);
         try (Scope _s = TracingUtils.activateSpan(span)) {
-            TracingUtils.markTransactionFailed(get_uid().toString());
+            TracingUtils.markTransactionFailed(rootSpan);
 
             if (tsLogger.logger.isTraceEnabled()) {
                 tsLogger.logger.trace("BasicAction::phase2Abort() for action-id " + get_uid());
@@ -1866,8 +1870,8 @@ public class BasicAction extends StateManager {
             forgetHeuristics();
 
             actionStatus = abortStatus();
-            TracingUtils.setTransactionStatus(get_uid().toString(), TransactionStatus.ABORTED);
-            TracingUtils.markTransactionFailed(get_uid().toString());
+            TracingUtils.setTransactionStatus(rootSpan, TransactionStatus.ABORTED);
+            TracingUtils.markTransactionFailed(rootSpan);
             updateState(); // we may end up saving more than the heuristic list here!
 
             ActionManager.manager().remove(get_uid());
@@ -1888,7 +1892,8 @@ public class BasicAction extends StateManager {
             }
         } finally {
             span.finish();
-            TracingUtils.finish(get_uid().toString());
+            rootScope.close();
+            rootSpan.finish();
         }
     }
 

@@ -38,7 +38,6 @@ public class NarayanaSpanBuilder {
     private SpanBuilder spanBldr;
     private SpanName name;
     private static final Span DUMMY_SPAN = new DummySpan();
-    private SpanRegistry spans = SpanRegistry.getInstance();
 
     public NarayanaSpanBuilder(SpanName name, Object... args) {
         if(!TRACING_ACTIVATED) return;
