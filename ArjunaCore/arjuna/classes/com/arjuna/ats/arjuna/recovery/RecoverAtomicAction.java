@@ -64,7 +64,7 @@ public class RecoverAtomicAction extends AtomicAction {
         }
 
         if (_activated) {
-            Span s = new NarayanaSpanBuilder(SpanName.LOCAL_RECOVERY)
+            Span s = new NarayanaSpanBuilder(SpanName.BRANCH_RECOVERY)
                     .tag(TagName.UID, get_uid().toString())
                     .tag(TagName.STATUS, ActionStatus.stringForm(_theStatus))
                     .build();

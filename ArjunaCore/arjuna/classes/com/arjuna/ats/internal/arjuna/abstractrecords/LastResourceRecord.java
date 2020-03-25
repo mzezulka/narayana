@@ -135,7 +135,7 @@ public class LastResourceRecord extends AbstractRecord {
 
     @Override
     public int topLevelCommit() {
-        Span span = new NarayanaSpanBuilder(SpanName.LOCAL_COMMIT_LAST_RESOURCE)
+        Span span = new NarayanaSpanBuilder(SpanName.BRANCH_COMMIT_LAST_RESOURCE)
                 .tag(TagName.UID, this.get_uid())
                 .build();
         try(Scope _s = TracingUtils.activateSpan(span)) {

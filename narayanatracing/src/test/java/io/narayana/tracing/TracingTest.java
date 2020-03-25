@@ -67,7 +67,7 @@ public class TracingTest {
         Span root = start(TEST_ROOT_UID);
         Scope s = TracingUtils.activateSpan(root);
         
-        Span span = new NarayanaSpanBuilder(SpanName.GLOBAL_PREPARE).build(null);
+        Span span = new NarayanaSpanBuilder(SpanName.GT_PREPARE).build(null);
         try (Scope _sInner = TracingUtils.activateSpan(span)) {
             //no-op
         } finally {
@@ -77,7 +77,7 @@ public class TracingTest {
         s.close();
         root.finish();
         
-        List<String> opNamesExpected = operationEnumsToStrings(SpanName.GLOBAL_PREPARE, SpanName.TX_ROOT);
+        List<String> opNamesExpected = operationEnumsToStrings(SpanName.GT_PREPARE, SpanName.TX_ROOT);
         MockSpan globalPrepareSpan = testTracer.finishedSpans().get(0);
         MockSpan rootSpan = testTracer.finishedSpans().get(1);
         assertThat(globalPrepareSpan.parentId()).isEqualTo(rootSpan.context().spanId());
@@ -88,7 +88,7 @@ public class TracingTest {
     @Test(expected = Test.None.class)
     public void spansWithExpectedRootMissing() {
         // we only report a log warning and proclaim the active span as the parent of the span (if any active span currently exists)
-        Span span = new NarayanaSpanBuilder(SpanName.GLOBAL_PREPARE).build(null);
+        Span span = new NarayanaSpanBuilder(SpanName.GT_PREPARE).build(null);
     }
 
     /*
@@ -103,13 +103,13 @@ public class TracingTest {
      */
     @Test(expected = Test.None.class)
     public void spansWithExpectedRootMissingNoFail() {
-        Span span = new NarayanaSpanBuilder(SpanName.LOCAL_RECOVERY).build();
+        Span span = new NarayanaSpanBuilder(SpanName.BRANCH_RECOVERY).build();
         try (Scope _s = TracingUtils.activateSpan(span)) {
             //no-op
         } finally {
             span.finish();
         }
-        List<String> opNamesExpected = operationEnumsToStrings(SpanName.LOCAL_RECOVERY);
+        List<String> opNamesExpected = operationEnumsToStrings(SpanName.BRANCH_RECOVERY);
         assertThat(spansToOperationStrings(testTracer.finishedSpans())).isEqualTo(opNamesExpected);
         assertThat(spansToComponentNames(testTracer.finishedSpans())).containsOnly(NARAYANA_COMPONENT_NAME);
     }

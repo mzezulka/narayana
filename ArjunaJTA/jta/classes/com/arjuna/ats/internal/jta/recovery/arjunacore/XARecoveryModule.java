@@ -589,7 +589,7 @@ public class XARecoveryModule implements ExtendedRecoveryModule {
                 if (uid.equals(Uid.nullUid())) {
                     continue;
                 }
-                Span h = new NarayanaSpanBuilder(SpanName.LOCAL_RECOVERY)
+                Span h = new NarayanaSpanBuilder(SpanName.BRANCH_RECOVERY)
                         .tag(TagName.UID, uid)
                         .tag(TagName.XARES, xares.toString())
                         .build();
@@ -700,7 +700,7 @@ public class XARecoveryModule implements ExtendedRecoveryModule {
                     }
                     for (int j = 0; j < xids.length; j++) {
                         Uid uid = XATxConverter.getUid(((XidImple) xids[j]).getXID());
-                        Span h = new NarayanaSpanBuilder(SpanName.LOCAL_RECOVERY)
+                        Span h = new NarayanaSpanBuilder(SpanName.BRANCH_RECOVERY)
                                 .tag(TagName.UID, uid)
                                 .tag(TagName.XARES, xares.toString())
                                 .build();

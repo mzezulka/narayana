@@ -91,12 +91,12 @@ public class TracingTest {
         jtaTwoPhaseCommit(tm);
         List<String> opNamesExpected = operationEnumsToStrings(SpanName.RESOURCE_ENLISTMENT,
                                                                SpanName.RESOURCE_ENLISTMENT,
-                                                               SpanName.LOCAL_PREPARE,
-                                                               SpanName.LOCAL_PREPARE,
-                                                               SpanName.GLOBAL_PREPARE,
-                                                               SpanName.LOCAL_COMMIT,
-                                                               SpanName.LOCAL_COMMIT,
-                                                               SpanName.GLOBAL_COMMIT,
+                                                               SpanName.BRANCH_PREPARE,
+                                                               SpanName.BRANCH_PREPARE,
+                                                               SpanName.GT_PREPARE,
+                                                               SpanName.BRANCH_COMMIT,
+                                                               SpanName.BRANCH_COMMIT,
+                                                               SpanName.GT_COMMIT,
                                                                SpanName.TX_ROOT);
         List<MockSpan> spans = testTracer.finishedSpans();
         assertThat(spans.size()).isEqualTo(opNamesExpected.size());
@@ -133,9 +133,9 @@ public class TracingTest {
         jtaUserRollback(tm);
         List<String> opNamesExpected = operationEnumsToStrings(SpanName.RESOURCE_ENLISTMENT,
                                                                SpanName.RESOURCE_ENLISTMENT,
-                                                               SpanName.LOCAL_ROLLBACK,
-                                                               SpanName.LOCAL_ROLLBACK,
-                                                               SpanName.GLOBAL_ABORT_USER,
+                                                               SpanName.BRANCH_ROLLBACK,
+                                                               SpanName.BRANCH_ROLLBACK,
+                                                               SpanName.GT_ABORT_USER,
                                                                SpanName.TX_ROOT);
         List<MockSpan> spans = testTracer.finishedSpans();
         assertThat(spans.size()).isEqualTo(opNamesExpected.size());
@@ -156,12 +156,12 @@ public class TracingTest {
 
         List<String> opNamesExpected = operationEnumsToStrings(SpanName.RESOURCE_ENLISTMENT,
                                                                SpanName.RESOURCE_ENLISTMENT,
-                                                               SpanName.LOCAL_PREPARE,
-                                                               SpanName.LOCAL_PREPARE,
-                                                               SpanName.GLOBAL_PREPARE,
-                                                               SpanName.LOCAL_ROLLBACK,
-                                                               SpanName.LOCAL_ROLLBACK,
-                                                               SpanName.GLOBAL_ABORT,
+                                                               SpanName.BRANCH_PREPARE,
+                                                               SpanName.BRANCH_PREPARE,
+                                                               SpanName.GT_PREPARE,
+                                                               SpanName.BRANCH_ROLLBACK,
+                                                               SpanName.BRANCH_ROLLBACK,
+                                                               SpanName.GT_ABORT,
                                                                SpanName.TX_ROOT);
         List<MockSpan> spans = testTracer.finishedSpans();
         assertThat(spans.size()).isEqualTo(opNamesExpected.size());
@@ -196,15 +196,15 @@ public class TracingTest {
 
         List<String> opNamesExpected = operationEnumsToStrings(SpanName.RESOURCE_ENLISTMENT,
                                                                SpanName.RESOURCE_ENLISTMENT,
-                                                               SpanName.LOCAL_PREPARE,
-                                                               SpanName.LOCAL_PREPARE,
-                                                               SpanName.GLOBAL_PREPARE,
-                                                               SpanName.LOCAL_ROLLBACK,
-                                                               SpanName.LOCAL_ROLLBACK,
-                                                               SpanName.GLOBAL_ABORT,
+                                                               SpanName.BRANCH_PREPARE,
+                                                               SpanName.BRANCH_PREPARE,
+                                                               SpanName.GT_PREPARE,
+                                                               SpanName.BRANCH_ROLLBACK,
+                                                               SpanName.BRANCH_ROLLBACK,
+                                                               SpanName.GT_ABORT,
                                                                SpanName.TX_ROOT,
-                                                               SpanName.LOCAL_RECOVERY,
-                                                               SpanName.LOCAL_RECOVERY);
+                                                               SpanName.BRANCH_RECOVERY,
+                                                               SpanName.BRANCH_RECOVERY);
         List<MockSpan> spans = testTracer.finishedSpans();
         assertThat(spans.size()).isEqualTo(opNamesExpected.size());
         assertThat(spansToOperationStrings(spans)).isEqualTo(opNamesExpected);

@@ -4,9 +4,10 @@ package io.narayana.tracing.names;
  * String constants to be used as action names when creating spans.
  *
  * Naming conventions:
- * Spans starting with the "GLOBAL" prefix should be attached to a TX_ROOT span.
- * Spans starting with the "LOCAL" prefix suppose that there is a an active span
- *     present in the ThreadLocalScope to which this span is attached.
+ * Spans starting with the "GT" prefix (global transaction) should be attached
+ * to a TX_ROOT span. Spans starting with the "BRANCH" prefix suppose that there
+ * is a an active span present in the ThreadLocalScope to which this span is
+ * attached.
  *
  * @author Miloslav Zezulka (mzezulka@redhat.com)
  *
@@ -18,19 +19,16 @@ public enum SpanName {
      */
     TX_ROOT("Transaction"),
     SUBORD_ROOT("Subordinate transaction"),
-
-    GLOBAL_PREPARE("Global Prepare"),
-    GLOBAL_COMMIT("Global Commit"),
-    GLOBAL_ABORT("Global Abort"),
-    GLOBAL_ABORT_USER("Global Abort - User Initiated"),
-
+    GT_PREPARE("Global Prepare"),
+    GT_COMMIT("Global Commit"),
+    GT_ABORT("Global Abort"),
+    GT_ABORT_USER("Global Abort - User Initiated"),
     ONE_PHASE_COMMIT("One phase commit"),
-
-    LOCAL_PREPARE("Branch Prepare"),
-    LOCAL_COMMIT("Branch Commit"),
-    LOCAL_COMMIT_LAST_RESOURCE("Branch Commit - Last Resource Commit Optimization"),
-    LOCAL_ROLLBACK("Branch Rollback"),
-    LOCAL_RECOVERY("XAResource Recovery"),
+    BRANCH_PREPARE("Branch Prepare"),
+    BRANCH_COMMIT("Branch Commit"),
+    BRANCH_COMMIT_LAST_RESOURCE("Branch Commit - Last Resource Commit Optimization"),
+    BRANCH_ROLLBACK("Branch Rollback"),
+    BRANCH_RECOVERY("XAResource Recovery"),
     RESOURCE_ENLISTMENT("XAResource Enlistment");
 
     private final String name;
