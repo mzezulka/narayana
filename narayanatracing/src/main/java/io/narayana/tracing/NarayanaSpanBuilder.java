@@ -6,7 +6,6 @@ import static io.narayana.tracing.names.StringConstants.NARAYANA_COMPONENT_NAME;
 
 import java.util.Objects;
 
-import io.narayana.tracing.logging.TracingLogger;
 import io.narayana.tracing.names.SpanName;
 import io.narayana.tracing.names.StringConstants;
 import io.narayana.tracing.names.TagName;
@@ -22,13 +21,13 @@ import io.opentracing.tag.Tags;
  * Example of usage:
  *
  * <pre>
- * <code>SpanHandle handle = new SpanHandleBuilder(SpanName.XYZ)
+ * <code>Span span = new NarayanaSpanBuilder(SpanName.XYZ)
  *    .tag(TagName.UID, get_uid())
  *    .build(get_uid().toString());
- * try (Scope s = Tracing.activateHandle(handle)) {
+ * try (Scope s = Tracing.activateSpan(span)) {
  *     // this is where 's' is active
  * } finally {
- *     handle.finish();
+ *     span.finish();
  * }
  * </code>
  * </pre>
