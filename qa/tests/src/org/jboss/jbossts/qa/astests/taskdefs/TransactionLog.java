@@ -52,15 +52,15 @@ public class TransactionLog
 
     private void init(String storeDir, String impleType)
     {
-        ObjectStoreEnvironmentBean objectStoreEnvironmentBean = arjPropertyManager.getObjectStoreEnvironmentBean();
-        objectStoreEnvironmentBean.setObjectStoreDir(storeDir);
+		ObjectStoreEnvironmentBean objectStoreEnvironmentBean = arjPropertyManager.getObjectStoreEnvironmentBean();
+		objectStoreEnvironmentBean.setObjectStoreDir(storeDir);
 
         if (impleType != null)
         {
             try
             {
                 Class c = Class.forName(impleType);
-
+                
                 recoveryStore = (RecoveryStore) c.getDeclaredConstructor().newInstance();
             }
             catch (final Throwable ex)

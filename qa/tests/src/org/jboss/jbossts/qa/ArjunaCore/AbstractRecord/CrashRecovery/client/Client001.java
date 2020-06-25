@@ -36,7 +36,7 @@ class CrashAbstractRecordMap implements RecordTypeMap
     {
         return CrashAbstractRecord02.class;
     }
-
+    
     public int getType ()
     {
         return RecordType.USER_DEF_FIRST1;
@@ -45,70 +45,70 @@ class CrashAbstractRecordMap implements RecordTypeMap
 
 public class Client001 extends BaseTestClient
 {
-    public static void main(String[] args)
-    {
-           RecordTypeManager.manager().add(new CrashAbstractRecordMap());
-
-        @SuppressWarnings("unused")
+	public static void main(String[] args)
+	{
+	       RecordTypeManager.manager().add(new CrashAbstractRecordMap());
+	            
+		@SuppressWarnings("unused")
         Client001 test = new Client001(args);
-    }
+	}
 
-    private Client001(String[] args)
-    {
-        super(args);
-    }
+	private Client001(String[] args)
+	{
+		super(args);
+	}
 
-    public void Test()
-    {
-        try
-        {
-            setNumberOfCalls(5);
-            setNumberOfResources(4);
-            setCrashPoint(3);
-            setCrashType(2);
-            setUniquePrefix(1);
+	public void Test()
+	{
+		try
+		{
+			setNumberOfCalls(5);
+			setNumberOfResources(4);
+			setCrashPoint(3);
+			setCrashType(2);
+			setUniquePrefix(1);
 
-            CrashService02 mService = new CrashService02(mNumberOfResources, mCrashPoint, mCrashType);
+			CrashService02 mService = new CrashService02(mNumberOfResources, mCrashPoint, mCrashType);
 
-            //start transaction    to check all is ok.
-            startTx();
-            mService.setupOper(getUniquePrefix());
-            mService.doWork(mMaxIteration);
-            commit();
+			//start transaction	to check all is ok.
+			startTx();
+			mService.setupOper(getUniquePrefix());
+			mService.doWork(mMaxIteration);
+			commit();
 
-            for (int ii = 0; ii < mNumberOfResources; ii++)
-            {
-                mService.mAbstractRecordList[ii].resetValue();
-            }
+			for (int ii = 0; ii < mNumberOfResources; ii++)
+			{
+				mService.mAbstractRecordList[ii].resetValue();
+			}
 
-            RecoveryTransaction tx = new RecoveryTransaction(mAtom.get_uid());
+			RecoveryTransaction tx = new RecoveryTransaction(mAtom.get_uid());
 
-            tx.doCommit();
+			tx.doCommit();
 
-            try
-            {
-                for (int i = 0; i < mNumberOfResources; i++)
-                {
-                    if (mService.mAbstractRecordList[i].getValue() != mMaxIteration * mNumberOfResources)
-                    {
-                        Debug("Error checking resource " + i + " value  = " + mService.mAbstractRecordList[i].getValue());
-                        mCorrect = false;
+			try
+			{
+				for (int i = 0; i < mNumberOfResources; i++)
+				{
+					if (mService.mAbstractRecordList[i].getValue() != mMaxIteration * mNumberOfResources)
+					{
+						Debug("Error checking resource " + i + " value  = " + mService.mAbstractRecordList[i].getValue());
+						mCorrect = false;
 
-                        qaAssert(false);
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Fail("Exception whilst checking resource", e);
-            }
+						qaAssert(false);
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				Fail("Exception whilst checking resource", e);
+			}
 
-            qaAssert(mCorrect);
-        }
-        catch (Exception e)
-        {
-            Fail("Error in Client001.test() :", e);
-        }
-    }
+			qaAssert(mCorrect);
+		}
+		catch (Exception e)
+		{
+			Fail("Error in Client001.test() :", e);
+		}
+	}
 
 }

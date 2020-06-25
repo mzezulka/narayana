@@ -32,24 +32,24 @@ import org.jboss.profiler.jvmti.JVMTIInterface;
 
 public class JVMStats
 {
-    public static long getMemory()
-    {
-        Runtime runtime = Runtime.getRuntime();
+	public static long getMemory()
+	{
+		Runtime runtime = Runtime.getRuntime();
 
-        long presentMemory = (runtime.totalMemory() - runtime.freeMemory());
-        long memory = Long.MAX_VALUE;
+		long presentMemory = (runtime.totalMemory() - runtime.freeMemory());
+		long memory = Long.MAX_VALUE;
 
-        while (presentMemory < memory)
-        {
-            memory = presentMemory;
+		while (presentMemory < memory)
+		{
+			memory = presentMemory;
 
             doGarbageCollection();
 
-            presentMemory = (runtime.totalMemory() - runtime.freeMemory());
-        }
+			presentMemory = (runtime.totalMemory() - runtime.freeMemory());
+		}
 
-        return memory;
-    }
+		return memory;
+	}
 
     private static void doGarbageCollection()
     {
@@ -61,7 +61,7 @@ public class JVMStats
         } catch(InterruptedException e) {
 
         }
-
+        
         JBTM-555: use jboss profiler agent to invoke gc via jvmti.
         This requires native code, so tests using this will only
         execute on supported environments.

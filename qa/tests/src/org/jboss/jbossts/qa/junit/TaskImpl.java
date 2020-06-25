@@ -328,7 +328,7 @@ public class TaskImpl implements Task
             // setting this will forestall any pending attempt to timeout this task
             isDone = true;
 
-            out.close();
+            out.close();            
         }
         // we barf if we didn't exit with status 0 or print Passed or Failed
 
@@ -454,8 +454,8 @@ public class TaskImpl implements Task
                 System.out.printf("%s waitFor removing task from reaper%n", getTaskPrefix());
                 TaskReaper.getReaper().remove(this);
             } else {
-                System.out.printf("%s waitFor timed out%n", getTaskPrefix());
-            }
+			    System.out.printf("%s waitFor timed out%n", getTaskPrefix());
+			}
             // setting this will forestall any pending attempt to timeout this task
             isDone = true;
 
@@ -495,7 +495,7 @@ public class TaskImpl implements Task
             // setting this will forestall any pending attempt to timeout this task
             isDone = true;
 
-            out.close();
+            out.close();            
         }
 
         if (taskReaderThread != null) {
@@ -621,7 +621,7 @@ public class TaskImpl implements Task
             while(scanner.hasNextLine())
                 createThreadDump(scanner.nextLine());
 
-            scanner.close();
+            scanner.close();            
             process.destroy();
         } catch (IOException e) {
             System.out.printf("%s ERROR CREATING THREAD DUMPS: %s%n", getTaskPrefix(), e.getMessage());
@@ -662,7 +662,7 @@ public class TaskImpl implements Task
                 list.add((param));
             }
         }
-
+        
         return list.toArray(new String[list.size()]);
     }
 
@@ -793,7 +793,7 @@ public class TaskImpl implements Task
         public void run() {
 
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
-
+            
             try {
                 String line;
                 while((line = bufferedReader.readLine()) != null) {
@@ -827,7 +827,7 @@ public class TaskImpl implements Task
                 synchronized(printedReady) {
                     printedReady.notify();
                 }
-
+                
 //                // if the process is explicitly destroyed we can see an IOException because the output
 //                // stream gets closed under the call to readLine(). shutdown is set befofe destroy
 //                // is called so only trace the exception if we are not shut down
@@ -903,7 +903,7 @@ public class TaskImpl implements Task
                 }
             }
         }
-
+        
         public void shutdown() {
             shutdown.set(true);
         }

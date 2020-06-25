@@ -33,7 +33,7 @@ class UserDefFirst0Map implements RecordTypeMap
     {
         return BasicAbstractRecord.class;
     }
-
+    
     public int getType ()
     {
         return RecordType.USER_DEF_FIRST0;
@@ -42,8 +42,8 @@ class UserDefFirst0Map implements RecordTypeMap
 
 public class AddUserDefFirst0
 {
-    public AddUserDefFirst0()
-    {
-        RecordTypeManager.manager().add(new UserDefFirst0Map());
-    }
+	public AddUserDefFirst0()
+	{
+	    RecordTypeManager.manager().add(new UserDefFirst0Map());
+	}
 }

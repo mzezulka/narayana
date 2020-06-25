@@ -53,7 +53,7 @@ public class TestGroupBase
     int port = 5000;
 
     @Before public void setUp()
-    {
+	{
         clientCount = 0;
         taskCount = 0;
 
@@ -65,12 +65,12 @@ public class TestGroupBase
 
         if(isRecoveryManagerNeeded) {
             recoveryManager = createTask("server0", com.arjuna.ats.arjuna.recovery.RecoveryManager.class, Task.TaskType.EXPECT_READY, 960);
-            recoveryManager.start("-test");
+		    recoveryManager.start("-test");
         }
     }
 
-    @After public void tearDown()
-    {
+	@After public void tearDown()
+	{
         stopServers();
 
         if(isRecoveryManagerNeeded) {
@@ -93,7 +93,7 @@ public class TestGroupBase
     /**
      * By default the group name for a test method is the name of the class
      * with any TestGroup_ prefix removed.
-     *
+     * 
      * @return the test group name for the current test.
      */
     protected String getTestGroupName() {
@@ -128,16 +128,16 @@ public class TestGroupBase
         String name = "client_"+clientCount;
         clientCount+=1;
         Task client = createTask(name, clazz, Task.TaskType.EXPECT_PASS_FAIL, getTimeout(480));
-        client.start(args);
-        client.waitFor();
+		client.start(args);
+		client.waitFor();
     }
 
     protected void startAndWaitForClientWithFixedStoreDir(Class clazz, String... args) {
         String name = "client_"+clientCount;
         clientCount+=1;
         Task client = createTask(name, clazz, Task.TaskType.EXPECT_PASS_FAIL, getTimeout(480), "client");
-        client.start(args);
-        client.waitFor();
+		client.start(args);
+		client.waitFor();
     }
 
     protected Task createTask(String taskName, Class clazz, Task.TaskType taskType, int timeout) {
@@ -182,9 +182,9 @@ public class TestGroupBase
             additionalCommandLineElements.add("-DRecoveryEnvironmentBean.recoveryListener=true"); // JBTM-810
 
             if (new Boolean(System.getProperty("tasks.remote.debug")).booleanValue()) {
-                additionalCommandLineElements.add("-Xdebug");
-                additionalCommandLineElements.add("-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=" + port++);
-            }
+				additionalCommandLineElements.add("-Xdebug");
+				additionalCommandLineElements.add("-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=" + port++);
+			}
 
             return new TaskImpl(taskName, clazz, taskType, new PrintStream(out, true), timeout, additionalCommandLineElements, directory);
         } catch (Exception e) {
@@ -195,7 +195,7 @@ public class TestGroupBase
     }
 
     /**
-     *
+     * 
      */
     protected void removeServerIORStore(String name, String... params) {
         // the old, slow way spawned a cleanup task:

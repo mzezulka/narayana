@@ -45,12 +45,12 @@ public class QATestNameRule implements MethodRule
         return groupName;
     }
 
-    /**
-     * @return the name of the currently-running test method
-     */
-    public String getMethodName() {
-        return methodName;
-    }
+	/**
+	 * @return the name of the currently-running test method
+	 */
+	public String getMethodName() {
+		return methodName;
+	}
 
     public Integer getParameterSetNumber()
     {
@@ -79,7 +79,7 @@ public class QATestNameRule implements MethodRule
             @Override
             public void evaluate() throws Throwable {
                 methodName = method.getName();
-
+                
                 groupName = target.getClass().getSimpleName();
                 if(groupName.startsWith("TestGroup_")) {
                     groupName = groupName.substring(10);
