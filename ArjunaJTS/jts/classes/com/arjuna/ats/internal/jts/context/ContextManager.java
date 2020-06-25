@@ -77,22 +77,22 @@ public class ContextManager
 {
     public ContextManager ()
     {
-    if (jtsLogger.logger.isTraceEnabled()) {
+	if (jtsLogger.logger.isTraceEnabled()) {
         jtsLogger.logger.trace("ContextManager::ContextManager ()");
     }
 
-    try
-    {
-        _piCurrent = org.omg.PortableInterceptor.CurrentHelper.narrow(ORBManager.getORB().orb().resolve_initial_references("PICurrent"));
-    }
-    catch (InvalidName ex)
-    {
-        throw new FatalError("ContextManager "+jtsLogger.i18NLogger.get_context_picreffail()+" "+ex, ex);
-    }
-    catch (Exception ex)
-    {
-        throw new FatalError("ContextManager "+jtsLogger.i18NLogger.get_context_picreffail()+" "+ex, ex);
-    }
+	try
+	{
+	    _piCurrent = org.omg.PortableInterceptor.CurrentHelper.narrow(ORBManager.getORB().orb().resolve_initial_references("PICurrent"));
+	}
+	catch (InvalidName ex)
+	{
+	    throw new FatalError("ContextManager "+jtsLogger.i18NLogger.get_context_picreffail()+" "+ex, ex);
+	}
+	catch (Exception ex)
+	{
+	    throw new FatalError("ContextManager "+jtsLogger.i18NLogger.get_context_picreffail()+" "+ex, ex);
+	}
     }
 
     /**
@@ -106,23 +106,23 @@ public class ContextManager
 
     public ControlWrapper current (String threadId) throws SystemException
     {
-    Object arg = otsCurrent.get(threadId);
-    ControlWrapper wrapper = null;
+	Object arg = otsCurrent.get(threadId);
+	ControlWrapper wrapper = null;
 
-    if (arg != null)
-    {
-        try
-        {
-        Stack hier = (Stack) arg;
+	if (arg != null)
+	{
+	    try
+	    {
+		Stack hier = (Stack) arg;
 
-        return (ControlWrapper) hier.peek();
-        }
-        catch (EmptyStackException e)
-        {
-        }
-    }
+		return (ControlWrapper) hier.peek();
+	    }
+	    catch (EmptyStackException e)
+	    {
+	    }
+	}
 
-    return null;
+	return null;
     }
 
     /**
@@ -134,135 +134,135 @@ public class ContextManager
 
     public ControlWrapper current () throws SystemException
     {
-    if (jtsLogger.logger.isTraceEnabled()) {
+	if (jtsLogger.logger.isTraceEnabled()) {
         jtsLogger.logger.trace("ContextManager::current ()");
     }
 
-    Object arg = otsCurrent.get(ThreadUtil.getThreadId());
-    ControlWrapper wrapper = null;
+	Object arg = otsCurrent.get(ThreadUtil.getThreadId());
+	ControlWrapper wrapper = null;
 
-    if (arg != null)
-    {
-        try
-        {
-        Stack hier = (Stack) arg;
+	if (arg != null)
+	{
+	    try
+	    {
+		Stack hier = (Stack) arg;
 
-        wrapper = (ControlWrapper) hier.peek();
-        }
-        catch (EmptyStackException e)
-        {
-        e.printStackTrace();
-        }
-    }
+		wrapper = (ControlWrapper) hier.peek();
+	    }
+	    catch (EmptyStackException e)
+	    {
+		e.printStackTrace();
+	    }
+	}
 
-    /*
-     * If we do not have a context currently, then check to see if
-     * we have just been spawned to handle a transactional invocation.
-     * If so, there may be a context handle associated with this
-     * thread in piCurrent.
-     *
-     * We only do this for the current thread, hence the difference
-     * between the two versions of ContextManager.current.
-     */
+	/*
+	 * If we do not have a context currently, then check to see if
+	 * we have just been spawned to handle a transactional invocation.
+	 * If so, there may be a context handle associated with this
+	 * thread in piCurrent.
+	 *
+	 * We only do this for the current thread, hence the difference
+	 * between the two versions of ContextManager.current.
+	 */
 
-    if (wrapper == null)
-    {
-        wrapper = currentPIContext();
+	if (wrapper == null)
+	{
+	    wrapper = currentPIContext();
 
-        try
-        {
-        if (wrapper != null)
-        {
-            pushAction(wrapper);
-        }
-        }
-        catch (Throwable ex)
-        {
+	    try
+	    {
+		if (wrapper != null)
+		{
+		    pushAction(wrapper);
+		}
+	    }
+	    catch (Throwable ex)
+	    {
             jtsLogger.i18NLogger.warn_context_genfail("ContextManager.current", ex);
 
-        throw new BAD_OPERATION();
-        }
-    }
+		throw new BAD_OPERATION();
+	    }
+	}
 
-    return wrapper;
+	return wrapper;
     }
 
     public final ControlWrapper popAction (String threadId)
     {
-    if (jtsLogger.logger.isTraceEnabled()) {
+	if (jtsLogger.logger.isTraceEnabled()) {
         jtsLogger.logger.trace("ContextManager::popAction ()");
     }
 
-    ControlWrapper action = null;
-    Object arg = threadId == null ? null : otsCurrent.get(threadId);
+	ControlWrapper action = null;
+	Object arg = threadId == null ? null : otsCurrent.get(threadId);
 
-    if (arg != null)
-    {
-        Stack sl = (Stack) arg;
+	if (arg != null)
+	{
+	    Stack sl = (Stack) arg;
 
-        try
-        {
-        /*
-         * When we pushed the action we did the check for whether
-         * it was local to save time now.
-         */
+	    try
+	    {
+		/*
+		 * When we pushed the action we did the check for whether
+		 * it was local to save time now.
+		 */
 
-        action = (ControlWrapper) sl.pop();
-        }
-        catch (EmptyStackException e)
-        {
-        }
+		action = (ControlWrapper) sl.pop();
+	    }
+	    catch (EmptyStackException e)
+	    {
+	    }
 
-        /*
-         * If size now zero we can delete from thread
-         * specific data.
-         */
+	    /*
+	     * If size now zero we can delete from thread
+	     * specific data.
+	     */
 
-        if (sl.size() == 0)
-        {
-        sl = null;
+	    if (sl.size() == 0)
+	    {
+		sl = null;
 
-        otsCurrent.remove(threadId);
+		otsCurrent.remove(threadId);
 
-        disassociateContext(OTSManager.getLocalSlotId());
-        }
-    }
+		disassociateContext(OTSManager.getLocalSlotId());
+	    }
+	}
 
-    /*
-     * Now update action in thread's notion of current if
-     * this action is local.
-     */
+	/*
+	 * Now update action in thread's notion of current if
+	 * this action is local.
+	 */
 
-    // Check that action is local and not a proxy.
+	// Check that action is local and not a proxy.
 
-    if (action != null)
-    {
-        /*
-         * Now update action in thread's notion of current if
-         * this action is local.
-         */
+	if (action != null)
+	{
+	    /*
+	     * Now update action in thread's notion of current if
+	     * this action is local.
+	     */
 
-        // Check that action is local and not a proxy.
+	    // Check that action is local and not a proxy.
 
-        if (action.isLocal())
-        {
-        /*
-         * If transaction is terminated by another thread
-         * then our thread-action information may have already
-         * been removed from the action.
-         */
+	    if (action.isLocal())
+	    {
+		/*
+		 * If transaction is terminated by another thread
+		 * then our thread-action information may have already
+		 * been removed from the action.
+		 */
 
-        try
-        {
-            ThreadActionData.popAction(threadId);
-        }
-        catch (EmptyStackException e)
-        {
-        }
-        }
-    }
+		try
+		{
+		    ThreadActionData.popAction(threadId);
+		}
+		catch (EmptyStackException e)
+		{
+		}
+	    }
+	}
 
-    return action;
+	return action;
     }
 
     public final ControlWrapper popAction ()
@@ -272,26 +272,26 @@ public class ContextManager
 
     public final void purgeActions (String threadId)
     {
-    if (jtsLogger.logger.isTraceEnabled()) {
+	if (jtsLogger.logger.isTraceEnabled()) {
         jtsLogger.logger.trace("ContextManager::purgeActions ()");
     }
 
-    /*
-     * Don't do anything with these actions, i.e., do
-     * not commit/abort them. Just because this thread is
-     * finished with them does not mean other threads
-     * are!
-     */
+	/*
+	 * Don't do anything with these actions, i.e., do
+	 * not commit/abort them. Just because this thread is
+	 * finished with them does not mean other threads
+	 * are!
+	 */
 
-    ControlWrapper ptr = popAction(threadId);
+	ControlWrapper ptr = popAction(threadId);
 
-    while (ptr != null)
-    {
-        ptr = null;
+	while (ptr != null)
+	{
+	    ptr = null;
 
-        ptr = popAction(threadId);
+	    ptr = popAction(threadId);
 
-    } while (ptr != null);
+	} while (ptr != null);
     }
 
     public final void purgeActions ()
@@ -308,7 +308,7 @@ public class ContextManager
 
     public void associate () throws SystemException
     {
-    current();
+	current();
     }
 
     /**
@@ -321,73 +321,73 @@ public class ContextManager
 
     public final boolean addRemoteHierarchy (Control cont)
     {
-    if (jtsLogger.logger.isTraceEnabled()) {
+	if (jtsLogger.logger.isTraceEnabled()) {
         jtsLogger.logger.trace("ContextManager::addRemoteHierarchy ()");
     }
 
-    /*
-     * Here until we can make this work with recreate.
-     */
+	/*
+	 * Here until we can make this work with recreate.
+	 */
 
-    if (false)
-    {
-        pushAction(new ControlWrapper(cont));
+	if (false)
+	{
+	    pushAction(new ControlWrapper(cont));
 
-        return true;
-    }
-    else
-    {
-        boolean isError = false;
+	    return true;
+	}
+	else
+	{
+	    boolean isError = false;
 
-        try
-        {
-        Coordinator coord = cont.get_coordinator();
-        PropagationContext ctx = coord.get_txcontext();
+	    try
+	    {
+		Coordinator coord = cont.get_coordinator();
+		PropagationContext ctx = coord.get_txcontext();
 
-        if (ctx != null)
-        {
-            /*
-             * Depth must be non-zero or we wouldn't be here!
-             */
+		if (ctx != null)
+		{
+		    /*
+		     * Depth must be non-zero or we wouldn't be here!
+		     */
 
-            int depth = ctx.parents.length;
+		    int depth = ctx.parents.length;
 
-            for (int i = depth -1; i >= 0; i--)
-            {
-            /*
-             * No memory leak as we delete either when suspend
-             * is called, or the transaction is terminated.
-             */
+		    for (int i = depth -1; i >= 0; i--)
+		    {
+			/*
+			 * No memory leak as we delete either when suspend
+			 * is called, or the transaction is terminated.
+			 */
 
-            Coordinator tmpCoord = ctx.parents[i].coord;
-            Terminator tmpTerm = ctx.parents[i].term;
+			Coordinator tmpCoord = ctx.parents[i].coord;
+			Terminator tmpTerm = ctx.parents[i].term;
 
-            Control theControl = TransactionFactoryImple.createProxy(tmpCoord, tmpTerm);
+			Control theControl = TransactionFactoryImple.createProxy(tmpCoord, tmpTerm);
 
-            pushAction(new ControlWrapper(theControl));  // takes care of thread/BasicAction for us.
-            }
+			pushAction(new ControlWrapper(theControl));  // takes care of thread/BasicAction for us.
+		    }
 
-            ctx = null;
-        }
-        else
-        {
-            /*
-             * If we can't get a propagation context then we cannot
-             * create the hierarchy!
-             */
+		    ctx = null;
+		}
+		else
+		{
+		    /*
+		     * If we can't get a propagation context then we cannot
+		     * create the hierarchy!
+		     */
 
-            isError = true;
-        }
+		    isError = true;
+		}
 
-        coord = null;
-        }
-        catch (Exception e)
-        {
-        isError = true;
-        }
+		coord = null;
+	    }
+	    catch (Exception e)
+	    {
+		isError = true;
+	    }
 
-        return isError;
-    }
+	    return isError;
+	}
     }
 
     /*
@@ -396,62 +396,62 @@ public class ContextManager
 
     public final boolean addActionControlHierarchy (ActionControl cont)
     {
-    if (jtsLogger.logger.isTraceEnabled()) {
+	if (jtsLogger.logger.isTraceEnabled()) {
         jtsLogger.logger.trace("ContextManager::addActionControlHierarchy ()");
     }
 
-    boolean isError = false;
+	boolean isError = false;
 
-    try
-    {
-        ActionControl actControl = cont;
-        Control parentControl = actControl.getParentControl();
-        Stack hier = new Stack();
+	try
+	{
+	    ActionControl actControl = cont;
+	    Control parentControl = actControl.getParentControl();
+	    Stack hier = new Stack();
 
-        while (parentControl != null)
-        {
-        hier.push(new ControlWrapper(parentControl));
+	    while (parentControl != null)
+	    {
+		hier.push(new ControlWrapper(parentControl));
 
-        actControl = com.arjuna.ArjunaOTS.ActionControlHelper.narrow(parentControl);
+		actControl = com.arjuna.ArjunaOTS.ActionControlHelper.narrow(parentControl);
 
-        /*
-         * Currently assume that entire hierarchy will contain only one
-         * type of action, i.e., Arjuna actions or someone elses!
-         */
+		/*
+		 * Currently assume that entire hierarchy will contain only one
+		 * type of action, i.e., Arjuna actions or someone elses!
+		 */
 
-        if (actControl != null)
-            parentControl = actControl.getParentControl();
-        else
-            parentControl = null;
-        }
+		if (actControl != null)
+		    parentControl = actControl.getParentControl();
+		else
+		    parentControl = null;
+	    }
 
-        actControl = null;
+	    actControl = null;
 
-        try
-        {
-        ControlWrapper wrapper = (ControlWrapper) hier.pop();
+	    try
+	    {
+		ControlWrapper wrapper = (ControlWrapper) hier.pop();
 
-        while (wrapper != null)
-        {
-            pushAction(wrapper);
+		while (wrapper != null)
+		{
+		    pushAction(wrapper);
 
-            wrapper = null;
+		    wrapper = null;
 
-            wrapper = (ControlWrapper) hier.pop();
-        }
-        }
-        catch (EmptyStackException e)
-        {
-        }
-    }
-    catch (Exception e)
-    {
+		    wrapper = (ControlWrapper) hier.pop();
+		}
+	    }
+	    catch (EmptyStackException e)
+	    {
+	    }
+	}
+	catch (Exception e)
+	{
         jtsLogger.i18NLogger.warn_context_genfail("ContextManager.addActionControlHierarchy", e);
 
-        isError = true;
-    }
+	    isError = true;
+	}
 
-    return isError;
+	return isError;
     }
 
     /*
@@ -461,49 +461,49 @@ public class ContextManager
 
     public final boolean addControlImpleHierarchy (ControlImple which)
     {
-    if (jtsLogger.logger.isTraceEnabled()) {
+	if (jtsLogger.logger.isTraceEnabled()) {
         jtsLogger.logger.trace("ContextManager::addControlImpleHierarchy ()");
     }
 
-    boolean isError = false;
+	boolean isError = false;
 
-    try
-    {
-        ControlImple curr = which.getParentImple();
-        Stack hier = new Stack();
+	try
+	{
+	    ControlImple curr = which.getParentImple();
+	    Stack hier = new Stack();
 
-        while (curr != null)
-        {
-        hier.push(new ControlWrapper(curr));
+	    while (curr != null)
+	    {
+		hier.push(new ControlWrapper(curr));
 
-        curr = curr.getParentImple();
-        }
+		curr = curr.getParentImple();
+	    }
 
-        try
-        {
-        ControlWrapper wrapper = (ControlWrapper) hier.pop();
+	    try
+	    {
+		ControlWrapper wrapper = (ControlWrapper) hier.pop();
 
-        while (wrapper != null)
-        {
-            pushAction(wrapper);
+		while (wrapper != null)
+		{
+		    pushAction(wrapper);
 
-            wrapper = null;
+		    wrapper = null;
 
-            wrapper = (ControlWrapper) hier.pop();
-        }
-        }
-        catch (EmptyStackException e)
-        {
-        }
-    }
-    catch (Exception e)
-    {
+		    wrapper = (ControlWrapper) hier.pop();
+		}
+	    }
+	    catch (EmptyStackException e)
+	    {
+	    }
+	}
+	catch (Exception e)
+	{
         jtsLogger.i18NLogger.warn_context_genfail("ContextManager.addActionControlImple", e);
 
-        isError = true;
-    }
+	    isError = true;
+	}
 
-    return isError;
+	return isError;
     }
 
     /**
@@ -516,279 +516,279 @@ public class ContextManager
 
     public final void pushAction (ControlWrapper action)
     {
-    if (jtsLogger.logger.isTraceEnabled()) {
+	if (jtsLogger.logger.isTraceEnabled()) {
         jtsLogger.logger.trace("ContextManager::pushAction ()");
     }
 
-    final String threadId = ThreadUtil.getThreadId() ;
-    Stack sl = (Stack) otsCurrent.get(threadId);
-    boolean isNew = false;
+	final String threadId = ThreadUtil.getThreadId() ;
+	Stack sl = (Stack) otsCurrent.get(threadId);
+	boolean isNew = false;
 
-    if (sl == null)
-    {
-        isNew = true;
-        sl = new Stack();
-    }
+	if (sl == null)
+	{
+	    isNew = true;
+	    sl = new Stack();
+	}
 
-    // Check here that action is local and not a proxy.
+	// Check here that action is local and not a proxy.
 
-    /*
-     * If it's a local transaction then save the transaction
-     * pointer. We'll need it when we pop the transaction
-     * later.
-     */
+	/*
+	 * If it's a local transaction then save the transaction
+	 * pointer. We'll need it when we pop the transaction
+	 * later.
+	 */
 
-//    if (action != null)
-        action.determineLocality();
+//	if (action != null)
+	    action.determineLocality();
 
-    /*
-     * Doesn't need to be synchronized since only this thread
-     * can play with its own stack!
-     */
+	/*
+	 * Doesn't need to be synchronized since only this thread
+	 * can play with its own stack!
+	 */
 
-    sl.push(action);
+	sl.push(action);
 
-    if (isNew)
-        otsCurrent.put(threadId, sl);
+	if (isNew)
+	    otsCurrent.put(threadId, sl);
 
-    associateContext();
+	associateContext();
 
-    if (action.isLocal())
-    {
-        /*
-         * Add thread to action list!
-         */
+	if (action.isLocal())
+	{
+	    /*
+	     * Add thread to action list!
+	     */
 
-        /*
-         * Given a Control we can maintain a mapping to the
-         * actual action.
-         *
-         * Do we want this to work for remote actions? Yes, because
-         * we want all actions to know about active threads, even
-         * those that are remote. (But we don't do it yet!)
-         *
-         * Call action to increment number of threads. This is all we
-         * need to do for remote actions. If local, we need to make this
-         * action the current action.
-         */
+	    /*
+	     * Given a Control we can maintain a mapping to the
+	     * actual action.
+	     *
+	     * Do we want this to work for remote actions? Yes, because
+	     * we want all actions to know about active threads, even
+	     * those that are remote. (But we don't do it yet!)
+	     *
+	     * Call action to increment number of threads. This is all we
+	     * need to do for remote actions. If local, we need to make this
+	     * action the current action.
+	     */
 
-        ThreadActionData.pushAction(action.getImple().getImplHandle());
-    }
+	    ThreadActionData.pushAction(action.getImple().getImplHandle());
+	}
     }
 
     public ControlWrapper currentPIContext () throws SystemException
     {
-    if (_piCurrent != null)
-    {
-        try
-        {
-        int slotId = OTSManager.getReceivedSlotId();
+	if (_piCurrent != null)
+	{
+	    try
+	    {
+		int slotId = OTSManager.getReceivedSlotId();
 
-        if (slotId == -1)
-            return null;
+		if (slotId == -1)
+		    return null;
 
-        org.omg.CORBA.Any ctx = _piCurrent.get_slot(slotId);
+		org.omg.CORBA.Any ctx = _piCurrent.get_slot(slotId);
 
-        /*
-         * If we have something then we must be a server thread.
-         * In which case we save the thread id so that the server
-         * interceptor can do the suspend when the call returns.
-         */
+		/*
+		 * If we have something then we must be a server thread.
+		 * In which case we save the thread id so that the server
+		 * interceptor can do the suspend when the call returns.
+		 */
 
-        if (ctx.type().kind().value() != TCKind._tk_null)
-        {
-            ControlWrapper control = null;
+		if (ctx.type().kind().value() != TCKind._tk_null)
+		{
+		    ControlWrapper control = null;
 
-            // Is this just a Coordinator, or a full blown context?
+		    // Is this just a Coordinator, or a full blown context?
 
-            if (ctx.type().kind().value() == TCKind._tk_string)
-            {
-            control = createProxy(ctx);
-            }
-            else
-            {
-            control = createHierarchy(ctx);
-            }
+		    if (ctx.type().kind().value() == TCKind._tk_string)
+		    {
+			control = createProxy(ctx);
+		    }
+		    else
+		    {
+			control = createHierarchy(ctx);
+		    }
 
-            org.omg.CORBA.Any threadData = ORBManager.getORB().orb().create_any();
+		    org.omg.CORBA.Any threadData = ORBManager.getORB().orb().create_any();
 
-            threadData.insert_string(ThreadUtil.getThreadId());
+		    threadData.insert_string(ThreadUtil.getThreadId());
 
-            _piCurrent.set_slot(slotId, threadData);
+		    _piCurrent.set_slot(slotId, threadData);
 
-            return control;
-        }
-        else
-            return null;
-        }
-        catch (NullPointerException e)
-        {
-        // slot not set.
+		    return control;
+		}
+		else
+		    return null;
+	    }
+	    catch (NullPointerException e)
+	    {
+		// slot not set.
 
-        return null;
-        }
-        catch (InvalidSlot is)
-        {
-        // Something very wrong
+		return null;
+	    }
+	    catch (InvalidSlot is)
+	    {
+		// Something very wrong
 
-        throw new org.omg.CORBA.INTERNAL();
-        }
-    }
-    else
-        return null;
+		throw new org.omg.CORBA.INTERNAL();
+	    }
+	}
+	else
+	    return null;
     }
 
     public final ControlWrapper createProxy (org.omg.CORBA.Any ctx) throws SystemException
     {
-    String stringRef = null;
+	String stringRef = null;
 
-    try
-    {
-        stringRef = ctx.extract_string();
+	try
+	{
+	    stringRef = ctx.extract_string();
 
-        /*
-         * Is this a thread id or an IOR? If the latter then use it,
-         * otherwise ignore it as:
-         *
-         * (i) this thread has been re-used before our filter has had a
-         * chance to remove the threading information from the slot. This
-         * will happen later.
-         *
-         * or
-         *
-         * (ii) the thread is calling back into itself to setup the
-         * BasicAction structure.
-         *
-         * Either way we can safely ignore.
-         */
+	    /*
+	     * Is this a thread id or an IOR? If the latter then use it,
+	     * otherwise ignore it as:
+	     *
+	     * (i) this thread has been re-used before our filter has had a
+	     * chance to remove the threading information from the slot. This
+	     * will happen later.
+	     *
+	     * or
+	     *
+	     * (ii) the thread is calling back into itself to setup the
+	     * BasicAction structure.
+	     *
+	     * Either way we can safely ignore.
+	     */
 
-        if (stringRef.startsWith(IORTag))
-        {
-        org.omg.CORBA.Object obj = ORBManager.getORB().orb().string_to_object(stringRef);
-        Coordinator theCoordinator = org.omg.CosTransactions.CoordinatorHelper.narrow(obj);
+	    if (stringRef.startsWith(IORTag))
+	    {
+		org.omg.CORBA.Object obj = ORBManager.getORB().orb().string_to_object(stringRef);
+		Coordinator theCoordinator = org.omg.CosTransactions.CoordinatorHelper.narrow(obj);
 
-        if (theCoordinator == null)
-            throw new BAD_PARAM();
+		if (theCoordinator == null)
+		    throw new BAD_PARAM();
 
-        return new ControlWrapper(TransactionFactoryImple.createProxy(theCoordinator, null));
-        }
-        else
-        return null;
-    }
-    catch (BAD_PARAM e1)
-    {
+		return new ControlWrapper(TransactionFactoryImple.createProxy(theCoordinator, null));
+	    }
+	    else
+		return null;
+	}
+	catch (BAD_PARAM e1)
+	{
         jtsLogger.i18NLogger.warn_context_genfail("ContextManager "+stringRef, e1);
-    }
-    catch (Exception e2) {
+	}
+	catch (Exception e2) {
         jtsLogger.i18NLogger.warn_context_genfail("ContextManager", e2);
 
         throw new UNKNOWN(e2.toString());
     }
 
-    return null;
+	return null;
     }
 
     public final ControlWrapper createHierarchy (org.omg.CORBA.Any ctx) throws SystemException
     {
-    if (ctx != null)
-    {
-        try
-        {
-        PropagationContext theContext = org.omg.CosTransactions.PropagationContextHelper.extract(ctx);
+	if (ctx != null)
+	{
+	    try
+	    {
+		PropagationContext theContext = org.omg.CosTransactions.PropagationContextHelper.extract(ctx);
 
-        if (OTSImpleManager.localFactory())
-        {
-            TransactionFactoryImple theFactory = OTSImpleManager.factory();
+		if (OTSImpleManager.localFactory())
+		{
+		    TransactionFactoryImple theFactory = OTSImpleManager.factory();
 
-            return new ControlWrapper(theFactory.recreateLocal(theContext));
-        }
-        else
-        {
-            TransactionFactory theFactory = OTSImpleManager.get_factory();
+		    return new ControlWrapper(theFactory.recreateLocal(theContext));
+		}
+		else
+		{
+		    TransactionFactory theFactory = OTSImpleManager.get_factory();
 
-            return new ControlWrapper(theFactory.recreate(theContext));
-        }
-        }
+		    return new ControlWrapper(theFactory.recreate(theContext));
+		}
+	    }
         catch (TRANSACTION_UNAVAILABLE ex)
         {
             // Already logged this
         throw ex;
         }
-        catch (SystemException ex)
-        {
+	    catch (SystemException ex)
+	    {
             jtsLogger.i18NLogger.warn_context_genfail("ContextManager.createHierarchy", ex);
 
-        throw ex;
-        }
-        catch (Exception e) {
+		throw ex;
+	    }
+	    catch (Exception e) {
             jtsLogger.i18NLogger.warn_context_genfail("ContextManager.createHierarchy", e);
 
             throw new UNKNOWN();
         }
-    }
-    else
-        return null;
+	}
+	else
+	    return null;
     }
 
     private final void associateContext () throws SystemException
     {
-    if (_piCurrent != null)
-    {
-        try
-        {
-        int slotId = OTSManager.getLocalSlotId();
+	if (_piCurrent != null)
+	{
+	    try
+	    {
+		int slotId = OTSManager.getLocalSlotId();
 
-        if (slotId != -1)
-        {
-            org.omg.CORBA.Any localDataAny = ORBManager.getORB().orb().create_any();
+		if (slotId != -1)
+		{
+		    org.omg.CORBA.Any localDataAny = ORBManager.getORB().orb().create_any();
 
-            localDataAny.insert_string(ThreadUtil.getThreadId());
+		    localDataAny.insert_string(ThreadUtil.getThreadId());
 
-            _piCurrent.set_slot(slotId, localDataAny);
-        }
-        }
-        catch (InvalidSlot is)
-        {
-        // Something very wrong
+		    _piCurrent.set_slot(slotId, localDataAny);
+		}
+	    }
+	    catch (InvalidSlot is)
+	    {
+		// Something very wrong
 
-        throw new org.omg.CORBA.INTERNAL();
-        }
-    }
+		throw new org.omg.CORBA.INTERNAL();
+	    }
+	}
     }
 
     public final void disassociateContext (int slotId) throws SystemException
     {
-    if (_piCurrent != null)
-    {
-        try
-        {
-        if (slotId != -1)
-        {
-            _piCurrent.set_slot(slotId, null);
-        }
-        }
-        catch (InvalidSlot is)
-        {
-        // Something very wrong
+	if (_piCurrent != null)
+	{
+	    try
+	    {
+		if (slotId != -1)
+		{
+		    _piCurrent.set_slot(slotId, null);
+		}
+	    }
+	    catch (InvalidSlot is)
+	    {
+		// Something very wrong
 
-        throw new org.omg.CORBA.INTERNAL();
-        }
+		throw new org.omg.CORBA.INTERNAL();
+	    }
+	}
     }
-    }
-
-    public Uid getReceivedCoordinatorUid() throws InvalidSlot {
-        Any ctx = _piCurrent.get_slot(OTSManager.getReceivedSlotId());
-        if (ctx != null && ctx.type().kind().value() != TCKind._tk_null)
-        {
-            PropagationContext theContext = org.omg.CosTransactions.PropagationContextHelper.extract(ctx);
-            if (theContext.current.coord == null) // nothing to use!!
-                return null;
-            else
-                return Helper.getUid(Helper.getUidCoordinator(theContext.current.coord));
-        }
-        else
-            return null;
-    }
+    
+	public Uid getReceivedCoordinatorUid() throws InvalidSlot {
+		Any ctx = _piCurrent.get_slot(OTSManager.getReceivedSlotId());
+		if (ctx != null && ctx.type().kind().value() != TCKind._tk_null)
+		{
+			PropagationContext theContext = org.omg.CosTransactions.PropagationContextHelper.extract(ctx);
+			if (theContext.current.coord == null) // nothing to use!!
+				return null;
+			else
+				return Helper.getUid(Helper.getUidCoordinator(theContext.current.coord));
+		} 
+		else
+			return null;		
+	}
 
     private Hashtable otsCurrent = new Hashtable();
 

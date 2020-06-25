@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -43,7 +43,7 @@ import com.arjuna.ats.jts.logging.jtsLogger;
  * record of the transaction so it can't be reactivated. Resources (and
  * subordinate coordinators) may use the replay_completion response to
  * trigger their own rollback.
- *
+ * 
  */
 
 public class ResourceCompletor extends Thread
@@ -53,37 +53,37 @@ public class ResourceCompletor extends Thread
 
     public ResourceCompletor( Resource res, int action )
     {
-    _res = res;
-    _action = action;
+	_res = res;
+	_action = action;
     }
-
+    
     public final void run ()
     {
-    if (_action == ROLLBACK)
-        rollback();
+	if (_action == ROLLBACK)
+	    rollback();
     }
 
     private final void rollback ()
     {
-    try
-    {
-        if (jtsLogger.logger.isDebugEnabled()) {
+	try
+	{
+	    if (jtsLogger.logger.isDebugEnabled()) {
             jtsLogger.logger.debug("ResourceCompletor.rollback()");
         }
-
-        _res.rollback();
-    }
-    catch (Exception e)
-    {
-        if (jtsLogger.logger.isDebugEnabled()) {
+	    
+	    _res.rollback();
+	}
+	catch (Exception e)
+	{
+	    if (jtsLogger.logger.isDebugEnabled()) {
             jtsLogger.logger.debug("ResourceCompletor.rollback() - rollback failed: "+e);
         }
-    }
+	}
     }
 
     private Resource _res = null;
     private int      _action = 0;
 }
 
-
-
+    
+    

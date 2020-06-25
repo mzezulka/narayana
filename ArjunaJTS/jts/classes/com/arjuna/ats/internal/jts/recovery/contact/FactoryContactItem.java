@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -48,25 +48,25 @@ import com.arjuna.ats.jts.logging.jtsLogger;
  * Create a persistent entry in the ActionStore to allow the RecoveryManager to
  * know which ArjunaFactory is in which JVM.
  *
- * (relies on the fact (true for 2.1) that any ArjunaFactory can be used to
+ * (relies on the fact (true for 2.1) that any ArjunaFactory can be used to 
  * find the status of any transaction.
  *
  * Identifying uid is the processUid
  */
 
-public class FactoryContactItem
+public class FactoryContactItem 
 {
     private static final String _pseudoTypeName = "/Recovery/FactoryContact";
     private static final int    version = 1;
 
     private static FactoryContactItem _theSingularItem = null;
 
-    private Date        _creationTime = null;
-    private Date        _aliveTime = null;
-    private Date        _deadTime = null;
+    private Date	    _creationTime = null;
+    private Date	    _aliveTime = null;
+    private Date	    _deadTime = null;
     // if this is null, the parent process is known to be deceased
     private ArjunaFactory    _factory = null;
-    private Uid        _uid = null;
+    private Uid		_uid = null;
 
     /**
      * create the contact item for the factory in this address space
@@ -137,7 +137,7 @@ public class FactoryContactItem
 
     /**
      * accessor - returns null if contact has not be successfully used
-     *     this run of RecoveryManager
+     *	 this run of RecoveryManager
      */
     Date getAliveTime()
     {
@@ -203,7 +203,7 @@ public class FactoryContactItem
     }
 
     /**
-     * Constructor used in RecoveryManager to restore a contact item from the
+     * Constructor used in RecoveryManager to restore a contact item from the 
      * the object store
      */
 
@@ -263,11 +263,11 @@ public class FactoryContactItem
             {
                 org.omg.CORBA.Object corbject = ORBManager.getORB().orb().string_to_object(iorAsString);
                 /****
-        org.omg.CORBA.Object corbject;
-        if ( ORBManager.isInitialised() )
-        corbject = ORBManager.getORB().orb().string_to_object(iorAsString);
-        else
-        corbject = RecoveryORBManager.getORB().orb().string_to_object(iorAsString);
+	    org.omg.CORBA.Object corbject;
+	    if ( ORBManager.isInitialised() )
+		corbject = ORBManager.getORB().orb().string_to_object(iorAsString);
+	    else 
+		corbject = RecoveryORBManager.getORB().orb().string_to_object(iorAsString);
                  ***/
 
                 _factory = ArjunaFactoryHelper.narrow(corbject);
@@ -332,7 +332,7 @@ public class FactoryContactItem
     /*
      * Not used by recovery currently.
      */
-
+    
     private static boolean removeMe(Uid uid)
     {
         try {

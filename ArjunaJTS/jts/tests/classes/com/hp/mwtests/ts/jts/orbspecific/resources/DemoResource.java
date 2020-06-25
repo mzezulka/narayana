@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Arjuna Solutions Limited,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.
+ * UK.  
  *
  * $Id: DemoResource.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -52,85 +52,85 @@ import com.hp.mwtests.ts.jts.utils.ResourceTrace;
 
 public class DemoResource extends org.omg.CosTransactions.ResourcePOA
 {
-
+    
     public DemoResource ()
     {
-    ORBManager.getPOA().objectIsReady(this);
+	ORBManager.getPOA().objectIsReady(this);
 
-    ref = ResourceHelper.narrow(ORBManager.getPOA().corbaReference(this));
+	ref = ResourceHelper.narrow(ORBManager.getPOA().corbaReference(this));
 
         trace = new ResourceTrace();
     }
 
     public Resource getResource ()
     {
-    return ref;
+	return ref;
     }
-
+ 
     public void registerResource () throws Unavailable, Inactive, SystemException
     {
-    CurrentImple current = OTSImpleManager.current();
-    Control myControl = current.get_control();
-    Coordinator coord = myControl.get_coordinator();
+	CurrentImple current = OTSImpleManager.current();
+	Control myControl = current.get_control();
+	Coordinator coord = myControl.get_coordinator();
 
-    coord.register_resource(ref);
+	coord.register_resource(ref);
 
-    if (!printThread)
-        System.out.println("Registered DemoResource");
+	if (!printThread)
+	    System.out.println("Registered DemoResource");
     }
 
     public org.omg.CosTransactions.Vote prepare () throws SystemException
     {
-    if (printThread)
-        System.out.println(Thread.currentThread());
-
-    System.out.println("DEMORESOURCE : PREPARE");
+	if (printThread)
+	    System.out.println(Thread.currentThread());
+	
+	System.out.println("DEMORESOURCE : PREPARE");
 
         if (trace.getTrace() == ResourceTrace.ResourceTraceNone)
-        trace.setTrace(ResourceTrace.ResourceTracePrepare);
-    else
-        trace.setTrace(ResourceTrace.ResourceTraceUnknown);
+	    trace.setTrace(ResourceTrace.ResourceTracePrepare);
+	else
+	    trace.setTrace(ResourceTrace.ResourceTraceUnknown);
 
-    return Vote.VoteCommit;
+	return Vote.VoteCommit;
     }
 
     public void rollback () throws SystemException, HeuristicCommit, HeuristicMixed, HeuristicHazard
     {
-    if (printThread)
-        System.out.println(Thread.currentThread());
-
-    System.out.println("DEMORESOURCE : ROLLBACK");
+	if (printThread)
+	    System.out.println(Thread.currentThread());
+	
+	System.out.println("DEMORESOURCE : ROLLBACK");
 
         if (trace.getTrace() == ResourceTrace.ResourceTraceNone)
-        trace.setTrace(ResourceTrace.ResourceTraceRollback);
-    else
-    {
-        if (trace.getTrace() == ResourceTrace.ResourceTracePrepare)
-        trace.setTrace(ResourceTrace.ResourceTracePrepareRollback);
-        else
-        trace.setTrace(ResourceTrace.ResourceTraceUnknown);
-    }
+	    trace.setTrace(ResourceTrace.ResourceTraceRollback);
+	else
+	{
+	    if (trace.getTrace() == ResourceTrace.ResourceTracePrepare)
+		trace.setTrace(ResourceTrace.ResourceTracePrepareRollback);
+	    else
+		trace.setTrace(ResourceTrace.ResourceTraceUnknown);
+	}
     }
 
     public void commit () throws SystemException, NotPrepared, HeuristicRollback, HeuristicMixed, HeuristicHazard
     {
-    if (printThread)
-        System.out.println(Thread.currentThread());
-
-    System.out.println("DEMORESOURCE : COMMIT");
+	if (printThread)
+	    System.out.println(Thread.currentThread());
+	
+	System.out.println("DEMORESOURCE : COMMIT");
 
         if (trace.getTrace() == ResourceTrace.ResourceTracePrepare)
-        trace.setTrace(ResourceTrace.ResourceTracePrepareCommit);
-    else
-        trace.setTrace(ResourceTrace.ResourceTraceUnknown);
+	    trace.setTrace(ResourceTrace.ResourceTracePrepareCommit);
+	else
+	    trace.setTrace(ResourceTrace.ResourceTraceUnknown);
     }
 
     public void forget () throws SystemException
     {
-    if (printThread)
-        System.out.println(Thread.currentThread());
-
-    System.out.println("DEMORESOURCE : FORGET");
+	if (printThread)
+	    System.out.println(Thread.currentThread());
+	
+	System.out.println("DEMORESOURCE : FORGET");
 
         if (trace.getTrace() == ResourceTrace.ResourceTracePrepare)
             trace.setTrace(ResourceTrace.ResourceTracePrepareForget);
@@ -150,10 +150,10 @@ public class DemoResource extends org.omg.CosTransactions.ResourcePOA
 
     public void commit_one_phase () throws HeuristicHazard, SystemException
     {
-    if (printThread)
-        System.out.println(Thread.currentThread());
-
-    System.out.println("DEMORESOURCE : COMMIT_ONE_PHASE");
+	if (printThread)
+	    System.out.println(Thread.currentThread());
+	
+	System.out.println("DEMORESOURCE : COMMIT_ONE_PHASE");
 
         if (trace.getTrace() == ResourceTrace.ResourceTraceNone)
             trace.setTrace(ResourceTrace.ResourceTraceCommitOnePhase);

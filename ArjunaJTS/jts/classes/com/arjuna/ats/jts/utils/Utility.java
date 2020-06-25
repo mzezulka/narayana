@@ -58,18 +58,18 @@ public class Utility
 {
     public static String getHierarchy (PropagationContext ctx)
     {
-    int depth = ((ctx.parents != null) ? ctx.parents.length : 0);
-    String hier = "PropagationContext:";
+	int depth = ((ctx.parents != null) ? ctx.parents.length : 0);
+	String hier = "PropagationContext:";
 
-    for (int i = depth -1; i >= 0; i--)
-    {
-        if (ctx.parents[i] != null)
-        hier += "\n"+Utility.otidToUid(ctx.parents[i].otid);
-    }
+	for (int i = depth -1; i >= 0; i--)
+	{
+	    if (ctx.parents[i] != null)
+		hier += "\n"+Utility.otidToUid(ctx.parents[i].otid);
+	}
 
-    hier += "\n"+Utility.otidToUid(ctx.current.otid);
+	hier += "\n"+Utility.otidToUid(ctx.current.otid);
 
-    return hier;
+	return hier;
     }
 
     /**
@@ -78,26 +78,26 @@ public class Utility
 
     public static String stringVote (org.omg.CosTransactions.Vote v)
     {
-    switch (v.value())
-    {
-    case Vote._VoteCommit:
-        return "CosTransactions::VoteCommit";
-    case Vote._VoteRollback:
-        return "CosTransactions::VoteRollback";
-    case Vote._VoteReadOnly:
-        return "CosTransactions::VoteReadOnly";
-    default:
-        return "Unknown";
-    }
+	switch (v.value())
+	{
+	case Vote._VoteCommit:
+	    return "CosTransactions::VoteCommit";
+	case Vote._VoteRollback:
+	    return "CosTransactions::VoteRollback";
+	case Vote._VoteReadOnly:
+	    return "CosTransactions::VoteReadOnly";
+	default:
+	    return "Unknown";
+	}
     }
 
     public static PrintWriter printStatus (PrintWriter strm, org.omg.CosTransactions.Status res)
     {
-    strm.print(stringStatus(res));
+	strm.print(stringStatus(res));
 
-    return strm;
+	return strm;
     }
-
+    
     public static String exceptionCode (int code)
     {
         switch (code)
@@ -181,31 +181,31 @@ public class Utility
 
     public static String stringStatus (org.omg.CosTransactions.Status res)
     {
-    switch (res.value())
-    {
-    case Status._StatusActive:
-        return "CosTransactions::StatusActive";
-    case Status._StatusMarkedRollback:
-        return "CosTransactions::StatusMarkedRollback";
-    case Status._StatusPrepared:
-        return "CosTransactions::StatusPrepared";
-    case Status._StatusCommitted:
-        return "CosTransactions::StatusCommitted";
-    case Status._StatusRolledBack:
-        return "CosTransactions::StatusRolledBack";
-    case Status._StatusUnknown:
-        return "CosTransactions::StatusUnknown";
-    case Status._StatusPreparing:
-        return "CosTransactions::StatusPreparing";
-    case Status._StatusCommitting:
-        return "CosTransactions::StatusCommitting";
-    case Status._StatusRollingBack:
-        return "CosTransactions::StatusRollingBack";
-    case Status._StatusNoTransaction:
-        return "CosTransactions::StatusNoTransaction";
-    default:
-        return "Unknown";
-    }
+	switch (res.value())
+	{
+	case Status._StatusActive:
+	    return "CosTransactions::StatusActive";
+	case Status._StatusMarkedRollback:
+	    return "CosTransactions::StatusMarkedRollback";
+	case Status._StatusPrepared:
+	    return "CosTransactions::StatusPrepared";
+	case Status._StatusCommitted:
+	    return "CosTransactions::StatusCommitted";
+	case Status._StatusRolledBack:
+	    return "CosTransactions::StatusRolledBack";
+	case Status._StatusUnknown:
+	    return "CosTransactions::StatusUnknown";
+	case Status._StatusPreparing:
+	    return "CosTransactions::StatusPreparing";
+	case Status._StatusCommitting:
+	    return "CosTransactions::StatusCommitting";
+	case Status._StatusRollingBack:
+	    return "CosTransactions::StatusRollingBack";
+	case Status._StatusNoTransaction:
+	    return "CosTransactions::StatusNoTransaction";
+	default:
+	    return "Unknown";
+	}
     }
 
     /*
@@ -220,19 +220,19 @@ public class Utility
 
     public static final Uid getUid (org.omg.CosTransactions.Control cont)
     {
-    try
-    {
-        UidCoordinator coord = Helper.getUidCoordinator(cont);
+	try
+	{
+	    UidCoordinator coord = Helper.getUidCoordinator(cont);
 
-        if (coord == null)
-        throw new BAD_PARAM();
-        else
-        return Helper.getUid(coord);
-    }
-    catch (BAD_PARAM ex)
-    {
-        return Uid.nullUid();
-    }
+	    if (coord == null)
+		throw new BAD_PARAM();
+	    else
+		return Helper.getUid(coord);
+	}
+	catch (BAD_PARAM ex)
+	{
+	    return Uid.nullUid();
+	}
     }
 
     /**
@@ -241,38 +241,38 @@ public class Utility
 
     public static final org.omg.CosTransactions.otid_t uidToOtid (Uid theUid)
     {
-    return ((theUid != null) ? uidToOtid(theUid.stringForm()) : null);
+	return ((theUid != null) ? uidToOtid(theUid.stringForm()) : null);
     }
 
     public static final org.omg.CosTransactions.otid_t uidToOtid (String theUid)
     {
-    if (theUid == null)
-        return null;
+	if (theUid == null)
+	    return null;
 
-    otid_t otid = new otid_t();
-    byte[] b = theUid.getBytes(StandardCharsets.UTF_8);
+	otid_t otid = new otid_t();
+	byte[] b = theUid.getBytes(StandardCharsets.UTF_8);
 
-    if (TxControl.getXANodeName() == null) {
-        throw new IllegalStateException(jtsLogger.i18NLogger.get_nodename_null());
-    }
+	if (TxControl.getXANodeName() == null) {
+		throw new IllegalStateException(jtsLogger.i18NLogger.get_nodename_null());
+	}
 
-    byte[] nodeName = TxControl.getXANodeName().getBytes(StandardCharsets.UTF_8);
+	byte[] nodeName = TxControl.getXANodeName().getBytes(StandardCharsets.UTF_8);
 
-    otid.formatID = 0;
-    otid.tid = new byte[b.length+nodeName.length];
-    otid.bqual_length = nodeName.length;
+	otid.formatID = 0;
+	otid.tid = new byte[b.length+nodeName.length];
+	otid.bqual_length = nodeName.length;
+	
+	/*
+	 * gtrid must be first then immediately followed by bqual.
+	 * bqual must be between 1 and 64 bytes if for XA.
+	 */
 
-    /*
-     * gtrid must be first then immediately followed by bqual.
-     * bqual must be between 1 and 64 bytes if for XA.
-     */
+	System.arraycopy(b, 0, otid.tid, 0, b.length);
+	System.arraycopy(nodeName, 0, otid.tid, b.length, nodeName.length);
 
-    System.arraycopy(b, 0, otid.tid, 0, b.length);
-    System.arraycopy(nodeName, 0, otid.tid, b.length, nodeName.length);
+	b = null;
 
-    b = null;
-
-    return otid;
+	return otid;
     }
 
     /*
@@ -284,24 +284,24 @@ public class Utility
 
     public static final Uid otidToUid (org.omg.CosTransactions.otid_t otid)
     {
-    if (otid.bqual_length > 0)
-    {
-        int uidLength = otid.tid.length - otid.bqual_length;
-        byte[] theUid = new byte[uidLength];  // don't need null terminating character
-
-        System.arraycopy(otid.tid, 0, theUid, 0, uidLength);
-
-        Uid u = new Uid(new String(theUid, StandardCharsets.UTF_8), true);  // errors in string give NIL_UID
-
-        /*
-         * Currently we ignore bqual. THIS WILL BE AN ISSUE FOR INTEROPERABILITY!!
-         */
-
-        theUid = null;
-
-        return u;
-    }
-    else
-        return Uid.nullUid();  // error, deal with in caller!
+	if (otid.bqual_length > 0)
+	{
+	    int uidLength = otid.tid.length - otid.bqual_length;
+	    byte[] theUid = new byte[uidLength];  // don't need null terminating character
+	    
+	    System.arraycopy(otid.tid, 0, theUid, 0, uidLength);
+	    
+	    Uid u = new Uid(new String(theUid, StandardCharsets.UTF_8), true);  // errors in string give NIL_UID
+	    
+	    /*
+	     * Currently we ignore bqual. THIS WILL BE AN ISSUE FOR INTEROPERABILITY!!
+	     */
+	    
+	    theUid = null;
+	    
+	    return u;
+	}
+	else
+	    return Uid.nullUid();  // error, deal with in caller!
     }
 }

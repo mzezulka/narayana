@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Hewlett-Packard Arjuna Labs,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.
+ * UK.  
  *
  * $Id: ServerSynchronization.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -44,75 +44,75 @@ import com.arjuna.ats.jts.logging.jtsLogger;
 import com.arjuna.ats.jts.utils.Utility;
 
 public class ServerSynchronization extends
-        org.omg.CosTransactions.SynchronizationPOA
+		org.omg.CosTransactions.SynchronizationPOA
 {
 
-    public ServerSynchronization(ServerTransaction topLevel)
-    {
-        ORBManager.getPOA().objectIsReady(this);
+	public ServerSynchronization(ServerTransaction topLevel)
+	{
+		ORBManager.getPOA().objectIsReady(this);
 
-        _theTransaction = topLevel;
-        _theSynchronization = org.omg.CosTransactions.SynchronizationHelper
-                .narrow(ORBManager.getPOA().corbaReference(this));
-    }
+		_theTransaction = topLevel;
+		_theSynchronization = org.omg.CosTransactions.SynchronizationHelper
+				.narrow(ORBManager.getPOA().corbaReference(this));
+	}
 
-    public final Synchronization getSynchronization()
-    {
-        return _theSynchronization;
-    }
+	public final Synchronization getSynchronization()
+	{
+		return _theSynchronization;
+	}
 
-    public void destroy()
-    {
-        try
-        {
-            ORBManager.getPOA().shutdownObject(this);
-        }
-        catch (Exception e)
-        {
+	public void destroy()
+	{
+		try
+		{
+			ORBManager.getPOA().shutdownObject(this);
+		}
+		catch (Exception e)
+		{
             jtsLogger.i18NLogger.warn_orbspecific_interposition_resources_destroyfailed();
-        }
-    }
+		}
+	}
 
-    public void before_completion() throws SystemException
-    {
-        if (_theTransaction == null)
-            throw new BAD_OPERATION(ExceptionCodes.NO_TRANSACTION,
-                    CompletionStatus.COMPLETED_NO);
-        else
-        {
-            _theTransaction.doBeforeCompletion();
-        }
-    }
+	public void before_completion() throws SystemException
+	{
+		if (_theTransaction == null)
+			throw new BAD_OPERATION(ExceptionCodes.NO_TRANSACTION,
+					CompletionStatus.COMPLETED_NO);
+		else
+		{
+			_theTransaction.doBeforeCompletion();
+		}
+	}
 
-    public void after_completion(org.omg.CosTransactions.Status status)
-            throws SystemException
-    {
-        if (_theTransaction == null)
-        {
-            destroy();
+	public void after_completion(org.omg.CosTransactions.Status status)
+			throws SystemException
+	{
+		if (_theTransaction == null)
+		{
+			destroy();
 
-            throw new BAD_OPERATION(ExceptionCodes.NO_TRANSACTION,
-                    CompletionStatus.COMPLETED_NO);
-        }
-        else
-        {
-            /*
-             * Check that the given status is the same as our status. It should
-             * be!
-             */
+			throw new BAD_OPERATION(ExceptionCodes.NO_TRANSACTION,
+					CompletionStatus.COMPLETED_NO);
+		}
+		else
+		{
+			/*
+			 * Check that the given status is the same as our status. It should
+			 * be!
+			 */
 
-            org.omg.CosTransactions.Status myStatus = org.omg.CosTransactions.Status.StatusUnknown;
+			org.omg.CosTransactions.Status myStatus = org.omg.CosTransactions.Status.StatusUnknown;
 
-            try
-            {
-                myStatus = _theTransaction.get_status();
-            }
-            catch (Exception e)
-            {
-                myStatus = org.omg.CosTransactions.Status.StatusUnknown;
-            }
+			try
+			{
+				myStatus = _theTransaction.get_status();
+			}
+			catch (Exception e)
+			{
+				myStatus = org.omg.CosTransactions.Status.StatusUnknown;
+			}
 
-            if (myStatus != status) {
+			if (myStatus != status) {
                 jtsLogger.i18NLogger.warn_orbspecific_interposition_resources_stateerror(
                         "ServerSynchronization.after_completion",
                         Utility.stringStatus(myStatus), Utility.stringStatus(status));
@@ -147,18 +147,18 @@ public class ServerSynchronization extends
                 }
             }
 
-            _theTransaction.doAfterCompletion(status);
-        }
+			_theTransaction.doAfterCompletion(status);
+		}
 
-        /*
-         * Now dispose of self.
-         */
+		/*
+		 * Now dispose of self.
+		 */
 
-        destroy();
-    }
+		destroy();
+	}
 
-    private ServerTransaction _theTransaction;
+	private ServerTransaction _theTransaction;
 
-    private Synchronization _theSynchronization;
+	private Synchronization _theSynchronization;
 
 }

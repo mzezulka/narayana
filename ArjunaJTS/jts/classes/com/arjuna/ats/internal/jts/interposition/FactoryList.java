@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Hewlett-Packard Arjuna Labs,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.
+ * UK.  
  *
  * $Id: FactoryList.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -53,29 +53,29 @@ import com.arjuna.ats.jts.logging.jtsLogger;
 
 class FactoryElement
 {
-    public FactoryElement (FactoryCreator create, int formatID)
-    {
-        _create = create;
-        _formatID = formatID;
-        _next = null;
-    }
+	public FactoryElement (FactoryCreator create, int formatID)
+	{
+		_create = create;
+		_formatID = formatID;
+		_next = null;
+	}
 
-    public ControlImple recreateLocal (PropagationContext ctx)
-            throws SystemException
-    {
-        return _create.recreateLocal(ctx);
-    }
+	public ControlImple recreateLocal (PropagationContext ctx)
+			throws SystemException
+	{
+		return _create.recreateLocal(ctx);
+	}
 
-    public Control recreate (PropagationContext ctx) throws SystemException
-    {
-        return recreateLocal(ctx).getControl();
-    }
+	public Control recreate (PropagationContext ctx) throws SystemException
+	{
+		return recreateLocal(ctx).getControl();
+	}
 
-    public int _formatID;
+	public int _formatID;
 
-    public FactoryElement _next;
+	public FactoryElement _next;
 
-    private FactoryCreator _create;
+	private FactoryCreator _create;
 }
 
 /*
@@ -90,176 +90,176 @@ class FactoryElement
 public class FactoryList
 {
     public static final int DEFAULT_ID = 0;
+    
+	public FactoryList ()
+	{
+		FactoryList.add(new InterpositionCreator(), Arjuna.XID());
+		FactoryList.add(new StrictInterpositionCreator(), Arjuna.strictXID());
+		FactoryList.add(new RestrictedInterpositionCreator(), Arjuna.restrictedXID());
+		FactoryList.add(new OSIInterpositionCreator(), 0); // 0 is OSI TP!
+		FactoryList.addDefault(new OSIInterpositionCreator(), DEFAULT_ID); // 0 is OSI TP!
+	}
 
-    public FactoryList ()
-    {
-        FactoryList.add(new InterpositionCreator(), Arjuna.XID());
-        FactoryList.add(new StrictInterpositionCreator(), Arjuna.strictXID());
-        FactoryList.add(new RestrictedInterpositionCreator(), Arjuna.restrictedXID());
-        FactoryList.add(new OSIInterpositionCreator(), 0); // 0 is OSI TP!
-        FactoryList.addDefault(new OSIInterpositionCreator(), DEFAULT_ID); // 0 is OSI TP!
-    }
+	public static ControlImple recreateLocal (PropagationContext ctx, int formatID)
+			throws SystemException
+	{
+		ControlImple toReturn = null;
 
-    public static ControlImple recreateLocal (PropagationContext ctx, int formatID)
-            throws SystemException
-    {
-        ControlImple toReturn = null;
-
-        if (ctx == null)
+		if (ctx == null)
                     throw new INVALID_TRANSACTION();
+		
+		FactoryElement ptr = find(formatID);
 
-        FactoryElement ptr = find(formatID);
+		if (ptr != null)
+		{
+			toReturn = ptr.recreateLocal(ctx);
+		}
 
-        if (ptr != null)
-        {
-            toReturn = ptr.recreateLocal(ctx);
-        }
+		return toReturn;
+	}
 
-        return toReturn;
-    }
+	public static Control recreate (PropagationContext ctx, int formatID)
+			throws SystemException
+	{
+		Control toReturn = null;
+		
+		if (ctx == null)
+		    throw new INVALID_TRANSACTION();
 
-    public static Control recreate (PropagationContext ctx, int formatID)
-            throws SystemException
-    {
-        Control toReturn = null;
+		FactoryElement ptr = find(formatID);
 
-        if (ctx == null)
-            throw new INVALID_TRANSACTION();
+		if (ptr != null)
+		{
+			toReturn = ptr.recreate(ctx);
+		}
 
-        FactoryElement ptr = find(formatID);
+		return toReturn;
+	}
 
-        if (ptr != null)
-        {
-            toReturn = ptr.recreate(ctx);
-        }
+	public static void add (FactoryCreator create, int formatID)
+	{
+		FactoryElement ptr = find(formatID);
 
-        return toReturn;
-    }
+		_lock.lock();
 
-    public static void add (FactoryCreator create, int formatID)
-    {
-        FactoryElement ptr = find(formatID);
+		if (ptr == null) // assume that the create and id always match
+		{
+			ptr = new FactoryElement(create, formatID);
+			ptr._next = _list;
+			_list = ptr;
+		}
 
-        _lock.lock();
+		_lock.unlock();
+	}
 
-        if (ptr == null) // assume that the create and id always match
-        {
-            ptr = new FactoryElement(create, formatID);
-            ptr._next = _list;
-            _list = ptr;
-        }
+	public static void remove (int formatID)
+	{
+		_lock.lock();
 
-        _lock.unlock();
-    }
+		FactoryElement ptr = _list;
+		FactoryElement trail = null;
+		boolean found = false;
 
-    public static void remove (int formatID)
-    {
-        _lock.lock();
+		while ((ptr != null) && (!found))
+		{
+			if (ptr._formatID == formatID)
+				found = true;
+			else
+			{
+				trail = ptr;
+				ptr = ptr._next;
+			}
+		}
 
-        FactoryElement ptr = _list;
-        FactoryElement trail = null;
-        boolean found = false;
+		if (found)
+		{
+			if (_list == ptr)
+				_list = ptr._next;
+			else
+			{
+				if (trail != null)
+					trail._next = ptr._next;
+			}
 
-        while ((ptr != null) && (!found))
-        {
-            if (ptr._formatID == formatID)
-                found = true;
-            else
-            {
-                trail = ptr;
-                ptr = ptr._next;
-            }
-        }
+			ptr._next = null;
 
-        if (found)
-        {
-            if (_list == ptr)
-                _list = ptr._next;
-            else
-            {
-                if (trail != null)
-                    trail._next = ptr._next;
-            }
+			ptr = null;
+		}
 
-            ptr._next = null;
+		_lock.unlock();
+	}
 
-            ptr = null;
-        }
+	/**
+	 * Only allow a default to be added once!
+	 */
 
-        _lock.unlock();
-    }
+	public static boolean addDefault (FactoryCreator create, int formatID)
+	{
+		boolean res = false;
 
-    /**
-     * Only allow a default to be added once!
-     */
+		_lock.lock();
 
-    public static boolean addDefault (FactoryCreator create, int formatID)
-    {
-        boolean res = false;
-
-        _lock.lock();
-
-        if (FactoryList._default == null)
-        {
-            FactoryList._default = new FactoryElement(create, formatID);
-            res = true;
-        }
-        else {
+		if (FactoryList._default == null)
+		{
+			FactoryList._default = new FactoryElement(create, formatID);
+			res = true;
+		}
+		else {
             jtsLogger.i18NLogger.warn_interposition_fldefault("FactoryList.addDefault");
         }
 
-        _lock.unlock();
+		_lock.unlock();
 
-        return res;
-    }
+		return res;
+	}
 
-    public static boolean removeDefault ()
-    {
-        boolean found = false;
+	public static boolean removeDefault ()
+	{
+		boolean found = false;
 
-        _lock.lock();
+		_lock.lock();
 
-        if (FactoryList._default != null)
-        {
-            FactoryList._default = null;
-            found = true;
-        }
+		if (FactoryList._default != null)
+		{
+			FactoryList._default = null;
+			found = true;
+		}
 
-        _lock.unlock();
+		_lock.unlock();
 
-        return found;
-    }
+		return found;
+	}
 
-    protected static FactoryElement find (int formatID)
-    {
-        FactoryElement ptr = _list;
-        FactoryElement toReturn = null;
+	protected static FactoryElement find (int formatID)
+	{
+		FactoryElement ptr = _list;
+		FactoryElement toReturn = null;
 
-        _lock.lock();
+		_lock.lock();
 
-        while ((ptr != null) && (toReturn == null))
-        {
-            if (ptr._formatID == formatID)
-                toReturn = ptr;
-            else
-                ptr = ptr._next;
-        }
+		while ((ptr != null) && (toReturn == null))
+		{
+			if (ptr._formatID == formatID)
+				toReturn = ptr;
+			else
+				ptr = ptr._next;
+		}
 
-        if (toReturn == null)
-        {
-            /*
-             * No ID matches, so use default.
-             */
+		if (toReturn == null)
+		{
+			/*
+			 * No ID matches, so use default.
+			 */
 
-            toReturn = FactoryList._default;
-        }
+			toReturn = FactoryList._default;
+		}
 
-        _lock.unlock();
+		_lock.unlock();
 
-        return toReturn;
-    }
+		return toReturn;
+	}
 
-    private static FactoryElement _list = null;
-    private static FactoryElement _default = null; // used if no formatID values match.
-    private static ReentrantLock _lock = new ReentrantLock();
+	private static FactoryElement _list = null;
+	private static FactoryElement _default = null; // used if no formatID values match.
+	private static ReentrantLock _lock = new ReentrantLock();
 }

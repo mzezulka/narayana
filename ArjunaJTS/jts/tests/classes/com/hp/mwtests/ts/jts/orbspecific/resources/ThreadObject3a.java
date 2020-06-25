@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -40,44 +40,44 @@ public class ThreadObject3a extends Thread
 
 public ThreadObject3a (boolean doCommit)
     {
-    if (doCommit)
-        _threadId = commitThreadId++;
-    else
-        _threadId = abortThreadId++;
-
-    _commit = doCommit;
+	if (doCommit)
+	    _threadId = commitThreadId++;
+	else
+	    _threadId = abortThreadId++;
+	
+	_commit = doCommit;
     }
 
 public void run ()
     {
-    CurrentImple current = OTSImpleManager.current();
+	CurrentImple current = OTSImpleManager.current();
 
-    try
-    {
-        current.begin();
+	try
+	{
+	    current.begin();
 
-        Util.indent(_threadId, 0);
-        System.out.println("begin");
+	    Util.indent(_threadId, 0);
+	    System.out.println("begin");
 
-        AtomicWorker3.randomOperation(_threadId, 0);
-        AtomicWorker3.randomOperation(_threadId, 0);
+	    AtomicWorker3.randomOperation(_threadId, 0);
+	    AtomicWorker3.randomOperation(_threadId, 0);
 
-        if (_commit)
-        current.commit(false);
-        else
-        current.rollback();
+	    if (_commit)
+		current.commit(false);
+	    else
+		current.rollback();
 
-        Util.indent(_threadId, 0);
+	    Util.indent(_threadId, 0);
 
-        if (_commit)
-        System.out.println("end");
-        else
-        System.out.println("abort");
-    }
-    catch (Exception e)
-    {
-        System.err.println(e);
-    }
+	    if (_commit)
+		System.out.println("end");
+	    else
+		System.out.println("abort");
+	}
+	catch (Exception e)
+	{
+	    System.err.println(e);
+	}
     }
 
 private int _threadId;
@@ -85,5 +85,5 @@ private boolean _commit;
 
 private static int commitThreadId = 3;
 private static int abortThreadId = 3;
-
+    
 };

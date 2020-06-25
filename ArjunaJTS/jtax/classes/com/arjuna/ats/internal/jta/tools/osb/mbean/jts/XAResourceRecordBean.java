@@ -43,7 +43,7 @@ import com.arjuna.ats.jta.xa.XidImple;
  * @author Mike Musgrove
  */
 /**
- * @deprecated as of 5.0.5.Final In a subsequent release we will change packages names in order to
+ * @deprecated as of 5.0.5.Final In a subsequent release we will change packages names in order to 
  * provide a better separation between public and internal classes.
  */
 @Deprecated // in order to provide a better separation between public and internal classes.
@@ -67,16 +67,16 @@ public class XAResourceRecordBean extends LogRecordWrapper implements XAResource
         init(rec);
     }
 
-    private void init(AbstractRecord rec) {
-        jndiName = getUid().stringForm();
-        className = "unavailable";
-        eisProductName = "unavailable";
-        eisProductVersion = "unavailable";
-        timeout = 0;
+	private void init(AbstractRecord rec) {
+		jndiName = getUid().stringForm();
+		className = "unavailable";
+		eisProductName = "unavailable";
+		eisProductVersion = "unavailable";
+		timeout = 0;
         xares = new JTSXAResourceRecordWrapper(rec, getUid());
         xidImple = xares.xidImple;
         heuristic = xares.heuristic;
-    }
+	}
 
     public String getClassName() { return className; }
     public String getEisProductName() { return eisProductName; }

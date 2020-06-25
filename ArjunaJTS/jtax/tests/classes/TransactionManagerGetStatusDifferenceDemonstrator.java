@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -45,109 +45,109 @@ import com.arjuna.orbportability.RootOA;
 
 public class TransactionManagerGetStatusDifferenceDemonstrator {
 
-    @Test
-    public void test() throws InvalidName, SystemException,
-            NotSupportedException, javax.transaction.SystemException,
-            IllegalStateException, RollbackException, IOException,
-            SecurityException, HeuristicMixedException,
-            HeuristicRollbackException, Unavailable,
-            SynchronizationUnavailable, Inactive {
+	@Test
+	public void test() throws InvalidName, SystemException,
+			NotSupportedException, javax.transaction.SystemException,
+			IllegalStateException, RollbackException, IOException,
+			SecurityException, HeuristicMixedException,
+			HeuristicRollbackException, Unavailable,
+			SynchronizationUnavailable, Inactive {
 
-        String mode = "jts";
-        TransactionManager transactionManager;
-        if (mode.equals("jts")) {
-            ORB myORB = ORB.getInstance("test");
-            RootOA myOA = OA.getRootOA(myORB);
+		String mode = "jts";
+		TransactionManager transactionManager;
+		if (mode.equals("jts")) {
+			ORB myORB = ORB.getInstance("test");
+			RootOA myOA = OA.getRootOA(myORB);
 
-            myORB.initORB(new String[0], null);
-            myOA.initOA();
+			myORB.initORB(new String[0], null);
+			myOA.initOA();
 
-            com.arjuna.ats.internal.jts.ORBManager.setORB(myORB);
-            com.arjuna.ats.internal.jts.ORBManager.setPOA(myOA);
+			com.arjuna.ats.internal.jts.ORBManager.setORB(myORB);
+			com.arjuna.ats.internal.jts.ORBManager.setPOA(myOA);
 
-            RecoveryManager.manager().initialize();
-            transactionManager = new com.arjuna.ats.internal.jta.transaction.jts.TransactionManagerImple();
-        } else {
-            transactionManager = new com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionManagerImple();
-        }
+			RecoveryManager.manager().initialize();
+			transactionManager = new com.arjuna.ats.internal.jta.transaction.jts.TransactionManagerImple();
+		} else {
+			transactionManager = new com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionManagerImple();
+		}
 
-        transactionManager.begin();
+		transactionManager.begin();
 
-        GetStatusSync getStatusSync = new GetStatusSync(transactionManager);
-        transactionManager.getTransaction().registerSynchronization(
-                getStatusSync);
+		GetStatusSync getStatusSync = new GetStatusSync(transactionManager);
+		transactionManager.getTransaction().registerSynchronization(
+				getStatusSync);
 
-        transactionManager.commit();
+		transactionManager.commit();
 
-        try {
-            if (mode.equals("jts")) {
+		try {
+			if (mode.equals("jts")) {
                 String orbClassName = System.getProperty("OrbPortabilityEnvironmentBean.orbImpleClassName");
 
                 System.out.printf("%s: orbClassName=%s%n", this.getClass().getName(), orbClassName);
 
                 if ("com.arjuna.orbportability.internal.orbspecific.javaidl.orb.implementations.javaidl_1_4".equals(orbClassName) ||
                         "com.arjuna.orbportability.internal.orbspecific.ibmorb.orb.implementations.ibmorb_7_1".equals(orbClassName)) {
-                    assertTrue(
-                            "Status: " + getStatusSync .getTransactionManagerGetStatus(),
-                            getStatusSync.getTransactionManagerGetStatus() == Status.STATUS_COMMITTED);
-                } else {
+					assertTrue(
+							"Status: " + getStatusSync .getTransactionManagerGetStatus(),
+							getStatusSync.getTransactionManagerGetStatus() == Status.STATUS_COMMITTED);
+				} else {
                     // com.arjuna.orbportability.internal.orbspecific.jacorb.orb.implementations.jacorb_2_0
-                    assertTrue(
-                            "Status: " + getStatusSync.getTransactionManagerGetStatus(),
-                            getStatusSync.getTransactionManagerGetStatus() == Status.STATUS_NO_TRANSACTION);
-                }
-            } else {
-                assertTrue(
-                        "Status: "
-                                + getStatusSync
-                                        .getTransactionManagerGetStatus(),
-                        getStatusSync.getTransactionManagerGetStatus() == Status.STATUS_COMMITTED);
-            }
+					assertTrue(
+							"Status: " + getStatusSync.getTransactionManagerGetStatus(),
+							getStatusSync.getTransactionManagerGetStatus() == Status.STATUS_NO_TRANSACTION);
+				}
+			} else {
+				assertTrue(
+						"Status: "
+								+ getStatusSync
+										.getTransactionManagerGetStatus(),
+						getStatusSync.getTransactionManagerGetStatus() == Status.STATUS_COMMITTED);
+			}
 
-            assertTrue(getStatusSync.getAfterCompletionStatus() == Status.STATUS_COMMITTED);
-        } finally {
-            if (mode.equals("jts")) {
-                RecoveryManager.manager().terminate();
+			assertTrue(getStatusSync.getAfterCompletionStatus() == Status.STATUS_COMMITTED);
+		} finally {
+			if (mode.equals("jts")) {
+				RecoveryManager.manager().terminate();
 
-                ORB myORB = ORB.getInstance("test");
-                RootOA myOA = OA.getRootOA(myORB);
-                myOA.destroy();
-                myORB.shutdown();
-            }
-        }
-    }
+				ORB myORB = ORB.getInstance("test");
+				RootOA myOA = OA.getRootOA(myORB);
+				myOA.destroy();
+				myORB.shutdown();
+			}
+		}
+	}
 
-    private class GetStatusSync implements Synchronization {
+	private class GetStatusSync implements Synchronization {
 
-        private int transactionManagerGetStatus;
-        private int afterCompletionStatus;
-        private TransactionManager transactionManager;
+		private int transactionManagerGetStatus;
+		private int afterCompletionStatus;
+		private TransactionManager transactionManager;
 
-        public GetStatusSync(TransactionManager transactionManager) {
-            this.transactionManager = transactionManager;
-        }
+		public GetStatusSync(TransactionManager transactionManager) {
+			this.transactionManager = transactionManager;
+		}
 
-        public void beforeCompletion() {
-        }
+		public void beforeCompletion() {
+		}
 
-        public void afterCompletion(int status) {
+		public void afterCompletion(int status) {
 
-            afterCompletionStatus = status;
+			afterCompletionStatus = status;
 
-            try {
-                this.transactionManagerGetStatus = transactionManager
-                        .getStatus();
-            } catch (javax.transaction.SystemException e) {
-                e.printStackTrace();
-            }
-        }
+			try {
+				this.transactionManagerGetStatus = transactionManager
+						.getStatus();
+			} catch (javax.transaction.SystemException e) {
+				e.printStackTrace();
+			}
+		}
 
-        public int getTransactionManagerGetStatus() {
-            return transactionManagerGetStatus;
-        }
+		public int getTransactionManagerGetStatus() {
+			return transactionManagerGetStatus;
+		}
 
-        public int getAfterCompletionStatus() {
-            return afterCompletionStatus;
-        }
-    }
+		public int getAfterCompletionStatus() {
+			return afterCompletionStatus;
+		}
+	}
 }

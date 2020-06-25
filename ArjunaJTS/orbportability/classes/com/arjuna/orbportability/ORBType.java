@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -67,15 +67,15 @@ public class ORBType
     public static final int HPORB = 2;
     public static final int VISIBROKER = 3;
     public static final int JAVAIDL = 1;
-    public static final int JACORB = 4;
+	public static final int JACORB = 4;
     public static final int IBMORB = 5;
 
     public static final String orbix2000 = "ORBIX2000";
     public static final String hporb = "HPORB";
     public static final String visibroker = "VISIBROKER";
     public static final String javaidl = "JAVAIDL";
-    public static final String jacorb = "JACORB";
-    public static final String ibmorb = "IBMORB";
+	public static final String jacorb = "JACORB";
+	public static final String ibmorb = "IBMORB";
 
     private final static String[]           ORB_NAME = { orbix2000, hporb, visibroker, javaidl, ibmorb, jacorb };
     private final static int[]              ORB_ENUM = { ORBIX2000, HPORB, VISIBROKER, JAVAIDL, IBMORB, JACORB };

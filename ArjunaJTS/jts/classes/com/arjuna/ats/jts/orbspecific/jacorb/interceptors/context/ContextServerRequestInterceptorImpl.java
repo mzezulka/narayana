@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Arjuna Technologies Ltd.,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.
+ * UK.  
  *
  * $Id: ContextServerRequestInterceptorImpl.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -54,7 +54,7 @@ import com.arjuna.ats.jts.common.InterceptorInfo;
 import com.arjuna.ats.jts.logging.jtsLogger;
 
 /**
- * PortableInterceptor::ServerRequestInterceptor implementation which checks
+ * PortableInterceptor::ServerRequestInterceptor implementation which checks 
  * that a transaction context was received.
  */
 
@@ -96,108 +96,108 @@ class ContextServerRequestInterceptorImpl extends LocalObject implements ServerR
 
 public ContextServerRequestInterceptorImpl (int dataSlot, Codec codec)
     {
-    if (jtsLogger.logger.isTraceEnabled())
-    {
-        jtsLogger.logger.trace("ContextServerRequestInterceptorImpl ( "+dataSlot+" )");
-    }
+	if (jtsLogger.logger.isTraceEnabled())
+	{
+	    jtsLogger.logger.trace("ContextServerRequestInterceptorImpl ( "+dataSlot+" )");
+	}
 
-    _dataSlot = dataSlot;
-    _codec = codec;
+	_dataSlot = dataSlot;
+	_codec = codec;
     }
 
 public String name ()
     {
-    return "OTS_Context";
+	return "OTS_Context";
     }
 
 public void receive_request_service_contexts (ServerRequestInfo request_info) throws SystemException
     {
-    if (jtsLogger.logger.isTraceEnabled())
-    {
-        jtsLogger.logger.trace("ContextServerRequestInterceptorImpl::receive_request_service_contexts ( "+request_info.operation()+" )");
-    }
+	if (jtsLogger.logger.isTraceEnabled())
+	{
+	    jtsLogger.logger.trace("ContextServerRequestInterceptorImpl::receive_request_service_contexts ( "+request_info.operation()+" )");
+	}
 
-    try
-    {
-        try
-        {
-        if (!InterceptorInfo.getAlwaysPropagate())
-        {
-            if (!request_info.target_is_a(TransactionalObjectHelper.id()))
-            throw new BAD_PARAM();
-        }
-        }
-        catch (Exception ex)
-        {
-        // just in case the object isn't in the IR.
-        }
+	try
+	{
+	    try
+	    {
+		if (!InterceptorInfo.getAlwaysPropagate())
+		{
+		    if (!request_info.target_is_a(TransactionalObjectHelper.id()))
+			throw new BAD_PARAM();
+		}
+	    }
+	    catch (Exception ex)
+	    {
+		// just in case the object isn't in the IR.
+	    }
 
-        try
-        {
-        ServiceContext serviceContext = null;
+	    try
+	    {
+		ServiceContext serviceContext = null;
+		
+		try
+		{
+		    serviceContext = request_info.get_request_service_context(OTSManager.serviceId);
+		}
+		catch (BAD_PARAM bp)
+		{
+		    // no context, so nothing shipped!
 
-        try
-        {
-            serviceContext = request_info.get_request_service_context(OTSManager.serviceId);
-        }
-        catch (BAD_PARAM bp)
-        {
-            // no context, so nothing shipped!
+		    serviceContext = null;
+		}
 
-            serviceContext = null;
-        }
+		if (serviceContext != null)
+		{
+		    Any receivedData = _codec.decode_value(serviceContext.context_data, ORBManager.getORB().orb().get_primitive_tc(TCKind.tk_string));
 
-        if (serviceContext != null)
-        {
-            Any receivedData = _codec.decode_value(serviceContext.context_data, ORBManager.getORB().orb().get_primitive_tc(TCKind.tk_string));
+		    /*
+		     * Set the slot information for the "current" thread. When
+		     * the real invocation thread actually needs to get its
+		     * transaction context it must check this slot (if it does
+		     * not have a transaction context already) and then do
+		     * a resume.
+		     */
 
-            /*
-             * Set the slot information for the "current" thread. When
-             * the real invocation thread actually needs to get its
-             * transaction context it must check this slot (if it does
-             * not have a transaction context already) and then do
-             * a resume.
-             */
-
-            request_info.set_slot(_dataSlot, receivedData);
-        }
-        else
-        {
-            /*
-             * Only throw an exception if we have no transaction
-             * context and we require one.
-             */
-
-            if (InterceptorInfo.getNeedTranContext())
-            throw new TRANSACTION_REQUIRED();
-        }
-        }
-        catch (TRANSACTION_REQUIRED ex)
-        {
-        ex.printStackTrace();
-
-        throw ex;
-        }
-        catch (Exception e)
-        {
-        e.printStackTrace();
-        }
-    }
-    catch (BAD_PARAM ex)
-    {
-    }
-    catch (Exception exp)
-    {
-        exp.printStackTrace();
-    }
+		    request_info.set_slot(_dataSlot, receivedData);
+		}
+		else
+		{
+		    /*
+		     * Only throw an exception if we have no transaction
+		     * context and we require one.
+		     */
+	    
+		    if (InterceptorInfo.getNeedTranContext())
+			throw new TRANSACTION_REQUIRED();
+		}
+	    }
+	    catch (TRANSACTION_REQUIRED ex)
+	    {
+		ex.printStackTrace();
+		
+		throw ex;
+	    }
+	    catch (Exception e)
+	    {
+		e.printStackTrace();
+	    }
+	}
+	catch (BAD_PARAM ex)
+	{
+	}
+	catch (Exception exp)
+	{
+	    exp.printStackTrace();
+	}
     }
 
 public void receive_request (ServerRequestInfo request_info) throws SystemException
     {
-    if (jtsLogger.logger.isTraceEnabled())
-    {
-        jtsLogger.logger.trace("ContextServerRequestInterceptorImpl.receive_request ( "+request_info.operation()+" )");
-    }
+	if (jtsLogger.logger.isTraceEnabled())
+	{
+	    jtsLogger.logger.trace("ContextServerRequestInterceptorImpl.receive_request ( "+request_info.operation()+" )");
+	}
     }
 
     /**
@@ -207,21 +207,21 @@ public void receive_request (ServerRequestInfo request_info) throws SystemExcept
 
 public void send_reply (ServerRequestInfo request_info) throws SystemException
     {
-    if (jtsLogger.logger.isTraceEnabled())
-    {
-        jtsLogger.logger.trace("ContextServerRequestInterceptorImpl::send_reply ( "+request_info.operation()+" )");
-    }
+	if (jtsLogger.logger.isTraceEnabled())
+	{
+	    jtsLogger.logger.trace("ContextServerRequestInterceptorImpl::send_reply ( "+request_info.operation()+" )");
+	}
 
-    try
-    {
-        suspendContext(request_info);
-    }
-    catch (SystemException ex) {
+	try
+	{
+	    suspendContext(request_info);
+	}
+	catch (SystemException ex) {
         jtsLogger.i18NLogger.warn_orbspecific_jacorb_interceptors_context_srie("ContextServerRequestInterceptorImpl::send_reply", ex);
 
         throw ex;
     }
-    catch (Exception e) {
+	catch (Exception e) {
         jtsLogger.i18NLogger.warn_orbspecific_jacorb_interceptors_context_srie("ContextServerRequestInterceptorImpl::send_reply", e);
 
         throw new BAD_OPERATION(e.toString());
@@ -230,21 +230,21 @@ public void send_reply (ServerRequestInfo request_info) throws SystemException
 
 public void send_exception (ServerRequestInfo request_info) throws SystemException
     {
-    if (jtsLogger.logger.isTraceEnabled())
-    {
-        jtsLogger.logger.trace("ContextServerRequestInterceptorImpl::send_exception ( "+request_info.operation()+" )");
-    }
+	if (jtsLogger.logger.isTraceEnabled())
+	{
+	    jtsLogger.logger.trace("ContextServerRequestInterceptorImpl::send_exception ( "+request_info.operation()+" )");
+	}
 
-    try
-    {
-        suspendContext(request_info);
-    }
-    catch (SystemException e1) {
+	try
+	{
+	    suspendContext(request_info);
+	}
+	catch (SystemException e1) {
         jtsLogger.i18NLogger.warn_orbspecific_jacorb_interceptors_context_srie("ContextServerRequestInterceptorImpl::send_exception", e1);
 
         throw e1;
     }
-    catch (Exception e2) {
+	catch (Exception e2) {
         jtsLogger.i18NLogger.warn_orbspecific_jacorb_interceptors_context_srie("ContextServerRequestInterceptorImpl::send_exception", e2);
 
         throw new BAD_OPERATION(e2.toString());
@@ -253,21 +253,21 @@ public void send_exception (ServerRequestInfo request_info) throws SystemExcepti
 
 public void send_other (ServerRequestInfo request_info) throws SystemException
     {
-    if (jtsLogger.logger.isTraceEnabled())
-    {
-        jtsLogger.logger.trace("ContextServerRequestInterceptorImpl.send_other ( "+request_info.operation()+" )");
-    }
+	if (jtsLogger.logger.isTraceEnabled())
+	{
+	    jtsLogger.logger.trace("ContextServerRequestInterceptorImpl.send_other ( "+request_info.operation()+" )");
+	}
 
-    try
-    {
-        suspendContext(request_info);
-    }
-    catch (SystemException ex) {
+	try
+	{
+	    suspendContext(request_info);
+	}
+	catch (SystemException ex) {
         jtsLogger.i18NLogger.warn_orbspecific_jacorb_interceptors_context_srie("ContextServerRequestInterceptorImpl::send_other", ex);
 
         throw ex;
     }
-    catch (Exception e) {
+	catch (Exception e) {
         jtsLogger.i18NLogger.warn_orbspecific_jacorb_interceptors_context_srie("ContextServerRequestInterceptorImpl::send_other", e);
 
         throw new BAD_OPERATION(e.toString());
@@ -285,53 +285,53 @@ public void send_other (ServerRequestInfo request_info) throws SystemException
 
 private void suspendContext (ServerRequestInfo request_info) throws SystemException, InvalidSlot
     {
-    if (jtsLogger.logger.isTraceEnabled())
-    {
-        jtsLogger.logger.trace("ContextServerRequestInterceptorImpl.suspendContext ( "+request_info.operation()+" )");
-    }
+	if (jtsLogger.logger.isTraceEnabled())
+	{
+	    jtsLogger.logger.trace("ContextServerRequestInterceptorImpl.suspendContext ( "+request_info.operation()+" )");
+	}
 
-    Any data = request_info.get_slot(_dataSlot);
+	Any data = request_info.get_slot(_dataSlot);
 
-    if ((data != null) && (data.type().kind().value() != TCKind._tk_null))
-    {
-        String threadId = null;
+	if ((data != null) && (data.type().kind().value() != TCKind._tk_null))
+	{
+	    String threadId = null;
+	    
+	    try
+	    {
+		if ((threadId = data.extract_string()) != null)
+		{
+		    ControlWrapper ctx = OTSImpleManager.current().contextManager().popAction(threadId);
 
-        try
-        {
-        if ((threadId = data.extract_string()) != null)
-        {
-            ControlWrapper ctx = OTSImpleManager.current().contextManager().popAction(threadId);
-
-            OTSImpleManager.current().contextManager().purgeActions(threadId);
-
-            if (ctx != null)
-            {
-            try
-            {
-                OTSManager.destroyControl(ctx.getControl());
-                ctx = null;
-            }
-            catch (Exception e) {
+		    OTSImpleManager.current().contextManager().purgeActions(threadId);
+		    
+		    if (ctx != null)
+		    {
+			try
+			{
+			    OTSManager.destroyControl(ctx.getControl());
+			    ctx = null;
+			}
+			catch (Exception e) {
                 jtsLogger.i18NLogger.warn_orbspecific_jacorb_interceptors_context_srie("ContextServerRequestInterceptorImpl.suspendContext", e);
 
                 throw new UNKNOWN(e.toString());
             }
-            }
-        }
-        }
-        catch (BAD_OPERATION be)
-        {
-        // not a string, so still a pgctx
-        }
+		    }
+		}
+	    }
+	    catch (BAD_OPERATION be)
+	    {
+		// not a string, so still a pgctx
+	    }
 
-        request_info.set_slot(_dataSlot, null);
-    }
+	    request_info.set_slot(_dataSlot, null);
+	}
     }
 
-    public void destroy()
-    {
-        // Do nothing
-    }
+	public void destroy()
+	{
+		// Do nothing
+	}
 
 private Codec _codec;
 private int   _dataSlot;

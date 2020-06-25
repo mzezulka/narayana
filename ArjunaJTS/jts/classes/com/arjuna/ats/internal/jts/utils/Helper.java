@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Hewlett-Packard Arjuna Labs,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.
+ * UK.  
  *
  * $Id: Helper.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -50,209 +50,209 @@ public class Helper
      * Given a Control_ptr determine if this is a reference to a local
      * action, and if so return the raw BasicAction pointer.
      */
-
+    
     public static final BasicAction localAction (org.omg.CosTransactions.Control control)
     {
-    if (control == null)
-        return null;
+	if (control == null)
+	    return null;
 
-    if (control instanceof ControlImple)
-    {
-        try
-        {
-        ControlImple c = (ControlImple) control;
+	if (control instanceof ControlImple)
+	{
+	    try
+	    {
+		ControlImple c = (ControlImple) control;
+		
+		return (BasicAction) c.getImplHandle();
+	    }
+	    catch (Exception e)
+	    {
+	    }
+	}
 
-        return (BasicAction) c.getImplHandle();
-        }
-        catch (Exception e)
-        {
-        }
-    }
+	/*
+	 * Can we not use is_local within visibroker?
+	 */
+	
+	try
+	{
+	    UidCoordinator coord = Helper.getUidCoordinator(control);
 
-    /*
-     * Can we not use is_local within visibroker?
-     */
+	    if (coord != null)
+	    {
+		Uid u = Helper.getUid(coord);
+		
+		coord = null;
 
-    try
-    {
-        UidCoordinator coord = Helper.getUidCoordinator(control);
+		return ActionManager.manager().get(u);
+	    }
+	    else
+		throw new BAD_PARAM();
+	}
+	catch (Exception e)
+	{
+	    /*
+	     * Can't be an Arjuna action, so ignore.
+	     */
+	}
 
-        if (coord != null)
-        {
-        Uid u = Helper.getUid(coord);
-
-        coord = null;
-
-        return ActionManager.manager().get(u);
-        }
-        else
-        throw new BAD_PARAM();
-    }
-    catch (Exception e)
-    {
-        /*
-         * Can't be an Arjuna action, so ignore.
-         */
-    }
-
-    return null;
+	return null;
     }
 
     public static final ControlImple localControl (org.omg.CosTransactions.Control control)
     {
-    if (control == null)
-        return null;
+	if (control == null)
+	    return null;
 
-    if (control instanceof ControlImple)
-        return (ControlImple) control;
+	if (control instanceof ControlImple)
+	    return (ControlImple) control;
 
-    try
-    {
-        UidCoordinator uidCoord = Helper.getUidCoordinator(control);
+	try
+	{
+	    UidCoordinator uidCoord = Helper.getUidCoordinator(control);
 
-        if (uidCoord != null)
-        {
-        Uid u = Helper.getUid(uidCoord);
-        ControlImple toReturn = null;
+	    if (uidCoord != null)
+	    {
+		Uid u = Helper.getUid(uidCoord);
+		ControlImple toReturn = null;
 
-        uidCoord = null;
+		uidCoord = null;
 
-        /*
-          * allControls only contains local controls.
-          */
+		/*
+ 		 * allControls only contains local controls.
+ 		 */
 
-        if (ControlImple.allControls != null)
-        {
-            synchronized (ControlImple.allControls)
-            {
-                toReturn = (ControlImple) ControlImple.allControls.get(u);
-            }
-        }
+		if (ControlImple.allControls != null)
+		{
+		    synchronized (ControlImple.allControls)
+			{
+			    toReturn = (ControlImple) ControlImple.allControls.get(u);
+			}
+		}
+		
+		if (toReturn == null)
+		{
+		    if (ServerControl.allServerControls != null)
+		    {
+			synchronized (ServerControl.allServerControls)
+			    {
+				toReturn = (ControlImple) ServerControl.allServerControls.get(u);				
+			    }
+		    }
+		}
 
-        if (toReturn == null)
-        {
-            if (ServerControl.allServerControls != null)
-            {
-            synchronized (ServerControl.allServerControls)
-                {
-                toReturn = (ControlImple) ServerControl.allServerControls.get(u);
-                }
-            }
-        }
+		u = null;
 
-        u = null;
+		return toReturn;
+	    }
+	    else
+		throw new BAD_PARAM(0, CompletionStatus.COMPLETED_NO);
+	}
+	catch (Exception e)
+	{
+	    /*
+	     * Can't be an Arjuna action, so ignore.
+	     */
+	}
 
-        return toReturn;
-        }
-        else
-        throw new BAD_PARAM(0, CompletionStatus.COMPLETED_NO);
-    }
-    catch (Exception e)
-    {
-        /*
-         * Can't be an Arjuna action, so ignore.
-         */
-    }
-
-    return null;
+	return null;
     }
 
     public static final UidCoordinator getUidCoordinator (org.omg.CosTransactions.Control control)
     {
-    if (control == null)
-        return null;
+	if (control == null)
+	    return null;
+    
+	UidCoordinator toReturn = null;
+    
+	try
+	{
+	    Coordinator coord = control.get_coordinator();
 
-    UidCoordinator toReturn = null;
+	    if (coord != null)
+	    {
+		toReturn = getUidCoordinator(coord);
 
-    try
-    {
-        Coordinator coord = control.get_coordinator();
+		coord = null;
+	    }
+	    else
+		throw new BAD_PARAM(0, CompletionStatus.COMPLETED_NO);
+	}
+	catch (Exception e)
+	{
+	    /*
+	     * Can't be an Arjuna action, so ignore.
+	     */
 
-        if (coord != null)
-        {
-        toReturn = getUidCoordinator(coord);
-
-        coord = null;
-        }
-        else
-        throw new BAD_PARAM(0, CompletionStatus.COMPLETED_NO);
-    }
-    catch (Exception e)
-    {
-        /*
-         * Can't be an Arjuna action, so ignore.
-         */
-
-        toReturn = null;
-    }
-
-    return toReturn;
+	    toReturn = null;
+	}
+    
+	return toReturn;
     }
 
     public static final UidCoordinator getUidCoordinator (Coordinator coord)
     {
-    if (coord == null)
-        return null;
+	if (coord == null)
+	    return null;
+    
+	UidCoordinator toReturn = null;
 
-    UidCoordinator toReturn = null;
+	try
+	{
+	    toReturn = com.arjuna.ArjunaOTS.UidCoordinatorHelper.narrow(coord);
 
-    try
-    {
-        toReturn = com.arjuna.ArjunaOTS.UidCoordinatorHelper.narrow(coord);
+	    if (toReturn == null)
+		throw new BAD_PARAM(0, CompletionStatus.COMPLETED_NO);
+	}
+	catch (Exception e)
+	{
+	    /*
+	     * Can't be an Arjuna action, so ignore.
+	     */
 
-        if (toReturn == null)
-        throw new BAD_PARAM(0, CompletionStatus.COMPLETED_NO);
-    }
-    catch (Exception e)
-    {
-        /*
-         * Can't be an Arjuna action, so ignore.
-         */
+	    toReturn = null;
+	}
 
-        toReturn = null;
-    }
-
-    return toReturn;
+	return toReturn;
     }
 
     public static final boolean isUidCoordinator (Coordinator ref)
     {
-    UidCoordinator ptr = getUidCoordinator(ref);
+	UidCoordinator ptr = getUidCoordinator(ref);
 
-    return ((ptr == null) ? false : true);
+	return ((ptr == null) ? false : true);
     }
-
+    
     public static final Uid getUid (UidCoordinator coord)
     {
-    if (coord == null)
-        return Uid.nullUid();
+	if (coord == null)
+	    return Uid.nullUid();
 
-    String theUid = null;
-    Uid uid = null;
+	String theUid = null;
+	Uid uid = null;
 
-    /*
-     * Try twice, and if this still fails then
-     * throw NO_MEMORY.
-     */
+	/*
+	 * Try twice, and if this still fails then
+	 * throw NO_MEMORY.
+	 */
 
-    for (int i = 0; i < 1; i++)
-    {
-        try
-        {
-        theUid = coord.uid();
-        uid = new Uid(theUid);
+	for (int i = 0; i < 1; i++)
+	{
+	    try
+	    {
+		theUid = coord.uid();
+		uid = new Uid(theUid);
 
-        theUid = null;
+		theUid = null;
 
-        return uid;
-        }
-        catch (OutOfMemoryError e)
-        {
-        System.gc();
-        }
-    }
+		return uid;
+	    }
+	    catch (OutOfMemoryError e)
+	    {
+		System.gc();
+	    }
+	}
 
-    throw new NO_MEMORY(0, CompletionStatus.COMPLETED_NO);
+	throw new NO_MEMORY(0, CompletionStatus.COMPLETED_NO);
     }
 
 }

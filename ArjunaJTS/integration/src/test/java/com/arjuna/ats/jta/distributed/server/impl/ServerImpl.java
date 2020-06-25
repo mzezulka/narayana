@@ -62,225 +62,225 @@ import com.arjuna.ats.jta.distributed.server.RemoteServer;
 
 public class ServerImpl implements LocalServer {
 
-    private String nodeName;
-    private RecoveryManagerService recoveryManagerService;
-    private TransactionManagerService transactionManagerService;
-    private RecoveryManager _recoveryManager;
-    private ClassLoader classLoaderForTransactionManager;
+	private String nodeName;
+	private RecoveryManagerService recoveryManagerService;
+	private TransactionManagerService transactionManagerService;
+	private RecoveryManager _recoveryManager;
+	private ClassLoader classLoaderForTransactionManager;
 
-    public void initialise(LookupProvider lookupProvider, String nodeName, int portOffset, String[] clusterBuddies, ClassLoader classLoaderForTransactionManager)
-            throws CoreEnvironmentBeanException, IOException, SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
-        this.nodeName = nodeName;
-        this.classLoaderForTransactionManager = classLoaderForTransactionManager;
+	public void initialise(LookupProvider lookupProvider, String nodeName, int portOffset, String[] clusterBuddies, ClassLoader classLoaderForTransactionManager)
+			throws CoreEnvironmentBeanException, IOException, SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+		this.nodeName = nodeName;
+		this.classLoaderForTransactionManager = classLoaderForTransactionManager;
 
-        RecoveryEnvironmentBean recoveryEnvironmentBean = com.arjuna.ats.arjuna.common.recoveryPropertyManager.getRecoveryEnvironmentBean();
-        recoveryEnvironmentBean.setRecoveryBackoffPeriod(1);
+		RecoveryEnvironmentBean recoveryEnvironmentBean = com.arjuna.ats.arjuna.common.recoveryPropertyManager.getRecoveryEnvironmentBean();
+		recoveryEnvironmentBean.setRecoveryBackoffPeriod(1);
 
-        recoveryEnvironmentBean.setRecoveryInetAddress(InetAddress.getByName("localhost"));
-        recoveryEnvironmentBean.setRecoveryPort(4712 + portOffset);
-        recoveryEnvironmentBean.setTransactionStatusManagerInetAddress(InetAddress.getByName("localhost"));
-        recoveryEnvironmentBean.setTransactionStatusManagerPort(4713 + portOffset);
-        List<String> recoveryModuleClassNames = new ArrayList<String>();
+		recoveryEnvironmentBean.setRecoveryInetAddress(InetAddress.getByName("localhost"));
+		recoveryEnvironmentBean.setRecoveryPort(4712 + portOffset);
+		recoveryEnvironmentBean.setTransactionStatusManagerInetAddress(InetAddress.getByName("localhost"));
+		recoveryEnvironmentBean.setTransactionStatusManagerPort(4713 + portOffset);
+		List<String> recoveryModuleClassNames = new ArrayList<String>();
 
-        recoveryModuleClassNames.add("com.arjuna.ats.internal.arjuna.recovery.AtomicActionRecoveryModule");
-        // recoveryModuleClassNames.add("com.arjuna.ats.internal.txoj.recovery.TORecoveryModule");
-        recoveryModuleClassNames.add("com.arjuna.ats.internal.jta.recovery.arjunacore.SubordinateAtomicActionRecoveryModule");
-        recoveryModuleClassNames.add("com.arjuna.ats.internal.jta.recovery.arjunacore.XARecoveryModule");
-        recoveryEnvironmentBean.setRecoveryModuleClassNames(recoveryModuleClassNames);
-        List<String> expiryScannerClassNames = new ArrayList<String>();
-        expiryScannerClassNames.add("com.arjuna.ats.internal.arjuna.recovery.ExpiredTransactionStatusManagerScanner");
-        recoveryEnvironmentBean.setExpiryScannerClassNames(expiryScannerClassNames);
-        recoveryEnvironmentBean.setRecoveryActivators(null);
+		recoveryModuleClassNames.add("com.arjuna.ats.internal.arjuna.recovery.AtomicActionRecoveryModule");
+		// recoveryModuleClassNames.add("com.arjuna.ats.internal.txoj.recovery.TORecoveryModule");
+		recoveryModuleClassNames.add("com.arjuna.ats.internal.jta.recovery.arjunacore.SubordinateAtomicActionRecoveryModule");
+		recoveryModuleClassNames.add("com.arjuna.ats.internal.jta.recovery.arjunacore.XARecoveryModule");
+		recoveryEnvironmentBean.setRecoveryModuleClassNames(recoveryModuleClassNames);
+		List<String> expiryScannerClassNames = new ArrayList<String>();
+		expiryScannerClassNames.add("com.arjuna.ats.internal.arjuna.recovery.ExpiredTransactionStatusManagerScanner");
+		recoveryEnvironmentBean.setExpiryScannerClassNames(expiryScannerClassNames);
+		recoveryEnvironmentBean.setRecoveryActivators(null);
 
-        CoreEnvironmentBean coreEnvironmentBean = com.arjuna.ats.arjuna.common.arjPropertyManager.getCoreEnvironmentBean();
-        // coreEnvironmentBean.setSocketProcessIdPort(4714 + nodeName);
-        coreEnvironmentBean.setNodeIdentifier(nodeName);
-        // coreEnvironmentBean.setSocketProcessIdMaxPorts(1);
-        coreEnvironmentBean.setProcessImplementationClassName(ManualProcessId.class.getName());
-        coreEnvironmentBean.setPid(portOffset);
+		CoreEnvironmentBean coreEnvironmentBean = com.arjuna.ats.arjuna.common.arjPropertyManager.getCoreEnvironmentBean();
+		// coreEnvironmentBean.setSocketProcessIdPort(4714 + nodeName);
+		coreEnvironmentBean.setNodeIdentifier(nodeName);
+		// coreEnvironmentBean.setSocketProcessIdMaxPorts(1);
+		coreEnvironmentBean.setProcessImplementationClassName(ManualProcessId.class.getName());
+		coreEnvironmentBean.setPid(portOffset);
 
-        CoordinatorEnvironmentBean coordinatorEnvironmentBean = com.arjuna.ats.arjuna.common.arjPropertyManager.getCoordinatorEnvironmentBean();
-        coordinatorEnvironmentBean.setEnableStatistics(false);
-        coordinatorEnvironmentBean.setDefaultTimeout(300);
-        coordinatorEnvironmentBean.setTransactionStatusManagerEnable(false);
-        coordinatorEnvironmentBean.setDefaultTimeout(0);
+		CoordinatorEnvironmentBean coordinatorEnvironmentBean = com.arjuna.ats.arjuna.common.arjPropertyManager.getCoordinatorEnvironmentBean();
+		coordinatorEnvironmentBean.setEnableStatistics(false);
+		coordinatorEnvironmentBean.setDefaultTimeout(300);
+		coordinatorEnvironmentBean.setTransactionStatusManagerEnable(false);
+		coordinatorEnvironmentBean.setDefaultTimeout(0);
 
-        ObjectStoreEnvironmentBean actionStoreObjectStoreEnvironmentBean = com.arjuna.common.internal.util.propertyservice.BeanPopulator.getNamedInstance(
-                com.arjuna.ats.arjuna.common.ObjectStoreEnvironmentBean.class, null);
-        actionStoreObjectStoreEnvironmentBean.setObjectStoreDir(System.getProperty("user.dir") + "/distributedjta-tests/tx-object-store/" + nodeName);
+		ObjectStoreEnvironmentBean actionStoreObjectStoreEnvironmentBean = com.arjuna.common.internal.util.propertyservice.BeanPopulator.getNamedInstance(
+				com.arjuna.ats.arjuna.common.ObjectStoreEnvironmentBean.class, null);
+		actionStoreObjectStoreEnvironmentBean.setObjectStoreDir(System.getProperty("user.dir") + "/distributedjta-tests/tx-object-store/" + nodeName);
 
-        ObjectStoreEnvironmentBean stateStoreObjectStoreEnvironmentBean = com.arjuna.common.internal.util.propertyservice.BeanPopulator.getNamedInstance(
-                com.arjuna.ats.arjuna.common.ObjectStoreEnvironmentBean.class, "stateStore");
-        stateStoreObjectStoreEnvironmentBean.setObjectStoreDir(System.getProperty("user.dir") + "/distributedjta-tests/tx-object-store/" + nodeName);
+		ObjectStoreEnvironmentBean stateStoreObjectStoreEnvironmentBean = com.arjuna.common.internal.util.propertyservice.BeanPopulator.getNamedInstance(
+				com.arjuna.ats.arjuna.common.ObjectStoreEnvironmentBean.class, "stateStore");
+		stateStoreObjectStoreEnvironmentBean.setObjectStoreDir(System.getProperty("user.dir") + "/distributedjta-tests/tx-object-store/" + nodeName);
 
-        ObjectStoreEnvironmentBean communicationStoreObjectStoreEnvironmentBean = com.arjuna.common.internal.util.propertyservice.BeanPopulator
-                .getNamedInstance(com.arjuna.ats.arjuna.common.ObjectStoreEnvironmentBean.class, "communicationStore");
-        communicationStoreObjectStoreEnvironmentBean.setObjectStoreDir(System.getProperty("user.dir") + "/distributedjta-tests/tx-object-store/" + nodeName);
+		ObjectStoreEnvironmentBean communicationStoreObjectStoreEnvironmentBean = com.arjuna.common.internal.util.propertyservice.BeanPopulator
+				.getNamedInstance(com.arjuna.ats.arjuna.common.ObjectStoreEnvironmentBean.class, "communicationStore");
+		communicationStoreObjectStoreEnvironmentBean.setObjectStoreDir(System.getProperty("user.dir") + "/distributedjta-tests/tx-object-store/" + nodeName);
 
-        JTAEnvironmentBean jTAEnvironmentBean = com.arjuna.ats.jta.common.jtaPropertyManager.getJTAEnvironmentBean();
-        jTAEnvironmentBean.setLastResourceOptimisationInterface(org.jboss.tm.LastResource.class);
-        jTAEnvironmentBean.setTransactionManagerClassName("com.arjuna.ats.jbossatx.jta.TransactionManagerDelegate");
-        jTAEnvironmentBean.setUserTransactionClassName("com.arjuna.ats.internal.jta.transaction.arjunacore.UserTransactionImple");
-        jTAEnvironmentBean
-                .setTransactionSynchronizationRegistryClassName("com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionSynchronizationRegistryImple");
-        List<String> xaRecoveryNodes = new ArrayList<String>();
-        xaRecoveryNodes.add(nodeName);
-        jTAEnvironmentBean.setXaRecoveryNodes(xaRecoveryNodes);
+		JTAEnvironmentBean jTAEnvironmentBean = com.arjuna.ats.jta.common.jtaPropertyManager.getJTAEnvironmentBean();
+		jTAEnvironmentBean.setLastResourceOptimisationInterface(org.jboss.tm.LastResource.class);
+		jTAEnvironmentBean.setTransactionManagerClassName("com.arjuna.ats.jbossatx.jta.TransactionManagerDelegate");
+		jTAEnvironmentBean.setUserTransactionClassName("com.arjuna.ats.internal.jta.transaction.arjunacore.UserTransactionImple");
+		jTAEnvironmentBean
+				.setTransactionSynchronizationRegistryClassName("com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionSynchronizationRegistryImple");
+		List<String> xaRecoveryNodes = new ArrayList<String>();
+		xaRecoveryNodes.add(nodeName);
+		jTAEnvironmentBean.setXaRecoveryNodes(xaRecoveryNodes);
 
-        List<String> xaResourceOrphanFilterClassNames = new ArrayList<String>();
+		List<String> xaResourceOrphanFilterClassNames = new ArrayList<String>();
 
-        xaResourceOrphanFilterClassNames.add("com.arjuna.ats.internal.jta.recovery.arjunacore.JTATransactionLogXAResourceOrphanFilter");
-        xaResourceOrphanFilterClassNames.add("com.arjuna.ats.internal.jta.recovery.arjunacore.JTANodeNameXAResourceOrphanFilter");
-        xaResourceOrphanFilterClassNames.add("com.arjuna.ats.internal.jta.recovery.arjunacore.SubordinateJTAXAResourceOrphanFilter");
-        xaResourceOrphanFilterClassNames.add("com.arjuna.ats.internal.jta.recovery.arjunacore.SubordinationManagerXAResourceOrphanFilter");
-        jTAEnvironmentBean.setXaResourceOrphanFilterClassNames(xaResourceOrphanFilterClassNames);
-        jTAEnvironmentBean.setXAResourceRecordWrappingPlugin(new XAResourceRecordWrappingPluginImpl());
+		xaResourceOrphanFilterClassNames.add("com.arjuna.ats.internal.jta.recovery.arjunacore.JTATransactionLogXAResourceOrphanFilter");
+		xaResourceOrphanFilterClassNames.add("com.arjuna.ats.internal.jta.recovery.arjunacore.JTANodeNameXAResourceOrphanFilter");
+		xaResourceOrphanFilterClassNames.add("com.arjuna.ats.internal.jta.recovery.arjunacore.SubordinateJTAXAResourceOrphanFilter");
+		xaResourceOrphanFilterClassNames.add("com.arjuna.ats.internal.jta.recovery.arjunacore.SubordinationManagerXAResourceOrphanFilter");
+		jTAEnvironmentBean.setXaResourceOrphanFilterClassNames(xaResourceOrphanFilterClassNames);
+		jTAEnvironmentBean.setXAResourceRecordWrappingPlugin(new XAResourceRecordWrappingPluginImpl());
 
-        recoveryManagerService = new RecoveryManagerService();
-        recoveryManagerService.create();
-        recoveryManagerService.addXAResourceRecovery(new TestResourceRecovery(nodeName));
-        // This MUST be the last XAResourceRecovery class registered or you will
-        // get unexpected recovery results, could add a specific interface for
-        // this?
-        recoveryManagerService.addXAResourceRecovery(new ProxyXAResourceRecovery(nodeName, clusterBuddies));
-        recoveryManagerService.addSerializableXAResourceDeserializer(new ProxyXAResourceDeserializer());
+		recoveryManagerService = new RecoveryManagerService();
+		recoveryManagerService.create();
+		recoveryManagerService.addXAResourceRecovery(new TestResourceRecovery(nodeName));
+		// This MUST be the last XAResourceRecovery class registered or you will
+		// get unexpected recovery results, could add a specific interface for
+		// this?
+		recoveryManagerService.addXAResourceRecovery(new ProxyXAResourceRecovery(nodeName, clusterBuddies));
+		recoveryManagerService.addSerializableXAResourceDeserializer(new ProxyXAResourceDeserializer());
 
-        // recoveryManagerService.start();
-        _recoveryManager = RecoveryManager.manager();
-        RecoveryManager.manager().initialize();
+		// recoveryManagerService.start();
+		_recoveryManager = RecoveryManager.manager();
+		RecoveryManager.manager().initialize();
 
-        transactionManagerService = new TransactionManagerService();
-        TxControl txControl = new com.arjuna.ats.arjuna.coordinator.TxControl();
-        transactionManagerService.setJbossXATerminator(new com.arjuna.ats.internal.jbossatx.jta.jca.XATerminator());
-        transactionManagerService
-                .setTransactionSynchronizationRegistry(new com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionSynchronizationRegistryImple());
-        transactionManagerService.create();
-    }
+		transactionManagerService = new TransactionManagerService();
+		TxControl txControl = new com.arjuna.ats.arjuna.coordinator.TxControl();
+		transactionManagerService.setJbossXATerminator(new com.arjuna.ats.internal.jbossatx.jta.jca.XATerminator());
+		transactionManagerService
+				.setTransactionSynchronizationRegistry(new com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionSynchronizationRegistryImple());
+		transactionManagerService.create();
+	}
 
-    @Override
-    public ClassLoader getClassLoader() {
-        return classLoaderForTransactionManager;
-    }
+	@Override
+	public ClassLoader getClassLoader() {
+		return classLoaderForTransactionManager;
+	}
 
-    @Override
-    public void shutdown() throws Exception {
-        recoveryManagerService.stop();
-        TransactionReaper.transactionReaper().terminate(false);
-    }
+	@Override
+	public void shutdown() throws Exception {
+		recoveryManagerService.stop();
+		TransactionReaper.transactionReaper().terminate(false);
+	}
 
-    @Override
-    public void doRecoveryManagerScan(boolean shortenSafetyInterval) {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(getClassLoader());
-        int originalSafetyInterval = -1;
+	@Override
+	public void doRecoveryManagerScan(boolean shortenSafetyInterval) {
+		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+		Thread.currentThread().setContextClassLoader(getClassLoader());
+		int originalSafetyInterval = -1;
 
-        if (shortenSafetyInterval) {
-            try {
-                Field safetyIntervalMillis = RecoveryXids.class.getDeclaredField("safetyIntervalMillis");
-                safetyIntervalMillis.setAccessible(true);
-                originalSafetyInterval = (Integer) safetyIntervalMillis.get(null);
-                safetyIntervalMillis.set(null, 0);
-            } catch (Throwable t) {
-                t.printStackTrace();
-            }
-        } else {
-            try {
-                Field safetyIntervalMillis = RecoveryXids.class.getDeclaredField("safetyIntervalMillis");
-                safetyIntervalMillis.setAccessible(true);
-                originalSafetyInterval = (Integer) safetyIntervalMillis.get(null);
-                safetyIntervalMillis.set(null, 60000);
-            } catch (Throwable t) {
-                t.printStackTrace();
-            }
-        }
+		if (shortenSafetyInterval) {
+			try {
+				Field safetyIntervalMillis = RecoveryXids.class.getDeclaredField("safetyIntervalMillis");
+				safetyIntervalMillis.setAccessible(true);
+				originalSafetyInterval = (Integer) safetyIntervalMillis.get(null);
+				safetyIntervalMillis.set(null, 0);
+			} catch (Throwable t) {
+				t.printStackTrace();
+			}
+		} else {
+			try {
+				Field safetyIntervalMillis = RecoveryXids.class.getDeclaredField("safetyIntervalMillis");
+				safetyIntervalMillis.setAccessible(true);
+				originalSafetyInterval = (Integer) safetyIntervalMillis.get(null);
+				safetyIntervalMillis.set(null, 60000);
+			} catch (Throwable t) {
+				t.printStackTrace();
+			}
+		}
 
-        _recoveryManager.scan();
+		_recoveryManager.scan();
 
-        if (shortenSafetyInterval) {
-            try {
-                Field safetyIntervalMillis = RecoveryXids.class.getDeclaredField("safetyIntervalMillis");
-                safetyIntervalMillis.setAccessible(true);
-                safetyIntervalMillis.set(null, originalSafetyInterval);
-            } catch (Throwable t) {
-                t.printStackTrace();
-            }
-        } else {
-            try {
-                Field safetyIntervalMillis = RecoveryXids.class.getDeclaredField("safetyIntervalMillis");
-                safetyIntervalMillis.setAccessible(true);
-                safetyIntervalMillis.set(null, originalSafetyInterval);
-            } catch (Throwable t) {
-                t.printStackTrace();
-            }
-        }
-        Thread.currentThread().setContextClassLoader(classLoader);
-    }
+		if (shortenSafetyInterval) {
+			try {
+				Field safetyIntervalMillis = RecoveryXids.class.getDeclaredField("safetyIntervalMillis");
+				safetyIntervalMillis.setAccessible(true);
+				safetyIntervalMillis.set(null, originalSafetyInterval);
+			} catch (Throwable t) {
+				t.printStackTrace();
+			}
+		} else {
+			try {
+				Field safetyIntervalMillis = RecoveryXids.class.getDeclaredField("safetyIntervalMillis");
+				safetyIntervalMillis.setAccessible(true);
+				safetyIntervalMillis.set(null, originalSafetyInterval);
+			} catch (Throwable t) {
+				t.printStackTrace();
+			}
+		}
+		Thread.currentThread().setContextClassLoader(classLoader);
+	}
 
-    @Override
-    public TransactionManager getTransactionManager() {
-        return transactionManagerService.getTransactionManager();
-    }
+	@Override
+	public TransactionManager getTransactionManager() {
+		return transactionManagerService.getTransactionManager();
+	}
 
-    @Override
-    public Xid locateOrImportTransactionThenResumeIt(int remainingTimeout, Xid toResume) throws XAException, IllegalStateException, SystemException,
-            IOException {
-        JBossXATerminator xaTerminator = transactionManagerService.getJbossXATerminator();
+	@Override
+	public Xid locateOrImportTransactionThenResumeIt(int remainingTimeout, Xid toResume) throws XAException, IllegalStateException, SystemException,
+			IOException {
+		JBossXATerminator xaTerminator = transactionManagerService.getJbossXATerminator();
 
-        if (!ExtendedJBossXATerminator.class.isInstance(xaTerminator)) {
-            System.out.printf("ExtendedJBossXATerminator: FAIL not an instance");
-            return null;
-        }
+		if (!ExtendedJBossXATerminator.class.isInstance(xaTerminator)) {
+			System.out.printf("ExtendedJBossXATerminator: FAIL not an instance");
+			return null;
+		}
 
-        ExtendedJBossXATerminator extendedJBossXATerminator = (ExtendedJBossXATerminator) xaTerminator;
+		ExtendedJBossXATerminator extendedJBossXATerminator = (ExtendedJBossXATerminator) xaTerminator;
 
-        boolean subordinateCreated = false;
-        Transaction transaction = extendedJBossXATerminator.getTransaction(toResume);
+		boolean subordinateCreated = false;
+		Transaction transaction = extendedJBossXATerminator.getTransaction(toResume);
 
-        if (transaction == null) {
-            TransactionImportResult transactionImportResult = extendedJBossXATerminator.importTransaction(toResume, remainingTimeout);
-            subordinateCreated = transactionImportResult.isNewImportedTransaction();
-            transaction = transactionImportResult.getTransaction();
-        }
+		if (transaction == null) {
+			TransactionImportResult transactionImportResult = extendedJBossXATerminator.importTransaction(toResume, remainingTimeout);
+			subordinateCreated = transactionImportResult.isNewImportedTransaction();
+			transaction = transactionImportResult.getTransaction();
+		}
 
-        transactionManagerService.getTransactionManager().resume(transaction);
+		transactionManagerService.getTransactionManager().resume(transaction);
 
-        return subordinateCreated ? ((com.arjuna.ats.jta.transaction.Transaction) transaction).getTxId() : null;
-    }
+		return subordinateCreated ? ((com.arjuna.ats.jta.transaction.Transaction) transaction).getTxId() : null;
+	}
 
-    @Override
-    public String getNodeName() {
-        return nodeName;
-    }
+	@Override
+	public String getNodeName() {
+		return nodeName;
+	}
 
-    @Override
-    public long getTimeLeftBeforeTransactionTimeout() throws RollbackException {
-        return ((TransactionTimeoutConfiguration) transactionManagerService.getTransactionManager()).getTimeLeftBeforeTransactionTimeout(true);
-    }
+	@Override
+	public long getTimeLeftBeforeTransactionTimeout() throws RollbackException {
+		return ((TransactionTimeoutConfiguration) transactionManagerService.getTransactionManager()).getTimeLeftBeforeTransactionTimeout(true);
+	}
 
-    @Override
-    public Xid getCurrentXid() throws SystemException {
-        TransactionImple transaction = ((TransactionImple) transactionManagerService.getTransactionManager().getTransaction());
-        return transaction.getTxId();
-    }
+	@Override
+	public Xid getCurrentXid() throws SystemException {
+		TransactionImple transaction = ((TransactionImple) transactionManagerService.getTransactionManager().getTransaction());
+		return transaction.getTxId();
+	}
 
-    @Override
-    public ProxyXAResource generateProxyXAResource(String remoteServerName, Xid migratedXid) throws SystemException, IOException {
-        return new ProxyXAResource(nodeName, remoteServerName, migratedXid, false);
-    }
-
-    @Override
+	@Override
+	public ProxyXAResource generateProxyXAResource(String remoteServerName, Xid migratedXid) throws SystemException, IOException {
+		return new ProxyXAResource(nodeName, remoteServerName, migratedXid, false);
+	}
+	
+	@Override
     public ProxyXAResource generateProxyXAResource(String remoteServerName, Xid migratedXid, boolean handleError) throws SystemException, IOException {
         return new ProxyXAResource(nodeName, remoteServerName, migratedXid, handleError);
     }
 
-    @Override
-    public Synchronization generateProxySynchronization(String remoteServerName, Xid toRegisterAgainst) {
-        return new ProxySynchronization(nodeName, remoteServerName, toRegisterAgainst);
-    }
+	@Override
+	public Synchronization generateProxySynchronization(String remoteServerName, Xid toRegisterAgainst) {
+		return new ProxySynchronization(nodeName, remoteServerName, toRegisterAgainst);
+	}
 
-    @Override
-    public RemoteServer connectTo() {
-        return new RemoteServerImpl();
-    }
+	@Override
+	public RemoteServer connectTo() {
+		return new RemoteServerImpl();
+	}
 
 }

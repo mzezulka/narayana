@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Arjuna Solutions Limited,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.
+ * UK.  
  *
  * $Id: DistributedHammerWorker1.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -40,249 +40,249 @@ import com.hp.mwtests.ts.jts.utils.Util;
 
 public class DistributedHammerWorker1
 {
-
+    
 public static void incr12 (char thr, int level)
     {
-    boolean res  = false;
-    boolean res1 = false;
-    boolean res2 = false;
+	boolean res  = false;
+	boolean res1 = false;
+	boolean res2 = false;
+	
+	int ran = 0;
 
-    int ran = 0;
+	try
+	{
+	    OTSImpleManager.current().begin();
+	    Control control = OTSImpleManager.current().get_control();
+    
+	    Util.indent(thr, level);
+	    System.out.println("begin   incr12");
+	
+	    ran = Util.rand.nextInt() % 16;
 
-    try
-    {
-        OTSImpleManager.current().begin();
-        Control control = OTSImpleManager.current().get_control();
+	    res1 = hammerObject_1.incr(ran, control);
+	    res  = res1;
 
-        Util.indent(thr, level);
-        System.out.println("begin   incr12");
+	    Util.indent(thr, level);
+	    System.out.println("part1   incr12 : "+res1);
 
-        ran = Util.rand.nextInt() % 16;
+	    if (res)
+	    {
+		res2 = hammerObject_2.incr(-ran, control);
+		res  = res2;
 
-        res1 = hammerObject_1.incr(ran, control);
-        res  = res1;
+		Util.indent(thr, level);
+		System.out.println("part2   incr12 : "+res2);
+	    }
 
-        Util.indent(thr, level);
-        System.out.println("part1   incr12 : "+res1);
+	    Util.indent(thr, level);
 
-        if (res)
-        {
-        res2 = hammerObject_2.incr(-ran, control);
-        res  = res2;
+	    control = null;
+    
+	    if (res)
+	    {
+		System.out.print("end ");
 
-        Util.indent(thr, level);
-        System.out.println("part2   incr12 : "+res2);
-        }
+		OTSImpleManager.current().commit(true);
+		res = true;
+	    }
+	    else
+	    {
+		System.out.print("abort  ");
+		OTSImpleManager.current().rollback();
+	    }
+	}
+	catch (Exception e)
+	{
+	    System.err.println("DistributedHammerWorker1.incr12: "+e);
+	    res1 = res2 = res = false;
+	}
 
-        Util.indent(thr, level);
+	Util.indent(thr, level);
 
-        control = null;
-
-        if (res)
-        {
-        System.out.print("end ");
-
-        OTSImpleManager.current().commit(true);
-        res = true;
-        }
-        else
-        {
-        System.out.print("abort  ");
-        OTSImpleManager.current().rollback();
-        }
-    }
-    catch (Exception e)
-    {
-        System.err.println("DistributedHammerWorker1.incr12: "+e);
-        res1 = res2 = res = false;
-    }
-
-    Util.indent(thr, level);
-
-    System.out.println(" incr12 : "+res1+" : "+res2+" : "+res
-               +" : "+ran);
+	System.out.println(" incr12 : "+res1+" : "+res2+" : "+res
+			   +" : "+ran);
     }
 
 public static void incr21 (char thr, int level)
     {
-    boolean res  = false;
-    boolean res1 = false;
-    boolean res2 = false;
+	boolean res  = false;
+	boolean res1 = false;
+	boolean res2 = false;
+    
+	int ran = 0;
 
-    int ran = 0;
+	try
+	{
+	    OTSImpleManager.current().begin();
+	    Control control = OTSImpleManager.current().get_control();
+    
+	    Util.indent(thr, level);
+	    System.out.println("begin   incr21");
 
-    try
-    {
-        OTSImpleManager.current().begin();
-        Control control = OTSImpleManager.current().get_control();
+	    ran = Util.rand.nextInt() % 16;
 
-        Util.indent(thr, level);
-        System.out.println("begin   incr21");
+	    res1 = hammerObject_2.incr(ran, control);
+	    res  = res1;
 
-        ran = Util.rand.nextInt() % 16;
+	    Util.indent(thr, level);
+	    System.out.println("part1   incr21 : "+res1);
+	    
+	    if (res)
+	    {
+		res2 = hammerObject_1.incr(-ran, control);
+		res  = res2;
 
-        res1 = hammerObject_2.incr(ran, control);
-        res  = res1;
+		Util.indent(thr, level);
+		System.out.println("part2   incr21 : "+res2);
+	    }
 
-        Util.indent(thr, level);
-        System.out.println("part1   incr21 : "+res1);
+	    control = null;
+    
+	    Util.indent(thr, level);
+	    if (res)
+	    {
+		System.out.print("end ");
+		OTSImpleManager.current().commit(true);
+		res = true;
+	    }
+	    else
+	    {
+		System.out.print("abort  ");
+		OTSImpleManager.current().rollback();
+	    }
+	}
+	catch (Exception e)
+	{
+	    System.err.println("DistributedHammerWorker1.incr21: "+e);
+	    res1 = res2 = res = false;
+	}
 
-        if (res)
-        {
-        res2 = hammerObject_1.incr(-ran, control);
-        res  = res2;
+	Util.indent(thr, level);
 
-        Util.indent(thr, level);
-        System.out.println("part2   incr21 : "+res2);
-        }
-
-        control = null;
-
-        Util.indent(thr, level);
-        if (res)
-        {
-        System.out.print("end ");
-        OTSImpleManager.current().commit(true);
-        res = true;
-        }
-        else
-        {
-        System.out.print("abort  ");
-        OTSImpleManager.current().rollback();
-        }
-    }
-    catch (Exception e)
-    {
-        System.err.println("DistributedHammerWorker1.incr21: "+e);
-        res1 = res2 = res = false;
-    }
-
-    Util.indent(thr, level);
-
-    System.out.println(" incr21 : "+res1+" : "+res2+" : "+res
-               +" : "+ran);
+	System.out.println(" incr21 : "+res1+" : "+res2+" : "+res
+			   +" : "+ran);
     }
 
 public static void get12 (char thr, int level)
     {
-    boolean res  = false;
-    boolean res1 = false;
-    boolean res2 = false;
+	boolean res  = false;
+	boolean res1 = false;
+	boolean res2 = false;
 
-    IntHolder value1 = new IntHolder(0);
-    IntHolder value2 = new IntHolder(0);
+	IntHolder value1 = new IntHolder(0);
+	IntHolder value2 = new IntHolder(0);
+	
+	try
+	{
+	    OTSImpleManager.current().begin();
+	    Control control = OTSImpleManager.current().get_control();
+    
+	    Util.indent(thr, level);
+	    System.out.println("begin   get12");
 
-    try
-    {
-        OTSImpleManager.current().begin();
-        Control control = OTSImpleManager.current().get_control();
+	    res1 = hammerObject_1.get(value1, control);
+	    res  = res1;
 
-        Util.indent(thr, level);
-        System.out.println("begin   get12");
+	    Util.indent(thr, level);
+	    System.out.println("part1   get12  : "+res1);
 
-        res1 = hammerObject_1.get(value1, control);
-        res  = res1;
+	    if (res)
+	    {
+		res2 = hammerObject_2.get(value2, control);
+		res  = res2;
 
-        Util.indent(thr, level);
-        System.out.println("part1   get12  : "+res1);
+		Util.indent(thr, level);
+		System.out.println("part2   get12  : "+res2);
+	    }
 
-        if (res)
-        {
-        res2 = hammerObject_2.get(value2, control);
-        res  = res2;
+	    control = null;
+    
+	    Util.indent(thr, level);
+	    if (res)
+	    {
+		System.out.print("end ");
+		OTSImpleManager.current().commit(true);
+	    }
+	    else
+	    {
+		System.out.print("abort  ");
+		OTSImpleManager.current().rollback();
+	    }
+	}
+	catch (Exception e)
+	{
+	    System.err.println("DistributedHammerWorker1.get12: "+e);
+	    res1 = res2 = res = false;
+	}
 
-        Util.indent(thr, level);
-        System.out.println("part2   get12  : "+res2);
-        }
+	Util.indent(thr, level);
 
-        control = null;
-
-        Util.indent(thr, level);
-        if (res)
-        {
-        System.out.print("end ");
-        OTSImpleManager.current().commit(true);
-        }
-        else
-        {
-        System.out.print("abort  ");
-        OTSImpleManager.current().rollback();
-        }
-    }
-    catch (Exception e)
-    {
-        System.err.println("DistributedHammerWorker1.get12: "+e);
-        res1 = res2 = res = false;
-    }
-
-    Util.indent(thr, level);
-
-    System.out.println(" get12  : "+res1+" : "+res2+" : "+res
-               +" : "+value1.value+" : "+value2.value);
+	System.out.println(" get12  : "+res1+" : "+res2+" : "+res
+			   +" : "+value1.value+" : "+value2.value);
     }
 
 public static void get21 (char thr, int level)
     {
-    boolean res  = false;
-    boolean res1 = false;
-    boolean res2 = false;
+	boolean res  = false;
+	boolean res1 = false;
+	boolean res2 = false;
 
-    IntHolder value1 = new IntHolder(0);
-    IntHolder value2 = new IntHolder(0);
+	IntHolder value1 = new IntHolder(0);
+	IntHolder value2 = new IntHolder(0);
+	
+	try
+	{
+	    OTSImpleManager.current().begin();
+	    Control control = OTSImpleManager.current().get_control();
+    
+	    Util.indent(thr, level);
+	    System.out.println("begin   get21");
 
-    try
-    {
-        OTSImpleManager.current().begin();
-        Control control = OTSImpleManager.current().get_control();
+	    res1 = hammerObject_2.get(value1, control);
+	    res  = res1;
 
-        Util.indent(thr, level);
-        System.out.println("begin   get21");
+	    Util.indent(thr, level);
+	    System.out.println("part1   get21  : "+res1);
 
-        res1 = hammerObject_2.get(value1, control);
-        res  = res1;
+	    if (res)
+	    {
+		res2 = hammerObject_1.get(value2, control);
+		res  = res2;
 
-        Util.indent(thr, level);
-        System.out.println("part1   get21  : "+res1);
+		Util.indent(thr, level);
+		System.out.println("part2   get21  : "+res2);
+	    }
 
-        if (res)
-        {
-        res2 = hammerObject_1.get(value2, control);
-        res  = res2;
+	    control = null;
+	
+	    Util.indent(thr, level);
+	    if (res)
+	    {
+		System.out.print("end ");
+		OTSImpleManager.current().commit(true);
+	    }
+	    else
+	    {
+		System.out.print("abort  ");
+		OTSImpleManager.current().rollback();
+	    }
+	}
+	catch (Exception e)
+	{
+	    System.err.println("DistributedHammerWorker1.get21: "+e);
+	    res1 = res2 = res = false;
+	}
 
-        Util.indent(thr, level);
-        System.out.println("part2   get21  : "+res2);
-        }
+	Util.indent(thr, level);
 
-        control = null;
-
-        Util.indent(thr, level);
-        if (res)
-        {
-        System.out.print("end ");
-        OTSImpleManager.current().commit(true);
-        }
-        else
-        {
-        System.out.print("abort  ");
-        OTSImpleManager.current().rollback();
-        }
-    }
-    catch (Exception e)
-    {
-        System.err.println("DistributedHammerWorker1.get21: "+e);
-        res1 = res2 = res = false;
-    }
-
-    Util.indent(thr, level);
-
-    System.out.println(" get21  : "+res1+" : "+res2+" : "+res
-               +" : "+value1.value+" : "+value2.value);
+	System.out.println(" get21  : "+res1+" : "+res2+" : "+res
+			   +" : "+value1.value+" : "+value2.value);
     }
 
 public static void randomOperation (char thr, int level)
     {
-    switch (Util.rand.nextInt() % 6)
-    {
+	switch (Util.rand.nextInt() % 6)
+	{
         case 0:
             incr12(thr, level);
             break;
@@ -297,51 +297,51 @@ public static void randomOperation (char thr, int level)
             break;
         case 4:
             {
-        try
-        {
-            OTSImpleManager.current().begin();
+		try
+		{
+		    OTSImpleManager.current().begin();
 
-            Util.indent(thr, level);
-            System.out.println("begin");
+		    Util.indent(thr, level);
+		    System.out.println("begin");
 
-            randomOperation(thr, level + 1);
-            randomOperation(thr, level + 1);
+		    randomOperation(thr, level + 1);
+		    randomOperation(thr, level + 1);
+		    
+		    OTSImpleManager.current().commit(true);
 
-            OTSImpleManager.current().commit(true);
-
-            Util.indent(thr, level);
-            System.out.println("end");
-        }
-        catch (Exception e)
-        {
-            System.err.println("DistributedHammerWorker1.randomOperation: "+e);
-        }
-        }
-    break;
+		    Util.indent(thr, level);
+		    System.out.println("end");
+		}
+		catch (Exception e)
+		{
+		    System.err.println("DistributedHammerWorker1.randomOperation: "+e);
+		}
+	    }
+	break;
         case 5:
             {
-        try
-        {
-            OTSImpleManager.current().begin();
+		try
+		{
+		    OTSImpleManager.current().begin();
 
-            Util.indent(thr, level);
-            System.out.println("begin");
+		    Util.indent(thr, level);
+		    System.out.println("begin");
 
-            randomOperation(thr, level + 1);
-            randomOperation(thr, level + 1);
+		    randomOperation(thr, level + 1);
+		    randomOperation(thr, level + 1);
 
-            OTSImpleManager.current().rollback();
+		    OTSImpleManager.current().rollback();
 
-            Util.indent(thr, level);
-            System.out.println("abort");
-        }
-        catch (Exception e)
-        {
-            System.err.println("DistributedHammerWorker1.randomOperation: "+e);
-        }
-        }
-    break;
-    }
+		    Util.indent(thr, level);
+		    System.out.println("abort");
+		}
+		catch (Exception e)
+		{
+		    System.err.println("DistributedHammerWorker1.randomOperation: "+e);
+		}
+	    }
+	break;
+	}
     }
 
     public static boolean get1(IntHolder value)

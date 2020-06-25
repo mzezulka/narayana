@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -55,90 +55,90 @@ public class ExpiredAssumedCompleteScanner implements ExpiryScanner
     @SuppressWarnings("unused")
     private ExpiredAssumedCompleteScanner ()
     {
-    // unused
+	// unused
     }
 
     protected ExpiredAssumedCompleteScanner (String typeName, RecoveryStore recoveryStore)
     {
 
-    if (jtsLogger.logger.isDebugEnabled()) {
+	if (jtsLogger.logger.isDebugEnabled()) {
         jtsLogger.logger.debug("ExpiredAssumedCompleteScanner created, with expiry time of "+_expiryTime+" seconds");
     }
-
-    _recoveryStore = recoveryStore;
-    _typeName = typeName;
-
+	
+	_recoveryStore = recoveryStore;
+	_typeName = typeName;
+	
     }
 
     public void scan ()
     {
 
-    // calculate the time before which items will be removed
-    Date oldestSurviving = new Date( new Date().getTime() - _expiryTime * 1000);
+	// calculate the time before which items will be removed
+	Date oldestSurviving = new Date( new Date().getTime() - _expiryTime * 1000);
 
 
-    if (jtsLogger.logger.isDebugEnabled()) {
+	if (jtsLogger.logger.isDebugEnabled()) {
         jtsLogger.logger.debug("ExpiredAssumedCompleteScanner - scanning to remove items from before "+_timeFormat.format(oldestSurviving));
     }
 
-    try
-    {
+	try
+	{
 
-        InputObjectState uids = new InputObjectState();
+	    InputObjectState uids = new InputObjectState();
+	    
+	    // find the uids of all the contact items
+	    if (_recoveryStore.allObjUids(_typeName, uids))
+	    {
+		Uid theUid = null;
 
-        // find the uids of all the contact items
-        if (_recoveryStore.allObjUids(_typeName, uids))
-        {
-        Uid theUid = null;
+		boolean endOfUids = false;
 
-        boolean endOfUids = false;
+		while (!endOfUids)
+		{
+		    // extract a uid
+		    theUid = UidHelper.unpackFrom(uids);
 
-        while (!endOfUids)
-        {
-            // extract a uid
-            theUid = UidHelper.unpackFrom(uids);
-
-            if (theUid.equals(Uid.nullUid()))
-            endOfUids = true;
-            else
-            {
-            Uid newUid = new Uid(theUid);
-            RecoveringTransaction aTransaction = null;
-            if (_typeName == AssumedCompleteTransaction.typeName()) {
-                aTransaction = new AssumedCompleteTransaction(newUid);
-            } else if (_typeName == AssumedCompleteServerTransaction.typeName()) {
-                aTransaction = new AssumedCompleteServerTransaction(newUid);
-            }
-            // ignore imaginable logic error of it being neither
-            if (aTransaction != null)
-            {
-                Date timeLastActive = aTransaction.getLastActiveTime();
-                if (timeLastActive != null && timeLastActive.before(oldestSurviving))
-                {
+		    if (theUid.equals(Uid.nullUid()))
+			endOfUids = true;
+		    else
+		    {
+			Uid newUid = new Uid(theUid);
+			RecoveringTransaction aTransaction = null;
+			if (_typeName == AssumedCompleteTransaction.typeName()) {
+			    aTransaction = new AssumedCompleteTransaction(newUid);
+			} else if (_typeName == AssumedCompleteServerTransaction.typeName()) {
+			    aTransaction = new AssumedCompleteServerTransaction(newUid);
+			} 
+			// ignore imaginable logic error of it being neither
+			if (aTransaction != null) 
+			{
+			    Date timeLastActive = aTransaction.getLastActiveTime();
+			    if (timeLastActive != null && timeLastActive.before(oldestSurviving)) 
+			    {
 
                     jtsLogger.i18NLogger.info_arjuna_recovery_ExpiredAssumedCompleteScanner_3(newUid);
-
-                _recoveryStore.remove_committed(newUid, _typeName);
-                }
-            }
-            }
-        }
-        }
-    }
-    catch (Exception e)
-    {
-        // end of uids!
-    }
+				
+				_recoveryStore.remove_committed(newUid, _typeName);
+			    }
+			}
+		    }
+		}
+	    }
+	}
+	catch (Exception e)
+	{
+	    // end of uids!
+	}
     }
     /**
      * @returns false if the expiry time is zero (i.e. zero means do not expire)
      */
     public boolean toBeUsed()
     {
-    return _expiryTime != 0;
+	return _expiryTime != 0;
     }
 
-    private String     _typeName;
+    private String	 _typeName;
     private RecoveryStore _recoveryStore;
     private static final int _expiryTime = recoveryPropertyManager.getRecoveryEnvironmentBean()
             .getTransactionStatusManagerExpiryTime() * 60 * 60;

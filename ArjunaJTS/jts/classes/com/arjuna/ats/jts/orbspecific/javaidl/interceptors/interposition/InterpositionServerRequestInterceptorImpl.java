@@ -83,26 +83,26 @@ import static java.security.AccessController.doPrivileged;
 
 class InterpositionServerRequestInterceptorImpl extends LocalObject implements ServerRequestInterceptor
 {
-    /**
-     * Provides an opportunity to destroy this interceptor.
-     * The destroy method is called during <code>ORB.destroy</code>. When an
-     * application calls <code>ORB.destroy</code>, the ORB:
-     * <ol>
-     *   <li>waits for all requests in progress to complete</li>
-     *   <li>calls the <code>Interceptor.destroy</code> operation for each
-     *       interceptor</li>
-     *   <li>completes destruction of the ORB</li>
-     * </ol>
-     * Method invocations from within <code>Interceptor.destroy</code> on
-     * object references for objects implemented on the ORB being destroyed
-     * result in undefined behavior. However, method invocations on objects
-     * implemented on an ORB other than the one being destroyed are
-     * permitted. (This means that the ORB being destroyed is still capable
-     * of acting as a client, but not as a server.)
-     */
-    public void destroy()
-    {
-    }
+	/**
+	 * Provides an opportunity to destroy this interceptor.
+	 * The destroy method is called during <code>ORB.destroy</code>. When an
+	 * application calls <code>ORB.destroy</code>, the ORB:
+	 * <ol>
+	 *   <li>waits for all requests in progress to complete</li>
+	 *   <li>calls the <code>Interceptor.destroy</code> operation for each
+	 *       interceptor</li>
+	 *   <li>completes destruction of the ORB</li>
+	 * </ol>
+	 * Method invocations from within <code>Interceptor.destroy</code> on
+	 * object references for objects implemented on the ORB being destroyed
+	 * result in undefined behavior. However, method invocations on objects
+	 * implemented on an ORB other than the one being destroyed are
+	 * permitted. (This means that the ORB being destroyed is still capable
+	 * of acting as a client, but not as a server.)
+	 */
+	public void destroy()
+	{
+	}
     /*
      * Only the transaction creator can terminate the transaction. So don't
      * propagate the terminator.
@@ -121,18 +121,18 @@ class InterpositionServerRequestInterceptorImpl extends LocalObject implements S
 
 public InterpositionServerRequestInterceptorImpl (int dataSlot, Codec codec)
     {
-    if (jtsLogger.logger.isTraceEnabled())
-    {
-        jtsLogger.logger.trace("InterpositionServerRequestInterceptorImpl ( "+dataSlot+" )");
-    }
+	if (jtsLogger.logger.isTraceEnabled())
+	{
+	    jtsLogger.logger.trace("InterpositionServerRequestInterceptorImpl ( "+dataSlot+" )");
+	}
 
-    _dataSlot = dataSlot;
-    _codec = codec;
+	_dataSlot = dataSlot;
+	_codec = codec;
     }
 
 public String name ()
     {
-    return "OTS_Interposition";
+	return "OTS_Interposition";
     }
 
     private void trace_request(String method, ServerRequestInfo request_info) {
@@ -143,134 +143,134 @@ public String name ()
 
 public void receive_request_service_contexts (ServerRequestInfo request_info) throws SystemException
     {
-    if (jtsLogger.logger.isTraceEnabled())
-    {
+	if (jtsLogger.logger.isTraceEnabled())
+	{
         trace_request("receive_request_service_contexts", request_info);
-    }
+	}
 
-    try
-    {
-        try
-        {
-        if (!InterceptorInfo.getAlwaysPropagate())
-        {
-            if (!request_info.target_is_a(TransactionalObjectHelper.id()))
-            throw new BAD_PARAM();
-        }
-        }
-        catch (Exception ex)
-        {
-        // just in case the object isn't in the IR.
-        }
+	try
+	{
+	    try
+	    {
+		if (!InterceptorInfo.getAlwaysPropagate())
+		{
+		    if (!request_info.target_is_a(TransactionalObjectHelper.id()))
+			throw new BAD_PARAM();
+		}
+	    }
+	    catch (Exception ex)
+	    {
+		// just in case the object isn't in the IR.
+	    }
 
-        /*
-         * OK, we may be transactional and expect some context information,
-         * even if it zero.
-         */
+	    /*
+	     * OK, we may be transactional and expect some context information,
+	     * even if it zero.
+	     */
 
-        try
-        {
-        ServiceContext serviceContext = null;
+	    try
+	    {
+		ServiceContext serviceContext = null;
 
-        try
-        {
-            serviceContext = request_info.get_request_service_context(OTSManager.serviceId);
-        }
-        catch (BAD_PARAM bp)
-        {
-            // no context, so nothing shipped!
+		try
+		{
+		    serviceContext = request_info.get_request_service_context(OTSManager.serviceId);
+		}
+		catch (BAD_PARAM bp)
+		{
+		    // no context, so nothing shipped!
 
-            serviceContext = null;
-        }
+		    serviceContext = null;
+		}
 
-        if (serviceContext != null)
-        {
-            Any receivedData;
-            try
-            {
-                final ServiceContext finalServiceContext = serviceContext;
-                receivedData = doPrivileged(new PrivilegedExceptionAction<Any>()
-                {
-                    @Override
-                    public Any run() throws org.omg.CORBA.UserException {
-                        return _codec.decode_value(finalServiceContext.context_data, PropagationContextHelper.type());
-                    }
-                });
-            }
-            catch (PrivilegedActionException pex)
-            {
-                throw pex.getException();
-            }
+		if (serviceContext != null)
+		{
+			Any receivedData;
+			try
+			{
+				final ServiceContext finalServiceContext = serviceContext;
+				receivedData = doPrivileged(new PrivilegedExceptionAction<Any>()
+				{
+					@Override
+					public Any run() throws org.omg.CORBA.UserException {
+						return _codec.decode_value(finalServiceContext.context_data, PropagationContextHelper.type());
+					}
+				});
+			}
+			catch (PrivilegedActionException pex)
+			{
+				throw pex.getException();
+			}
 
-            /*
-             * Set the slot information for the "current" thread. When
-             * the real invocation thread actually needs to get its
-             * transaction context it must check this slot (if it does
-             * not have a transaction context already) and then do
-             * a resume.
-             */
+		    /*
+		     * Set the slot information for the "current" thread. When
+		     * the real invocation thread actually needs to get its
+		     * transaction context it must check this slot (if it does
+		     * not have a transaction context already) and then do
+		     * a resume.
+		     */
 
-            request_info.set_slot(_dataSlot, receivedData);
-        }
-        else
-        {
-            /*
-             * Only throw an exception if we have no transaction
-             * context and we require one.
-             */
+		    request_info.set_slot(_dataSlot, receivedData);
+		}
+		else
+		{
+		    /*
+		     * Only throw an exception if we have no transaction
+		     * context and we require one.
+		     */
 
-            if (InterceptorInfo.getNeedTranContext())
-            throw new TRANSACTION_REQUIRED();
-        }
-        }
-        catch (TRANSACTION_REQUIRED ex)
-        {
-        throw ex;
-        }
-        catch (Exception e)
-        {
-        }
-    }
-    catch (BAD_PARAM ex)
-    {
-    }
+		    if (InterceptorInfo.getNeedTranContext())
+			throw new TRANSACTION_REQUIRED();
+		}
+	    }
+	    catch (TRANSACTION_REQUIRED ex)
+	    {
+		throw ex;
+	    }
+	    catch (Exception e)
+	    {
+	    }
+	}
+	catch (BAD_PARAM ex)
+	{
+	}
     }
 
 public void receive_request (ServerRequestInfo request_info) throws SystemException
     {
-    if (jtsLogger.logger.isTraceEnabled())
-    {
+	if (jtsLogger.logger.isTraceEnabled())
+	{
         trace_request("receive_request", request_info);
-    }
+	}
     }
 
 public void send_reply (ServerRequestInfo request_info) throws SystemException
     {
-    /*
-     * We could send the propagation context back to the client. Any
-     * reason?
-     * Yes, so that we can do low-cost abort and registration.
-     *
-     * //    PropagationContext* ctx = theCoordinator->get_txcontext();
-     */
+	/*
+	 * We could send the propagation context back to the client. Any
+	 * reason?
+	 * Yes, so that we can do low-cost abort and registration.
+	 *
+	 * //    PropagationContext* ctx = theCoordinator->get_txcontext();
+	 */
 
-    if (jtsLogger.logger.isTraceEnabled())
-    {
+	if (jtsLogger.logger.isTraceEnabled())
+	{
         trace_request("send_reply", request_info);
-    }
+	}
 
-    try
-    {
-        suspendContext(request_info);
-    }
-    catch (SystemException ex)
-    {
+	try
+	{
+	    suspendContext(request_info);
+	}
+	catch (SystemException ex)
+	{
         jtsLogger.i18NLogger.warn_orbspecific_javaidl_interceptors_interposition_srie(
                 "InterpositionServerRequestInterceptorImpl::send_reply", ex);
-
-        throw ex;
-    }
-    catch (Exception e) {
+	    
+	    throw ex;
+	}
+	catch (Exception e) {
         jtsLogger.i18NLogger.warn_orbspecific_javaidl_interceptors_interposition_srie("InterpositionServerRequestInterceptorImpl::send_reply", e);
 
         throw new BAD_OPERATION();
@@ -279,21 +279,21 @@ public void send_reply (ServerRequestInfo request_info) throws SystemException
 
 public void send_exception (ServerRequestInfo request_info) throws SystemException
     {
-    if (jtsLogger.logger.isTraceEnabled())
-    {
+	if (jtsLogger.logger.isTraceEnabled())
+	{
         trace_request("send_exception", request_info);
-    }
+	}
 
-    try
-    {
-        suspendContext(request_info);
-    }
-    catch (SystemException ex) {
+	try
+	{
+	    suspendContext(request_info);
+	}
+	catch (SystemException ex) {
         jtsLogger.i18NLogger.warn_orbspecific_javaidl_interceptors_interposition_srie("InterpositionServerRequestInterceptorImpl::send_exception", ex);
 
         throw ex;
     }
-    catch (Exception e) {
+	catch (Exception e) {
         jtsLogger.i18NLogger.warn_orbspecific_javaidl_interceptors_interposition_srie("InterpositionServerRequestInterceptorImpl::send_exception", e);
 
         throw new BAD_OPERATION();
@@ -302,21 +302,21 @@ public void send_exception (ServerRequestInfo request_info) throws SystemExcepti
 
 public void send_other (ServerRequestInfo request_info) throws SystemException
     {
-    if (jtsLogger.logger.isTraceEnabled())
-    {
+	if (jtsLogger.logger.isTraceEnabled())
+	{
         trace_request("send_other", request_info);
-    }
+	}
 
-    try
-    {
-        suspendContext(request_info);
-    }
-    catch (SystemException ex) {
+	try
+	{
+	    suspendContext(request_info);
+	}
+	catch (SystemException ex) {
         jtsLogger.i18NLogger.warn_orbspecific_javaidl_interceptors_interposition_srie("InterpositionServerRequestInterceptorImpl::send_other", ex);
 
         throw ex;
     }
-    catch (Exception e) {
+	catch (Exception e) {
         jtsLogger.i18NLogger.warn_orbspecific_javaidl_interceptors_interposition_srie("InterpositionServerRequestInterceptorImpl::send_other", e);
 
         throw new BAD_OPERATION();
@@ -334,33 +334,33 @@ public void send_other (ServerRequestInfo request_info) throws SystemException
 
 private void suspendContext (ServerRequestInfo request_info) throws SystemException, InvalidSlot
     {
-    if (jtsLogger.logger.isTraceEnabled())
-    {
+	if (jtsLogger.logger.isTraceEnabled())
+	{
         trace_request("suspendContext", request_info);
-    }
+	}
 
-    Any data = request_info.get_slot(_dataSlot);
+	Any data = request_info.get_slot(_dataSlot);
 
-    if ((data != null) && (data.type().kind().value() != TCKind._tk_null))
-    {
-        String threadId = null;
+	if ((data != null) && (data.type().kind().value() != TCKind._tk_null))
+	{
+	    String threadId = null;
 
-        try
-        {
-        if ((threadId = data.extract_string()) != null)
-        {
-            ControlWrapper ctx = OTSImpleManager.current().contextManager().popAction(threadId);
+	    try
+	    {
+		if ((threadId = data.extract_string()) != null)
+		{
+		    ControlWrapper ctx = OTSImpleManager.current().contextManager().popAction(threadId);
 
-            OTSImpleManager.current().contextManager().purgeActions(threadId);
-        }
-        }
-        catch (BAD_OPERATION bex)
-        {
-        // not a string, so still a pgcts
-        }
+		    OTSImpleManager.current().contextManager().purgeActions(threadId);
+		}
+	    }
+	    catch (BAD_OPERATION bex)
+	    {
+		// not a string, so still a pgcts
+	    }
 
-        request_info.set_slot(_dataSlot, null);
-    }
+	    request_info.set_slot(_dataSlot, null);
+	}
     }
 
 private Codec _codec;

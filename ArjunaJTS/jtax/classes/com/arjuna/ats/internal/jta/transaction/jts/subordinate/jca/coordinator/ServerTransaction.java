@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Arjuna Technologies Ltd,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.
+ * UK.  
  *
  * $Id: ServerTransaction.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -44,7 +44,7 @@ import com.arjuna.ats.jta.xa.XidImple;
 /**
  * This looks like an Transaction, but is only created for importing
  * transactions via JCA.
- *
+ * 
  * @author Mark Little (mark@arjuna.com)
  * @version $$
  * @since JTS 4.0.
@@ -58,95 +58,95 @@ import com.arjuna.ats.jta.xa.XidImple;
 public class ServerTransaction extends com.arjuna.ats.internal.jts.orbspecific.interposition.coordinator.ServerTransaction
 {
 
-    public ServerTransaction (Uid actUid, Xid xid)
-    {
-        super(actUid, null);
+	public ServerTransaction (Uid actUid, Xid xid)
+	{
+		super(actUid, null);
 
-        subordinate = true;
+		subordinate = true;
+		
+		// convert to internal format (makes saving/restoring easier)
+		
+		_theXid = new XidImple(xid);
+	}
 
-        // convert to internal format (makes saving/restoring easier)
+	public ServerTransaction (Uid actId)
+	{
+		super(actId);
 
-        _theXid = new XidImple(xid);
-    }
+		subordinate = true;
+		
+		if (!activate())  // if this fails we'll retry recovery periodically.\
+		{
+			_theXid = null; // should be the case anyway if activate fails, but ...
+		}
+	}
+	
+	public final Xid getXid ()
+	{
+		return _theXid;
+	}
+	
+	public String type ()
+	{
+		return getType();
+	}
+	
+	public static final String getType ()
+	{
+		return "/StateManager/BasicAction/TwoPhaseCoordinator/ArjunaTransactionImple/ServerTransaction/JCA";
+	}
 
-    public ServerTransaction (Uid actId)
-    {
-        super(actId);
+	/*
+	 * If this is a top-level transaction then we should have a recovery
+	 * coordinator reference, so save it away.
+	 */
 
-        subordinate = true;
+	public boolean save_state (OutputObjectState os, int ot)
+	{
+		try
+		{
+			if (_theXid != null) {
+				os.packBoolean(true);
+				_theXid.packInto(os);
+			} else {
+				os.packBoolean(false);
+			}
+			
+			return super.save_state(os, ot);
+		}
+		catch (IOException e)
+		{
+			jtaxLogger.i18NLogger.warn_cant_save_state(os, ot, e);
+		}
 
-        if (!activate())  // if this fails we'll retry recovery periodically.\
-        {
-            _theXid = null; // should be the case anyway if activate fails, but ...
-        }
-    }
+		return false;
+	}
 
-    public final Xid getXid ()
-    {
-        return _theXid;
-    }
+	public boolean restore_state (InputObjectState os, int ot)
+	{
+		try
+		{
+			_theXid = null;
+			
+			boolean haveXid = os.unpackBoolean();
 
-    public String type ()
-    {
-        return getType();
-    }
+			if (haveXid)
+			{
+				_theXid = new XidImple();
+				
+				_theXid.unpackFrom(os);
+			}
+			
+			return super.restore_state(os, ot);
+		}
+		catch (IOException ex)
+		{
+			jtaxLogger.i18NLogger.warn_cant_restore_state(os, ot, ex);
+		}
 
-    public static final String getType ()
-    {
-        return "/StateManager/BasicAction/TwoPhaseCoordinator/ArjunaTransactionImple/ServerTransaction/JCA";
-    }
+		return false;
+	}
 
-    /*
-     * If this is a top-level transaction then we should have a recovery
-     * coordinator reference, so save it away.
-     */
-
-    public boolean save_state (OutputObjectState os, int ot)
-    {
-        try
-        {
-            if (_theXid != null) {
-                os.packBoolean(true);
-                _theXid.packInto(os);
-            } else {
-                os.packBoolean(false);
-            }
-
-            return super.save_state(os, ot);
-        }
-        catch (IOException e)
-        {
-            jtaxLogger.i18NLogger.warn_cant_save_state(os, ot, e);
-        }
-
-        return false;
-    }
-
-    public boolean restore_state (InputObjectState os, int ot)
-    {
-        try
-        {
-            _theXid = null;
-
-            boolean haveXid = os.unpackBoolean();
-
-            if (haveXid)
-            {
-                _theXid = new XidImple();
-
-                _theXid.unpackFrom(os);
-            }
-
-            return super.restore_state(os, ot);
-        }
-        catch (IOException ex)
-        {
-            jtaxLogger.i18NLogger.warn_cant_restore_state(os, ot, ex);
-        }
-
-        return false;
-    }
-
-    private XidImple _theXid;
-
+	private XidImple _theXid;
+	
 }

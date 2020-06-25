@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -53,12 +53,12 @@ public class ExpiredContactScanner implements ExpiryScanner
     public ExpiredContactScanner ()
     {
 
-    if (jtsLogger.logger.isDebugEnabled()) {
+	if (jtsLogger.logger.isDebugEnabled()) {
         jtsLogger.logger.debug("ExpiredContactScanner created, with expiry time of "+_expiryTime+" seconds");
     }
-    _recoveryStore = StoreManager.getRecoveryStore();
-    _itemTypeName = FactoryContactItem.getTypeName();
-
+	_recoveryStore = StoreManager.getRecoveryStore();
+	_itemTypeName = FactoryContactItem.getTypeName();
+    
     }
 
     /**
@@ -67,61 +67,61 @@ public class ExpiredContactScanner implements ExpiryScanner
     public void scan ()
     {
 
-    // calculate the time before which items will be removed
-    Date oldestSurviving = new Date( new Date().getTime() - _expiryTime * 1000);
+	// calculate the time before which items will be removed
+	Date oldestSurviving = new Date( new Date().getTime() - _expiryTime * 1000);
 
-    if (jtsLogger.logger.isDebugEnabled()) {
+	if (jtsLogger.logger.isDebugEnabled()) {
         jtsLogger.logger.debug("ExpiredContactScanner - scanning to remove items from before "+_timeFormat.format(oldestSurviving));
     }
-    try
-    {
+	try
+	{
 
-        InputObjectState uids = new InputObjectState();
+	    InputObjectState uids = new InputObjectState();
+	    
+	    // find the uids of all the contact items
+	    if (_recoveryStore.allObjUids(_itemTypeName, uids))
+	    {
+		Uid theUid = null;
 
-        // find the uids of all the contact items
-        if (_recoveryStore.allObjUids(_itemTypeName, uids))
-        {
-        Uid theUid = null;
+		boolean endOfUids = false;
 
-        boolean endOfUids = false;
+		while (!endOfUids)
+		{
+		    // extract a uid
+		    theUid = UidHelper.unpackFrom(uids);
 
-        while (!endOfUids)
-        {
-            // extract a uid
-            theUid = UidHelper.unpackFrom(uids);
-
-            if (theUid.equals(Uid.nullUid()))
-            endOfUids = true;
-            else
-            {
-            Uid newUid = new Uid(theUid);
-
-            FactoryContactItem anItem = FactoryContactItem.recreate(newUid);
-            if (anItem != null)
-            {
-                Date timeOfDeath = anItem.getDeadTime();
-                if (timeOfDeath != null && timeOfDeath.before(oldestSurviving))
-                {
+		    if (theUid.equals(Uid.nullUid()))
+			endOfUids = true;
+		    else
+		    {
+			Uid newUid = new Uid(theUid);
+			
+			FactoryContactItem anItem = FactoryContactItem.recreate(newUid);
+			if (anItem != null) 
+			{
+			    Date timeOfDeath = anItem.getDeadTime();
+			    if (timeOfDeath != null && timeOfDeath.before(oldestSurviving)) 
+			    {
                     jtsLogger.i18NLogger.info_recovery_ExpiredContactScanner_3(newUid);
-                _recoveryStore.remove_committed(newUid, _itemTypeName);
-                }
-            }
-            }
-        }
-        }
+				_recoveryStore.remove_committed(newUid, _itemTypeName);
+			    }
+			}
+		    }
+		}
+	    }
+	}
+	catch (Exception e)
+	{
+	    // end of uids!
+	}
     }
-    catch (Exception e)
-    {
-        // end of uids!
-    }
-    }
-
+    
     public boolean toBeUsed()
     {
-    return _expiryTime != 0;
+	return _expiryTime != 0;
     }
 
-    private String     _itemTypeName;
+    private String	 _itemTypeName;
     private RecoveryStore _recoveryStore;
     private static final int _expiryTime = recoveryPropertyManager.getRecoveryEnvironmentBean()
             .getTransactionStatusManagerExpiryTime() * 60 * 60;

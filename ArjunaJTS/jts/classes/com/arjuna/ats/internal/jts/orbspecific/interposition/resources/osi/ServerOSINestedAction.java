@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Arjuna Solutions Limited,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.
+ * UK.  
  *
  * $Id: ServerOSINestedAction.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -41,19 +41,19 @@ import com.arjuna.ats.jts.logging.jtsLogger;
 
 public class ServerOSINestedAction extends ServerStrictNestedAction
 {
-
+    
     /*
      * Create local transactions with same ids as remote.
      * The base class is responsible for registering this resource
      * with its parent.
      */
-
+    
 public ServerOSINestedAction (ServerControl control,
-                   boolean doRegister)
+				   boolean doRegister)
     {
-    super(control, doRegister);
+	super(control, doRegister);
 
-    if (jtsLogger.logger.isTraceEnabled()) {
+	if (jtsLogger.logger.isTraceEnabled()) {
         jtsLogger.logger.trace("ServerOSINestedAction::ServerOSINestedAction ( " + _theUid + " )");
     }
     }
@@ -65,30 +65,30 @@ public ServerOSINestedAction (ServerControl control,
 
 public void commit_subtransaction (Coordinator parent) throws SystemException
     {
-    if (jtsLogger.logger.isTraceEnabled()) {
+	if (jtsLogger.logger.isTraceEnabled()) {
         jtsLogger.logger.trace("ServerOSINestedAction::commit_subtransaction :" + _theUid);
     }
 
-    /*
-     * First remove entry for this transaction otid
-     * from map. Have to do it here as we are going
-     * to be deleted by the base class!
-     */
-
-    OTIDMap.remove(get_uid());
-
-    super.commit_subtransaction(parent);
+	/*
+	 * First remove entry for this transaction otid
+	 * from map. Have to do it here as we are going
+	 * to be deleted by the base class!
+	 */
+    
+	OTIDMap.remove(get_uid());
+    
+	super.commit_subtransaction(parent);
     }
 
 public void rollback_subtransaction () throws SystemException
     {
-    if (jtsLogger.logger.isTraceEnabled()) {
+	if (jtsLogger.logger.isTraceEnabled()) {
         jtsLogger.logger.trace("ServerOSINestedAction::rollback_subtransaction :" + _theUid);
     }
 
-    OTIDMap.remove(get_uid());
-
-    super.rollback_subtransaction();
+	OTIDMap.remove(get_uid());
+    
+	super.rollback_subtransaction();
     }
-
+ 
 }

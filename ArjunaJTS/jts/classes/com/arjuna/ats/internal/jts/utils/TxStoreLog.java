@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Hewlett-Packard Arjuna Labs,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.
+ * UK.  
  *
  * $Id: TxStoreLog.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -42,26 +42,26 @@ public class TxStoreLog
 
     public static boolean getTransactions (InputObjectState os)
     {
-    return getTransactions(os, StateStatus.OS_UNKNOWN);
+	return getTransactions(os, StateStatus.OS_UNKNOWN);
     }
-
+ 
     public static boolean getTransactions (InputObjectState os, int status)
     {
-    RecoveryStore recoveryStore = StoreManager.getRecoveryStore();
+	RecoveryStore recoveryStore = StoreManager.getRecoveryStore();
 
-    try
-    {
-        return recoveryStore.allObjUids(com.arjuna.ats.internal.jts.orbspecific.coordinator.ArjunaTransactionImple.typeName(), os, status);
-    }
-    catch (NullPointerException ex)
-    {
-    }
-    catch (ObjectStoreException e)
-    {
-        e.printStackTrace();
-    }
+	try
+	{
+	    return recoveryStore.allObjUids(com.arjuna.ats.internal.jts.orbspecific.coordinator.ArjunaTransactionImple.typeName(), os, status);
+	}
+	catch (NullPointerException ex)
+	{
+	}
+	catch (ObjectStoreException e)
+	{
+	    e.printStackTrace();
+	}
 
-    return false;
+	return false;
     }
 
 }

@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -33,31 +33,31 @@ package com.hp.mwtests.ts.jts.utils;
 
 public class ResourceTrace
 {
-    public static final int    ResourceTraceUnknown = 0,
-                    ResourceTraceNone = 1,
-                    ResourceTracePrepare = 2,
-                    ResourceTracePrepareHeuristicHazard = 11,
-                    ResourceTracePrepareCommitHeurisiticRollback = 12,
-                    ResourceTracePrepareCommitHeurisiticRollbackForget = 13,
-                    ResourceTracePrepareHeuristicHazardForget = 14,
-                    ResourceTracePrepareCommit = 3,
-                    ResourceTracePrepareRollback = 4,
-                    ResourceTraceCommitOnePhase = 5,
-                    ResourceTraceRollback = 6,
-                    ResourceTracePrepareForget = 7,
-                    ResourceTracePrepareCommitForget = 8,
-                    ResourceTracePrepareRollbackForget = 9,
-                    ResourceTraceCommitOnePhaseForget = 10;
+    public static final int	ResourceTraceUnknown = 0,
+        			ResourceTraceNone = 1,
+        			ResourceTracePrepare = 2,
+        			ResourceTracePrepareHeuristicHazard = 11,
+        			ResourceTracePrepareCommitHeurisiticRollback = 12,
+        			ResourceTracePrepareCommitHeurisiticRollbackForget = 13,
+        			ResourceTracePrepareHeuristicHazardForget = 14,
+        			ResourceTracePrepareCommit = 3,
+			        ResourceTracePrepareRollback = 4,
+			        ResourceTraceCommitOnePhase = 5,
+			        ResourceTraceRollback = 6,
+			        ResourceTracePrepareForget = 7,
+			        ResourceTracePrepareCommitForget = 8,
+			        ResourceTracePrepareRollbackForget = 9,
+			        ResourceTraceCommitOnePhaseForget = 10;
 
-    private int            _value = ResourceTraceNone;
+    private int			_value = ResourceTraceNone;
 
     public int getTrace()
     {
-        return(_value);
+    	return(_value);
     }
 
     public void setTrace(int value)
     {
-       _value = value;
+   	_value = value;
     }
 }

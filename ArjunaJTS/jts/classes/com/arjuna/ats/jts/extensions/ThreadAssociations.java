@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -55,188 +55,188 @@ public class ThreadAssociations
 
     public final static boolean add (TxAssociation tx)
     {
-    if (tx == null)
-        return false;
+	if (tx == null)
+	    return false;
+	
+	Vector v;
+	Thread ct = Thread.currentThread();
+	    
+	synchronized (txAssociations)
+	    {
+		v = (Vector) txAssociations.get(tx);
 
-    Vector v;
-    Thread ct = Thread.currentThread();
+		if (v == null)
+		{
+		    v = new Vector();
+		    txAssociations.put(ct, v);
+		}
+	    }
 
-    synchronized (txAssociations)
-        {
-        v = (Vector) txAssociations.get(tx);
+	v.addElement(tx);
 
-        if (v == null)
-        {
-            v = new Vector();
-            txAssociations.put(ct, v);
-        }
-        }
-
-    v.addElement(tx);
-
-    return true;
+	return true;
     }
 
     public final static boolean addGlobal (TxAssociation tx)
     {
-    if (tx == null)
-        return false;
+	if (tx == null)
+	    return false;
 
-    synchronized (globalTxAssociations)
-        {
-        globalTxAssociations.addElement(tx);
-        }
+	synchronized (globalTxAssociations)
+	    {
+		globalTxAssociations.addElement(tx);
+	    }
 
-    return true;
+	return true;
     }
 
     public final static boolean remove (TxAssociation tx)
     {
-    if (tx == null)
-        return false;
+	if (tx == null)
+	    return false;
 
-    synchronized (txAssociations)
-        {
-        Thread ct = Thread.currentThread();
-        Vector v = (Vector) txAssociations.get(ct);
+	synchronized (txAssociations)
+	    {
+		Thread ct = Thread.currentThread();
+		Vector v = (Vector) txAssociations.get(ct);
+		
+		v.removeElement(tx);
 
-        v.removeElement(tx);
+		if (v.size() == 0)
+		    txAssociations.remove(ct);
+	    }
 
-        if (v.size() == 0)
-            txAssociations.remove(ct);
-        }
-
-    return true;
+	return true;
     }
 
     public final static boolean removeGlobal (TxAssociation tx)
     {
-    if (tx == null)
-        return false;
+	if (tx == null)
+	    return false;
 
-    synchronized (globalTxAssociations)
-        {
-        globalTxAssociations.removeElement(tx);
-        }
+	synchronized (globalTxAssociations)
+	    {
+		globalTxAssociations.removeElement(tx);
+	    }
 
-    return true;
+	return true;
     }
 
     public final static boolean removeAll (boolean global)
     {
-    if (global)
-    {
-        synchronized (globalTxAssociations)
-        {
-            globalTxAssociations.removeAllElements();
-            globalTxAssociations = null;
-        }
-    }
-    else
-    {
-        synchronized (txAssociations)
-        {
-            txAssociations.clear();
-            txAssociations = null;
-        }
-    }
+	if (global)
+	{
+	    synchronized (globalTxAssociations)
+		{
+		    globalTxAssociations.removeAllElements();
+		    globalTxAssociations = null;
+		}
+	}
+	else
+	{
+	    synchronized (txAssociations)
+		{
+		    txAssociations.clear();
+		    txAssociations = null;
+		}
+	}
 
-    return true;
+	return true;
     }
-
+	    
     final static void updateAssociation (ControlWrapper tx, int reason)
     {
+	
+	/*
+	 * Do thread specific first.
+	 */
+	
+	try
+	{
+	    synchronized (txAssociations)
+		{
+		    Vector v = (Vector) txAssociations.get(Thread.currentThread());
 
-    /*
-     * Do thread specific first.
-     */
+		    if (v != null)
+		    {
+			for (int i = 0; i < v.size(); i++)
+			{
+			    TxAssociation ta = (TxAssociation) v.elementAt(i);
 
-    try
-    {
-        synchronized (txAssociations)
-        {
-            Vector v = (Vector) txAssociations.get(Thread.currentThread());
-
-            if (v != null)
-            {
-            for (int i = 0; i < v.size(); i++)
-            {
-                TxAssociation ta = (TxAssociation) v.elementAt(i);
-
-                try
-                {
-                if (ta != null)
-                    update(ta, tx, reason);
-                }
-                catch (SystemException e)
-                {
+			    try
+			    {
+				if (ta != null)
+				    update(ta, tx, reason);
+			    }
+			    catch (SystemException e)
+			    {
                     jtsLogger.i18NLogger.warn_extensions_threadasserror("ThreadAssociations.updateAssociations", e);
-                }
-            }
-            }
-        }
+			    }
+			}
+		    }
+		}
+	    
+	    /*
+	     * Now do globals.
+	     */
 
-        /*
-         * Now do globals.
-         */
+	    synchronized (globalTxAssociations)
+		{
+		    for (int i = 0; i < globalTxAssociations.size(); i++)
+		    {
+			TxAssociation ta = (TxAssociation) globalTxAssociations.elementAt(i);
 
-        synchronized (globalTxAssociations)
-        {
-            for (int i = 0; i < globalTxAssociations.size(); i++)
-            {
-            TxAssociation ta = (TxAssociation) globalTxAssociations.elementAt(i);
-
-            try
-            {
-                if (ta != null)
-                update(ta, tx, reason);
-            }
-            catch (SystemException e)
-            {
+			try
+			{
+			    if (ta != null)
+				update(ta, tx, reason);
+			}
+			catch (SystemException e)
+			{
                 jtsLogger.i18NLogger.warn_extensions_threadasserror("ThreadAssociations.updateAssociations", e);
-            }
-            }
-        }
+			}
+		    }
+		}
+	}
+	catch (Throwable t)
+	{
+	    // ignore any exceptions or errors!
+	}
     }
-    catch (Throwable t)
-    {
-        // ignore any exceptions or errors!
-    }
-    }
-
+ 
     private static void update (TxAssociation ta, ControlWrapper tx,
-                int reason) throws SystemException
+				int reason) throws SystemException
     {
-    switch (reason)
-    {
-    case CurrentImple.TX_BEGUN:
-        {
-        ta.begin(tx);
-        }
-        break;
-    case CurrentImple.TX_COMMITTED:
-        {
-        ta.commit(tx);
-        }
-        break;
-    case CurrentImple.TX_ABORTED:
-        {
-        ta.rollback(tx);
-        }
-        break;
-    case CurrentImple.TX_SUSPENDED:
-        {
-        ta.suspend(tx);
-        }
-        break;
-    case CurrentImple.TX_RESUMED:
-        {
-        ta.resume(tx);
-        }
-        break;
-    default:
-        break;
-    }
+	switch (reason)
+	{
+	case CurrentImple.TX_BEGUN:
+	    {
+		ta.begin(tx);
+	    }
+	    break;
+	case CurrentImple.TX_COMMITTED:
+	    {
+		ta.commit(tx);
+	    }
+	    break;
+	case CurrentImple.TX_ABORTED:
+	    {
+		ta.rollback(tx);
+	    }
+	    break;
+	case CurrentImple.TX_SUSPENDED:
+	    {
+		ta.suspend(tx);
+	    }
+	    break;
+	case CurrentImple.TX_RESUMED:
+	    {
+		ta.resume(tx);
+	    }
+	    break;
+	default:
+	    break;
+	}
     }
 
     private static Hashtable txAssociations = new Hashtable();

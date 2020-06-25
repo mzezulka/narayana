@@ -82,7 +82,7 @@ public class RecoveryEnablement implements RecoveryActivator
      * This static method is used by the RecoveryManager to suppress
      * aspects of recovery enablement in it's own
      * process, without requiring further property manipulations
-     *
+     * 
      * @deprecated Only used by tests
      */
 
@@ -92,7 +92,7 @@ public class RecoveryEnablement implements RecoveryActivator
     }
 
     /**
-     *
+     * 
      * @deprecated Only used by tests
      */
     public static boolean isNormalProcess ()
@@ -169,7 +169,7 @@ public class RecoveryEnablement implements RecoveryActivator
         // see if there is a property defining the recoverymanager
         // servicename
 
-        //    _RecoveryManagerTag = System.getProperty(RecoveryEnvironment.RECOVERY_MANAGER_TAG);
+        //	_RecoveryManagerTag = System.getProperty(RecoveryEnvironment.RECOVERY_MANAGER_TAG);
 
         if (_RecoveryManagerTag == null)
         {

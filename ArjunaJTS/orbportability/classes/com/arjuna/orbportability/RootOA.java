@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -85,7 +85,7 @@ public class RootOA extends OA
                     }
                 }
 
-                //        _preOAShutdown.clear();
+                //		_preOAShutdown.clear();
             }
 
             _oa.destroyRootPOA();
@@ -105,7 +105,7 @@ public class RootOA extends OA
                     }
                 }
 
-                //        _postOAShutdown.clear();
+                //		_postOAShutdown.clear();
             }
         }
     }
@@ -172,7 +172,7 @@ public boolean objectIsReady (Servant obj) throws SystemException
                 result = false;
             }
 
-        //??
+	    //??
 
             EventManager.getManager().connected(corbaReference(obj));
         }
@@ -246,13 +246,13 @@ public boolean shutdownObject (Servant obj)
                 result = false;
             }
         }
-    catch (NullPointerException ex)
-    {
-        /*
-         * Ignore this as it means some other thread/process was sharing
-         * the POA and shut it down itself.
-         */
-    }
+	catch (NullPointerException ex)
+	{
+	    /*
+	     * Ignore this as it means some other thread/process was sharing
+	     * the POA and shut it down itself.
+	     */
+	}
         catch (Exception e)
         {
             if(e instanceof OBJECT_NOT_EXIST) {

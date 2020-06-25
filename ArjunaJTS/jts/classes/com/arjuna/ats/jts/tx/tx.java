@@ -75,15 +75,15 @@ public class tx
 
     public static final synchronized int tx_open ()
     {
-    int toReturn = tx.TX_ERROR;  // what to return?
+	int toReturn = tx.TX_ERROR;  // what to return?
 
-    if (!__tx_open)
-    {
-        __tx_open = true;
-        toReturn = tx.TX_OK;
-    }
+	if (!__tx_open)
+	{
+	    __tx_open = true;
+	    toReturn = tx.TX_OK;
+	}
 
-    return toReturn;
+	return toReturn;
     }
 
     /**
@@ -94,15 +94,15 @@ public class tx
 
     public static final synchronized int tx_close ()
     {
-    int toReturn = tx.TX_ERROR;
+	int toReturn = tx.TX_ERROR;
 
-    if (__tx_open)
-    {
-        __tx_open = false;
-        toReturn = tx.TX_OK;
-    }
+	if (__tx_open)
+	{
+	    __tx_open = false;
+	    toReturn = tx.TX_OK;
+	}
 
-    return toReturn;
+	return toReturn;
     }
 
     public static final synchronized int tx_disable_nesting ()
@@ -117,67 +117,67 @@ public class tx
 
         return toReturn;
     }
-
+    
     public static final synchronized int tx_allow_nesting ()
     {
-    int toReturn = tx.TX_PROTOCOL_ERROR;
+	int toReturn = tx.TX_PROTOCOL_ERROR;
 
-    if (!__tx_open)
-    {
-        __tx_allow_nesting = true;
-        toReturn = tx.TX_OK;
-    }
+	if (!__tx_open)
+	{
+	    __tx_allow_nesting = true;
+	    toReturn = tx.TX_OK;
+	}
 
-    return toReturn;
+	return toReturn;
     }
 
     public static final synchronized int tx_begin ()
     {
-    int toReturn = tx.TX_OK;
-    CurrentImple current = OTSImpleManager.current();
+	int toReturn = tx.TX_OK;
+	CurrentImple current = OTSImpleManager.current();
 
-    if (!__tx_allow_nesting)
-    {
-        /*
-         * Already have a transaction?
-         */
+	if (!__tx_allow_nesting)
+	{
+	    /*
+	     * Already have a transaction?
+	     */
 
-        try
-        {
-        Control control = current.get_control();
+	    try
+	    {
+		Control control = current.get_control();
 
-        if (control != null)
-        {
-            /*
-             * Have a transaction already, and not allowed to
-             * create nested transactions!
-             */
+		if (control != null)
+		{
+		    /*
+		     * Have a transaction already, and not allowed to
+		     * create nested transactions!
+		     */
 
-            toReturn = tx.TX_PROTOCOL_ERROR;
-            control = null;
-        }
-        }
-        catch (Exception e)
-        {
-        // something went wrong!
+		    toReturn = tx.TX_PROTOCOL_ERROR;
+		    control = null;
+		}
+	    }
+	    catch (Exception e)
+	    {
+		// something went wrong!
 
-        toReturn = tx.TX_FAIL;
-        }
-    }
+		toReturn = tx.TX_FAIL;
+	    }
+	}
 
-    if (toReturn == tx.TX_OK)
-    {
-        try
-        {
-        current.begin();
-        }
-        catch (Exception e)
-        {
-        toReturn = tx.TX_FAIL;
-        }
-    }
+	if (toReturn == tx.TX_OK)
+	{
+	    try
+	    {
+		current.begin();
+	    }
+	    catch (Exception e)
+	    {
+		toReturn = tx.TX_FAIL;
+	    }
+	}
 
-    return toReturn;
+	return toReturn;
     }
 
     /**
@@ -187,102 +187,102 @@ public class tx
 
     public static final synchronized int tx_rollback ()
     {
-    int toReturn = tx.TX_OK;
-    CurrentImple current = OTSImpleManager.current();
+	int toReturn = tx.TX_OK;
+	CurrentImple current = OTSImpleManager.current();
 
-    try
-    {
-        current.rollback();
-    }
-    catch (NoTransaction e1)
-    {
-        toReturn = tx.TX_NO_BEGIN;
-    }
-    catch (Exception e2)
-    {
-        toReturn = tx.TX_FAIL;
-    }
+	try
+	{
+	    current.rollback();
+	}
+	catch (NoTransaction e1)
+	{
+	    toReturn = tx.TX_NO_BEGIN;
+	}
+	catch (Exception e2)
+	{
+	    toReturn = tx.TX_FAIL;
+	}
 
-    return toReturn;
+	return toReturn;
     }
 
     public static final synchronized int tx_set_commit_return (int when_return)
     {
-    int toReturn = tx.TX_OK;
-    boolean b = ((when_return == 0) ? false : true);
+	int toReturn = tx.TX_OK;
+	boolean b = ((when_return == 0) ? false : true);
 
-    if ((when_return == tx.TX_COMMIT_COMPLETED) ||
-        (when_return == tx.TX_COMMIT_DESICION_LOGGED))
-    {
-        __tx_report_heuristics.put(Thread.currentThread(), new Boolean(b));
-    }
-    else
-        toReturn = tx.TX_PROTOCOL_ERROR;
+	if ((when_return == tx.TX_COMMIT_COMPLETED) ||
+	    (when_return == tx.TX_COMMIT_DESICION_LOGGED))
+	{
+	    __tx_report_heuristics.put(Thread.currentThread(), new Boolean(b));
+	}
+	else
+	    toReturn = tx.TX_PROTOCOL_ERROR;
 
-    return toReturn;
+	return toReturn;
     }
 
     public static final synchronized int tx_commit ()
     {
-    int toReturn = tx.TX_OK;
-    CurrentImple current = OTSImpleManager.current();
-    Boolean report_heuristics = (Boolean) __tx_report_heuristics.get(Thread.currentThread());
+	int toReturn = tx.TX_OK;
+	CurrentImple current = OTSImpleManager.current();
+	Boolean report_heuristics = (Boolean) __tx_report_heuristics.get(Thread.currentThread());
 
-    if (report_heuristics == null)
-        report_heuristics = new Boolean(true);  // default TRUE
+	if (report_heuristics == null)
+	    report_heuristics = new Boolean(true);  // default TRUE
 
-    try
-    {
-        boolean when_return = report_heuristics.booleanValue();
+	try
+	{
+	    boolean when_return = report_heuristics.booleanValue();
 
-        current.commit(when_return);
-    }
-    catch (NoTransaction e1)
-    {
-        toReturn = tx.TX_NO_BEGIN;
-    }
-    catch (HeuristicMixed e2)
-    {
-        toReturn = tx.TX_HAZARD;
-    }
-    catch (HeuristicHazard e3)
-    {
-        toReturn = tx.TX_HAZARD;
-    }
-    catch (TRANSACTION_ROLLEDBACK e4)
-    {
-        toReturn = tx.TX_ROLLBACK;
-    }
-    catch (Exception e5)
-    {
-        toReturn = tx.TX_FAIL;
-    }
+	    current.commit(when_return);
+	}
+	catch (NoTransaction e1)
+	{
+	    toReturn = tx.TX_NO_BEGIN;
+	}
+	catch (HeuristicMixed e2)
+	{
+	    toReturn = tx.TX_HAZARD;
+	}
+	catch (HeuristicHazard e3)
+	{
+	    toReturn = tx.TX_HAZARD;
+	}
+	catch (TRANSACTION_ROLLEDBACK e4)
+	{
+	    toReturn = tx.TX_ROLLBACK;
+	}
+	catch (Exception e5)
+	{
+	    toReturn = tx.TX_FAIL;
+	}
 
-    return toReturn;
+	return toReturn;
     }
 
     public static final synchronized int tx_set_transaction_control (int control)
     {
-    return tx.TX_FAIL;
+	return tx.TX_FAIL;
     }
 
     public static final synchronized int tx_set_transaction_timeout (int timeout)
     {
-    int toReturn = tx.TX_OK;
-    CurrentImple current = OTSImpleManager.current();
+	int toReturn = tx.TX_OK;
+	CurrentImple current = OTSImpleManager.current();
 
-    try
-    {
-        current.set_timeout(timeout);
-    }
-    catch (Exception e)
-    {
-        toReturn = tx.TX_FAIL;
-    }
+	try
+	{
+	    current.set_timeout(timeout);
+	}
+	catch (Exception e)
+	{
+	    toReturn = tx.TX_FAIL;
+	}
 
-    return toReturn;
+	return toReturn;
     }
-
+    
     private static boolean   __tx_open = false;
     private static boolean   __tx_allow_nesting = false;
     private static Hashtable __tx_report_heuristics = new Hashtable();

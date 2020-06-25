@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -41,72 +41,72 @@ public class TransactionalThread extends Thread
 
     public TransactionalThread ()
     {
-    done = false;
-    control = null;
+	done = false;
+	control = null;
     }
-
+    
     public TransactionalThread (Control currentTran)
     {
-    done = false;
-    control = currentTran;
+	done = false;
+	control = currentTran;
     }
 
     public void run ()
     {
-    boolean shouldWork = false;
+	boolean shouldWork = false;
+	
+	CurrentImple current = OTSImpleManager.current();
 
-    CurrentImple current = OTSImpleManager.current();
+	if (control != null)
+	{
+	    System.out.println("New thread resuming transaction.");
 
-    if (control != null)
-    {
-        System.out.println("New thread resuming transaction.");
+	    try
+	    {
+		current.resume(control);
+	    }
+	    catch (Exception e)
+	    {
+		System.err.println("Caught unexpected exception: "+e);
+		System.exit(1);
+	    }
+	}
+	
+	try
+	{
+	    System.out.print("Non-creating thread trying to commit transaction. ");
+	    
+	    if (control == null)
+		System.out.println("Should fail - no transaction associated with thread!");
+	    else
+		System.out.println("Should succeed.");
+		
+	    current.commit(true);
 
-        try
-        {
-        current.resume(control);
-        }
-        catch (Exception e)
-        {
-        System.err.println("Caught unexpected exception: "+e);
-        System.exit(1);
-        }
-    }
+	    System.out.print("Non-creating thread committed transaction. ");
 
-    try
-    {
-        System.out.print("Non-creating thread trying to commit transaction. ");
+	    if (control == null)
+	    {
+		System.out.println("Error.");
+		System.exit(1);
+	    }
+	    else
+		System.out.println();
+	}
+	catch (Exception e)
+	{
+	    System.err.println("Caught unexpected exception: "+e);
+	}
 
-        if (control == null)
-        System.out.println("Should fail - no transaction associated with thread!");
-        else
-        System.out.println("Should succeed.");
-
-        current.commit(true);
-
-        System.out.print("Non-creating thread committed transaction. ");
-
-        if (control == null)
-        {
-        System.out.println("Error.");
-        System.exit(1);
-        }
-        else
-        System.out.println();
-    }
-    catch (Exception e)
-    {
-        System.err.println("Caught unexpected exception: "+e);
-    }
-
-    done = true;
+	done = true;
     }
 
     public synchronized boolean finished ()
     {
-    return done;
+	return done;
     }
 
     private boolean done;
     private Control control;
-
+    
 }

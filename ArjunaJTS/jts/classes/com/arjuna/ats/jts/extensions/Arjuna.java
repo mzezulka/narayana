@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Hewlett-Packard Arjuna Labs,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.
+ * UK.  
  *
  * $Id: Arjuna.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -45,71 +45,71 @@ import com.arjuna.ats.jts.logging.jtsLogger;
 
 public class Arjuna
 {
-
+    
 public static final int XID ()
     {
-    return FormatConstants.JTS_FORMAT_ID;
+	return FormatConstants.JTS_FORMAT_ID;
     }
 
 public static final int strictXID ()
     {
-    return FormatConstants.JTS_STRICT_FORMAT_ID;
+	return FormatConstants.JTS_STRICT_FORMAT_ID;
     }
 
 public static final int restrictedXID ()
     {
     return FormatConstants.JTS_RESTRICTED_FORMAT_ID;
     }
-
+    
 public static final String arjunaXID ()
     {
-    return "ArjunaXID";
+	return "ArjunaXID";
     }
 
 public static final String arjunaStrictXID ()
     {
-    return "ArjunaStrictXID";
+	return "ArjunaStrictXID";
     }
-
+  
 public static final String arjunaRestrictedXID ()
     {
-    return "ArjunaRestrictedXID";
+	return "ArjunaRestrictedXID";
     }
 
 public static final String osiXID ()
     {
-    return "OSI";
+	return "OSI";
     }
-
+    
 public static final int nameToXID (String name)
     {
-    if (name == null)
-        return Arjuna.XID();
-    else
-    {
-        if (name.compareTo(Arjuna.arjunaXID()) == 0)
-        return Arjuna.XID();
-        else
-        {
-        if (name.compareTo(Arjuna.arjunaStrictXID()) == 0)
-            return Arjuna.strictXID();
-        else
-        {
-            if (name.compareTo(Arjuna.arjunaRestrictedXID()) == 0)
-            return Arjuna.restrictedXID();
-            else
-            {
-            if (name.compareTo(Arjuna.osiXID()) == 0)
-                return 0; // osi tp
-            else
+	if (name == null)
+	    return Arjuna.XID();
+	else
+	{
+	    if (name.compareTo(Arjuna.arjunaXID()) == 0)
+		return Arjuna.XID();
+	    else
+	    {
+		if (name.compareTo(Arjuna.arjunaStrictXID()) == 0)
+		    return Arjuna.strictXID();
+		else
+		{
+		    if (name.compareTo(Arjuna.arjunaRestrictedXID()) == 0)
+			return Arjuna.restrictedXID();
+		    else
+		    {
+			if (name.compareTo(Arjuna.osiXID()) == 0)
+			    return 0; // osi tp
+			else
             {
                 jtsLogger.i18NLogger.warn_orbspecific_coordinator_ipunknown("Arjuna.nameToXID", name);
-                return Arjuna.XID();
+			    return Arjuna.XID();
             }
-            }
-        }
-        }
+		    }
+		}
+	    }
+	}
     }
-    }
-
+ 
 }

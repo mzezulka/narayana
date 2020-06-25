@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -47,32 +47,32 @@ import com.arjuna.ats.jts.logging.jtsLogger;
 
 /**
  * This interceptor redirects requests towards the RecoveryCoordinator returned on register_resource
- * to another target, a Recovery Coordinator located in the Recovery Manager, by throwing a ForwardRequest
+ * to another target, a Recovery Coordinator located in the Recovery Manager, by throwing a ForwardRequest 
  * exception.
  *
  * @author Malik Saheb
  */
 public class ClientForwardInterceptor
-    extends org.omg.CORBA.LocalObject
+    extends org.omg.CORBA.LocalObject 
     implements ClientRequestInterceptor
 {
-    public ClientForwardInterceptor(org.omg.CORBA.ORB orb,
-                    org.omg.PortableInterceptor.Current _piCurrent,
-                    int _IndicatorSlotId)
+    public ClientForwardInterceptor(org.omg.CORBA.ORB orb, 
+				    org.omg.PortableInterceptor.Current _piCurrent,
+				    int _IndicatorSlotId)
     {
 
-    if (jtsLogger.logger.isDebugEnabled()) {
+	if (jtsLogger.logger.isDebugEnabled()) {
         jtsLogger.logger.debug("Client Interceptor for RecoveryCoordinators created");
     }
 
-    piCurrent = _piCurrent;
-    IndicatorSlotId = _IndicatorSlotId;
-    org.omg.CORBA.Object obj = null ;
-    _ourOrb = orb;
-
+	piCurrent = _piCurrent;
+	IndicatorSlotId = _IndicatorSlotId;
+	org.omg.CORBA.Object obj = null ;
+	_ourOrb = orb;
+	
     }
 
-    public String name()
+    public String name() 
     {
         return "arjuna.ClientForwardInterceptor";
     }
@@ -85,54 +85,54 @@ public class ClientForwardInterceptor
     /**
      * Throws a ForwardRequest
      */
-    public void send_request(ClientRequestInfo ri)
+    public void send_request(ClientRequestInfo ri) 
         throws ForwardRequest
     {
 
-    String objectIdString = null;
+	String objectIdString = null;
 
-    try  {
-        RCobjectId = JacOrbRCServiceInit._poa.reference_to_id(ri.effective_target());
-        objectIdString = new String(RCobjectId);
-
-        if ( objectIdString.compareTo("RecoveryManager")== 0 )
-        {
-            Any indicator = ri.get_slot(IndicatorSlotId);
-            if (indicator.type().kind().equals(TCKind.tk_null))
-            {
-                ri.add_request_service_context(RCctx, false);
-            }
-        }
-    }
-    catch(Exception ex) {
+	try  {
+	    RCobjectId = JacOrbRCServiceInit._poa.reference_to_id(ri.effective_target());
+	    objectIdString = new String(RCobjectId);
+	    	    
+	    if ( objectIdString.compareTo("RecoveryManager")== 0 )
+		{
+		    Any indicator = ri.get_slot(IndicatorSlotId);
+		    if (indicator.type().kind().equals(TCKind.tk_null))
+			{
+			    ri.add_request_service_context(RCctx, false);
+			}
+		}
+	}
+	catch(Exception ex) {
         jtsLogger.i18NLogger.warn_orbspecific_jacorb_recoverycoordinators_ClientForwardInterceptor_4(ex);
     }
 
 
-    if (!in_loop)
-        {
-        in_loop = true;
-        if ( objectIdString.compareTo("RecoveryManager")!= 0 ) {
+	if (!in_loop)
+	    {
+		in_loop = true;
+		if ( objectIdString.compareTo("RecoveryManager")!= 0 ) {
 
-            if (ri.effective_target()._is_a(RecoveryCoordinatorHelper.id()))
-            {
-                /*
-                 * Extract the substring of the ObjectId that contains the Uid and
-                 * the Process Id and pass it to the data of the service context
-                 */
-                RCobjectId = extractObjectId(objectIdString).getBytes();
-                RCctx = new ServiceContext(RecoveryContextId, RCobjectId);
-                in_loop = false;
-                throw new ForwardRequest( reco );
-            }
-            else
-            {
-                in_loop = false;
-            }
-        }
-        in_loop = false;
-        }
-
+		    if (ri.effective_target()._is_a(RecoveryCoordinatorHelper.id()))
+			{
+			    /*
+			     * Extract the substring of the ObjectId that contains the Uid and 
+			     * the Process Id and pass it to the data of the service context
+			     */
+			    RCobjectId = extractObjectId(objectIdString).getBytes();
+			    RCctx = new ServiceContext(RecoveryContextId, RCobjectId);
+			    in_loop = false;
+			    throw new ForwardRequest( reco );
+			}
+		    else
+			{
+			    in_loop = false;
+			}
+		}
+		in_loop = false;
+	    }
+	
     }
 
     public void send_poll(ClientRequestInfo ri){
@@ -141,11 +141,11 @@ public class ClientForwardInterceptor
     public void receive_reply(ClientRequestInfo ri){
     }
 
-    public void receive_exception(ClientRequestInfo ri)
+    public void receive_exception(ClientRequestInfo ri) 
         throws ForwardRequest{
     }
 
-    public void receive_other(ClientRequestInfo ri)
+    public void receive_other(ClientRequestInfo ri) 
         throws ForwardRequest{
     }
 
@@ -162,60 +162,60 @@ public class ClientForwardInterceptor
 
     private String extractObjectId(String encodedRCData)
     {
-    if (jtsLogger.logger.isDebugEnabled()) {
+	if (jtsLogger.logger.isDebugEnabled()) {
         jtsLogger.logger.debug("RecoveryCoordinatorId(" + encodedRCData + ")");
     }
 
-    String ObjectId2SvcCtx = null;
-    char delimiter = '#'; //JacOrbRCManager.rcKeyDelimiter;
+	String ObjectId2SvcCtx = null; 
+	char delimiter = '#'; //JacOrbRCManager.rcKeyDelimiter;
 
-    boolean ok = (encodedRCData != null);
+	boolean ok = (encodedRCData != null);
 
-    if (ok)
-    {
-        int index1 = encodedRCData.indexOf(delimiter);
-        int index2 = 0;
+	if (ok)
+	{
+	    int index1 = encodedRCData.indexOf(delimiter);
+	    int index2 = 0;
+	    
+	    if (index1 != -1)
+	    {
+		ObjectId2SvcCtx = encodedRCData.substring(0, index1);
+	    }
+	    else
+		ok = false;
 
-        if (index1 != -1)
-        {
-        ObjectId2SvcCtx = encodedRCData.substring(0, index1);
-        }
-        else
-        ok = false;
-
-        if (ok)
-        {
-        try
-            {
-            String  RCDefaultObjectReference = encodedRCData.substring(index1 +1);
-            org.omg.CORBA.Object obj = _ourOrb.string_to_object(RCDefaultObjectReference) ;
-            reco = RecoveryCoordinatorHelper.narrow(obj);
-            }
-        catch (Exception e) {
+	    if (ok)
+	    {
+		try 
+		    {
+			String  RCDefaultObjectReference = encodedRCData.substring(index1 +1);
+			org.omg.CORBA.Object obj = _ourOrb.string_to_object(RCDefaultObjectReference) ;
+			reco = RecoveryCoordinatorHelper.narrow(obj);
+		    }
+		catch (Exception e) {
             jtsLogger.i18NLogger.warn_orbspecific_jacorb_recoverycoordinators_ClientForwardInterceptor_2(e);
         }
+		
+	    }
+	    
+	}
 
-        }
-
-    }
-
-    return ObjectId2SvcCtx;
-
+	return ObjectId2SvcCtx;
+	
     }
 
 
 
     private RecoveryCoordinator reco = null;
-
+    
     private boolean first_loop = false;
 
     private boolean in_loop = false;
     private org.omg.CORBA.ORB _ourOrb = null;
-
+    
     ServiceContext RCctx = null;
 
     // The following tag should be placed somewhere else and advertise it should not be used by applications
-    int RecoveryContextId = 100001;
+    int RecoveryContextId = 100001; 
 
     byte[] RCobjectId;
 

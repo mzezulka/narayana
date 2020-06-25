@@ -1,20 +1,20 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
+ * Copyright 2006, Red Hat Middleware LLC, and individual contributors 
+ * as indicated by the @author tags. 
  * See the copyright.txt in the distribution for a
- * full listing of individual contributors.
+ * full listing of individual contributors. 
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
  * of the GNU Lesser General Public License, v. 2.1.
- * This program is distributed in the hope that it will be useful, but WITHOUT A
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * This program is distributed in the hope that it will be useful, but WITHOUT A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
  * PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
  * You should have received a copy of the GNU Lesser General Public License,
  * v.2.1 along with this distribution; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Arjuna Technologies Ltd,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.
+ * UK.  
  *
  * $Id$
  */
@@ -44,14 +44,14 @@ import com.arjuna.orbportability.RootOA;
 import java.io.File;
 
 public class TestBase
-{
-    public void beforeSetupClass() {}
-
+{  
+	public void beforeSetupClass() {} 
+	
     @Before
     public void setUp () throws Exception
     {
-        beforeSetupClass();
-        emptyObjectStore();
+    	beforeSetupClass();
+    	emptyObjectStore();
 
         myORB = ORB.getInstance("test");
         myOA = OA.getRootOA(myORB);
@@ -62,18 +62,18 @@ public class TestBase
         ORBManager.setORB(myORB);
         ORBManager.setPOA(myOA);
     }
-
+    
     @After
     public void tearDown () throws Exception
     {
         myOA.destroy();
         myORB.shutdown(true);
-        // JBTM-1829 as the orbportability version of shutdown does not wait for
-        // completion some jacorb tests will fail due to possible race conditions
+		// JBTM-1829 as the orbportability version of shutdown does not wait for
+		// completion some jacorb tests will fail due to possible race conditions
         try {
-            myORB.orb().shutdown(true);
+        	myORB.orb().shutdown(true);
         } catch (BAD_INV_ORDER bio) {
-            // ignore - jacorb can tolerate the second call to shutdown, IDLJ will not
+        	// ignore - jacorb can tolerate the second call to shutdown, IDLJ will not
         }
         emptyObjectStore();
     }

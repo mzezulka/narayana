@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -48,55 +48,55 @@ public class JacOrbRCDefaultServant extends GenericRecoveryCoordinator
     private ORB _ourOrb;
 
     static byte[] RCObjectId = null;
-
+     
     /**
      * constructor supplies orb - used only within package
      */
-
+     
     JacOrbRCDefaultServant(ORB orb)
     {
-    super();    // ensure id is null
-    _ourOrb = orb;
-
-    if (jtsLogger.logger.isDebugEnabled()) {
+	super();    // ensure id is null
+	_ourOrb = orb;
+	
+	if (jtsLogger.logger.isDebugEnabled()) {
         jtsLogger.logger.debug("JacOrbDefaultServant(orb)");
     }
-
+	
     }
-
+    
     public Status replay_completion ( Resource res ) throws SystemException, NotPrepared
     {
-    if (jtsLogger.logger.isDebugEnabled()) {
+	if (jtsLogger.logger.isDebugEnabled()) {
         jtsLogger.logger.debug("JacOrbDefaultServant::replay_completion)");
     }
 
-    try
-     {
-         //Begin New
-         org.omg.CORBA.Object obj = _ourOrb.resolve_initial_references("POACurrent");
-         org.omg.PortableServer.Current poa_current = org.omg.PortableServer.CurrentHelper.narrow(obj);
-         byte[] objectId = poa_current.get_object_id();
-         //End New
+	try 
+	 {
+	     //Begin New
+	     org.omg.CORBA.Object obj = _ourOrb.resolve_initial_references("POACurrent");
+	     org.omg.PortableServer.Current poa_current = org.omg.PortableServer.CurrentHelper.narrow(obj);
+	     byte[] objectId = poa_current.get_object_id();
+	     //End New
+	     
+	     String objectIdString = new String(objectId, StandardCharsets.UTF_8);
 
-         String objectIdString = new String(objectId, StandardCharsets.UTF_8);
-
-         // convert that to the structured id
-         RecoveryCoordinatorId  recovCoId = RecoveryCoordinatorId.reconstruct(objectIdString);
-
-         if (jtsLogger.logger.isDebugEnabled()) {
+	     // convert that to the structured id
+	     RecoveryCoordinatorId  recovCoId = RecoveryCoordinatorId.reconstruct(objectIdString);
+	     
+	     if (jtsLogger.logger.isDebugEnabled()) {
              jtsLogger.logger.debug("JacOrbDefaultServant replay_completion for Id "+recovCoId);
          }
-
-         // and do the real replay
-         return GenericRecoveryCoordinator.replay_completion(recovCoId, res);
-     }
-    /***/
-    catch (NotPrepared exp)
-    {
-        throw exp;
-    }
-    /**/
-    catch (Exception ex) {
+	     
+	     // and do the real replay
+	     return GenericRecoveryCoordinator.replay_completion(recovCoId, res);
+	 }
+	/***/
+	catch (NotPrepared exp)
+	{
+	    throw exp;
+	}
+	/**/
+	catch (Exception ex) {
         jtsLogger.i18NLogger.warn_orbspecific_jacorb_recoverycoordinators_JacOrbRCDefaultServant_3(ex);
 
         return Status.StatusUnknown;

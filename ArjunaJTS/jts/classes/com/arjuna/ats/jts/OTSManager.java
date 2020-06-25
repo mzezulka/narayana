@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Hewlett-Packard Arjuna Labs,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.
+ * UK.  
  *
  * $Id: OTSManager.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -69,7 +69,7 @@ public class OTSManager
 
     public static org.omg.CosTransactions.Current get_current () throws org.omg.CORBA.SystemException
     {
-    return com.arjuna.ats.internal.jts.OTSImpleManager.get_current();
+	return com.arjuna.ats.internal.jts.OTSImpleManager.get_current();
     }
 
     /**
@@ -77,10 +77,10 @@ public class OTSManager
      * advantage of not needing to register the object withm the ORB, which
      * can affect performance.
      */
-
+    
     public static TransactionFactoryImple factory () throws org.omg.CORBA.SystemException
     {
-    return com.arjuna.ats.internal.jts.OTSImpleManager.factory();
+	return com.arjuna.ats.internal.jts.OTSImpleManager.factory();
     }
 
     /**
@@ -89,7 +89,7 @@ public class OTSManager
 
     public static TransactionFactory get_factory () throws org.omg.CORBA.SystemException
     {
-    return com.arjuna.ats.internal.jts.OTSImpleManager.get_factory();
+	return com.arjuna.ats.internal.jts.OTSImpleManager.get_factory();
     }
 
     /**
@@ -103,219 +103,219 @@ public class OTSManager
 
     public static void destroyControl (ControlImple control) throws ActiveTransaction, ActiveThreads, BadControl, Destroyed, SystemException
     {
-    if (jtsLogger.logger.isTraceEnabled()) {
+	if (jtsLogger.logger.isTraceEnabled()) {
         jtsLogger.logger.trace("OTS::destroyControl ( " + control + " )");
     }
+	
+	if (control == null)
+	    throw new BadControl();
 
-    if (control == null)
-        throw new BadControl();
+	/*
+	 * Just in case control is a top-level transaction, and has
+	 * been registered with the reaper, we need to get it removed.
+	 *
+	 */
 
-    /*
-     * Just in case control is a top-level transaction, and has
-     * been registered with the reaper, we need to get it removed.
-     *
-     */
+	    Coordinator coord = null;
+	
+	    try
+	    {
+		coord = control.get_coordinator();
+	    }
+	    catch (Exception e)
+	    {
+		coord = null;  // nothing else we can do!
+	    }
 
-        Coordinator coord = null;
+	    if (coord != null)
+	    {
+		try
+		{
+		    if (coord.is_top_level_transaction())
+		    {
+			/*
+			 * Transaction is local, but was registered as
+			 * a Control. If this is a performance hit then
+			 * add explicit add/removes for local instances.
+			 */
 
-        try
-        {
-        coord = control.get_coordinator();
-        }
-        catch (Exception e)
-        {
-        coord = null;  // nothing else we can do!
-        }
-
-        if (coord != null)
-        {
-        try
-        {
-            if (coord.is_top_level_transaction())
-            {
-            /*
-             * Transaction is local, but was registered as
-             * a Control. If this is a performance hit then
-             * add explicit add/removes for local instances.
-             */
-
-            if (jtsLogger.logger.isTraceEnabled()) {
+			if (jtsLogger.logger.isTraceEnabled()) {
                 jtsLogger.logger.trace("OTS::destroyControl - removing control from reaper.");
             }
 
             // wrap the control so it gets compared against reaper list entries using the correct test
             PseudoControlWrapper wrapper = new PseudoControlWrapper(control);
-            TransactionReaper.transactionReaper().remove(wrapper);
-            }
-        }
-        catch (Exception e)
-        {
-        }
+			TransactionReaper.transactionReaper().remove(wrapper);
+		    }
+		}
+		catch (Exception e)
+		{
+		}
 
-        coord = null;
-        }
+		coord = null;
+	    }
+	
+	/*
+	 * Watch out for conflicts with multiple threads deleting
+	 * the same control!
+	 */
 
-    /*
-     * Watch out for conflicts with multiple threads deleting
-     * the same control!
-     */
+	/*
+	 * If local, then delete it here, rather than
+	 * calling the destroy method.
+	 *
+	 * Possible problem if a local factory is being accessed
+	 * remotely?
+	 */
 
-    /*
-     * If local, then delete it here, rather than
-     * calling the destroy method.
-     *
-     * Possible problem if a local factory is being accessed
-     * remotely?
-     */
-
-    if (jtsLogger.logger.isTraceEnabled()) {
+	if (jtsLogger.logger.isTraceEnabled()) {
         jtsLogger.logger.trace("OTS::destroyControl - local transaction: " + control.get_uid());
     }
 
-    control.destroy();
-
-    control = null;
+	control.destroy();
+	    
+	control = null;
     }
 
     /**
      * Destroy the transaction control.
      */
-
+	
     public static void destroyControl (Control control) throws ActiveTransaction, ActiveThreads, BadControl, Destroyed, SystemException
     {
-    if (control == null)
-        throw new BadControl();
+	if (control == null)
+	    throw new BadControl();
+	
+	ControlImple lCont = Helper.localControl(control);
 
-    ControlImple lCont = Helper.localControl(control);
+	if (lCont != null)
+	{
+	    destroyControl(lCont);
+	}
+	else
+	{
+	    /*
+	     * Just in case control is a top-level transaction, and has
+	     * been registered with the reaper, we need to get it removed.
+	     *
+	     */
+    
 
-    if (lCont != null)
-    {
-        destroyControl(lCont);
-    }
-    else
-    {
-        /*
-         * Just in case control is a top-level transaction, and has
-         * been registered with the reaper, we need to get it removed.
-         *
-         */
+		Coordinator coord = null;
+	
+		try
+		{
+		    coord = control.get_coordinator();
+		}
+		catch (Exception e)
+		{
+		    coord = null;  // nothing else we can do!
+		}
 
-
-        Coordinator coord = null;
-
-        try
-        {
-            coord = control.get_coordinator();
-        }
-        catch (Exception e)
-        {
-            coord = null;  // nothing else we can do!
-        }
-
-        if (coord != null)
-        {
-            try
-            {
-            if (coord.is_top_level_transaction()) {
+		if (coord != null)
+		{
+		    try
+		    {
+			if (coord.is_top_level_transaction()) {
                 // wrap the control so it gets compared against reaper list entries using the correct test
                 PseudoControlWrapper wrapper = new PseudoControlWrapper(control);
                 TransactionReaper.transactionReaper().remove(wrapper);
             }
             }
-            catch (Exception e)
-            {
-            }
+		    catch (Exception e)
+		    {
+		    }
 
-            coord = null;
-        }
+		    coord = null;
+		}
 
+    
+	    /*
+	     * Watch out for conflicts with multiple threads deleting
+	     * the same control!
+	     */
 
-        /*
-         * Watch out for conflicts with multiple threads deleting
-         * the same control!
-         */
-
-        if (jtsLogger.logger.isTraceEnabled()) {
+	    if (jtsLogger.logger.isTraceEnabled()) {
             jtsLogger.logger.trace("OTS::destroyControl - remote control.");
         }
 
-        /*
-         * Remote transaction, so memory management is different!
-         */
+	    /*
+	     * Remote transaction, so memory management is different!
+	     */
+	
+	    ActionControl action = null;
+	    
+	    try
+	    {
+		action = com.arjuna.ArjunaOTS.ActionControlHelper.narrow(control);
 
-        ActionControl action = null;
+		if (action == null)
+		    throw new BAD_PARAM();
+	    }
+	    catch (Exception e)
+	    {
+		action = null;
+	    }
 
-        try
-        {
-        action = com.arjuna.ArjunaOTS.ActionControlHelper.narrow(control);
-
-        if (action == null)
-            throw new BAD_PARAM();
-        }
-        catch (Exception e)
-        {
-        action = null;
-        }
-
-        if (action != null)
-        {
-        if (jtsLogger.logger.isTraceEnabled()) {
+	    if (action != null)
+	    {
+		if (jtsLogger.logger.isTraceEnabled()) {
             jtsLogger.logger.trace("OTS::destroyControl - Arjuna control.");
         }
 
-        /*
-         * Is an Arjuna control, so we can call destroy on it?
-         */
+		/*
+		 * Is an Arjuna control, so we can call destroy on it?
+		 */
 
-        action.destroy();
+		action.destroy();
+		
+		action = null;
+		control = null;
+	    }
+	    else
+	    {
+		/*
+		 * Just call release on the control.
+		 *
+		 * We could throw a BadControl exception, but
+		 * what would that do for the programmer?
+		 */
 
-        action = null;
-        control = null;
-        }
-        else
-        {
-        /*
-         * Just call release on the control.
-         *
-         * We could throw a BadControl exception, but
-         * what would that do for the programmer?
-         */
-
-        control = null;
-        }
-    }
+		control = null;
+	    }
+	}
     }
 
     public static final void setLocalSlotId (int slotId)
     {
-    _localSlotId = slotId;
+	_localSlotId = slotId;
     }
-
+    
     public static final int getLocalSlotId ()
     {
-    return _localSlotId;
+	return _localSlotId;
     }
 
     public static final void setReceivedSlotId (int slotId)
     {
-    _receivedSlotId = slotId;
+	_receivedSlotId = slotId;
     }
-
+    
     public static final int getReceivedSlotId ()
     {
-    return _receivedSlotId;
+	return _receivedSlotId;
     }
 
     public static final void setORB (com.arjuna.orbportability.ORB theOrb)
     {
-    com.arjuna.ats.internal.jts.ORBManager.setORB(theOrb);
+	com.arjuna.ats.internal.jts.ORBManager.setORB(theOrb);
     }
-
+    
     public static final void setPOA (com.arjuna.orbportability.OA thePoa)
     {
-    com.arjuna.ats.internal.jts.ORBManager.setPOA(thePoa);
+	com.arjuna.ats.internal.jts.ORBManager.setPOA(thePoa);
     }
-
+    
     public static final int serviceId = jtsPropertyManager.getJTSEnvironmentBean().getTransactionServiceId();
 
     private static int _localSlotId = -1;

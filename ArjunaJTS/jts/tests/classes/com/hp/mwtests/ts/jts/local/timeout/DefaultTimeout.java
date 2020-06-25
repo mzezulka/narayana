@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -45,45 +45,45 @@ public class DefaultTimeout
     @Test
     public void test()
     {
-    ORB myORB = null;
-    RootOA myOA = null;
+	ORB myORB = null;
+	RootOA myOA = null;
 
-    try
-    {
-        myORB = ORB.getInstance("test");
-        myOA = OA.getRootOA(myORB);
+	try
+	{
+	    myORB = ORB.getInstance("test");
+	    myOA = OA.getRootOA(myORB);
+	    
+	    myORB.initORB(new String[] {}, null);
+	    myOA.initOA();
 
-        myORB.initORB(new String[] {}, null);
-        myOA.initOA();
+	    ORBManager.setORB(myORB);
+	    ORBManager.setPOA(myOA);
 
-        ORBManager.setORB(myORB);
-        ORBManager.setPOA(myOA);
+	    int sleepTime = arjPropertyManager.getCoordinatorEnvironmentBean().getDefaultTimeout();
+	    	    
+	    System.out.println("Thread "+Thread.currentThread()+" starting transaction.");
+	    
+	    OTSManager.get_current().begin();
 
-        int sleepTime = arjPropertyManager.getCoordinatorEnvironmentBean().getDefaultTimeout();
+	    Thread.sleep(sleepTime*1000*2, 0);
 
-        System.out.println("Thread "+Thread.currentThread()+" starting transaction.");
+	    System.out.println("Thread "+Thread.currentThread()+" committing transaction.");
 
-        OTSManager.get_current().begin();
+	    OTSManager.get_current().commit(false);
 
-        Thread.sleep(sleepTime*1000*2, 0);
+	    System.out.println("Transaction committed. Timeout did not go off.");
+	    System.out.println("Test did not complete successfully.");
+	}
+	catch (Exception e)
+	{
+	    System.out.println("Caught exception: "+e);
+	    System.out.println("Timeout went off.");
 
-        System.out.println("Thread "+Thread.currentThread()+" committing transaction.");
+	    System.out.println("Test completed successfully.");
+	}
 
-        OTSManager.get_current().commit(false);
-
-        System.out.println("Transaction committed. Timeout did not go off.");
-        System.out.println("Test did not complete successfully.");
-    }
-    catch (Exception e)
-    {
-        System.out.println("Caught exception: "+e);
-        System.out.println("Timeout went off.");
-
-        System.out.println("Test completed successfully.");
-    }
-
-    myOA.destroy();
-    myORB.shutdown();
+	myOA.destroy();
+	myORB.shutdown();
     }
 
 }

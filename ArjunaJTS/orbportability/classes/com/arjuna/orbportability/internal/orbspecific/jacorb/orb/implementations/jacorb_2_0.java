@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -25,7 +25,7 @@
  * Newcastle upon Tyne,
  * Tyne and Wear,
  * UK.
- *
+ * 
  * $Id: jacorb_2_0.java 2342 2006-03-30 13:06:17Z  $
  */
 package com.arjuna.orbportability.internal.orbspecific.jacorb.orb.implementations;
@@ -34,12 +34,12 @@ import com.arjuna.orbportability.internal.orbspecific.orb.implementations.ORBBas
 
 public class jacorb_2_0 extends ORBBase
 {
-    public jacorb_2_0 ()
-    {
-        System.setProperty("org.omg.CORBA.ORBClass", "org.jacorb.orb.ORB");
-        System.setProperty("org.omg.CORBA.ORBSingletonClass", "org.jacorb.orb.ORBSingleton");
+	public jacorb_2_0 ()
+	{
+		System.setProperty("org.omg.CORBA.ORBClass", "org.jacorb.orb.ORB");
+		System.setProperty("org.omg.CORBA.ORBSingletonClass", "org.jacorb.orb.ORBSingleton");
 
         // it seems nothing ever reads this, so we should be able to get away without it
         // opPropertyManager.getPropertyManager().setProperty("com.arjuna.orbportability.internal.defaultBindMechanism", Services.bindString(Services.CONFIGURATION_FILE));
-    }
+	}
 }

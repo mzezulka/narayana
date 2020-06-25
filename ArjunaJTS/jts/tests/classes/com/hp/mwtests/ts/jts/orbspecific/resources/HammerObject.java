@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Arjuna Solutions Limited,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.
+ * UK.  
  *
  * $Id: HammerObject.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -51,213 +51,213 @@ import com.arjuna.ats.txoj.LockResult;
 
 public class HammerObject extends LockManager implements com.hp.mwtests.ts.jts.TestModule.HammerOperations
 {
-
+    
     public HammerObject ()
     {
-    super(ObjectType.ANDPERSISTENT);
+	super(ObjectType.ANDPERSISTENT);
 
-    CurrentImple current = OTSImpleManager.current();
+	CurrentImple current = OTSImpleManager.current();
 
-    _value = 0;
+	_value = 0;
 
-    try
-    {
-        current.begin();
+	try
+	{
+	    current.begin();
 
-        if (setlock(new Lock(LockMode.WRITE), 0) == LockResult.GRANTED)
-        {
-        _value = 0;
-        current.commit(true);
-        }
-        else
-        current.rollback();
-    }
-    catch (Exception e)
-    {
-        System.err.println("HammerObject: "+e);
-    }
+	    if (setlock(new Lock(LockMode.WRITE), 0) == LockResult.GRANTED)
+	    {
+		_value = 0;
+		current.commit(true);
+	    }
+	    else
+		current.rollback();
+	}
+	catch (Exception e)
+	{
+	    System.err.println("HammerObject: "+e);
+	}
     }
 
     public HammerObject (Uid u)
     {
-    super(u);
+	super(u);
     }
 
     public void finalize () throws Throwable
     {
-    super.terminate();
-    super.finalize();
+	super.terminate();
+	super.finalize();
     }
 
     public boolean incr (int value, Control control) throws SystemException
     {
-    boolean res = false;
-    ExplicitInterposition inter = new ExplicitInterposition();
+	boolean res = false;
+	ExplicitInterposition inter = new ExplicitInterposition();
 
-    try
-    {
-        inter.registerTransaction(control);
-    }
-    catch (Exception e)
-    {
-        System.err.println("WARNING HammerObject.incr - could not do interposition");
-        return false;
-    }
+	try
+	{
+	    inter.registerTransaction(control);
+	}
+	catch (Exception e)
+	{
+	    System.err.println("WARNING HammerObject.incr - could not do interposition");
+	    return false;
+	}
 
-    CurrentImple current = OTSImpleManager.current();
+	CurrentImple current = OTSImpleManager.current();
 
-    try
-    {
-        current.begin();
+	try
+	{
+	    current.begin();
 
-        if (setlock(new Lock(LockMode.WRITE), 0) == LockResult.GRANTED)
-        {
-        _value = _value + value;
+	    if (setlock(new Lock(LockMode.WRITE), 0) == LockResult.GRANTED)
+	    {
+		_value = _value + value;
 
-        current.commit(true);
-        res = true;
-        }
-        else
-        current.rollback();
-    }
-    catch (Exception e)
-    {
-        System.err.println("HammerObject.incr: "+e);
+		current.commit(true);
+		res = true;
+	    }
+	    else
+		current.rollback();
+	}
+	catch (Exception e)
+	{
+	    System.err.println("HammerObject.incr: "+e);
+	    
+	    res = false;
+	}
 
-        res = false;
-    }
-
-    inter.unregisterTransaction();
-
-    return res;
-    }
-
-    public boolean set (int value, Control control) throws SystemException
-    {
-    boolean res = false;
-    ExplicitInterposition inter = new ExplicitInterposition();
-
-    try
-    {
-        inter.registerTransaction(control);
-    }
-    catch (Exception e)
-    {
-        System.err.println("WARNING HammerObject.set - could not do interposition");
-        return false;
+	inter.unregisterTransaction();
+	
+	return res;
     }
 
-    CurrentImple current = OTSImpleManager.current();
-
-    try
+    public boolean set (int value, Control control) throws SystemException 
     {
-        current.begin();
+	boolean res = false;
+	ExplicitInterposition inter = new ExplicitInterposition();
 
-        if (setlock(new Lock(LockMode.WRITE), 0) == LockResult.GRANTED)
-        {
-        _value = value;
+	try
+	{
+	    inter.registerTransaction(control);
+	}
+	catch (Exception e)
+	{
+	    System.err.println("WARNING HammerObject.set - could not do interposition");
+	    return false;
+	}
 
-        current.commit(true);
-        res = true;
-        }
-        else
-        current.rollback();
-    }
-    catch (Exception e)
-    {
-        System.err.println("HammerObject.set: "+e);
+	CurrentImple current = OTSImpleManager.current();    
 
-        res = false;
-    }
+	try
+	{
+	    current.begin();
 
-    inter.unregisterTransaction();
+	    if (setlock(new Lock(LockMode.WRITE), 0) == LockResult.GRANTED)
+	    {
+		_value = value;
 
-    return res;
+		current.commit(true);
+		res = true;
+	    }
+	    else
+		current.rollback();
+	}
+	catch (Exception e)
+	{
+	    System.err.println("HammerObject.set: "+e);
+
+	    res = false;
+	}
+
+	inter.unregisterTransaction();
+
+	return res;
     }
 
     public boolean get (IntHolder value, Control control) throws SystemException
     {
-    boolean res = false;
-    ExplicitInterposition inter = new ExplicitInterposition();
+	boolean res = false;
+	ExplicitInterposition inter = new ExplicitInterposition();
 
-    try
-    {
-        inter.registerTransaction(control);
-    }
-    catch (Exception e)
-    {
-        System.err.println("WARNING HammerObject.incr - could not do interposition");
-        return false;
-    }
+	try
+	{
+	    inter.registerTransaction(control);
+	}
+	catch (Exception e)
+	{
+	    System.err.println("WARNING HammerObject.incr - could not do interposition");
+	    return false;
+	}
 
-    CurrentImple current = OTSImpleManager.current();
+	CurrentImple current = OTSImpleManager.current();
 
-    try
-    {
-        current.begin();
+	try
+	{
+	    current.begin();
 
-        if (setlock(new Lock(LockMode.READ), 0) == LockResult.GRANTED)
-        {
-        value.value = _value;
+	    if (setlock(new Lock(LockMode.READ), 0) == LockResult.GRANTED)
+	    {
+		value.value = _value;
 
-        current.commit(true);
-        res = true;
-        }
-        else
-        current.rollback();
-    }
-    catch (Exception e)
-    {
-        System.err.println("HammerObject.get: "+e);
+		current.commit(true);
+		res = true;
+	    }
+	    else
+		current.rollback();
+	}
+	catch (Exception e)
+	{
+	    System.err.println("HammerObject.get: "+e);
+	    
+	    res = false;
+	}
 
-        res = false;
-    }
-
-    inter.unregisterTransaction();
-
-    return res;
+	inter.unregisterTransaction();
+	
+	return res;
     }
 
     public boolean save_state (OutputObjectState os, int ot)
     {
-    if (!super.save_state(os, ot))
-        return false;
+	if (!super.save_state(os, ot))
+	    return false;
+	
+	try
+	{
+	    os.packInt(_value);
 
-    try
-    {
-        os.packInt(_value);
-
-        return true;
-    }
-    catch (IOException e)
-    {
-        return false;
-    }
+	    return true;
+	}
+	catch (IOException e)
+	{
+	    return false;
+	}
     }
 
     public boolean restore_state (InputObjectState os, int ot)
     {
-    if (!super.restore_state(os, ot))
-        return false;
+	if (!super.restore_state(os, ot))
+	    return false;
+	
+	try
+	{
+	    _value = os.unpackInt();
 
-    try
-    {
-        _value = os.unpackInt();
-
-        return true;
-    }
-    catch (IOException e)
-    {
-        return false;
-    }
+	    return true;
+	}
+	catch (IOException e)
+	{
+	    return false;
+	}
     }
 
     public String type ()
     {
-    return "/StateManager/LockManager/HammerObject";
+	return "/StateManager/LockManager/HammerObject";
     }
 
     private int _value;
-
+ 
 }
 

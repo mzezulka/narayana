@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -49,163 +49,163 @@ class Worker extends Thread
 
     public Worker (XACreator c, String s, int iters)
     {
-    _creator = c;
-    _connectionString = s;
-    _iters = iters;
+	_creator = c;
+	_connectionString = s;
+	_iters = iters;
     }
-
+    
     public void run ()
     {
-    for (int i = 0; i < _iters; i++)
-    {
-        try
-        {
-        XAResource theResource = _creator.create(_connectionString, false);
+	for (int i = 0; i < _iters; i++)
+	{
+	    try
+	    {
+		XAResource theResource = _creator.create(_connectionString, false);
 
-        if (theResource == null)
-        {
-            System.err.println("Error - creator "+_creator+" returned null resource.");
-            System.exit(0);
-        }
+		if (theResource == null)
+		{
+		    System.err.println("Error - creator "+_creator+" returned null resource.");
+		    System.exit(0);
+		}
 
-        javax.transaction.TransactionManager tm = com.arjuna.ats.jta.TransactionManager.transactionManager();
+		javax.transaction.TransactionManager tm = com.arjuna.ats.jta.TransactionManager.transactionManager();
 
-        if (tm != null)
-        {
-            tm.begin();
+		if (tm != null)
+		{
+		    tm.begin();
+	    
+		    javax.transaction.Transaction theTransaction = tm.getTransaction();
 
-            javax.transaction.Transaction theTransaction = tm.getTransaction();
+		    if (theTransaction != null)
+		    {
+			if (!theTransaction.enlistResource(theResource))
+			{
+			    System.err.println("Error - could not enlist resource in transaction!");
+			    tm.rollback();
+			    
+			    System.exit(0);
+			}
 
-            if (theTransaction != null)
-            {
-            if (!theTransaction.enlistResource(theResource))
-            {
-                System.err.println("Error - could not enlist resource in transaction!");
-                tm.rollback();
+			/*
+			 * XA does not support subtransactions.
+			 */
+		    
+			/*
+			 * Do some work and decide whether to commit or
+			 * rollback. (Assume commit for example.)
+			 */
 
-                System.exit(0);
-            }
+			tm.commit();
+		    }
+		    else
+		    {
+			System.err.println("Error - could not get transaction!");
+			tm.rollback();
+			System.exit(0);
+		    }
+		}
+		else
+		    System.err.println("Error - could not get transaction manager!");
+	    }
+	    catch (Exception e)
+	    {
+		e.printStackTrace();
+	    }
+	}
 
-            /*
-             * XA does not support subtransactions.
-             */
-
-            /*
-             * Do some work and decide whether to commit or
-             * rollback. (Assume commit for example.)
-             */
-
-            tm.commit();
-            }
-            else
-            {
-            System.err.println("Error - could not get transaction!");
-            tm.rollback();
-            System.exit(0);
-            }
-        }
-        else
-            System.err.println("Error - could not get transaction manager!");
-        }
-        catch (Exception e)
-        {
-        e.printStackTrace();
-        }
+	JTAHammer.doSignal();
     }
-
-    JTAHammer.doSignal();
-    }
-
+    
     private XACreator _creator;
     private String _connectionString;
     private int _iters;
 
 }
 
-
+    
 public class JTAHammer
 {
     @Test
     public void test() throws Exception
     {
-    ORB myORB = null;
-    RootOA myOA = null;
+	ORB myORB = null;
+	RootOA myOA = null;
 
-        myORB = ORB.getInstance("test");
-        myOA = OA.getRootOA(myORB);
+	    myORB = ORB.getInstance("test");
+	    myOA = OA.getRootOA(myORB);
+	    
+	    myORB.initORB(new String[] {}, null);
+	    myOA.initOA();
 
-        myORB.initORB(new String[] {}, null);
-        myOA.initOA();
+	    ORBManager.setORB(myORB);
+	    ORBManager.setPOA(myOA);
 
-        ORBManager.setORB(myORB);
-        ORBManager.setPOA(myOA);
-
-    String xaResource = "com.hp.mwtests.ts.jta.jts.common.DummyCreator";
-    String connectionString = null;
-    int threads = 10;
-    int work = 100;
+	String xaResource = "com.hp.mwtests.ts.jta.jts.common.DummyCreator";
+	String connectionString = null;
+	int threads = 10;
+	int work = 100;
 
         jtaPropertyManager.getJTAEnvironmentBean().setTransactionManagerClassName(com.arjuna.ats.internal.jta.transaction.jts.TransactionManagerImple.class.getName());
         jtaPropertyManager.getJTAEnvironmentBean().setUserTransactionClassName(com.arjuna.ats.internal.jta.transaction.jts.UserTransactionImple.class.getName());
 
-    /*
-     * We should have a reference to a factory object (see JTA
-     * specification). However, for simplicity we will ignore this.
-     */
+	/*
+	 * We should have a reference to a factory object (see JTA
+	 * specification). However, for simplicity we will ignore this.
+	 */
 
-    XACreator creator = (XACreator) Thread.currentThread().getContextClassLoader().loadClass(xaResource).newInstance();
+	XACreator creator = (XACreator) Thread.currentThread().getContextClassLoader().loadClass(xaResource).newInstance();
 
-    number = threads;
+	number = threads;
 
-    int numberOfTransactions = threads * work;
-    long stime = Calendar.getInstance().getTime().getTime();
-    Worker[] workers = new Worker[threads];
+	int numberOfTransactions = threads * work;
+	long stime = Calendar.getInstance().getTime().getTime();
+	Worker[] workers = new Worker[threads];
+	
+	for (int i = 0; i < threads; i++)
+	{
+	    workers[i] = new Worker(creator, connectionString, work);
+	    
+	    workers[i].start();
+	}
 
-    for (int i = 0; i < threads; i++)
-    {
-        workers[i] = new Worker(creator, connectionString, work);
+	JTAHammer.doWait();
+	
+	long ftime = Calendar.getInstance().getTime().getTime();
+	long timeTaken = ftime - stime;
+	
+	System.out.println("time for "+numberOfTransactions+" write transactions is "+timeTaken);
+	System.out.println("number of transactions: "+numberOfTransactions);
+	System.out.println("throughput: "+(float) (numberOfTransactions/(timeTaken / 1000.0)));
 
-        workers[i].start();
-    }
-
-    JTAHammer.doWait();
-
-    long ftime = Calendar.getInstance().getTime().getTime();
-    long timeTaken = ftime - stime;
-
-    System.out.println("time for "+numberOfTransactions+" write transactions is "+timeTaken);
-    System.out.println("number of transactions: "+numberOfTransactions);
-    System.out.println("throughput: "+(float) (numberOfTransactions/(timeTaken / 1000.0)));
-
-    myOA.destroy();
-    myORB.shutdown();
+	myOA.destroy();
+	myORB.shutdown();
     }
 
     public static void doWait ()
     {
-    try
-    {
-        synchronized (sync)
-        {
-            if (number > 0)
-            sync.wait();
-        }
-    }
-    catch (Exception e)
-    {
-    }
+	try
+	{
+	    synchronized (sync)
+		{
+		    if (number > 0)
+			sync.wait();
+		}
+	}
+	catch (Exception e)
+	{
+	}
     }
 
     public static void doSignal ()
     {
-    synchronized (sync)
-        {
-        if (--number == 0)
-            sync.notify();
-        }
+	synchronized (sync)
+	    {
+		if (--number == 0)
+		    sync.notify();
+	    }
     }
-
+	
     private static Object sync = new Object();
     private static int number = 0;
-
+    
 }

@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -38,32 +38,32 @@ package com.arjuna.ats.internal.jta.utils.jts;
 public class StatusConverter
 {
 
-    public static int convert(org.omg.CosTransactions.Status status)
-    {
-        switch (status.value())
-        {
-        case org.omg.CosTransactions.Status._StatusActive:
-            return javax.transaction.Status.STATUS_ACTIVE;
-        case org.omg.CosTransactions.Status._StatusCommitting:
-            return javax.transaction.Status.STATUS_COMMITTING;
-        case org.omg.CosTransactions.Status._StatusRollingBack:
-            return javax.transaction.Status.STATUS_ROLLING_BACK;
-        case org.omg.CosTransactions.Status._StatusPreparing:
-            return javax.transaction.Status.STATUS_PREPARING;
-        case org.omg.CosTransactions.Status._StatusCommitted:
-            return javax.transaction.Status.STATUS_COMMITTED;
-        case org.omg.CosTransactions.Status._StatusMarkedRollback:
-            return javax.transaction.Status.STATUS_MARKED_ROLLBACK;
-        case org.omg.CosTransactions.Status._StatusNoTransaction:
-            return javax.transaction.Status.STATUS_NO_TRANSACTION;
-        case org.omg.CosTransactions.Status._StatusPrepared:
-            return javax.transaction.Status.STATUS_PREPARED;
-        case org.omg.CosTransactions.Status._StatusRolledBack:
-            return javax.transaction.Status.STATUS_ROLLEDBACK;
-        case org.omg.CosTransactions.Status._StatusUnknown:
-        default:
-            return javax.transaction.Status.STATUS_UNKNOWN;
-        }
-    }
+	public static int convert(org.omg.CosTransactions.Status status)
+	{
+		switch (status.value())
+		{
+		case org.omg.CosTransactions.Status._StatusActive:
+			return javax.transaction.Status.STATUS_ACTIVE;
+		case org.omg.CosTransactions.Status._StatusCommitting:
+			return javax.transaction.Status.STATUS_COMMITTING;
+		case org.omg.CosTransactions.Status._StatusRollingBack:
+			return javax.transaction.Status.STATUS_ROLLING_BACK;
+		case org.omg.CosTransactions.Status._StatusPreparing:
+			return javax.transaction.Status.STATUS_PREPARING;
+		case org.omg.CosTransactions.Status._StatusCommitted:
+			return javax.transaction.Status.STATUS_COMMITTED;
+		case org.omg.CosTransactions.Status._StatusMarkedRollback:
+			return javax.transaction.Status.STATUS_MARKED_ROLLBACK;
+		case org.omg.CosTransactions.Status._StatusNoTransaction:
+			return javax.transaction.Status.STATUS_NO_TRANSACTION;
+		case org.omg.CosTransactions.Status._StatusPrepared:
+			return javax.transaction.Status.STATUS_PREPARED;
+		case org.omg.CosTransactions.Status._StatusRolledBack:
+			return javax.transaction.Status.STATUS_ROLLEDBACK;
+		case org.omg.CosTransactions.Status._StatusUnknown:
+		default:
+			return javax.transaction.Status.STATUS_UNKNOWN;
+		}
+	}
 
 }

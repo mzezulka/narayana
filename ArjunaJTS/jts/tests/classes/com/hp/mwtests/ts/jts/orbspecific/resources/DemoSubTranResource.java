@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Arjuna Solutions Limited,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.
+ * UK.  
  *
  * $Id: DemoSubTranResource.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -53,90 +53,90 @@ import com.hp.mwtests.ts.jts.utils.ResourceTrace;
 
 public class DemoSubTranResource extends org.omg.CosTransactions.SubtransactionAwareResourcePOA
 {
-
+    
     public DemoSubTranResource ()
     {
-    ORBManager.getPOA().objectIsReady(this);
+	ORBManager.getPOA().objectIsReady(this);
 
-    ref = SubtransactionAwareResourceHelper.narrow(ORBManager.getPOA().corbaReference(this));
+	ref = SubtransactionAwareResourceHelper.narrow(ORBManager.getPOA().corbaReference(this));
 
         trace = new ResourceTrace();
 
-    numSubtransactionsRolledback = 0;
-    numSubtransactionsCommitted = 0;
+	numSubtransactionsRolledback = 0;
+	numSubtransactionsCommitted = 0;
     }
 
     public SubtransactionAwareResource getReference ()
     {
-    return ref;
+	return ref;
     }
-
+ 
     public void registerResource (boolean registerSubtran) throws Unavailable, Inactive, NotSubtransaction, SystemException
     {
-    CurrentImple current = OTSImpleManager.current();
-    Control myControl = current.get_control();
-    Coordinator coord = myControl.get_coordinator();
-
-    if (registerSubtran)
-        coord.register_subtran_aware(ref);
-    else
-        coord.register_resource(ref);
-
-    System.out.println("Registered DemoSubTranResource");
+	CurrentImple current = OTSImpleManager.current();
+	Control myControl = current.get_control();
+	Coordinator coord = myControl.get_coordinator();
+	
+	if (registerSubtran)
+	    coord.register_subtran_aware(ref);
+	else
+	    coord.register_resource(ref);
+	
+	System.out.println("Registered DemoSubTranResource");
     }
 
     public void commit_subtransaction (Coordinator parent) throws SystemException
     {
         numSubtransactionsCommitted++;
-    System.out.println("DEMOSUBTRANRESOURCE : COMMIT_SUBTRANSACTION");
+	System.out.println("DEMOSUBTRANRESOURCE : COMMIT_SUBTRANSACTION");
     }
 
     public void rollback_subtransaction () throws SystemException
     {
-    System.out.println("DEMOSUBTRANRESOURCE : ROLLBACK_SUBTRANSACTION");
+	System.out.println("DEMOSUBTRANRESOURCE : ROLLBACK_SUBTRANSACTION");
         numSubtransactionsRolledback++;
     }
 
     public org.omg.CosTransactions.Vote prepare () throws SystemException
     {
-    System.out.println("DEMOSUBTRANRESOURCE : PREPARE");
+	System.out.println("DEMOSUBTRANRESOURCE : PREPARE");
 
         if (trace.getTrace() == ResourceTrace.ResourceTraceNone)
-        trace.setTrace(ResourceTrace.ResourceTracePrepare);
-    else
-        trace.setTrace(ResourceTrace.ResourceTraceUnknown);
+	    trace.setTrace(ResourceTrace.ResourceTracePrepare);
+	else
+	    trace.setTrace(ResourceTrace.ResourceTraceUnknown);
 
-    return Vote.VoteCommit;
+	return Vote.VoteCommit;
     }
 
     public void rollback () throws SystemException, HeuristicCommit, HeuristicMixed, HeuristicHazard
     {
-    System.out.println("DEMOSUBTRANRESOURCE : ROLLBACK");
+	System.out.println("DEMOSUBTRANRESOURCE : ROLLBACK");
 
         if (trace.getTrace() == ResourceTrace.ResourceTraceNone)
-        trace.setTrace(ResourceTrace.ResourceTraceRollback);
-    else
-    {
-        if (trace.getTrace() == ResourceTrace.ResourceTracePrepare)
-        trace.setTrace(ResourceTrace.ResourceTracePrepareRollback);
-        else
-        trace.setTrace(ResourceTrace.ResourceTraceUnknown);
-    }
+	    trace.setTrace(ResourceTrace.ResourceTraceRollback);
+	else
+	{
+	    if (trace.getTrace() == ResourceTrace.ResourceTracePrepare)
+		trace.setTrace(ResourceTrace.ResourceTracePrepareRollback);
+	    else
+		trace.setTrace(ResourceTrace.ResourceTraceUnknown);
+	}
     }
 
     public void commit () throws SystemException, NotPrepared, HeuristicRollback, HeuristicMixed, HeuristicHazard
     {
-    System.out.println("DEMOSUBTRANRESOURCE : COMMIT");
+	System.out.println("DEMOSUBTRANRESOURCE : COMMIT");
 
         if (trace.getTrace() == ResourceTrace.ResourceTracePrepare)
-        trace.setTrace(ResourceTrace.ResourceTracePrepareCommit);
-    else
-        trace.setTrace(ResourceTrace.ResourceTraceUnknown);
+	    trace.setTrace(ResourceTrace.ResourceTracePrepareCommit);
+	else
+	    trace.setTrace(ResourceTrace.ResourceTraceUnknown);
     }
 
     public void forget () throws SystemException
     {
-    System.out.println("DEMOSUBTRANRESOURCE : FORGET");
+	System.out.println("DEMOSUBTRANRESOURCE : FORGET");
 
         if (trace.getTrace() == ResourceTrace.ResourceTracePrepare)
             trace.setTrace(ResourceTrace.ResourceTracePrepareForget);
@@ -156,7 +156,7 @@ public class DemoSubTranResource extends org.omg.CosTransactions.SubtransactionA
 
     public void commit_one_phase () throws HeuristicHazard, SystemException
     {
-    System.out.println("DEMOSUBTRANRESOURCE : COMMIT_ONE_PHASE");
+	System.out.println("DEMOSUBTRANRESOURCE : COMMIT_ONE_PHASE");
 
         if (trace.getTrace() == ResourceTrace.ResourceTraceNone)
             trace.setTrace(ResourceTrace.ResourceTraceCommitOnePhase);

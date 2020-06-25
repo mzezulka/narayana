@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -44,10 +44,10 @@ import com.arjuna.ats.jts.logging.jtsLogger;
 
 class DummyCreator extends RecoveryCreator
 {
-
+    
 public RecoveryCoordinator create (Resource res, Object[] params) throws SystemException
     {
-    throw new NO_IMPLEMENT();
+	throw new NO_IMPLEMENT();
     }
 
 public void destroy (RecoveryCoordinator rc) throws SystemException
@@ -57,7 +57,7 @@ public void destroy (RecoveryCoordinator rc) throws SystemException
 public void destroyAll (Object[] params) throws SystemException
     {
     }
-
+    
 };
 
 /**
@@ -69,49 +69,49 @@ public void destroyAll (Object[] params) throws SystemException
 
 public abstract class RecoveryCreator
 {
-
+    
 public static final RecoveryCreator getCreator ()
     {
-    if (_theCreator == null)
-        _theCreator = new DummyCreator();
-
-    return _theCreator;
+	if (_theCreator == null)
+	    _theCreator = new DummyCreator();
+    
+	return _theCreator;
     }
 
 
 public static final void setCreator (RecoveryCreator c)
     {
-    if (c == null) {
+	if (c == null) {
         jtsLogger.i18NLogger.warn_recovery_rcnull("RecoveryCreator.setCreator");
     }
-    else
-        _theCreator = c;
-
+	else
+	    _theCreator = c;
+	
     }
 
 public static final RecoveryCoordinator createRecoveryCoordinator (Resource res, Object[] params) throws SystemException
     {
-    if (jtsLogger.logger.isDebugEnabled()) {
+	if (jtsLogger.logger.isDebugEnabled()) {
         jtsLogger.logger.debug("RecoveryCreator::createRecoveryCoordinator");
     }
 
-    return getCreator().create(res, params);
+	return getCreator().create(res, params);
     }
 
 public static final void destroyRecoveryCoordinator (RecoveryCoordinator rc) throws SystemException
     {
-    getCreator().destroy(rc);
+	getCreator().destroy(rc);
     }
 
 public static final void destroyAllRecoveryCoordinators (Object[] params) throws SystemException
     {
-    getCreator().destroyAll(params);
+	getCreator().destroyAll(params);
     }
-
+    
 protected abstract RecoveryCoordinator create (Resource res, Object[] params) throws SystemException;
 protected abstract void destroy (RecoveryCoordinator rc) throws SystemException;
 protected abstract void destroyAll (Object[] params) throws SystemException;
-
+    
 private static RecoveryCreator _theCreator = null;
-
+ 
 }

@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -24,7 +24,7 @@
  * Arjuna Solutions Limited,
  * Newcastle upon Tyne,
  * Tyne and Wear,
- * UK.
+ * UK.  
  *
  * $Id: AtomicResource.java 2342 2006-03-30 13:06:17Z  $
  */
@@ -47,58 +47,58 @@ public class AtomicResource extends org.omg.CosTransactions.ResourcePOA
 
     public AtomicResource (boolean doCommit)
     {
-    ORBManager.getPOA().objectIsReady(this);
+	ORBManager.getPOA().objectIsReady(this);
+	
+	shouldCommit = doCommit;
 
-    shouldCommit = doCommit;
-
-    ref = org.omg.CosTransactions.ResourceHelper.narrow(ORBManager.getPOA().corbaReference(this));
+	ref = org.omg.CosTransactions.ResourceHelper.narrow(ORBManager.getPOA().corbaReference(this));
     }
 
     public Resource getReference ()
     {
-    return ref;
+	return ref;
     }
-
-    public org.omg.CosTransactions.Vote prepare () throws SystemException, HeuristicMixed, HeuristicHazard
+ 
+    public org.omg.CosTransactions.Vote prepare () throws SystemException, HeuristicMixed, HeuristicHazard 
     {
-    System.out.println("ATOMIC : PREPARE");
+	System.out.println("ATOMIC : PREPARE");
 
-    if (shouldCommit)
-    {
-        System.out.println("\tATOMIC : VoteCommit");
+	if (shouldCommit)
+	{
+	    System.out.println("\tATOMIC : VoteCommit");
 
-        return Vote.VoteCommit;
-    }
-    else
-    {
-        System.out.println("\tATOMIC : VoteRollback");
-
-        return Vote.VoteRollback;
-    }
+	    return Vote.VoteCommit;
+	}
+	else
+	{
+	    System.out.println("\tATOMIC : VoteRollback");
+	    
+	    return Vote.VoteRollback;
+	}
     }
 
     public void rollback () throws SystemException, HeuristicCommit, HeuristicMixed, HeuristicHazard
     {
-    System.out.println("ATOMIC : ROLLBACK");
+	System.out.println("ATOMIC : ROLLBACK");
     }
 
     public void commit () throws SystemException, NotPrepared, HeuristicRollback, HeuristicMixed, HeuristicHazard
     {
-    System.out.println("ATOMIC : COMMIT");
+	System.out.println("ATOMIC : COMMIT");
     }
 
     public void forget () throws SystemException
     {
-    System.out.println("ATOMIC : FORGET");
+	System.out.println("ATOMIC : FORGET");
     }
 
     public void commit_one_phase () throws SystemException, HeuristicHazard
     {
-    System.out.println("ATOMIC : COMMIT_ONE_PHASE");
+	System.out.println("ATOMIC : COMMIT_ONE_PHASE");
     }
 
     private boolean shouldCommit;
     private Resource ref;
-
+ 
 }
 
