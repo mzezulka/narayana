@@ -38,18 +38,22 @@ import com.arjuna.ats.arjuna.common.Uid;
  * to be used).
  */
 
-public abstract class HeuristicNotification implements SynchronizationRecord {
-    public abstract void heuristicOutcome(int actionStatus);
-
-    public Uid get_uid() {
+public abstract class HeuristicNotification implements SynchronizationRecord
+{
+    public abstract void heuristicOutcome (int actionStatus);
+    
+    public Uid get_uid ()
+    {
         return _uid;
     }
 
-    public boolean beforeCompletion() {
+    public boolean beforeCompletion ()
+    {
         return true;
     }
 
-    public boolean afterCompletion(int status) {
+    public boolean afterCompletion (int status)
+    {
         return true;
     }
 

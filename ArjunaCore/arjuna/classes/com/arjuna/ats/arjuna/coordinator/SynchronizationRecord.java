@@ -39,12 +39,13 @@ import com.arjuna.ats.arjuna.common.Uid;
  * @since 3.0.
  */
 
-public interface SynchronizationRecord extends Comparable {
-    public Uid get_uid();
+public interface SynchronizationRecord extends Comparable
+{
+    public Uid get_uid ();
 
-    public boolean beforeCompletion();
+    public boolean beforeCompletion ();
 
-    public boolean afterCompletion(int status);
+    public boolean afterCompletion (int status);
 
     boolean isInterposed();
 }
