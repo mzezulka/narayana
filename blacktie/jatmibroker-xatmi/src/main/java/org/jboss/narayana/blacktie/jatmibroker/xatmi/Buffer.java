@@ -22,26 +22,26 @@ import java.util.Map;
 
 /**
  * This class is used to send and receive data to and from clients to services.
- *
+ * 
  * @see X_OCTET
  * @see X_C_TYPE
  * @see X_COMMON
  */
 public interface Buffer extends Serializable {
 
-    /**
-     * Get the type
-     *
-     * @return The type
-     */
-    public String getType();
+	/**
+	 * Get the type
+	 * 
+	 * @return The type
+	 */
+	public String getType();
 
-    /**
-     * Get the subtype
-     *
-     * @return The subtype
-     */
-    public String getSubtype();
+	/**
+	 * Get the subtype
+	 * 
+	 * @return The subtype
+	 */
+	public String getSubtype();
 
-    public int getLen();
+	public int getLen();
 }

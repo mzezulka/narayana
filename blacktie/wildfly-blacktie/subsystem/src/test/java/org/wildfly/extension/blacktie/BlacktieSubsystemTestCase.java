@@ -35,7 +35,7 @@ public class BlacktieSubsystemTestCase extends AbstractSubsystemBaseTest {
     public BlacktieSubsystemTestCase() {
         super(BlacktieSubsystemExtension.SUBSYSTEM_NAME, new BlacktieSubsystemExtension());
     }
-
+    
     @Override
     protected String getSubsystemXml() throws IOException {
         return readResource("subsystem.xml");

@@ -75,9 +75,9 @@ public class QueueReaperBean {
 
             timerService.createIntervalTimer(interval, interval, new TimerConfig("queue reaper", false));
             log.info("QueueReaper create timer with " + interval + "ms");
-    } catch (ConfigurationException e) {
+	} catch (ConfigurationException e) {
             log.error("btconfig.xml is not valid: " + e);
-    }
+	} 
     }
 
     @PreDestroy
@@ -109,7 +109,7 @@ public class QueueReaperBean {
                             + " as consumer count is 0, will check again in " + interval + "ms");
                     long queueReapCheck = System.currentTimeMillis();
 
-                    Thread.sleep(this.interval);
+                    Thread.sleep(this.interval);   
                     // double check consumer is 0
                     if (BlacktieStompAdministrationService.isOlderThanReapCheck(serviceComponentOfObjectName, queueReapCheck)
                             && consumerCount(serviceComponentOfObjectName) == 0) {
@@ -123,8 +123,8 @@ public class QueueReaperBean {
                     log.debug("Undeploy not required for: " + serviceComponentOfObjectName + " at: " + server);
                 }
             }
-    } catch (NoSuchObjectLocalException e) {
-        log.debug("The timer has expired or has been cancelled");
+	} catch (NoSuchObjectLocalException e) {
+	    log.debug("The timer has expired or has been cancelled");
         } catch (InterruptedException e) {
             log.debug("Sleeping interrupted");
         } catch (Exception e) {

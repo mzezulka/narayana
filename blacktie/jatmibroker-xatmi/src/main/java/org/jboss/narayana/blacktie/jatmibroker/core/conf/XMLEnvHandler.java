@@ -95,7 +95,7 @@ public class XMLEnvHandler extends DefaultHandler {
     /**
      * Search inputStr for sequences of the form ${VAR} and replace them with the result of System.getenv("VAR"); If the
      * enviromment variable VAR is not set then the literal text "VAR" is used instead.
-     *
+     * 
      * @param inputStr the pattern to match against
      * @return the same string with sequences of the form ${VAR} replaced by the result of System.getenv("VAR") or "VAR" if that
      *         returns null
@@ -402,7 +402,7 @@ public class XMLEnvHandler extends DefaultHandler {
                 if (attsLocalName.equals("name")) {
                     serviceName = atts.getValue(i);
                     String serviceServer = (String) prop.get("blacktie." + serviceName + ".server");
-            String type = (String) prop.get("blacktie." + serviceName + ".type");
+		    String type = (String) prop.get("blacktie." + serviceName + ".type");
                     if (serviceServer != null && !type.equals("topic")) {
                         log.warn("service " + serviceName + " has already been defined in " + serviceName);
                         throw new SAXException("Can not define the same service: " + serviceName);

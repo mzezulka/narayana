@@ -21,7 +21,7 @@ import org.jboss.narayana.blacktie.jatmibroker.xatmi.ConnectionException;
 
 public interface Sender {
     public Object getSendTo();
-
+    
     public Object getEndpoint();
 
     public void send(Object replyTo, short rval, int rcode, byte[] data, int len, int correlationId, int flags, int ttl,

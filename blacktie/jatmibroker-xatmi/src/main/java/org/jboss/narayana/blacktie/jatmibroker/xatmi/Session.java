@@ -24,40 +24,40 @@ import org.jboss.narayana.blacktie.jatmibroker.core.conf.ConfigurationException;
  * <code>Connection</code> invocation for a client or retrieved from the
  * TPSVCINFO structure for a service (assuming the service was invoked within
  * the scope of a tpconnect).
- *
+ * 
  * It is used to send and retrieve data:
  * Connection#tpconnect(String, Buffer, int, int) TPSVCINFO#getSession()
  */
 public interface Session {
 
-    /**
-     * Send a buffer to a remote server in a conversation
-     *
-     * @param toSend
-     *            The outbound data
-     * @param flags
-     *            The flags to use
-     * @throws ConnectionException
-     *             If the message cannot be sent.
-     */
-    public int tpsend(Buffer toSend, int flags) throws ConnectionException;
+	/**
+	 * Send a buffer to a remote server in a conversation
+	 * 
+	 * @param toSend
+	 *            The outbound data
+	 * @param flags
+	 *            The flags to use
+	 * @throws ConnectionException
+	 *             If the message cannot be sent.
+	 */
+	public int tpsend(Buffer toSend, int flags) throws ConnectionException;
 
-    /**
-     * Received the next response in a conversation
-     *
-     * @param flags
-     *            The flags to use
-     * @return The next response
-     * @throws ConnectionException
-     *             If the message cannot be received or the flags are incorrect
-     * @throws ConfigurationException
-     */
-    public Buffer tprecv(int flags) throws ConnectionException,
-            ConfigurationException;
+	/**
+	 * Received the next response in a conversation
+	 * 
+	 * @param flags
+	 *            The flags to use
+	 * @return The next response
+	 * @throws ConnectionException
+	 *             If the message cannot be received or the flags are incorrect
+	 * @throws ConfigurationException
+	 */
+	public Buffer tprecv(int flags) throws ConnectionException,
+			ConfigurationException;
 
-    /**
-     * Close the conversation with the remote service. This will close the
-     * session.
-     */
-    public void tpdiscon() throws ConnectionException;
+	/**
+	 * Close the conversation with the remote service. This will close the
+	 * session.
+	 */
+	public void tpdiscon() throws ConnectionException;
 }
