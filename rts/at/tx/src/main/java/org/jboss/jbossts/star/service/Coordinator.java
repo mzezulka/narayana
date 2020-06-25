@@ -72,7 +72,7 @@ public class Coordinator
     // active and prepared signalized how many transactions are currently active and/or prepared
     private static final AtomicInteger active = new AtomicInteger(0);
     private static final AtomicInteger prepared = new AtomicInteger(0);
-    // commited and aborted makes a sum of how many transactions were committed/aborted till now
+    // commited and aborted makes a sum of how many transactions were committed/aborted till now 
     private static final AtomicInteger committed = new AtomicInteger(0);
     private static final AtomicInteger aborted = new AtomicInteger(0);
 
@@ -123,7 +123,7 @@ public class Coordinator
     /**
      * Performing a GET on the transaction-manager URI with media type application/txstatusext+xml
      * returns extended information about the transaction-manager resource such as how long it has
-     * been up and all transaction-coordinator URIs.
+     * been up and all transaction-coordinator URIs. 
      *
      * @param info Request context
      * @return TransactionManagerElement
@@ -151,8 +151,8 @@ public class Coordinator
     /**
      * Performing a GET on the transaction-manager URI sufficed with /statistics
      * returns statistics of the transaction manager.
-     * Numbers of active, prepared, committed, and aborted transactions are returned.
-     *
+     * Numbers of active, prepared, committed, and aborted transactions are returned. 
+     * 
      * @return TransactionStatisticsElement
      */
     @GET
@@ -214,7 +214,7 @@ public class Coordinator
      * Performing a GET on the transaction URL with media type application/txstatusext+xml
      * returns extended information about the transaction, such as its status,
      * number of participants, and their individual URIs.
-     *
+     * 
      * @param info Request context
      * @param id URL template parameter for the id of the transaction
      * @return HTTP response representing extended transaction status information
@@ -420,14 +420,14 @@ public class Coordinator
         if (!currentStatus.isRunning() && !currentStatus.isRollbackOnly())
             return Response.status(HttpURLConnection.HTTP_PRECON_FAILED).build();
 
-        /*
-            ABORT_ONLY is not in the spec for the same reasons as it's not in the WS-TX and WS-CAF where
-            it is assumed that only the txn originator can end the tx:
-            - simply register a synchronization in the transaction that prevented a commit from happening;
-            and I haven't implemented synchronisations yet.
-            It is unclear why allowing similar functionality via synchronisations doesn't open up a similar
-            security hole.
-        */
+		/*
+			ABORT_ONLY is not in the spec for the same reasons as it's not in the WS-TX and WS-CAF where
+			it is assumed that only the txn originator can end the tx:
+			- simply register a synchronization in the transaction that prevented a commit from happening;
+			and I haven't implemented synchronisations yet. 
+			It is unclear why allowing similar functionality via synchronisations doesn't open up a similar
+			security hole.
+		*/
         TxStatus txStatus = TxStatus.fromStatus(how);
         tx.setFault(fault);
         AtomicAction.resume(tx);
@@ -463,7 +463,7 @@ public class Coordinator
 
         return Response.status(scRes).entity(TxSupport.toStatusContent(status)).build();
     }
-
+    
     public void removeTxState(int status, Transaction tx, final Collection<String> enlistmentIds) {
 
         String txId = tx.get_uid().fileStringForm();
@@ -519,7 +519,7 @@ public class Coordinator
 
         /*
          * If the transaction is not TransactionActive then the implementation MUST return a 412 status
-         * code
+         * code 
          */
         if (!tx.isRunning())
             return Response.status(HttpURLConnection.HTTP_PRECON_FAILED).build();
@@ -581,7 +581,7 @@ public class Coordinator
 
     /**
      * Register a volatile participant in a tx
-     *
+     * 
      * @param linkHeader link header
      * @param info  URI info
      * @param txId id of transaction
@@ -682,7 +682,7 @@ public class Coordinator
 
     /**
      * Performing DELETE on participant's recovery URL removes participant from the transaction.
-     *
+     * 
      * @param enlistmentId The resource reference
      * @return HTTP status code
      */
@@ -699,7 +699,7 @@ public class Coordinator
 
         if (txn.forgetParticipant(p.get(TxLinkNames.PARTICIPANT_RESOURCE)))
             return Response.status(HttpURLConnection.HTTP_OK).build();
-
+        
         return Response.status(HttpURLConnection.HTTP_CONFLICT).build();
     }
 
