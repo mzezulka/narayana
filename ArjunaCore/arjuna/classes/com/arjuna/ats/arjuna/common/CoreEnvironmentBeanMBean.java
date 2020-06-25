@@ -21,12 +21,12 @@
 package com.arjuna.ats.arjuna.common;
 
 /**
- * A JMX MBean interface containing assorted configuration for the core
- * transaction system.
+ * A JMX MBean interface containing assorted configuration for the core transaction system.
  *
  * @author Jonathan Halliday (jonathan.halliday@redhat.com)
  */
-public interface CoreEnvironmentBeanMBean {
+public interface CoreEnvironmentBeanMBean
+{
     String getVarDir();
 
     String getNodeIdentifier();

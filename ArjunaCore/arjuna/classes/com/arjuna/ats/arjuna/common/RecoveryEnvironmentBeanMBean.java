@@ -27,7 +27,8 @@ import java.util.List;
  *
  * @author Jonathan Halliday (jonathan.halliday@redhat.com)
  */
-public interface RecoveryEnvironmentBeanMBean {
+public interface RecoveryEnvironmentBeanMBean
+{
     int getPeriodicRecoveryPeriod();
 
     int getRecoveryBackoffPeriod();

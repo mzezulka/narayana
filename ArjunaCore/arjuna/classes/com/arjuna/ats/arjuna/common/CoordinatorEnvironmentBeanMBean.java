@@ -21,12 +21,12 @@
 package com.arjuna.ats.arjuna.common;
 
 /**
- * A JMX MBean interface containing configuration for the core transaction
- * coordinator.
+ * A JMX MBean interface containing configuration for the core transaction coordinator.
  *
  * @author Jonathan Halliday (jonathan.halliday@redhat.com)
  */
-public interface CoordinatorEnvironmentBeanMBean {
+public interface CoordinatorEnvironmentBeanMBean
+{
     boolean isAsyncCommit();
 
     boolean isAsyncPrepare();
