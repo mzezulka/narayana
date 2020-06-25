@@ -41,21 +41,21 @@ public class STMVerticle extends AbstractVerticle {
 
     public STMVerticle ()
     {
-    transactionalObject = theContainer.create(new SampleLockable(10));
+	transactionalObject = theContainer.create(new SampleLockable(10));
 
-    System.out.println("Object name: "+theContainer.getIdentifier(transactionalObject));
+	System.out.println("Object name: "+theContainer.getIdentifier(transactionalObject));
 
-    AtomicAction A = new AtomicAction();
+	AtomicAction A = new AtomicAction();
 
-    /*
-     * Flush state to disk (for this example).
-     */
+	/*
+	 * Flush state to disk (for this example).
+	 */
 
-    A.begin();
+	A.begin();
 
-    transactionalObject.increment();
+	transactionalObject.increment();
 
-    A.commit();
+	A.commit();
     }
 
     @Transactional
@@ -63,10 +63,10 @@ public class STMVerticle extends AbstractVerticle {
     {
        public void increment ();
        public void decrement ();
-
+       
        public int value ();
     }
-
+    
     @Transactional
     public static class SampleLockable implements Sample
     {
@@ -74,7 +74,7 @@ public class STMVerticle extends AbstractVerticle {
         {
             _isState = init;
         }
-
+        
         @ReadLock
         public int value ()
         {
@@ -86,7 +86,7 @@ public class STMVerticle extends AbstractVerticle {
         {
             _isState++;
         }
-
+        
         @WriteLock
         public void decrement ()
         {
@@ -99,18 +99,18 @@ public class STMVerticle extends AbstractVerticle {
 
     static public int value ()
     {
-    AtomicAction A = new AtomicAction();
-    int result = -1;
+	AtomicAction A = new AtomicAction();
+	int result = -1;
 
-    A.begin();
+	A.begin();
 
-    transactionalObject.increment();
+	transactionalObject.increment();
 
-    result = transactionalObject.value();
+	result = transactionalObject.value();
 
-    A.commit();
+	A.commit();
 
-    return result;
+	return result;
     }
 
     public void start() {
