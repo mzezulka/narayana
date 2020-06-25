@@ -54,19 +54,19 @@ import com.arjuna.ats.arjuna.common.CoordinatorEnvironmentBeanMBean;
 import com.arjuna.ats.arjuna.coordinator.TxStatsMBean;
 
 public class TxPerfGraph extends javax.swing.JPanel { //JFrame {
-    private static final int NUMBER_OF_SAMPLES = 100;
+    private final static int NUMBER_OF_SAMPLES = 100;
 
     private int POLL_PERIOD = 4000; // in ms
 
-    public static final  int NUMBER_OF_TRANSACTIONS_SERIES = 0;
-    public static final int NUMBER_OF_INFLIGHT_SERIES = 1;
-    public static final int NUMBER_OF_COMMITTED_SERIES = 2;
-    public static final int NUMBER_OF_ABORTED_SERIES = 3;
-    public static final int NUMBER_OF_HEURISTICS_SERIES = 4;
-    public static final int NUMBER_OF_NESTED_SERIES = 5;
-    public static final int NUMBER_OF_TIMEDOUT_SERIES = 6;
+    public final static int NUMBER_OF_TRANSACTIONS_SERIES = 0;
+    public final static int NUMBER_OF_INFLIGHT_SERIES = 1;
+    public final static int NUMBER_OF_COMMITTED_SERIES = 2;
+    public final static int NUMBER_OF_ABORTED_SERIES = 3;
+    public final static int NUMBER_OF_HEURISTICS_SERIES = 4;
+    public final static int NUMBER_OF_NESTED_SERIES = 5;
+    public final static int NUMBER_OF_TIMEDOUT_SERIES = 6;
 
-    private static final String[] SERIES_LABELS = {
+    private final static String[] SERIES_LABELS = {
         "Transactions Created",
         "In Flight Transactions",
         "Committed Transactions",
@@ -76,14 +76,14 @@ public class TxPerfGraph extends javax.swing.JPanel { //JFrame {
         "Timed Out Transactions",
     };
 
-    private static final String[] PIE_CHART_LABELS = {
+    private final static String[] PIE_CHART_LABELS = {
         "Nested",
         "Heuristic",
         "Committed",
         "Aborted",
     };
 
-    private static final int[] PIE_CHART_SERIES = new int[] {
+    private final static int[] PIE_CHART_SERIES = new int[] {
          NUMBER_OF_NESTED_SERIES,
          NUMBER_OF_HEURISTICS_SERIES,
          NUMBER_OF_COMMITTED_SERIES,
@@ -99,7 +99,7 @@ public class TxPerfGraph extends javax.swing.JPanel { //JFrame {
     private CoordinatorEnvironmentBeanMBean coordMBean;
 
     private XYSeries[] _dataSeries = new XYSeries[7];
-    private XYSeriesCollection[] _tsDS = new XYSeriesCollection[7];
+    private XYSeriesCollection _tsDS[] = new XYSeriesCollection[7];
     private long counter = 0L;
     private DefaultPieDataset pieDS;
  //   TimerTask timerTask;
@@ -141,7 +141,7 @@ public class TxPerfGraph extends javax.swing.JPanel { //JFrame {
 
         periodSelectSlider.setMajorTickSpacing(10);
         periodSelectSlider.setToolTipText(
-            "Select the number of (" + POLL_PERIOD + "ms) time slices over which to show the pie chart");
+			"Select the number of (" + POLL_PERIOD + "ms) time slices over which to show the pie chart");
 
         SpinnerModel sm1 = new SpinnerNumberModel(POLL_PERIOD / 1000, 1, 10000, 1);
         SpinnerModel sm2 = new SpinnerNumberModel(NUMBER_OF_SAMPLES, 10, 1000, 1);
@@ -155,8 +155,8 @@ public class TxPerfGraph extends javax.swing.JPanel { //JFrame {
         sampleSizeSpinner.setVisible(false);
         enableStatsCB.setSelected(false);
         resetStatsBtn.setVisible(false);
-    pollIntervalBtn.setVisible(false);
-    sampleSizeBtn1.setVisible(false);
+	pollIntervalBtn.setVisible(false);
+	sampleSizeBtn1.setVisible(false);
 
         taskPerformer = new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
@@ -616,7 +616,7 @@ public class TxPerfGraph extends javax.swing.JPanel { //JFrame {
     }//GEN-LAST:event_sampleSizeBtn1ActionPerformed
 
     private void startPolling() {
-       // timer.cancel();
+       // timer.cancel();       
 
         //timer.schedule(timerTask, 0, POLL_PERIOD);
         if (swingTimer.isRunning())
@@ -680,7 +680,7 @@ public class TxPerfGraph extends javax.swing.JPanel { //JFrame {
         }
     }
 
-    public static void main(String[] args) throws InterruptedException, InvocationTargetException {
+    public static void main(String args[]) throws InterruptedException, InvocationTargetException {
         final TxPerfGraph graphPanel = new TxPerfGraph(new JFrame("TxPerf"));
         String hostname = "localhost";
         int port = 1090;

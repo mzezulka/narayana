@@ -1,24 +1,3 @@
-/*
- * JBoss, Home of Professional Open Source.
- * Copyright 2014, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags. See the copyright.txt file in the
- * distribution for a full listing of individual contributors.
- *
- * This is free software; you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of
- * the License, or (at your option) any later version.
- *
- * This software is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this software; if not, write to the Free
- * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- */
 package com.arjuna.ats.arjuna.tools.osb.mbean;
 
 import java.lang.reflect.Constructor;
@@ -29,14 +8,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.management.MBeanException;
-
 import com.arjuna.ats.arjuna.common.Uid;
-import com.arjuna.ats.arjuna.common.arjPropertyManager;
 import com.arjuna.ats.arjuna.coordinator.AbstractRecord;
 import com.arjuna.ats.arjuna.coordinator.BasicAction;
 import com.arjuna.ats.arjuna.coordinator.RecordList;
@@ -48,14 +23,7 @@ import com.arjuna.ats.arjuna.tools.osb.util.JMXServer;
 
 /**
  * MBean implementation of an ObjectStore entry that represents an AtomicAction
- *
- * @deprecated as of 5.0.5.Final In a subsequent release we will change packages
- *             names in order to provide a better separation between public and
- *             internal classes.
- *
- * @author Mike Musgrove
  */
-@Deprecated // in order to provide a better separation between public and internal classes.
 public class ActionBean extends OSEntryBean implements ActionBeanMBean {
     // Basic properties this enty
     private StateManagerWrapper sminfo;
@@ -64,38 +32,33 @@ public class ActionBean extends OSEntryBean implements ActionBeanMBean {
     // wrapper around the real AtomicAction
     protected ActionBeanWrapperInterface ra;
 
-    protected List<UidWrapper> recuids = new ArrayList<UidWrapper>();
-    private static final ThreadLocal<String> classname = new ThreadLocal<String>();
-
     public ActionBean(UidWrapper w) {
         super(w);
 
-        boolean isJTS = JMXServer.isJTS() && w.getType().contains("ArjunaTransactionImple");
+        boolean isJTS = JMXServer.isJTS() && w.getType().endsWith("ArjunaTransactionImple");
+        // Participants in a JTS transaction are represented by entries in the ObjectStore
+        List<UidWrapper> recuids = null;
 
         if (isJTS) {
             try {
-                UidWrapper.setRecordWrapperTypeName(w.getType());
-                Class<ActionBeanWrapperInterface> cl = (Class<ActionBeanWrapperInterface>) Class
-                        .forName(w.getClassName());
-                Constructor<ActionBeanWrapperInterface> constructor = cl.getConstructor(ActionBean.class,
-                        UidWrapper.class);
+                Class<ActionBeanWrapperInterface> cl = (Class<ActionBeanWrapperInterface>) Class.forName(JMXServer.AJT_WRAPPER_TYPE);
+                Constructor<ActionBeanWrapperInterface> constructor = cl.getConstructor(ActionBean.class, UidWrapper.class);
                 ra = constructor.newInstance(this, w);
                 ra.activate();
-            } catch (Exception e) { // ClassNotFoundException, NoSuchMethodException, InvocationTargetException,
-                                    // IllegalAccessException, InstantiationException
+            } catch (Exception e) { // ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException
                 if (tsLogger.logger.isTraceEnabled())
                     tsLogger.logger.trace("Error constructing " + JMXServer.AJT_WRAPPER_TYPE + ": " + e);
                 ra = createWrapper(w, true);
             }
 
             /*
-             * For JTS we also store participant details under
-             * "CosTransactions/XAResourceRecord" We may at some point want to augment the
-             * beans created in findParticipants below with
-             * w.probe(JMXServer.AJT_RECORD_TYPE);
-             */
+                * for JTS actions the participants will have entries in the ObjectStore.
+                * these entries will be associated with the current MBean (refer to
+                * the method findParticipants below for details)
+                */
+            recuids = w.probe(JMXServer.AJT_RECORD_TYPE, JMXServer.AJT_XAREC_TYPE);
         } else {
-            ra = createWrapper(w, true); // com.arjuna.ats.arjuna.coordinator.abstractrecord.RecordTypeManager.manager()
+            ra = createWrapper(w, true);  // com.arjuna.ats.arjuna.coordinator.abstractrecord.RecordTypeManager.manager()
         }
 
         sminfo = new StateManagerWrapper(StoreManager.getRecoveryStore(), getUid(), getType());
@@ -114,6 +77,7 @@ public class ActionBean extends OSEntryBean implements ActionBeanMBean {
         return action;
     }
 
+
     public StringBuilder toString(String prefix, StringBuilder sb) {
         ra.toString(prefix, sb);
         prefix += '\t';
@@ -129,9 +93,8 @@ public class ActionBean extends OSEntryBean implements ActionBeanMBean {
 
     /**
      * return the Uid for given AbstractRecord
-     *
      * @param rec the record whose Uid is required
-     * @return the Uid of the requested record
+     * @return  the Uid of the requested record
      */
     public Uid getUid(AbstractRecord rec) {
         return ra.getUid(rec);
@@ -139,52 +102,28 @@ public class ActionBean extends OSEntryBean implements ActionBeanMBean {
 
     /**
      * Remove this AtomicAction from the ObjectStore
-     *
      * @return a textual indication of whether the remove operation succeeded
-     * @throws MBeanException
      */
-    public String remove() throws MBeanException {
-        // first unregister each participant of this action
-        Iterator<LogRecordWrapper> i = participants.iterator();
-        int removeCount = 0;
-        int participantCount = participants.size();
-
-        while (i.hasNext()) {
-            LogRecordWrapper w = i.next();
-
-            w.remove(false);
-
-            if (w.isRemoved())
-                removeCount += 1;
-
-            i.remove();
-        }
-
+    public String remove() {
         try {
-            if (removeCount == participantCount) {
-                if (!StoreManager.getRecoveryStore().remove_committed(getUid(), getType()))
-                    return "Attempt to remove transaction failed";
+            if (!StoreManager.getRecoveryStore().remove_committed(getUid(), getType()))
+                return "Attempt to remove transaction failed";
+            else
+                w.probe();
 
-                _uidWrapper.unregister();
-            }
             return "Transaction successfully removed";
         } catch (ObjectStoreException e) {
             return "Unable to remove transaction: " + e.getMessage();
-        } finally {
-            _uidWrapper.probe();
         }
     }
 
     /**
      * create MBean representations of the participants of this transaction
-     *
-     * @param recuids  some transaction participants are represented in the
-     *                 ObjectStore - if this is the case then recuids contains a
-     *                 list of MBean wrappers representing them. Otherwise this list
-     *                 will be empty.
-     * @param list     the records representing the participants
-     * @param listType indicates the type of the records in list (PREPARED, PENDING,
-     *                 FAILED, READONLY, HEURISTIC)
+     * @param recuids some transaction participants are represented in the ObjectStore
+     * - if this is the case then recuids contains a list of MBean wrappers representing them.
+     * Otherwise this list will be empty.
+     * @param list the records representing the participants
+     * @param listType indicates the type of the records in list (PREPARED, PENDING, FAILED, READONLY, HEURISTIC)
      */
     private void findParticipants(List<UidWrapper> recuids, RecordList list, ParticipantStatus listType) {
         if (list != null) {
@@ -201,7 +140,7 @@ public class ActionBean extends OSEntryBean implements ActionBeanMBean {
                     } else {
                         if (tsLogger.logger.isTraceEnabled())
                             tsLogger.logger.trace("participant record is not a LogRecordWrapper");
-                        lw = createParticipant(rec, listType, recuids.get(i));
+                        lw = createParticipant(rec, listType);
                     }
                 } else {
                     lw = createParticipant(rec, listType);
@@ -214,11 +153,9 @@ public class ActionBean extends OSEntryBean implements ActionBeanMBean {
     }
 
     /**
-     * Extension point for other Bean implementations to provide an implementation
-     * bean for its participants. For example @see
-     * com.arjuna.ats.internal.jta.tools.osb.mbean.jta.JTAActionBean
-     *
-     * @param rec      the record that should be represented by an MBean
+     * Extension point for other Bean implementations to provide an implementation bean for its participants.
+     * For example @see com.arjuna.ats.internal.jta.tools.osb.mbean.jta.JTAActionBean
+     * @param rec the record that should be represented by an MBean
      * @param listType the status of the record
      * @return the MBean implementation of the participant
      */
@@ -226,13 +163,8 @@ public class ActionBean extends OSEntryBean implements ActionBeanMBean {
         return new LogRecordWrapper(this, rec, listType);
     }
 
-    protected LogRecordWrapper createParticipant(AbstractRecord rec, ParticipantStatus listType, UidWrapper wrapper) {
-        return new LogRecordWrapper(this, rec, listType, wrapper);
-    }
-
     /**
      * See if there is participant Bean corresponding to the given record
-     *
      * @param rec the record for the target participant
      * @return the bean corresponding to the requested record
      */
@@ -281,8 +213,7 @@ public class ActionBean extends OSEntryBean implements ActionBeanMBean {
      * heuristic status then this method could be used to move it back into the
      * prepared state so that the recovery system can replay phase 2 of the
      * commitment protocol
-     *
-     * @param logrec    the record whose status is to be changed
+     * @param logrec the record whose status is to be changed
      * @param newStatus the desired status
      * @return true if the status was changed
      */
@@ -293,26 +224,30 @@ public class ActionBean extends OSEntryBean implements ActionBeanMBean {
         RecordList oldList = ra.getRecords(lt);
         RecordList newList = ra.getRecords(newStatus);
 
+        if (lt.equals(ParticipantStatus.HEURISTIC) && !targRecord.forgetHeuristic()) {
+            return false;
+        }
+
         // move the record from currList to targList
         if (oldList.remove(targRecord)) {
 
             if (newList.insert(targRecord)) {
                 if (lt.equals(ParticipantStatus.HEURISTIC)) {
                     switch (newStatus) {
-                    case FAILED:
-                        ra.clearHeuristicDecision(TwoPhaseOutcome.FINISH_ERROR);
-                        break;
-                    case PENDING:
-                        ra.clearHeuristicDecision(TwoPhaseOutcome.NOT_PREPARED);
-                        break;
-                    case PREPARED:
-                        ra.clearHeuristicDecision(TwoPhaseOutcome.PREPARE_OK);
-                        break;
-                    case READONLY:
-                        ra.clearHeuristicDecision(TwoPhaseOutcome.PREPARE_READONLY);
-                        break;
-                    default:
-                        break;
+                        case FAILED:
+                            ra.clearHeuristicDecision(TwoPhaseOutcome.FINISH_ERROR);
+                            break;
+                        case PENDING:
+                            ra.clearHeuristicDecision(TwoPhaseOutcome.NOT_PREPARED);
+                            break;
+                        case PREPARED:
+                            ra.clearHeuristicDecision(TwoPhaseOutcome.PREPARE_OK);
+                            break;
+                        case READONLY:
+                            ra.clearHeuristicDecision(TwoPhaseOutcome.PREPARE_READONLY);
+                            break;
+                        default:
+                            break;
                     }
                 }
 
@@ -334,20 +269,10 @@ public class ActionBean extends OSEntryBean implements ActionBeanMBean {
     }
 
     /**
-     * remove the a participant
-     *
-     * @param logRecordWrapper the wrapped log record
+     * The ActionBean needs access to the participant lists maintained by an AtomicAction but these
+     * lists are protected. Therefore define a simple extension class to get at these records:
      */
-    public void remove(LogRecordWrapper logRecordWrapper) {
-        ra.remove(logRecordWrapper);
-    }
-
-    /**
-     * The ActionBean needs access to the participant lists maintained by an
-     * AtomicAction but these lists are protected. Therefore define a simple
-     * extension class to get at these records:
-     */
-    public static class GenericAtomicActionWrapper implements ActionBeanWrapperInterface {
+    public class GenericAtomicActionWrapper implements ActionBeanWrapperInterface {
         boolean activated;
         BasicAction action;
         Map<String, RecordList> recs;
@@ -355,34 +280,22 @@ public class ActionBean extends OSEntryBean implements ActionBeanMBean {
         Method updateState = null;
         UidWrapper uidWrapper;
 
-        private static BasicAction createAction(String classType, UidWrapper wrapper) {
+        public GenericAtomicActionWrapper(String classType, UidWrapper w) {
+            uidWrapper = w;
+            recs = new HashMap<String, RecordList>();
+
             if (classType == null)
                 classType = "com.arjuna.ats.arjuna.AtomicAction";
 
             try {
                 Class cls = Class.forName(classType);
-
-                Class[] pTypes = new Class[1];
+                Class pTypes[] = new Class[1];
                 pTypes[0] = Uid.class;
                 Constructor ctor = cls.getConstructor(pTypes);
-                Object[] args = new Object[1];
-                args[0] = wrapper.getUid();
-                return (BasicAction) ctor.newInstance(args);
-            } catch (Exception e) {
-                if (tsLogger.logger.isDebugEnabled())
-                    tsLogger.logger.debug("unable to create log wrapper for type " + wrapper.getType() + ": error: "
-                            + e.getMessage());
+                Object args[] = new Object[1];
+                args[0] = w.getUid();
+                action = (BasicAction) ctor.newInstance(args);
 
-                return null;
-            }
-        }
-
-        public GenericAtomicActionWrapper(BasicAction ba, UidWrapper w) {
-            action = ba;
-            uidWrapper = w;
-            recs = new HashMap<String, RecordList>();
-
-            if (action != null) {
                 setHeuristicDecision = getMethod(action.getClass(), "setHeuristicDecision", int.class);
                 updateState = getMethod(action.getClass(), "updateState");
 
@@ -391,11 +304,13 @@ public class ActionBean extends OSEntryBean implements ActionBeanMBean {
 
                 if (updateState != null)
                     updateState.setAccessible(true);
-            }
-        }
 
-        public GenericAtomicActionWrapper(String classType, UidWrapper w) {
-            this(createAction(classType, w), w);
+            } catch (Exception e) {
+                action = null;
+
+                if (tsLogger.logger.isDebugEnabled())
+                    tsLogger.logger.debug("unable to create log wrapper for type " + w.getType() + ": error: " + e.getMessage());
+            }
         }
 
         public BasicAction getAction() {
@@ -404,12 +319,7 @@ public class ActionBean extends OSEntryBean implements ActionBeanMBean {
 
         public boolean activate() {
             if (!activated && action != null) {
-                try {
-                    activated = action.activate();
-                } catch (Exception e) {
-                    activated = false;
-                    tsLogger.logger.warn("Activate of " + action + " failed: " + e.getMessage());
-                }
+                activated = action.activate();
             }
 
             return activated;
@@ -421,12 +331,10 @@ public class ActionBean extends OSEntryBean implements ActionBeanMBean {
                     updateState.invoke(action);
                 } catch (IllegalAccessException e) {
                     if (tsLogger.logger.isDebugEnabled())
-                        tsLogger.logger.debug(
-                                "failed to update heuristic for " + action.toString() + ": error: " + e.getMessage());
+                        tsLogger.logger.debug("failed to update heuristic for " + action.toString() + ": error: " + e.getMessage());
                 } catch (InvocationTargetException e) {
                     if (tsLogger.logger.isDebugEnabled())
-                        tsLogger.logger.debug(
-                                "failed to update heuristic for " + action.toString() + ": error: " + e.getMessage());
+                        tsLogger.logger.debug("failed to update heuristic for " + action.toString() + ": error: " + e.getMessage());
                 }
             }
         }
@@ -436,7 +344,7 @@ public class ActionBean extends OSEntryBean implements ActionBeanMBean {
         }
 
         public Uid getUid(AbstractRecord rec) {
-            return rec.order(); // get_uid();
+            return rec.order(); //get_uid();
         }
 
         public StringBuilder toString(String prefix, StringBuilder sb) {
@@ -452,38 +360,11 @@ public class ActionBean extends OSEntryBean implements ActionBeanMBean {
                     setHeuristicDecision.invoke(action, newDecision);
                 } catch (IllegalAccessException e) {
                     if (tsLogger.logger.isDebugEnabled())
-                        tsLogger.logger.debug(
-                                "failed to update heuristic for " + action.toString() + ": error: " + e.getMessage());
+                        tsLogger.logger.debug("failed to update heuristic for " + action.toString() + ": error: " + e.getMessage());
                 } catch (InvocationTargetException e) {
                     if (tsLogger.logger.isDebugEnabled())
-                        tsLogger.logger.debug(
-                                "failed to update heuristic for " + action.toString() + ": error: " + e.getMessage());
+                        tsLogger.logger.debug("failed to update heuristic for " + action.toString() + ": error: " + e.getMessage());
                 }
-        }
-
-        public boolean removeRecords(RecordList rl, LogRecordWrapper logRecordWrapper) {
-            if (rl != null && rl.size() > 0) {
-                AbstractRecord ar = logRecordWrapper.getRecord();
-
-                boolean forgotten = ar.forgetHeuristic();
-                boolean removeAllowed = arjPropertyManager.getObjectStoreEnvironmentBean().isIgnoreMBeanHeuristics();
-
-                if (forgotten || removeAllowed) {
-                    // remove the transaction log for the record
-                    if (rl.remove(ar)) {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        @Override
-        public void remove(LogRecordWrapper logRecordWrapper) {
-            if (logRecordWrapper.removeFromList(getRecords(logRecordWrapper.getListType()))) {
-                doUpdateState(); // rewrite the list
-            }
         }
 
         private Field getField(Class cl, String fn) {
@@ -528,17 +409,12 @@ public class ActionBean extends OSEntryBean implements ActionBeanMBean {
         public RecordList getRecords(ParticipantStatus type) {
 
             switch (type) {
-            default:
-            case PREPARED:
-                return getRecords("preparedList");
-            case FAILED:
-                return getRecords("failedList");
-            case HEURISTIC:
-                return getRecords("heuristicList");
-            case PENDING:
-                return getRecords("pendingList");
-            case READONLY:
-                return getRecords("readonlyList");
+                default:
+                case PREPARED: return getRecords("preparedList");
+                case FAILED: return getRecords("failedList");
+                case HEURISTIC: return getRecords("heuristicList");
+                case PENDING: return getRecords("pendingList");
+                case READONLY: return getRecords("readonlyList");
             }
         }
     }

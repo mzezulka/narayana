@@ -27,8 +27,7 @@ import com.arjuna.ats.arjuna.state.InputObjectState;
 import com.arjuna.ats.arjuna.state.OutputObjectState;
 
 /**
- * Wrapper for ObjectInputState and ObjectOutputState to facilitate use in JMX
- * invocations
+ * Wrapper for ObjectInputState and ObjectOutputState to facilitate use in JMX invocations
  */
 public class ObjectStateWrapper implements Serializable {
     private static final long serialVersionUID = 323923953274907077L;
@@ -84,7 +83,7 @@ public class ObjectStateWrapper implements Serializable {
         byte[] b = getBuff() == null ? new byte[0] : getBuff();
         return new InputObjectState(u, t, b);
     }
-
+    
     public OutputObjectState getOOS() {
         if (getBuff() == null || getBuff().length == 0)
             return null;
