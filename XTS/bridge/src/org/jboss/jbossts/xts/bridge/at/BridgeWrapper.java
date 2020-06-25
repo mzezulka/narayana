@@ -29,7 +29,7 @@ public class BridgeWrapper
             (ContextFactoryImple)ContextFactoryMapper.getMapper().getContextFactory(AtomicTransactionConstants.WSAT_PROTOCOL);
 
     /**
-     * this class handles all creation of bridged transactions
+     * this class handles all creation of bridged transactions 
      */
 
     private BridgeWrapper()
@@ -205,11 +205,11 @@ public class BridgeWrapper
      * @return the result of preparing the transaction
      */
 
-    public int prepare ()
-    {
+	public int prepare ()
+	{
         return coordinator.prepare();
-    }
-
+	}
+    
 
     /**
      * initiate synchronization afterCompletion processing for the bridged-to transaction following a
@@ -224,10 +224,10 @@ public class BridgeWrapper
      * perform a phase 2 commit for the bridged-to transaction
      */
 
-    public void commit ()
-    {
-        coordinator.commit();
-    }
+	public void commit ()
+	{
+		coordinator.commit();
+	}
 
     /**
      * initiate synchronization afterCompletion processing for the bridged-to transaction following a
@@ -241,16 +241,16 @@ public class BridgeWrapper
     /**
      * rollback the bridged-to transaction
      */
-    public void rollback ()
-    {
+	public void rollback ()
+	{
         coordinator.rollback();
-    }
+	}
 
-    @Override
-    public String toString() {
-        return String.format("XTS WS-AT bridge (%s) id %s of subordinate type %s managed by coordinator %s of context %s",
-                super.toString(), id, subordinateType, coordinator, context);
-    }
+	@Override
+	public String toString() {
+	    return String.format("XTS WS-AT bridge (%s) id %s of subordinate type %s managed by coordinator %s of context %s",
+	            super.toString(), id, subordinateType, coordinator, context);
+	}
 
     private SubordinateATCoordinator coordinator;
     private TxContext context;

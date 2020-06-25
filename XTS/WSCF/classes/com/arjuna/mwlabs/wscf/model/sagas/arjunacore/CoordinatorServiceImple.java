@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -78,13 +78,13 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
 
     public CoordinatorServiceImple ()
     {
-    super();
+	super();
 
         if (wscfLogger.logger.isTraceEnabled()) {
             wscfLogger.logger.trace(getClass().getSimpleName() + " constructor");
         }
 
-    _coordManager = new CoordinatorControl();
+	_coordManager = new CoordinatorControl();
     }
 
     /**
@@ -105,7 +105,7 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
             wscfLogger.logger.trace(getClass().getSimpleName() + ".begin. Coordination type: " + coordinationType);
         }
 
-    UserActivityFactory.userActivity().start(coordinationType);
+	UserActivityFactory.userActivity().start(coordinationType);
     }
 
     /**
@@ -130,8 +130,8 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
                     + timeout);
         }
 
-    UserActivityFactory.userActivity().start(coordinationType, timeout);
-    }
+	UserActivityFactory.userActivity().start(coordinationType, timeout);
+    }	
 
 
     /**
@@ -165,58 +165,58 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
             wscfLogger.logger.trace(getClass().getSimpleName() + ".close");
         }
 
-    try
-    {
-        Outcome res = UserActivityFactory.userActivity().end(Success.instance());
+	try
+	{
+	    Outcome res = UserActivityFactory.userActivity().end(Success.instance());
 
         if (wscfLogger.logger.isTraceEnabled()) {
             wscfLogger.logger.trace(getClass().getSimpleName() + ".close. Outcome: " + res);
         }
 
-        /*
-         * TODO
-         *
-         * What happens if the coordinator has already been terminated?
-         */
+	    /*
+	     * TODO
+	     *
+	     * What happens if the coordinator has already been terminated?
+	     */
 
-        if (res != null)
-        {
-        if (res instanceof CoordinationOutcome)
-        {
-            CoordinationOutcome co = (CoordinationOutcome) res;
-
-            switch (co.result())
-            {
-            case TwoPhaseResult.FINISH_OK:
-            case TwoPhaseResult.CONFIRMED:
-            case TwoPhaseResult.HEURISTIC_CONFIRM:
-            break;
-            case TwoPhaseResult.CANCELLED:
-            case TwoPhaseResult.HEURISTIC_CANCEL:
-            throw new CoordinatorCancelledException();
-            case TwoPhaseResult.HEURISTIC_MIXED:
-            throw new ProtocolViolationException("HeuristicMixed");
-            case TwoPhaseResult.FINISH_ERROR:
-            throw new WrongStateException();
-            case TwoPhaseResult.HEURISTIC_HAZARD:
-            default:
-            throw new ProtocolViolationException("HeuristicHazard");
-            }
-        }
-        else
-            throw new ProtocolViolationException(wscfLogger.i18NLogger.get_model_sagas_arjunacore_CoordinatorServiceImple_1());
-        }
+	    if (res != null)
+	    {
+		if (res instanceof CoordinationOutcome)
+		{
+		    CoordinationOutcome co = (CoordinationOutcome) res;
+		    
+		    switch (co.result())
+		    {
+		    case TwoPhaseResult.FINISH_OK:
+		    case TwoPhaseResult.CONFIRMED:
+		    case TwoPhaseResult.HEURISTIC_CONFIRM:
+			break;
+		    case TwoPhaseResult.CANCELLED:
+		    case TwoPhaseResult.HEURISTIC_CANCEL:
+			throw new CoordinatorCancelledException();
+		    case TwoPhaseResult.HEURISTIC_MIXED:
+			throw new ProtocolViolationException("HeuristicMixed");
+		    case TwoPhaseResult.FINISH_ERROR:
+			throw new WrongStateException();
+		    case TwoPhaseResult.HEURISTIC_HAZARD:
+		    default:
+			throw new ProtocolViolationException("HeuristicHazard");
+		    }
+		}
+		else
+		    throw new ProtocolViolationException(wscfLogger.i18NLogger.get_model_sagas_arjunacore_CoordinatorServiceImple_1());
+	    }
+	}
+	catch (NoActivityException ex)
+	{
+	    throw new NoCoordinatorException();
+	}
+	catch (ActiveChildException ex)
+	{
+	    // ?? assume the coordination protocol will cancel children anyway.
+	}
     }
-    catch (NoActivityException ex)
-    {
-        throw new NoCoordinatorException();
-    }
-    catch (ActiveChildException ex)
-    {
-        // ?? assume the coordination protocol will cancel children anyway.
-    }
-    }
-
+    
     /**
      * Cancel the activity.
      *
@@ -238,50 +238,50 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
             wscfLogger.logger.trace(getClass().getSimpleName() + ".cancel");
         }
 
-    try
-    {
-        Outcome res = UserActivityFactory.userActivity().end(Failure.instance());
+	try
+	{
+	    Outcome res = UserActivityFactory.userActivity().end(Failure.instance());
 
         if (wscfLogger.logger.isTraceEnabled()) {
             wscfLogger.logger.trace(getClass().getSimpleName() + ".cancel. Outcome: " + res);
         }
 
-        if (res != null)
-        {
-        if (res instanceof CoordinationOutcome)
-        {
-            CoordinationOutcome co = (CoordinationOutcome) res;
-
-            switch (co.result())
-            {
-            case TwoPhaseResult.CONFIRMED:
-            case TwoPhaseResult.HEURISTIC_CONFIRM:
-            throw new CoordinatorConfirmedException();
-            case TwoPhaseResult.FINISH_OK:
-            case TwoPhaseResult.CANCELLED:
-            case TwoPhaseResult.HEURISTIC_CANCEL:
-            break;
-            case TwoPhaseResult.HEURISTIC_MIXED:
-            throw new ProtocolViolationException("HeuristicMixed");
-            case TwoPhaseResult.FINISH_ERROR:
-            throw new WrongStateException();
-            case TwoPhaseResult.HEURISTIC_HAZARD:
-            default:
-            throw new ProtocolViolationException("HeuristicHazard");
-            }
-        }
-        else
-            throw new ProtocolViolationException(wscfLogger.i18NLogger.get_model_sagas_arjunacore_CoordinatorServiceImple_1());
-        }
-    }
-    catch (NoActivityException ex)
-    {
-        throw new NoCoordinatorException();
-    }
-    catch (ActiveChildException ex)
-    {
-        // ?? assume the coordination protocol will cancel children anyway.
-    }
+	    if (res != null)
+	    {
+		if (res instanceof CoordinationOutcome)
+		{
+		    CoordinationOutcome co = (CoordinationOutcome) res;
+		    
+		    switch (co.result())
+		    {
+		    case TwoPhaseResult.CONFIRMED:
+		    case TwoPhaseResult.HEURISTIC_CONFIRM:
+			throw new CoordinatorConfirmedException();
+		    case TwoPhaseResult.FINISH_OK:
+		    case TwoPhaseResult.CANCELLED:
+		    case TwoPhaseResult.HEURISTIC_CANCEL:
+			break;
+		    case TwoPhaseResult.HEURISTIC_MIXED:
+			throw new ProtocolViolationException("HeuristicMixed");
+		    case TwoPhaseResult.FINISH_ERROR:
+			throw new WrongStateException();
+		    case TwoPhaseResult.HEURISTIC_HAZARD:
+		    default:
+			throw new ProtocolViolationException("HeuristicHazard");
+		    }
+		}
+		else
+		    throw new ProtocolViolationException(wscfLogger.i18NLogger.get_model_sagas_arjunacore_CoordinatorServiceImple_1());
+	    }
+	}
+	catch (NoActivityException ex)
+	{
+	    throw new NoCoordinatorException();
+	}
+	catch (ActiveChildException ex)
+	{
+	    // ?? assume the coordination protocol will cancel children anyway.
+	}
     }
 
     /**
@@ -305,9 +305,9 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
             wscfLogger.logger.trace(getClass().getSimpleName() + ".complete");
         }
 
-    _coordManager.complete();
+	_coordManager.complete();
     }
-
+    
     /**
      * Set the termination status for the current activity to cancel only.
      *
@@ -322,15 +322,15 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
             wscfLogger.logger.trace(getClass().getSimpleName() + ".complete");
         }
 
-    try
-    {
-        UserActivityFactory.userActivity().setCompletionStatus(FailureOnly.instance());
-    }
-    catch (NoActivityException ex)
-    {
-        throw new NoCoordinatorException();
-    }
-    }
+	try
+	{
+	    UserActivityFactory.userActivity().setCompletionStatus(FailureOnly.instance());
+	}
+	catch (NoActivityException ex)
+	{
+	    throw new NoCoordinatorException();
+	}
+    }	
 
     /**
      * Get the timeout value currently associated with activities.
@@ -347,8 +347,8 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
             wscfLogger.logger.trace(getClass().getSimpleName() + ".getTimeout");
         }
 
-    return UserActivityFactory.userActivity().getTimeout();
-    }
+	return UserActivityFactory.userActivity().getTimeout();
+    }	
 
     /**
      * Set the timeout to be associated with all subsequently created
@@ -371,9 +371,9 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
             wscfLogger.logger.trace(getClass().getSimpleName() + ".setTimeout. Timeout: " + timeout);
         }
 
-    UserActivityFactory.userActivity().setTimeout(timeout);
-    }
-
+	UserActivityFactory.userActivity().setTimeout(timeout);
+    }	
+    
     /**
      * @exception SystemException Thrown if any error occurs.
      *
@@ -390,14 +390,14 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
             wscfLogger.logger.trace(getClass().getSimpleName() + ".status");
         }
 
-    ActivityImple curr = current();
-
-    if (curr == null)
-        return NoActivity.instance();
-
-    return _coordManager.status();
+	ActivityImple curr = current();
+	
+	if (curr == null)
+	    return NoActivity.instance();
+	
+	return _coordManager.status();
     }
-
+    
     /**
      * Suspend the current activity from this thread and return the token
      * representing the context, if any, or null otherwise. Once called, the
@@ -415,7 +415,7 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
             wscfLogger.logger.trace(getClass().getSimpleName() + ".suspend");
         }
 
-    return UserActivityFactory.userActivity().suspend();
+	return UserActivityFactory.userActivity().suspend();
     }
 
     /**
@@ -439,7 +439,7 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
             wscfLogger.logger.trace(getClass().getSimpleName() + ".resume");
         }
 
-    UserActivityFactory.userActivity().resume(tx);
+	UserActivityFactory.userActivity().resume(tx);
     }
 
     /**
@@ -463,7 +463,7 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
             wscfLogger.logger.trace(getClass().getSimpleName() + ".enlistParticipant. Participant: " + act);
         }
 
-    _coordManager.enlistParticipant(act);
+	_coordManager.enlistParticipant(act);
     }
 
     /**
@@ -476,7 +476,7 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
      * protocol the coordinator is committing.)
      * @exception SystemException Thrown if any other error occurs.
      */
-
+    
     public void delistParticipant (String participantId) throws InvalidParticipantException, NoCoordinatorException, WrongStateException, SystemException
     {
         if (wscfLogger.logger.isTraceEnabled()) {
@@ -484,17 +484,17 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
                     + participantId);
         }
 
-    _coordManager.delistParticipant(participantId);
+	_coordManager.delistParticipant(participantId);
     }
 
     public void participantCompleted (String participantId) throws NoActivityException, InvalidParticipantException, WrongStateException, SystemException
     {
         if (wscfLogger.logger.isTraceEnabled()) {
             wscfLogger.logger.trace(getClass().getSimpleName() + ".participantCompleted. Participant id: "
-                    + participantId);
+			        + participantId);
         }
 
-    _coordManager.participantCompleted(participantId);
+	_coordManager.participantCompleted(participantId);
     }
 
     public void participantFaulted (String participantId) throws NoActivityException, InvalidParticipantException, SystemException
@@ -504,18 +504,18 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
                     + participantId);
         }
 
-    _coordManager.participantFaulted(participantId);
+	_coordManager.participantFaulted(participantId);
 
-    try
-    {
-        setCancelOnly();
+	try
+	{
+	    setCancelOnly();
+	}
+	catch (Exception ex)
+	{
+	    throw new SystemException(ex.toString());
+	}
     }
-    catch (Exception ex)
-    {
-        throw new SystemException(ex.toString());
-    }
-    }
-
+    
     public void participantCannotComplete (String participantId) throws NoActivityException, InvalidParticipantException, WrongStateException, SystemException
     {
         if (wscfLogger.logger.isTraceEnabled()) {
@@ -523,16 +523,16 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
                     + participantId);
         }
 
-    _coordManager.participantCannotComplete(participantId);
+	_coordManager.participantCannotComplete(participantId);
 
-    try
-    {
-        setCancelOnly();
-    }
-    catch (Exception ex)
-    {
-        throw new SystemException(ex.toString());
-    }
+	try
+	{
+	    setCancelOnly();
+	}
+	catch (Exception ex)
+	{
+	    throw new SystemException(ex.toString());
+	}
     }
 
     /**
@@ -548,7 +548,7 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
             wscfLogger.logger.trace(getClass().getSimpleName() + ".currentActivity");
         }
 
-    return UserActivityFactory.userActivity().currentActivity();
+	return UserActivityFactory.userActivity().currentActivity();
     }
 
     /**
@@ -561,12 +561,12 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
             wscfLogger.logger.trace(getClass().getSimpleName() + ".identifier");
         }
 
-    ActivityImple curr = current();
+	ActivityImple curr = current();
+	
+	if (curr == null)
+	    throw new NoActivityException();
 
-    if (curr == null)
-        throw new NoActivityException();
-
-    return _coordManager.identifier();
+	return _coordManager.identifier();
     }
 
     public final ActivityImple current ()
@@ -575,9 +575,9 @@ public class CoordinatorServiceImple implements UserCoordinator, CoordinatorMana
             wscfLogger.logger.trace(getClass().getSimpleName() + ".current");
         }
 
-    UserActivityImple imple = (UserActivityImple) UserActivityFactory.userActivity();
-
-    return imple.current();
+	UserActivityImple imple = (UserActivityImple) UserActivityFactory.userActivity();
+	
+	return imple.current();
     }
 
     private CoordinatorControl _coordManager;

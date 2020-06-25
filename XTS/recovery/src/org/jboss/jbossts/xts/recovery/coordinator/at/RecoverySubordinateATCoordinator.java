@@ -32,7 +32,7 @@ public class RecoverySubordinateATCoordinator extends SubordinateATCoordinator {
     public boolean activate()
     {
         boolean result = super.activate();
-
+        
         // if we cannot activate we want the participant which was registered on behalf of this
         // coordinator to produce a heuristic result for the transaction. it will do this if it
         // finds no entry for the coordinate in the subordinate coordinators list. in this case
@@ -79,11 +79,11 @@ public class RecoverySubordinateATCoordinator extends SubordinateATCoordinator {
                (status == ActionStatus.H_COMMIT) ||
                (status == ActionStatus.H_MIXED) ||
                (status == ActionStatus.H_HAZARD))
-       {
-           // ok, we are ready to commit but we wait
+	   {
+	       // ok, we are ready to commit but we wait
            // for the parent transaction to drive phase2Commit
            // so do nothing just now
-       } else if ((status ==  ActionStatus.ABORTED) ||
+	   } else if ((status ==  ActionStatus.ABORTED) ||
                (status == ActionStatus.H_ROLLBACK) ||
                (status == ActionStatus.ABORTING) ||
                (status == ActionStatus.ABORT_ONLY))

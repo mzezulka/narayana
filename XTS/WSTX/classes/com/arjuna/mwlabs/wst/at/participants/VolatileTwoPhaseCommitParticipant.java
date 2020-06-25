@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -56,186 +56,186 @@ import com.arjuna.mw.wsas.exceptions.WrongStateException;
 public class VolatileTwoPhaseCommitParticipant implements Synchronization
 {
 
-    public VolatileTwoPhaseCommitParticipant (Volatile2PCParticipant resource)
-    {
-        _resource = resource;
-    }
+	public VolatileTwoPhaseCommitParticipant (Volatile2PCParticipant resource)
+	{
+		_resource = resource;
+	}
 
-    /**
-     * The transaction that the instance is enrolled with is about to commit.
-     *
-     * @exception SystemException
-     *                Thrown if any error occurs. This will cause the
-     *                transaction to roll back.
-     */
+	/**
+	 * The transaction that the instance is enrolled with is about to commit.
+	 * 
+	 * @exception SystemException
+	 *                Thrown if any error occurs. This will cause the
+	 *                transaction to roll back.
+	 */
 
-    public void beforeCompletion () throws SystemException
-    {
-        try
-        {
-            if (_resource != null)
-            {
-                // com.arjuna.mw.wst.vote.Vote vt = _resource.prepare();
-                com.arjuna.wst.Vote vt = _resource.prepare();
+	public void beforeCompletion () throws SystemException
+	{
+		try
+		{
+			if (_resource != null)
+			{
+				// com.arjuna.mw.wst.vote.Vote vt = _resource.prepare();
+				com.arjuna.wst.Vote vt = _resource.prepare();
 
-                if (vt instanceof com.arjuna.wst.ReadOnly)
-                    _readonly = true;
-                else
-                {
-                    if (vt instanceof com.arjuna.wst.Prepared)
-                    {
-                        // do nothing
-                    }
-                    else
-                    {
-                        List<Class<?>> expected = Arrays.asList(com.arjuna.wst.ReadOnly.class, com.arjuna.wst.Prepared.class);
-                        wstxLogger.i18NLogger.error_wst_at_participants_Volatile2PC_prepare_wrong_type(vt, _resource, expected);
-                        throw new SystemException("participant on before completion preparation resulted in wrong vote result " + vt);
-                    }
-                }
-            }
-            else
-            {
-                wstxLogger.i18NLogger.error_wst_at_participants_Volatile2PC_prepare_is_null();
-                throw new SystemException("participant to prepare is null");
-            }
-        }
-        catch (SystemException ex)
-        {
-            throw ex;
-        }
-        catch (Exception ex)
-        {
-            wstxLogger.i18NLogger.error_wst_at_participants_Volatile2PC_prepare(_resource, ex);
-            SystemException se = new SystemException(ex.toString());
-            se.addSuppressed(ex);
-            throw se;
-        }
-    }
+				if (vt instanceof com.arjuna.wst.ReadOnly)
+					_readonly = true;
+				else
+				{
+					if (vt instanceof com.arjuna.wst.Prepared)
+					{
+						// do nothing
+					}
+					else
+					{
+						List<Class<?>> expected = Arrays.asList(com.arjuna.wst.ReadOnly.class, com.arjuna.wst.Prepared.class);
+						wstxLogger.i18NLogger.error_wst_at_participants_Volatile2PC_prepare_wrong_type(vt, _resource, expected);
+						throw new SystemException("participant on before completion preparation resulted in wrong vote result " + vt);
+					}
+				}
+			}
+			else
+			{
+				wstxLogger.i18NLogger.error_wst_at_participants_Volatile2PC_prepare_is_null();
+				throw new SystemException("participant to prepare is null");
+			}
+		}
+		catch (SystemException ex)
+		{
+			throw ex;
+		}
+		catch (Exception ex)
+		{
+			wstxLogger.i18NLogger.error_wst_at_participants_Volatile2PC_prepare(_resource, ex);
+			SystemException se = new SystemException(ex.toString());
+			se.addSuppressed(ex);
+			throw se;
+		}
+	}
 
-    /**
-     * The transaction that the instance is enrolled with has completed and the
-     * state in which is completed is passed as a parameter.
-     *
-     * @param CompletionStatus
-     *            cs The state in which the transaction completed.
-     *
-     * @exception SystemException
-     *                Thrown if any error occurs. This has no affect on the
-     *                outcome of the transaction.
-     */
+	/**
+	 * The transaction that the instance is enrolled with has completed and the
+	 * state in which is completed is passed as a parameter.
+	 * 
+	 * @param CompletionStatus
+	 *            cs The state in which the transaction completed.
+	 * 
+	 * @exception SystemException
+	 *                Thrown if any error occurs. This has no affect on the
+	 *                outcome of the transaction.
+	 */
 
-    public void afterCompletion (int status) throws SystemException
-    {
-        if (!_readonly)
-        {
-            try
-            {
-                switch (status)
-                {
-                case CoordinationResult.CONFIRMED:
-                    confirm();
-                    break;
-                default:
-                    cancel();
-                    break;
-                }
-            }
-            catch (SystemException ex)
-            {
-                throw ex;
-            }
-            catch (Exception ex)
-            {
-                SystemException se = new SystemException(ex.toString());
-                se.addSuppressed(ex);
-                throw se;
-            }
-        }
-    }
+	public void afterCompletion (int status) throws SystemException
+	{
+		if (!_readonly)
+		{
+			try
+			{
+				switch (status)
+				{
+				case CoordinationResult.CONFIRMED:
+					confirm();
+					break;
+				default:
+					cancel();
+					break;
+				}
+			}
+			catch (SystemException ex)
+			{
+				throw ex;
+			}
+			catch (Exception ex)
+			{
+				SystemException se = new SystemException(ex.toString());
+				se.addSuppressed(ex);
+				throw se;
+			}
+		}
+	}
 
-    private final void confirm () throws InvalidParticipantException,
-            WrongStateException, HeuristicHazardException,
-            HeuristicMixedException, HeuristicCancelException, SystemException
-    {
-        if (_resource != null)
-        {
-            try
-            {
-                _resource.commit();
-            }
-            // catch (com.arjuna.mw.wst.exceptions.WrongStateException ex)
-            catch (com.arjuna.wst.WrongStateException ex)
-            {
-                WrongStateException wse = new WrongStateException(ex.toString());
-                wse.addSuppressed(ex);
-                throw wse;
-            }
-            /*
-             * catch (com.arjuna.mw.wst.exceptions.HeuristicHazardException ex) {
-             * throw new HeuristicHazardException(ex.toString()); } catch
-             * (com.arjuna.mw.wst.exceptions.HeuristicMixedException ex) { throw
-             * new HeuristicMixedException(ex.toString()); } catch
-             * (com.arjuna.mw.wst.exceptions.HeuristicRollbackException ex) {
-             * throw new HeuristicCancelException(ex.toString()); }
-             */
-            // catch (com.arjuna.mw.wst.exceptions.SystemException ex)
-            catch (com.arjuna.wst.SystemException ex)
-            {
-                SystemException se = new SystemException(ex.toString());
-                se.addSuppressed(ex);
-                throw se;
-            }
-        }
-        else
-        {
-            wstxLogger.i18NLogger.error_wst_at_participants_Volatile2PC_confirm_is_null();
-            throw new InvalidParticipantException("participant to confirm is null");
-        }
-    }
+	private final void confirm () throws InvalidParticipantException,
+			WrongStateException, HeuristicHazardException,
+			HeuristicMixedException, HeuristicCancelException, SystemException
+	{
+		if (_resource != null)
+		{
+			try
+			{
+				_resource.commit();
+			}
+			// catch (com.arjuna.mw.wst.exceptions.WrongStateException ex)
+			catch (com.arjuna.wst.WrongStateException ex)
+			{
+				WrongStateException wse = new WrongStateException(ex.toString());
+				wse.addSuppressed(ex);
+				throw wse;
+			}
+			/*
+			 * catch (com.arjuna.mw.wst.exceptions.HeuristicHazardException ex) {
+			 * throw new HeuristicHazardException(ex.toString()); } catch
+			 * (com.arjuna.mw.wst.exceptions.HeuristicMixedException ex) { throw
+			 * new HeuristicMixedException(ex.toString()); } catch
+			 * (com.arjuna.mw.wst.exceptions.HeuristicRollbackException ex) {
+			 * throw new HeuristicCancelException(ex.toString()); }
+			 */
+			// catch (com.arjuna.mw.wst.exceptions.SystemException ex)
+			catch (com.arjuna.wst.SystemException ex)
+			{
+				SystemException se = new SystemException(ex.toString());
+				se.addSuppressed(ex);
+				throw se;
+			}
+		}
+		else
+		{
+			wstxLogger.i18NLogger.error_wst_at_participants_Volatile2PC_confirm_is_null();
+			throw new InvalidParticipantException("participant to confirm is null");
+		}
+	}
 
-    private final void cancel () throws InvalidParticipantException,
-            WrongStateException, HeuristicHazardException,
-            HeuristicMixedException, HeuristicConfirmException, SystemException
-    {
-        if (_resource != null)
-        {
-            try
-            {
-                _resource.rollback();
-            }
-            // catch (com.arjuna.mw.wst.exceptions.WrongStateException ex)
-            catch (com.arjuna.wst.WrongStateException ex)
-            {
-                WrongStateException wse = new WrongStateException(ex.toString());
-                wse.addSuppressed(ex);
-                throw wse;
-            }
-            /*
-             * catch (com.arjuna.mw.wst.exceptions.HeuristicHazardException ex) {
-             * throw new HeuristicHazardException(ex.toString()); } catch
-             * (com.arjuna.mw.wst.exceptions.HeuristicMixedException ex) { throw
-             * new HeuristicMixedException(ex.toString()); } catch
-             * (com.arjuna.mw.wst.exceptions.HeuristicCommitException ex) {
-             * throw new HeuristicConfirmException(ex.toString()); }
-             */
-            // catch (com.arjuna.mw.wst.exceptions.SystemException ex)
-            catch (com.arjuna.wst.SystemException ex)
-            {
-                SystemException se = new SystemException(ex.toString());
-                se.addSuppressed(ex);
-                throw se;
-            }
-        }
-        else
-        {
-            wstxLogger.i18NLogger.error_wst_at_participants_Volatile2PC_cancel_is_null();
-            throw new InvalidParticipantException("praticipant to cancel is null");
-        }
-    }
+	private final void cancel () throws InvalidParticipantException,
+			WrongStateException, HeuristicHazardException,
+			HeuristicMixedException, HeuristicConfirmException, SystemException
+	{
+		if (_resource != null)
+		{
+			try
+			{
+				_resource.rollback();
+			}
+			// catch (com.arjuna.mw.wst.exceptions.WrongStateException ex)
+			catch (com.arjuna.wst.WrongStateException ex)
+			{
+			    WrongStateException wse = new WrongStateException(ex.toString());
+			    wse.addSuppressed(ex);
+			    throw wse;
+			}
+			/*
+			 * catch (com.arjuna.mw.wst.exceptions.HeuristicHazardException ex) {
+			 * throw new HeuristicHazardException(ex.toString()); } catch
+			 * (com.arjuna.mw.wst.exceptions.HeuristicMixedException ex) { throw
+			 * new HeuristicMixedException(ex.toString()); } catch
+			 * (com.arjuna.mw.wst.exceptions.HeuristicCommitException ex) {
+			 * throw new HeuristicConfirmException(ex.toString()); }
+			 */
+			// catch (com.arjuna.mw.wst.exceptions.SystemException ex)
+			catch (com.arjuna.wst.SystemException ex)
+			{
+			    SystemException se = new SystemException(ex.toString());
+			    se.addSuppressed(ex);
+			    throw se;
+			}
+		}
+		else
+		{
+		    wstxLogger.i18NLogger.error_wst_at_participants_Volatile2PC_cancel_is_null();
+			throw new InvalidParticipantException("praticipant to cancel is null");
+		}
+	}
 
-    private Volatile2PCParticipant _resource = null;
+	private Volatile2PCParticipant _resource = null;
 
-    private boolean _readonly = false;
+	private boolean _readonly = false;
 
 }

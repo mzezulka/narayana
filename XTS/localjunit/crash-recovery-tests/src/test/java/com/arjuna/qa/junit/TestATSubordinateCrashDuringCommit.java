@@ -6,14 +6,14 @@ import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
 public class TestATSubordinateCrashDuringCommit extends BaseCrashTest {
-    public TestATSubordinateCrashDuringCommit() {
-        scriptName = "ATSubordinateCrashDuringCommit";
-    }
-
-    @Test
-    public void subordinateMultiParticipantPrepareAndCommitTest() throws Exception {
-        testName = "subordinate.MultiParticipantPrepareAndCommitTest";
-        String testClass = "org.jboss.jbossts.xts.servicetests.test.at.subordinate.MultiParticipantPrepareAndCommitTest";
-        runTest(testClass);
-    }
+	public TestATSubordinateCrashDuringCommit() {
+		scriptName = "ATSubordinateCrashDuringCommit";
+	}
+	
+	@Test
+	public void subordinateMultiParticipantPrepareAndCommitTest() throws Exception {
+		testName = "subordinate.MultiParticipantPrepareAndCommitTest";
+		String testClass = "org.jboss.jbossts.xts.servicetests.test.at.subordinate.MultiParticipantPrepareAndCommitTest";
+		runTest(testClass);
+	}
 }

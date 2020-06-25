@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -200,7 +200,7 @@ public class CoordinatorCompletionParticipantEngine implements CoordinatorComple
             sendCompleted() ;
         }
         else if ((current == State.STATE_FAILING_ACTIVE) || (current == State.STATE_FAILING_CANCELING) ||
-             (current == State.STATE_FAILING_COMPLETING))
+        	 (current == State.STATE_FAILING_COMPLETING))
         {
             sendFail(current.getValue()) ;
         }
@@ -355,7 +355,7 @@ public class CoordinatorCompletionParticipantEngine implements CoordinatorComple
             sendCompleted() ;
         }
         else if ((current == State.STATE_FAILING_ACTIVE) || (current == State.STATE_FAILING_CANCELING) ||
-             (current == State.STATE_FAILING_COMPLETING) || (current == State.STATE_ENDED))
+        	 (current == State.STATE_FAILING_COMPLETING) || (current == State.STATE_ENDED))
         {
             sendFail(current.getValue()) ;
         }
@@ -479,7 +479,7 @@ public class CoordinatorCompletionParticipantEngine implements CoordinatorComple
             current = state ;
             if (current == State.STATE_NOT_COMPLETING)
             {
-            ended() ;
+        	ended() ;
             }
         }
     }
@@ -493,12 +493,12 @@ public class CoordinatorCompletionParticipantEngine implements CoordinatorComple
      */
     public void getStatus(final NotificationType getStatus, final MAP map, final ArjunaContext arjunaContext)
     {
-    final State current ;
-    synchronized(this)
-    {
-        current = state ;
-    }
-    sendStatus(current) ;
+	final State current ;
+	synchronized(this)
+	{
+	    current = state ;
+	}
+	sendStatus(current) ;
     }
 
     /**
@@ -746,11 +746,11 @@ public class CoordinatorCompletionParticipantEngine implements CoordinatorComple
             }
             else if (current == State.STATE_CANCELING)
             {
-            changeState(State.STATE_FAILING_CANCELING) ;
+        	changeState(State.STATE_FAILING_CANCELING) ;
             }
             else if (current == State.STATE_COMPLETING)
             {
-            changeState(State.STATE_FAILING_COMPLETING) ;
+        	changeState(State.STATE_FAILING_COMPLETING) ;
             }
             else if (current == State.STATE_COMPENSATING)
             {
@@ -1419,7 +1419,7 @@ public class CoordinatorCompletionParticipantEngine implements CoordinatorComple
         changeState(State.STATE_ENDED) ;
         CoordinatorCompletionParticipantProcessor.getProcessor().deactivateParticipant(this) ;
     }
-
+    
     /**
      * Initiate the timer.
      */

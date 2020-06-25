@@ -38,25 +38,25 @@ public class BaseHandler implements ContentHandler
      * The next handler in the sequence.
      */
     private final ContentHandler nextHandler ;
-
+    
     /**
      * Construct the base handler.
      * @param nextHandler The next content handler.
      */
     protected BaseHandler(final ContentHandler nextHandler)
     {
-    this.nextHandler = nextHandler ;
+	this.nextHandler = nextHandler ;
     }
-
+    
     /**
      * Set the document locator.
      * @param locator The document locator.
      */
     public void setDocumentLocator(final Locator locator)
     {
-    nextHandler.setDocumentLocator(locator) ;
+	nextHandler.setDocumentLocator(locator) ;
     }
-
+    
     /**
      * Handle the procesing instruction.
      * @param target The pi target.
@@ -66,29 +66,29 @@ public class BaseHandler implements ContentHandler
     public void processingInstruction(final String target, final String data)
         throws SAXException
     {
-    nextHandler.processingInstruction(target, data) ;
+	nextHandler.processingInstruction(target, data) ;
     }
-
+    
     /**
      * Start the document.
      * @throws SAXException for any errors.
      */
     public void startDocument()
-        throws SAXException
+    	throws SAXException
     {
-    nextHandler.startDocument() ;
+	nextHandler.startDocument() ;
     }
-
+    
     /**
      * End the document.
      * @throws SAXException for any errors.
      */
     public void endDocument()
-        throws SAXException
+    	throws SAXException
     {
-    nextHandler.endDocument() ;
+	nextHandler.endDocument() ;
     }
-
+    
     /**
      * Start a prefix mapping.
      * @param prefix The namespace prefix.
@@ -98,20 +98,20 @@ public class BaseHandler implements ContentHandler
     public void startPrefixMapping(final String prefix, final String uri)
         throws SAXException
     {
-    nextHandler.startPrefixMapping(prefix, uri) ;
+	nextHandler.startPrefixMapping(prefix, uri) ;
     }
-
+    
     /**
      * End the prefix mapping.
      * @param prefix The namespace prefix.
      * @throws SAXException for any errors.
      */
     public void endPrefixMapping(final String prefix)
-        throws SAXException
+    	throws SAXException
     {
-    nextHandler.endPrefixMapping(prefix) ;
+	nextHandler.endPrefixMapping(prefix) ;
     }
-
+    
     /**
      * Start an element.
      * @param uri The uri.
@@ -122,11 +122,11 @@ public class BaseHandler implements ContentHandler
      */
     public void startElement(final String uri, final String localName, final String qName,
         final Attributes attributes)
-        throws SAXException
+    	throws SAXException
     {
-    nextHandler.startElement(uri, localName, qName, attributes) ;
+	nextHandler.startElement(uri, localName, qName, attributes) ;
     }
-
+    
     /**
      * End an element.
      * @param uri The uri.
@@ -137,9 +137,9 @@ public class BaseHandler implements ContentHandler
     public void endElement(final String uri, final String localName, final String qName)
         throws SAXException
     {
-    nextHandler.endElement(uri, localName, qName) ;
+	nextHandler.endElement(uri, localName, qName) ;
     }
-
+    
     /**
      * Process character text.
      * @param chars The character array.
@@ -150,9 +150,9 @@ public class BaseHandler implements ContentHandler
     public void characters(char[] chars, int start, int length)
         throws SAXException
     {
-    nextHandler.characters(chars, start, length) ;
+	nextHandler.characters(chars, start, length) ;
     }
-
+    
     /**
      * Process ignorable white space.
      * @param chars The character array.
@@ -163,25 +163,25 @@ public class BaseHandler implements ContentHandler
     public void ignorableWhitespace(char[] chars, int start, int length)
         throws SAXException
     {
-    nextHandler.ignorableWhitespace(chars, start, length) ;
+	nextHandler.ignorableWhitespace(chars, start, length) ;
     }
-
+    
     /**
      * Skip an entity.
      * @throws SAXException for any errors.
      */
     public void skippedEntity(final String name)
-        throws SAXException
+    	throws SAXException
     {
-    nextHandler.skippedEntity(name) ;
+	nextHandler.skippedEntity(name) ;
     }
-
+    
     /**
      * Get the next handler.
      * @return The next handler.
      */
     protected final ContentHandler getNextHandler()
     {
-    return nextHandler ;
+	return nextHandler ;
     }
 }

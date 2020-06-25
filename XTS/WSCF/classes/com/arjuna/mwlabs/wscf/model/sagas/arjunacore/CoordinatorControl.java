@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -82,33 +82,33 @@ public class CoordinatorControl
     public CoordinatorControl ()
     {
     }
-
+    
     /**
      * An activity has begun and is active on the current thread.
      */
 
     public void begin () throws SystemException
     {
-    try
-    {
-        BACoordinator coord = new BACoordinator();
-        int status = coord.start(parentCoordinator());
-
-        if (status != ActionStatus.RUNNING)
-        throw new BegunFailedException(wscfLogger.i18NLogger.get_model_sagas_arjunacore_CoordinatorControl_1() + ActionStatus.stringForm(status));
-        else
-        {
-        _coordinators.put(currentActivity(), coord);
-        }
-    }
-    catch (SystemException ex)
-    {
-        throw ex;
-    }
-    catch (Exception ex)
-    {
-        throw new UnexpectedException(ex.toString());
-    }
+	try
+	{
+	    BACoordinator coord = new BACoordinator();
+	    int status = coord.start(parentCoordinator());
+	
+	    if (status != ActionStatus.RUNNING)
+		throw new BegunFailedException(wscfLogger.i18NLogger.get_model_sagas_arjunacore_CoordinatorControl_1() + ActionStatus.stringForm(status));
+	    else
+	    {
+		_coordinators.put(currentActivity(), coord);
+	    }
+	}
+	catch (SystemException ex)
+	{
+	    throw ex;
+	}
+	catch (Exception ex)
+	{
+	    throw new UnexpectedException(ex.toString());
+	}
     }
 
     /**
@@ -122,51 +122,51 @@ public class CoordinatorControl
 
     public Outcome complete (CompletionStatus cs) throws SystemException
     {
-    BACoordinator current = currentCoordinator();
-    int outcome;
-
-    if ((cs != null) && (cs instanceof Success))
-    {
-        // commit
+	BACoordinator current = currentCoordinator();
+	int outcome;
+	
+	if ((cs != null) && (cs instanceof Success))
+	{
+	    // commit
         outcome = current.close();
-    }
-    else
-    {
-        // abort
+	}
+	else
+	{
+	    // abort
         outcome = current.cancel();
-    }
+	}
 
-    _coordinators.remove(currentActivity());
+	_coordinators.remove(currentActivity());
 
-    int result;
+	int result;
 
-    switch (outcome)
-    {
-    case ActionStatus.ABORTED:
-        result = TwoPhaseResult.CANCELLED;
-        break;
-    case ActionStatus.COMMITTED:
-        result = TwoPhaseResult.CONFIRMED;
-        break;
-    case ActionStatus.H_ROLLBACK:
-        result = TwoPhaseResult.HEURISTIC_CANCEL;
-        break;
-    case ActionStatus.H_COMMIT:
-        result = TwoPhaseResult.HEURISTIC_CONFIRM;
-        break;
-    case ActionStatus.H_MIXED:
-        result = TwoPhaseResult.HEURISTIC_MIXED;
-        break;
-    case ActionStatus.H_HAZARD:
-        result = TwoPhaseResult.HEURISTIC_HAZARD;
-        break;
-    default:
-        result = TwoPhaseResult.FINISH_ERROR;
-        break;
-    }
+	switch (outcome)
+	{
+	case ActionStatus.ABORTED:
+	    result = TwoPhaseResult.CANCELLED;
+	    break;
+	case ActionStatus.COMMITTED:
+	    result = TwoPhaseResult.CONFIRMED;
+	    break;
+	case ActionStatus.H_ROLLBACK:
+	    result = TwoPhaseResult.HEURISTIC_CANCEL;
+	    break;
+	case ActionStatus.H_COMMIT:
+	    result = TwoPhaseResult.HEURISTIC_CONFIRM;
+	    break;
+	case ActionStatus.H_MIXED:
+	    result = TwoPhaseResult.HEURISTIC_MIXED;
+	    break;
+	case ActionStatus.H_HAZARD:
+	    result = TwoPhaseResult.HEURISTIC_HAZARD;
+	    break;
+	default:
+	    result = TwoPhaseResult.FINISH_ERROR;
+	    break;
+	}
 
-    return new CoordinationOutcome(cs, result);
-    }
+	return new CoordinationOutcome(cs, result);
+    }	
 
     /**
      * The current activity is completing and informs the participants
@@ -175,8 +175,8 @@ public class CoordinatorControl
 
     public void complete () throws WrongStateException, SystemException
     {
-    currentCoordinator().complete();
-    }
+	currentCoordinator().complete();
+    }	
 
     /**
      * The activity has been suspended.
@@ -184,7 +184,7 @@ public class CoordinatorControl
 
     public void suspend () throws SystemException
     {
-    }
+    }	
 
     /**
      * The activity has been resumed on the current thread.
@@ -192,7 +192,7 @@ public class CoordinatorControl
 
     public void resume () throws SystemException
     {
-    }
+    }	
 
     /**
      * The activity has completed and is no longer active on the current
@@ -226,7 +226,7 @@ public class CoordinatorControl
 
     public Outcome coordinate (CompletionStatus cs) throws WrongStateException, ProtocolViolationException, SystemException
     {
-    return null;
+	return null;
     }
 
     /**
@@ -241,37 +241,37 @@ public class CoordinatorControl
 
     public com.arjuna.mw.wsas.status.Status status () throws SystemException
     {
-    int currentStatus = currentCoordinator().status();
-
-    switch (currentStatus)
-    {
-    case ActionStatus.CREATED:
-    case ActionStatus.RUNNING:
-        return Active.instance();
-    case ActionStatus.PREPARING:
-    case ActionStatus.PREPARED:
-    case ActionStatus.COMMITTING:
-        return Closing.instance();
-    case ActionStatus.COMMITTED:
-        return Closed.instance();
-    case ActionStatus.ABORTING:
-        return Cancelling.instance();
-    case ActionStatus.ABORTED:
-        return Cancelled.instance();
-    case ActionStatus.ABORT_ONLY:
-        return CancelOnly.instance();
-    case ActionStatus.NO_ACTION:
-        return NoActivity.instance();
-    case ActionStatus.H_ROLLBACK:
-    case ActionStatus.H_COMMIT:
-    case ActionStatus.H_MIXED:
-    case ActionStatus.H_HAZARD:
-    case ActionStatus.DISABLED:
-    case ActionStatus.INVALID:
-    case ActionStatus.CLEANUP:
-    default:
-        return Unknown.instance();
-    }
+	int currentStatus = currentCoordinator().status();
+	
+	switch (currentStatus)
+	{
+	case ActionStatus.CREATED:
+	case ActionStatus.RUNNING:
+	    return Active.instance();
+	case ActionStatus.PREPARING:
+	case ActionStatus.PREPARED:
+	case ActionStatus.COMMITTING:
+	    return Closing.instance();
+	case ActionStatus.COMMITTED:
+	    return Closed.instance();
+	case ActionStatus.ABORTING:
+	    return Cancelling.instance();
+	case ActionStatus.ABORTED:
+	    return Cancelled.instance();
+	case ActionStatus.ABORT_ONLY:
+	    return CancelOnly.instance();
+	case ActionStatus.NO_ACTION:
+	    return NoActivity.instance();
+	case ActionStatus.H_ROLLBACK:
+	case ActionStatus.H_COMMIT:
+	case ActionStatus.H_MIXED:
+	case ActionStatus.H_HAZARD:
+	case ActionStatus.DISABLED:
+	case ActionStatus.INVALID:
+	case ActionStatus.CLEANUP:
+	default:
+	    return Unknown.instance();
+	}
     }
 
     /**
@@ -282,10 +282,10 @@ public class CoordinatorControl
      * @return the complete list of qualifiers that have been registered with
      * the current coordinator.
      */
-
+    
     public Qualifier[] qualifiers () throws NoCoordinatorException, SystemException
     {
-    return currentCoordinator().qualifiers();
+	return currentCoordinator().qualifiers();
     }
 
     /**
@@ -296,7 +296,7 @@ public class CoordinatorControl
 
     public CoordinatorId identifier () throws NoCoordinatorException, SystemException
     {
-    return currentCoordinator().identifier();
+	return currentCoordinator().identifier();
     }
 
     /**
@@ -316,7 +316,7 @@ public class CoordinatorControl
 
     public void enlistParticipant (Participant act) throws WrongStateException, DuplicateParticipantException, InvalidParticipantException, NoCoordinatorException, SystemException
     {
-    currentCoordinator().enlistParticipant(act);
+	currentCoordinator().enlistParticipant(act);
     }
 
     /**
@@ -329,25 +329,25 @@ public class CoordinatorControl
      * protocol the coordinator is committing.)
      * @exception SystemException Thrown if any other error occurs.
      */
-
+    
     public void delistParticipant (String participantId) throws InvalidParticipantException, NoCoordinatorException, WrongStateException, SystemException
     {
-    currentCoordinator().delistParticipant(participantId);
+	currentCoordinator().delistParticipant(participantId);
     }
 
     public void participantCompleted (String participantId) throws NoActivityException, InvalidParticipantException, WrongStateException, SystemException
     {
-    currentCoordinator().participantCompleted(participantId);
+	currentCoordinator().participantCompleted(participantId);
     }
 
     public void participantFaulted (String participantId) throws NoActivityException, InvalidParticipantException, SystemException
     {
-    currentCoordinator().participantFaulted(participantId);
+	currentCoordinator().participantFaulted(participantId);
     }
 
     public void participantCannotComplete (String participantId) throws NoActivityException, InvalidParticipantException, WrongStateException, SystemException
     {
-    currentCoordinator().participantCannotComplete(participantId);
+	currentCoordinator().participantCannotComplete(participantId);
     }
 
     /**
@@ -399,56 +399,56 @@ public class CoordinatorControl
 
     public final BACoordinator currentCoordinator () throws NoCoordinatorException, SystemException
     {
-    BACoordinator coord = (BACoordinator) _coordinators.get(currentActivity());
+	BACoordinator coord = (BACoordinator) _coordinators.get(currentActivity());
 
-    if (coord == null)
-        throw new NoCoordinatorException();
-    else
-        return coord;
+	if (coord == null)
+	    throw new NoCoordinatorException();
+	else
+	    return coord;
     }
 
     private final ActivityHandleImple currentActivity () throws SystemException
     {
-    try
-    {
-        ActivityHierarchy hier = UserActivityFactory.userActivity().currentActivity();
+	try
+	{
+	    ActivityHierarchy hier = UserActivityFactory.userActivity().currentActivity();
+	
+	    if (hier.size() > 0)
+		return (ActivityHandleImple) hier.activity(hier.size() -1);
+	    else
+		return null;
+	}
+	catch (Exception ex)
+	{
+	    ex.printStackTrace();
 
-        if (hier.size() > 0)
-        return (ActivityHandleImple) hier.activity(hier.size() -1);
-        else
-        return null;
+	    throw new SystemException(ex.toString());
+	}
     }
-    catch (Exception ex)
-    {
-        ex.printStackTrace();
-
-        throw new SystemException(ex.toString());
-    }
-    }
-
+	
     private final BACoordinator parentCoordinator () throws SystemException
     {
-    try
-    {
-        ActivityHierarchy hier = UserActivityFactory.userActivity().currentActivity();
-        ActivityHandleImple parentActivity = null;
-        BACoordinator parentCoordinator = null;
+	try
+	{
+	    ActivityHierarchy hier = UserActivityFactory.userActivity().currentActivity();
+	    ActivityHandleImple parentActivity = null;
+	    BACoordinator parentCoordinator = null;
 
-        if (hier.size() > 1)
-        {
-        parentActivity = (ActivityHandleImple) hier.activity(hier.size() -2);
+	    if (hier.size() > 1)
+	    {
+		parentActivity = (ActivityHandleImple) hier.activity(hier.size() -2);
 
-        parentCoordinator = (BACoordinator) _coordinators.get(parentActivity);
-        }
+		parentCoordinator = (BACoordinator) _coordinators.get(parentActivity);
+	    }
 
-        return parentCoordinator;
-    }
-    catch (Exception ex)
-    {
-        ex.printStackTrace();
-
-        return null;
-    }
+	    return parentCoordinator;
+	}
+	catch (Exception ex)
+	{
+	    ex.printStackTrace();
+	    
+	    return null;
+	}
     }
 
     private static Hashtable _coordinators = new Hashtable();

@@ -36,16 +36,16 @@ public class BAInteropDroppedParticipantCompletedState extends BaseState
      * The participant completed flag.
      */
     private boolean participantCompleted ;
-
+    
     /**
      * Construct the participant completed test.
      * @param lastAction The last action.
      */
     public BAInteropDroppedParticipantCompletedState(final String lastAction)
     {
-    this.lastAction = lastAction ;
+	this.lastAction = lastAction ;
     }
-
+    
     /**
      * Handle the next action in the sequence.
      * @param action The SOAP action.
@@ -66,7 +66,7 @@ public class BAInteropDroppedParticipantCompletedState extends BaseState
         }
         return false ;
     }
-
+    
     /**
      * Wait for the participant to complete.
      * @param timeout The timeout.
@@ -74,36 +74,36 @@ public class BAInteropDroppedParticipantCompletedState extends BaseState
      */
     public boolean waitForParticipantCompleted(final long timeout)
     {
-    final long endTime = System.currentTimeMillis() + timeout ;
-    final boolean result ;
-    synchronized(this)
-    {
-        while(!participantCompleted)
-        {
-        final long currentTimeout = endTime - System.currentTimeMillis() ;
-        if (currentTimeout <= 0)
-        {
-            break ;
-        }
+	final long endTime = System.currentTimeMillis() + timeout ;
+	final boolean result ;
+	synchronized(this)
+	{
+	    while(!participantCompleted)
+	    {
+		final long currentTimeout = endTime - System.currentTimeMillis() ;
+		if (currentTimeout <= 0)
+		{
+		    break ;
+		}
                 try
                 {
                     wait(currentTimeout) ;
                 }
                 catch (final InterruptedException ie) {}
-        }
-
-        result = participantCompleted ;
-    }
-
-    if (result)
-    {
-        // If it is completd then wait to allow processing of message.
-        try
-        {
-        Thread.sleep(2000) ;
-        }
-        catch (final InterruptedException ie) {}
-    }
-    return result ;
+	    }
+	    
+	    result = participantCompleted ;
+	}
+	
+	if (result)
+	{
+	    // If it is completd then wait to allow processing of message.
+	    try
+	    {
+		Thread.sleep(2000) ;
+	    }
+	    catch (final InterruptedException ie) {}
+	}
+	return result ;
     }
 }

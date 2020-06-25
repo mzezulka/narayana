@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -74,11 +74,11 @@ import javax.xml.namespace.QName;
         contextImplementation = ArjunaContextImple.class)
 public class ContextFactoryImple implements ContextFactory, LocalFactory
 {
-    public ContextFactoryImple()
-    {
-        try
-        {
-            _coordManager = CoordinatorManagerFactory.coordinatorManager();
+	public ContextFactoryImple()
+	{
+		try
+		{
+			_coordManager = CoordinatorManagerFactory.coordinatorManager();
 
             _theRegistrar = new RegistrarImple();
 
@@ -86,56 +86,56 @@ public class ContextFactoryImple implements ContextFactory, LocalFactory
 
             ContextFactoryMapper.getMapper().addContextFactory(ArjunaContextImple.coordinationType, this);
         }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
-    }
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}
+	}
 
-    /**
-     * Called when a context factory is added to a context factory mapper. This
-     * method will be called multiple times if the context factory is added to
-     * multiple context factory mappers or to the same context mapper with
-     * different protocol identifiers.
-     *
-     * @param coordinationTypeURI
-     *            the coordination type uri
-     */
-    public void install(final String coordinationTypeURI)
-    {
-    }
+	/**
+	 * Called when a context factory is added to a context factory mapper. This
+	 * method will be called multiple times if the context factory is added to
+	 * multiple context factory mappers or to the same context mapper with
+	 * different protocol identifiers.
+	 *
+	 * @param coordinationTypeURI
+	 *            the coordination type uri
+	 */
+	public void install(final String coordinationTypeURI)
+	{
+	}
 
-    /**
-     * Creates a coordination context.
-     *
-     * @param coordinationTypeURI
-     *            the coordination type uri
-     * @param expires
-     *            the expire date/time for the returned context, can be null
-     * @param currentContext
-     *            the current context, can be null
-     *
-     * @return the created coordination context
-     *
-     * @throws com.arjuna.wsc.InvalidCreateParametersException
-     *             if a parameter passed is invalid this activity identifier.
-     *
-     */
+	/**
+	 * Creates a coordination context.
+	 *
+	 * @param coordinationTypeURI
+	 *            the coordination type uri
+	 * @param expires
+	 *            the expire date/time for the returned context, can be null
+	 * @param currentContext
+	 *            the current context, can be null
+	 *
+	 * @return the created coordination context
+	 *
+	 * @throws com.arjuna.wsc.InvalidCreateParametersException
+	 *             if a parameter passed is invalid this activity identifier.
+	 *
+	 */
 
-    public CoordinationContext create (final String coordinationTypeURI, final Long expires,
+	public CoordinationContext create (final String coordinationTypeURI, final Long expires,
             final CoordinationContextType currentContext, final boolean isSecure)
-            throws InvalidCreateParametersException
-    {
-        if (coordinationTypeURI.equals(AtomicTransactionConstants.WSAT_PROTOCOL))
-        {
-            try
-            {
+			throws InvalidCreateParametersException
+	{
+		if (coordinationTypeURI.equals(AtomicTransactionConstants.WSAT_PROTOCOL))
+		{
+			try
+			{
                 if (currentContext == null) {
-                // make sure no transaction is currently associated
+				// make sure no transaction is currently associated
 
-                _coordManager.suspend();
+				_coordManager.suspend();
 
-                final int timeout ;
+				final int timeout ;
                 if (expires == null)
                 {
                     timeout = 0 ;
@@ -146,7 +146,7 @@ public class ContextFactoryImple implements ContextFactory, LocalFactory
                     timeout = (timeoutVal > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int)timeoutVal) ;
                 }
 
-                _coordManager.begin(ArjunaContextImple.serviceType, timeout);
+				_coordManager.begin(ArjunaContextImple.serviceType, timeout);
 
                 final ArjunaContextImple arjunaContext = ArjunaContextImple.getContext() ;
                 final ServiceRegistry serviceRegistry = PrivilegedServiceRegistryFactory.getInstance().getServiceRegistry();
@@ -167,24 +167,24 @@ public class ContextFactoryImple implements ContextFactory, LocalFactory
                 W3CEndpointReference registrationCoordinator = getRegistrationCoordinator(registrationCoordinatorURI, arjunaContext);
                 coordinationContext.setRegistrationService(registrationCoordinator) ;
 
-                /*
-                 * Now add the registrar for this specific coordinator to the
-                 * mapper.
-                 */
+				/*
+				 * Now add the registrar for this specific coordinator to the
+				 * mapper.
+				 */
 
-                _coordManager.enlistSynchronization(new CleanupSynchronization(_coordManager.identifier().toString(), _theRegistrar));
+				_coordManager.enlistSynchronization(new CleanupSynchronization(_coordManager.identifier().toString(), _theRegistrar));
 
-                /*
-                 * TODO Uughh! This does a suspend for us! Left over from original
-                 * WS-AS stuff.
-                 *
-                 * TODO
-                 * REFACTOR, REFACTOR, REFACTOR.
-                 */
+				/*
+				 * TODO Uughh! This does a suspend for us! Left over from original
+				 * WS-AS stuff.
+				 *
+				 * TODO
+				 * REFACTOR, REFACTOR, REFACTOR.
+				 */
 
-                _theRegistrar.associate();
+				_theRegistrar.associate();
 
-                return coordinationContext;
+				return coordinationContext;
                 } else {
                     // we need to create a subordinate transaction and register it as both a durable and volatile
                     // participant with the registration service defined in the current context
@@ -232,31 +232,31 @@ public class ContextFactoryImple implements ContextFactory, LocalFactory
                     _theRegistrar.associate(subTx);
                     return coordinationContext;
                 }
-            }
-            catch (NoActivityException ex)
-            {
-                ex.printStackTrace();
+			}
+			catch (NoActivityException ex)
+			{
+				ex.printStackTrace();
 
-                throw new InvalidCreateParametersException();
+				throw new InvalidCreateParametersException();
+			}
+			catch (SystemException ex)
+			{
+				ex.printStackTrace();
             }
-            catch (SystemException ex)
-            {
-                ex.printStackTrace();
-            }
-            catch (com.arjuna.mw.wsas.exceptions.WrongStateException ex)
-            {
-                ex.printStackTrace();
+			catch (com.arjuna.mw.wsas.exceptions.WrongStateException ex)
+			{
+				ex.printStackTrace();
 
-                throw new InvalidCreateParametersException();
-            }
-            catch (Exception ex)
-            {
-                // TODO handle properly
+				throw new InvalidCreateParametersException();
+			}
+			catch (Exception ex)
+			{
+				// TODO handle properly
 
-                ex.printStackTrace();
-            }
-        }
-        else {
+				ex.printStackTrace();
+			}
+		}
+		else {
             wstxLogger.i18NLogger.warn_mwlabs_wst_at_Context11FactoryImple_1(AtomicTransactionConstants.WSAT_PROTOCOL, coordinationTypeURI);
 
             throw new InvalidCreateParametersException(
@@ -267,8 +267,8 @@ public class ContextFactoryImple implements ContextFactory, LocalFactory
                             + coordinationTypeURI + " >");
         }
 
-        return null;
-    }
+		return null;
+	}
 
     /**
      * class used to return data required to manage a bridged to subordinate transaction
@@ -382,56 +382,56 @@ public class ContextFactoryImple implements ContextFactory, LocalFactory
     }
 
     /**
-     * Called when a context factory is removed from a context factory mapper.
-     * This method will be called multiple times if the context factory is
-     * removed from multiple context factory mappers or from the same context
-     * factory mapper with different coordination type uris.
-     *
-     * @param coordinationTypeURI
-     *            the coordination type uri
-     */
+	 * Called when a context factory is removed from a context factory mapper.
+	 * This method will be called multiple times if the context factory is
+	 * removed from multiple context factory mappers or from the same context
+	 * factory mapper with different coordination type uris.
+	 *
+	 * @param coordinationTypeURI
+	 *            the coordination type uri
+	 */
 
-    public void uninstall (final String coordinationTypeURI)
-    {
-        // we don't use this as one implementation is registered per type
-    }
+	public void uninstall (final String coordinationTypeURI)
+	{
+		// we don't use this as one implementation is registered per type
+	}
 
     public final Object createSubordinate () throws NoActivityException, InvalidProtocolException, SystemException
     {
         return createSubordinate(SubordinateATCoordinator.SUBORDINATE_TX_TYPE_AT_AT);
     }
+    
+	public final Object createSubordinate (String subordinateType) throws NoActivityException, InvalidProtocolException, SystemException
+	{
+		try
+		{
+			CoordinatorServiceImple coordManager = (CoordinatorServiceImple) _coordManager;
+			CoordinatorControl theControl = coordManager.coordinatorControl();
+			ATCoordinator subordinateTransaction = theControl.createSubordinate(subordinateType);
 
-    public final Object createSubordinate (String subordinateType) throws NoActivityException, InvalidProtocolException, SystemException
-    {
-        try
-        {
-            CoordinatorServiceImple coordManager = (CoordinatorServiceImple) _coordManager;
-            CoordinatorControl theControl = coordManager.coordinatorControl();
-            ATCoordinator subordinateTransaction = theControl.createSubordinate(subordinateType);
+			/*
+			 * Now add the registrar for this specific coordinator to the
+			 * mapper.
+			 */
 
-            /*
-             * Now add the registrar for this specific coordinator to the
-             * mapper.
-             */
+			subordinateTransaction.enlistSynchronization(new CleanupSynchronization(subordinateTransaction.get_uid().stringForm(), _theRegistrar));
 
-            subordinateTransaction.enlistSynchronization(new CleanupSynchronization(subordinateTransaction.get_uid().stringForm(), _theRegistrar));
+			_theRegistrar.associate(subordinateTransaction);
 
-            _theRegistrar.associate(subordinateTransaction);
+			return subordinateTransaction;
+		}
+		catch (Exception ex)
+		{
+			throw new SystemException(ex.toString());
+		}
+	}
 
-            return subordinateTransaction;
-        }
-        catch (Exception ex)
-        {
-            throw new SystemException(ex.toString());
-        }
-    }
+	public final RegistrarImple registrar ()
+	{
+		return _theRegistrar;
+	}
 
-    public final RegistrarImple registrar ()
-    {
-        return _theRegistrar;
-    }
-
-    private CoordinatorManager _coordManager;
-    private RegistrarImple _theRegistrar;
+	private CoordinatorManager _coordManager;
+	private RegistrarImple _theRegistrar;
 
 }

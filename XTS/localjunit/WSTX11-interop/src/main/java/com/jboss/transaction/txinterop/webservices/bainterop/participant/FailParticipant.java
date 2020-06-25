@@ -29,12 +29,12 @@ import com.jboss.transaction.txinterop.webservices.bainterop.BAInteropConstants;
 public class FailParticipant extends ParticipantCompletionParticipantAdapter
 {
     private ParticipantCompletionParticipantEngine engine ;
-
+    
     public void setEngine(final ParticipantCompletionParticipantEngine engine)
     {
-    this.engine = engine ;
+	this.engine = engine ;
     }
-
+    
     public void initialiseTimeout()
     {
         final TimerTask timerTask = new TimerTask() {

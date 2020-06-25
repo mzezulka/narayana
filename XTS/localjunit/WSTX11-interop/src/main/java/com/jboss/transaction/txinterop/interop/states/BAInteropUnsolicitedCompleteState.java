@@ -39,9 +39,9 @@ public class BAInteropUnsolicitedCompleteState extends InteropWaitState
      */
     public BAInteropUnsolicitedCompleteState()
     {
-    super(CoordinationConstants.WSCOOR_ACTION_FAULT) ;
+	super(CoordinationConstants.WSCOOR_ACTION_FAULT) ;
     }
-
+    
     /**
      * Get the Handler for rewriting the XML.
      * @param nextHandler The next handler in the sequence.
@@ -49,9 +49,9 @@ public class BAInteropUnsolicitedCompleteState extends InteropWaitState
      */
     public ContentHandler getHandler(final ContentHandler nextHandler)
     {
-    return new RegistrationHandler(nextHandler);
+	return new RegistrationHandler(nextHandler);
     }
-
+    
     /**
      * The registration handler.
      */
@@ -65,54 +65,54 @@ public class BAInteropUnsolicitedCompleteState extends InteropWaitState
          * The 'in protocol identifier' flag.
          */
         private boolean inProtocolIdentifier ;
-
+        
         /**
          * Construct the registration handler.
          * @param nextHandler The next handler.
          */
-    RegistrationHandler(final ContentHandler nextHandler)
-    {
-        super(nextHandler) ;
-    }
-
-    public void startElement(final String uri, final String localName, final String qName, final Attributes attributes)
-        throws SAXException
-    {
-        if (CoordinationConstants.WSCOOR_NAMESPACE.equals(uri) && CoordinationConstants.WSCOOR_ELEMENT_REGISTER.equals(localName))
-        {
-        inRegister = true ;
-        }
-        else if (inRegister && CoordinationConstants.WSCOOR_NAMESPACE.equals(uri) && CoordinationConstants.WSCOOR_ELEMENT_PROTOCOL_IDENTIFIER.equals(localName))
-        {
-        inProtocolIdentifier = true ;
-        }
-        super.startElement(uri, localName, qName, attributes);
-    }
-
-    public void endElement(final String uri, final String localName, final String qName)
-        throws SAXException
-    {
-        if (inProtocolIdentifier && CoordinationConstants.WSCOOR_NAMESPACE.equals(uri) && CoordinationConstants.WSCOOR_ELEMENT_PROTOCOL_IDENTIFIER.equals(localName))
-        {
-        inProtocolIdentifier = false ;
-        final char[] chars = BusinessActivityConstants.WSBA_SUB_PROTOCOL_COORDINATOR_COMPLETION.toCharArray() ;
-        getNextHandler().characters(chars, 0, chars.length) ;
-        }
-        else if (inRegister && CoordinationConstants.WSCOOR_NAMESPACE.equals(uri) && CoordinationConstants.WSCOOR_ELEMENT_REGISTER.equals(localName))
-        {
-        inRegister = false ;
-        }
-        super.endElement(uri, localName, qName);
-    }
-
-    public void characters(final char[] chars, final int start, final int length)
-        throws SAXException
-    {
-        if (!inProtocolIdentifier)
-        {
-        super.characters(chars, start, length);
-        }
-    }
-
+	RegistrationHandler(final ContentHandler nextHandler)
+	{
+	    super(nextHandler) ;
+	}
+	
+	public void startElement(final String uri, final String localName, final String qName, final Attributes attributes)
+	    throws SAXException
+	{
+	    if (CoordinationConstants.WSCOOR_NAMESPACE.equals(uri) && CoordinationConstants.WSCOOR_ELEMENT_REGISTER.equals(localName))
+	    {
+		inRegister = true ;
+	    }
+	    else if (inRegister && CoordinationConstants.WSCOOR_NAMESPACE.equals(uri) && CoordinationConstants.WSCOOR_ELEMENT_PROTOCOL_IDENTIFIER.equals(localName))
+	    {
+		inProtocolIdentifier = true ;
+	    }
+	    super.startElement(uri, localName, qName, attributes);
+	}
+	
+	public void endElement(final String uri, final String localName, final String qName)
+	    throws SAXException
+	{
+	    if (inProtocolIdentifier && CoordinationConstants.WSCOOR_NAMESPACE.equals(uri) && CoordinationConstants.WSCOOR_ELEMENT_PROTOCOL_IDENTIFIER.equals(localName))
+	    {
+		inProtocolIdentifier = false ;
+		final char[] chars = BusinessActivityConstants.WSBA_SUB_PROTOCOL_COORDINATOR_COMPLETION.toCharArray() ;
+		getNextHandler().characters(chars, 0, chars.length) ;
+	    }
+	    else if (inRegister && CoordinationConstants.WSCOOR_NAMESPACE.equals(uri) && CoordinationConstants.WSCOOR_ELEMENT_REGISTER.equals(localName))
+	    {
+		inRegister = false ;
+	    }
+	    super.endElement(uri, localName, qName);
+	}
+	
+	public void characters(final char[] chars, final int start, final int length)
+	    throws SAXException
+	{
+	    if (!inProtocolIdentifier)
+	    {
+		super.characters(chars, start, length);
+	    }
+	}
+	
     }
 }

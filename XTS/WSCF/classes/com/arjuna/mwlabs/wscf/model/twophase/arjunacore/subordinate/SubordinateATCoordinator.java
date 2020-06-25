@@ -1,7 +1,7 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
+ * as indicated by the @author tags. 
  * See the copyritypeght.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -56,7 +56,7 @@ import java.util.Collection;
  * synchronization support but without thread management. This is the
  * subordinate coordinator implementation which we use when doing
  * interposition.
- *
+ * 
  * @author Mark Little (mark.little@arjuna.com)
  * @version $Id: SubordinateATCoordinator.java,v 1.1 2005/05/19 12:13:39 nmcl Exp $
  * @since 2.0.
@@ -67,78 +67,78 @@ public class SubordinateATCoordinator extends ATCoordinator
     /**
      * normal constructor
      */
-    public SubordinateATCoordinator()
-    {
-        super();
-        subordinate = true;
+	public SubordinateATCoordinator()
+	{
+		super();
+		subordinate = true;
         activated = true;
         isReadonly = false;
-    }
+	}
 
     /**
      * bridge wrapper constructor
      */
-    public SubordinateATCoordinator(String subordinateType)
-    {
-        super();
+	public SubordinateATCoordinator(String subordinateType)
+	{
+		super();
         subordinate = true;
         activated = true;
         isReadonly = false;
         this.subordinateType = subordinateType;
-    }
+	}
 
     /**
      * constructor for recovered coordinator
      * @param recovery
      */
-    public SubordinateATCoordinator(Uid recovery)
-    {
-        super(recovery);
+	public SubordinateATCoordinator(Uid recovery)
+	{
+		super(recovery);
         subordinate = true;
         activated = false;
         isReadonly = false;
         subordinateType = null;
-    }
+	}
 
     /**
-     * If the application requires and if the coordination protocol supports it,
-     * then this method can be used to execute a coordination protocol on the
-     * currently enlisted participants at any time prior to the termination of
-     * the coordination scope.
-     *
-     * This implementation only supports coordination at the end of the
-     * activity.
-     *
-     * @param     cs The completion status to use when determining how to
-     *            execute the protocol.
-     *
-     * @exception WrongStateException
-     *                Thrown if the coordinator is in a state the does not allow
-     *                coordination to occur.
-     * @exception ProtocolViolationException
-     *                Thrown if the protocol is violated in some manner during
-     *                execution.
-     * @exception SystemException
-     *                Thrown if any other error occurs.
-     *
-     * @return The result of executing the protocol, or null.
-     */
+	 * If the application requires and if the coordination protocol supports it,
+	 * then this method can be used to execute a coordination protocol on the
+	 * currently enlisted participants at any time prior to the termination of
+	 * the coordination scope.
+	 * 
+	 * This implementation only supports coordination at the end of the
+	 * activity.
+	 * 
+	 * @param     cs The completion status to use when determining how to
+	 *            execute the protocol.
+	 * 
+	 * @exception WrongStateException
+	 *                Thrown if the coordinator is in a state the does not allow
+	 *                coordination to occur.
+	 * @exception ProtocolViolationException
+	 *                Thrown if the protocol is violated in some manner during
+	 *                execution.
+	 * @exception SystemException
+	 *                Thrown if any other error occurs.
+	 * 
+	 * @return The result of executing the protocol, or null.
+	 */
 
-    public Outcome coordinate (CompletionStatus cs) throws WrongStateException,
-            ProtocolViolationException, SystemException
-    {
-        throw new ProtocolViolationException();
-    }
+	public Outcome coordinate (CompletionStatus cs) throws WrongStateException,
+			ProtocolViolationException, SystemException
+	{
+		throw new ProtocolViolationException();
+	}
 
-    public int end (boolean reportHeuristics)
-    {
-        return ActionStatus.INVALID;
-    }
-
-    public int cancel ()
-    {
-        return ActionStatus.INVALID;
-    }
+	public int end (boolean reportHeuristics)
+	{
+		return ActionStatus.INVALID;
+	}
+	
+	public int cancel ()
+	{
+		return ActionStatus.INVALID;
+	}
 
     /**
      * this is driven by a volatile participant registered on behalf of the coordinator
@@ -156,12 +156,12 @@ public class SubordinateATCoordinator extends ATCoordinator
      * @return the result of preparing the transaction
      */
 
-    public int prepare ()
-    {
+	public int prepare ()
+	{
         int status = super.prepare(true);
         isReadonly = (status == TwoPhaseOutcome.PREPARE_READONLY);
         return status;
-    }
+	}
 
     /**
      * this is driven by a volatile participant registered on behalf of the coordinator
@@ -181,32 +181,32 @@ public class SubordinateATCoordinator extends ATCoordinator
      * participant also registerd for this coordinator..
      */
 
-    public void commit ()
-    {
-        super.phase2Commit(true);
+	public void commit ()
+	{
+		super.phase2Commit(true);
 
-        int status;
-
-        switch (super.getHeuristicDecision())
-        {
-        case TwoPhaseOutcome.PREPARE_OK:
-        case TwoPhaseOutcome.FINISH_OK:
-            status = super.status();
-            break;
-        case TwoPhaseOutcome.HEURISTIC_ROLLBACK:
-            status = ActionStatus.H_ROLLBACK;
-            break;
-        case TwoPhaseOutcome.HEURISTIC_COMMIT:
-            status = ActionStatus.H_COMMIT;
-            break;
-        case TwoPhaseOutcome.HEURISTIC_MIXED:
-            status = ActionStatus.H_MIXED;
-            break;
-        case TwoPhaseOutcome.HEURISTIC_HAZARD:
-        default:
-            status = ActionStatus.H_HAZARD;
-            break;
-        }
+		int status;
+		
+		switch (super.getHeuristicDecision())
+		{
+		case TwoPhaseOutcome.PREPARE_OK:
+		case TwoPhaseOutcome.FINISH_OK:
+			status = super.status();		
+			break;
+		case TwoPhaseOutcome.HEURISTIC_ROLLBACK:
+			status = ActionStatus.H_ROLLBACK;
+			break;
+		case TwoPhaseOutcome.HEURISTIC_COMMIT:
+			status = ActionStatus.H_COMMIT;
+			break;
+		case TwoPhaseOutcome.HEURISTIC_MIXED:
+			status = ActionStatus.H_MIXED;
+			break;
+		case TwoPhaseOutcome.HEURISTIC_HAZARD:
+		default:
+			status = ActionStatus.H_HAZARD;
+			break;
+		}
 
         this.finalStatus = status;
 
@@ -214,12 +214,12 @@ public class SubordinateATCoordinator extends ATCoordinator
         if (status != ActionStatus.COMMITTING) {
             SubordinateATCoordinator.removeRecoveredCoordinator(this);
         }
-
+        
         // run any callback associated with this transaction
 
         runCallback(get_uid().stringForm());
 
-    }
+	}
 
     /**
      * this is driven by a volatile participant registered on behalf of the coordinator
@@ -238,38 +238,38 @@ public class SubordinateATCoordinator extends ATCoordinator
      * normal commit minus the after completion processing which will be driven by a volatile
      * participant also registerd for this coordinator..
      */
-    public void rollback ()
-    {
-        // as this coordinator could be called as normal XAResource by topLeveRecord
-        // this rollback call could be part of the prevent commit when beforeCompletion fails
-        // in such case the heuristicList was not created by prepare call and may throw NPE
-        if(heuristicList == null)
-            heuristicList = new RecordList();
+	public void rollback ()
+	{
+		// as this coordinator could be called as normal XAResource by topLeveRecord
+		// this rollback call could be part of the prevent commit when beforeCompletion fails
+		// in such case the heuristicList was not created by prepare call and may throw NPE
+		if(heuristicList == null)
+		    heuristicList = new RecordList();
 
-        super.phase2Abort(true);
-
-        int status;
-
-        switch (super.getHeuristicDecision())
-        {
-        case TwoPhaseOutcome.PREPARE_OK:
-        case TwoPhaseOutcome.FINISH_OK:
-            status = super.status();
-            break;
-        case TwoPhaseOutcome.HEURISTIC_ROLLBACK:
-            status = ActionStatus.H_ROLLBACK;
-            break;
-        case TwoPhaseOutcome.HEURISTIC_COMMIT:
-            status = ActionStatus.H_COMMIT;
-            break;
-        case TwoPhaseOutcome.HEURISTIC_MIXED:
-            status = ActionStatus.H_MIXED;
-            break;
-        case TwoPhaseOutcome.HEURISTIC_HAZARD:
-        default:
-            status = ActionStatus.H_HAZARD;
-            break;
-        }
+		super.phase2Abort(true);
+		
+		int status;
+		
+		switch (super.getHeuristicDecision())
+		{
+		case TwoPhaseOutcome.PREPARE_OK:
+		case TwoPhaseOutcome.FINISH_OK:
+			status = super.status();
+			break;
+		case TwoPhaseOutcome.HEURISTIC_ROLLBACK:
+			status = ActionStatus.H_ROLLBACK;
+			break;
+		case TwoPhaseOutcome.HEURISTIC_COMMIT:
+			status = ActionStatus.H_COMMIT;
+			break;
+		case TwoPhaseOutcome.HEURISTIC_MIXED:
+			status = ActionStatus.H_MIXED;
+			break;
+		case TwoPhaseOutcome.HEURISTIC_HAZARD:
+		default:
+			status = ActionStatus.H_HAZARD;
+			break;
+		}
 
         // iemove the coordinator from the recovered coordinatros table
         SubordinateATCoordinator.removeRecoveredCoordinator(this);
@@ -277,9 +277,9 @@ public class SubordinateATCoordinator extends ATCoordinator
         // run any callback associated with this transaction
 
         runCallback(get_uid().stringForm());
-
+        
         this.finalStatus = status;
-    }
+	}
 
     /**
      * called by the durable participant during recovery processing
@@ -408,7 +408,7 @@ public class SubordinateATCoordinator extends ATCoordinator
     {
         return subordinateType;
     }
-
+    
     @Override
     public boolean save_state(OutputObjectState os, int ot) {
         // also need to save the subordinate type
@@ -433,7 +433,7 @@ public class SubordinateATCoordinator extends ATCoordinator
             } catch (IOException ioe) {
             }
         }
-
+        
         return false;
     }
 

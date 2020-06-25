@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -58,7 +58,7 @@ public class ActivationCoordinatorProcessorImpl extends ActivationCoordinatorPro
         {
             final String coordinationType = createCoordinationContext.getCoordinationType() ;
             final ContextFactory contextFactory = contextFactoryMapper.getContextFactory(coordinationType) ;
-
+            
             if (contextFactory != null)
             {
                 final CoordinationContext coordinationContext ;
@@ -66,7 +66,7 @@ public class ActivationCoordinatorProcessorImpl extends ActivationCoordinatorPro
                 {
                     final Expires expiresElement = createCoordinationContext.getExpires() ;
                     final Long expires = (expiresElement == null ? null : new Long(expiresElement.getValue())) ;
-
+                    
                     coordinationContext = contextFactory.create(coordinationType, expires, createCoordinationContext.getCurrentContext(), isSecure) ;
                     final CreateCoordinationContextResponseType response = new CreateCoordinationContextResponseType() ;
                     response.setCoordinationContext(coordinationContext) ;
@@ -78,10 +78,10 @@ public class ActivationCoordinatorProcessorImpl extends ActivationCoordinatorPro
                         WSCLogger.logger.tracev(invalidCreateParametersException, "{0}, type {1} and context {2}",
                                 WSCLogger.i18NLogger.get_wsc11_messaging_ActivationCoordinatorProcessorImpl_1(), coordinationType, contextFactory);
 
-                    SOAPFactory factory = SOAPFactory.newInstance();
+	                SOAPFactory factory = SOAPFactory.newInstance();
                     SOAPFault soapFault = factory.createFault(SoapFaultType.FAULT_SENDER.getValue(), CoordinationConstants.WSCOOR_ERROR_CODE_INVALID_PARAMETERS_QNAME);
                     soapFault.addDetail().addDetailEntry(CoordinationConstants.WSCOOR_ERROR_CODE_INVALID_PARAMETERS_QNAME).addTextNode(WSCLogger.i18NLogger.get_wsc11_messaging_ActivationCoordinatorProcessorImpl_1());
-                    throw new SOAPFaultException(soapFault);
+	                throw new SOAPFaultException(soapFault);
                 }
                 catch (final Throwable th)
                 {

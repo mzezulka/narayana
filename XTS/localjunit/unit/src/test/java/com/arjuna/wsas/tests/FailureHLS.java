@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -63,39 +63,39 @@ public class FailureHLS implements HLS
     public static final int COMPLETED_FAIL = 4;
     public static final int CONTEXT_FAIL = 5;
     public static final int NO_FAIL = 10;
-
+    
     public FailureHLS ()
     {
-    this(FailureHLS.NO_FAIL);
+	this(FailureHLS.NO_FAIL);
     }
 
     public FailureHLS (int failPoint)
     {
-    _failPoint = failPoint;
+	_failPoint = failPoint;
     _id = new Stack<GlobalId>();
     }
-
+    
     /**
      * An activity has begun and is active on the current thread.
      */
 
     public void begun () throws SystemException
     {
-    if (_failPoint == FailureHLS.BEGUN_FAIL)
-        throw new SystemException();
-
-    try
-    {
-        GlobalId activityId = UserActivityFactory.userActivity().activityId();
+	if (_failPoint == FailureHLS.BEGUN_FAIL)
+	    throw new SystemException();
+	
+	try
+	{
+	    GlobalId activityId = UserActivityFactory.userActivity().activityId();
 
         _id.push(activityId);
 
         System.out.println("FailureHLS.begun "+activityId);
-    }
-    catch (Exception ex)
-    {
-        ex.printStackTrace();
-    }
+	}
+	catch (Exception ex)
+	{
+	    ex.printStackTrace();
+	}
     }
 
     /**
@@ -109,20 +109,20 @@ public class FailureHLS implements HLS
 
     public Outcome complete (CompletionStatus cs) throws SystemException
     {
-    if (_failPoint == FailureHLS.COMPLETE_FAIL)
-        throw new SystemException();
+	if (_failPoint == FailureHLS.COMPLETE_FAIL)
+	    throw new SystemException();
 
-    try
-    {
-        System.out.println("FailureHLS.complete ( "+cs+" ) "+ UserActivityFactory.userActivity().activityId());
-    }
-    catch (Exception ex)
-    {
-        ex.printStackTrace();
-    }
+	try
+	{
+	    System.out.println("FailureHLS.complete ( "+cs+" ) "+ UserActivityFactory.userActivity().activityId());
+	}
+	catch (Exception ex)
+	{
+	    ex.printStackTrace();
+	}
 
-    return null;
-    }
+	return null;
+    }	
 
     /**
      * The activity has been suspended. How does the HLS know which activity
@@ -131,11 +131,11 @@ public class FailureHLS implements HLS
 
     public void suspended () throws SystemException
     {
-    if (_failPoint == FailureHLS.SUSPENDED_FAIL)
-        throw new SystemException();
+	if (_failPoint == FailureHLS.SUSPENDED_FAIL)
+	    throw new SystemException();
 
-    System.out.println("FailureHLS.suspended");
-    }
+	System.out.println("FailureHLS.suspended");
+    }	
 
     /**
      * The activity has been resumed on the current thread.
@@ -143,11 +143,11 @@ public class FailureHLS implements HLS
 
     public void resumed () throws SystemException
     {
-    if (_failPoint == FailureHLS.RESUMED_FAIL)
-        throw new SystemException();
+	if (_failPoint == FailureHLS.RESUMED_FAIL)
+	    throw new SystemException();
 
-    System.out.println("FailureHLS.resumed");
-    }
+	System.out.println("FailureHLS.resumed");
+    }	
 
     /**
      * The activity has completed and is no longer active on the current
@@ -156,21 +156,21 @@ public class FailureHLS implements HLS
 
     public void completed () throws SystemException
     {
-    if (_failPoint == FailureHLS.COMPLETED_FAIL)
-        throw new SystemException();
+	if (_failPoint == FailureHLS.COMPLETED_FAIL)
+	    throw new SystemException();
 
-    try
-    {
-        System.out.println("FailureHLS.completed " + UserActivityFactory.userActivity().activityId());
+	try
+	{
+	    System.out.println("FailureHLS.completed " + UserActivityFactory.userActivity().activityId());
         if (!_id.isEmpty()) {
             _id.pop();
         }
-    }
-    catch (NoActivityException ex)
-    {
-        ex.printStackTrace();
-    }
-    }
+	}
+	catch (NoActivityException ex)
+	{
+	    ex.printStackTrace();
+	}
+    }		
 
     /**
      * The HLS name.
@@ -178,7 +178,7 @@ public class FailureHLS implements HLS
 
     public String identity () throws SystemException
     {
-    return "FailureHLS";
+	return "FailureHLS";
     }
 
     /**
@@ -194,7 +194,7 @@ public class FailureHLS implements HLS
 
     public int priority () throws SystemException
     {
-    return 0;
+	return 0;
     }
 
     /**
@@ -206,8 +206,8 @@ public class FailureHLS implements HLS
 
     public Context context () throws SystemException
     {
-    if (_failPoint == FailureHLS.CONTEXT_FAIL)
-        throw new SystemException();
+	if (_failPoint == FailureHLS.CONTEXT_FAIL)
+	    throw new SystemException();
 
     if (_id.isEmpty()) {
         throw new SystemException("request for context when inactive");
@@ -219,9 +219,9 @@ public class FailureHLS implements HLS
         ex.printStackTrace();
     }
 
-    return new DemoSOAPContextImple(identity() + "_" + _id.size());
+	return new DemoSOAPContextImple(identity() + "_" + _id.size());
     }
 
     private int _failPoint;
-
+    
 }

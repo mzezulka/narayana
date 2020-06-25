@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -258,7 +258,7 @@ public class CoordinatorCompletionCoordinatorEngine implements CoordinatorComple
             }
             else if (current == State.STATE_ACTIVE)
             {
-            ended() ;
+        	ended() ;
             }
         }
 
@@ -303,7 +303,7 @@ public class CoordinatorCompletionCoordinatorEngine implements CoordinatorComple
         {
             current = state ;
             if ((current == State.STATE_ACTIVE) || (current == State.STATE_CANCELING_ACTIVE) ||
-            (current == State.STATE_CANCELING_COMPLETING) || (current == State.STATE_COMPLETING))
+        	(current == State.STATE_CANCELING_COMPLETING) || (current == State.STATE_COMPLETING))
             {
                 changeState(State.STATE_EXITING) ;
             }
@@ -960,7 +960,7 @@ public class CoordinatorCompletionCoordinatorEngine implements CoordinatorComple
     {
         return recovered;
     }
-
+    
     /**
      * Change the state and notify any listeners.
      * @param state The new state.

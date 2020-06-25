@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -99,47 +99,47 @@ public class UserBusinessActivityStandaloneImple extends UserBusinessActivity
 
     public void begin () throws WrongStateException, SystemException
     {
-        begin(0);
+    	begin(0);
     }
 
     public void begin (int timeout) throws WrongStateException, SystemException
     {
-        try
-        {
-            if (_ctxManager.currentTransaction() != null)
-                throw new WrongStateException();
+    	try
+    	{
+    	    if (_ctxManager.currentTransaction() != null)
+        		throw new WrongStateException();
 
-            Context ctx = startTransaction(timeout, null);
+    	    Context ctx = startTransaction(timeout, null);
 
-            _ctxManager.resume(new TxContextImple(ctx));
-        }
-        catch (InvalidCreateParametersException ex)
-        {
-            tidyup();
+    	    _ctxManager.resume(new TxContextImple(ctx));
+    	}
+    	catch (InvalidCreateParametersException ex)
+    	{
+    	    tidyup();
 
-            throw new SystemException(ex.toString());
-        }
-        catch (UnknownTransactionException ex)
-        {
-            tidyup();
+    	    throw new SystemException(ex.toString());
+    	}
+    	catch (UnknownTransactionException ex)
+    	{
+    	    tidyup();
 
-            throw new SystemException(ex.toString());
-        }
-        catch (SystemException ex)
-        {
-            tidyup();
+    	    throw new SystemException(ex.toString());
+    	}
+    	catch (SystemException ex)
+    	{
+    	    tidyup();
 
-            throw ex;
-        }
+    	    throw ex;
+    	}
     }
 
     public void close () throws TransactionRolledBackException, UnknownTransactionException, SystemException, WrongStateException
     {
-        TxContextImple ctx = null;
+    	TxContextImple ctx = null;
 
-        try
-        {
-            ctx = (TxContextImple) _ctxManager.suspend();
+    	try
+    	{
+    	    ctx = (TxContextImple) _ctxManager.suspend();
             if (ctx == null) {
                 throw new WrongStateException();
             }
@@ -147,44 +147,44 @@ public class UserBusinessActivityStandaloneImple extends UserBusinessActivity
             final String id = ctx.identifier() ;
             final W3CEndpointReference terminatorCoordinatorRPC = getTerminationCoordinatorRPC(ctx) ;
 
-            BusinessActivityTerminatorRPCStub terminatorRPCStub = new BusinessActivityTerminatorRPCStub(id, terminatorCoordinatorRPC);
+    	    BusinessActivityTerminatorRPCStub terminatorRPCStub = new BusinessActivityTerminatorRPCStub(id, terminatorCoordinatorRPC);
 
-            terminatorRPCStub.close();
-        }
-        catch (SystemException ex)
-        {
-            throw ex;
-        }
-        catch (TransactionRolledBackException ex)
-        {
-            throw ex;
-        }
+    	    terminatorRPCStub.close();
+    	}
+    	catch (SystemException ex)
+    	{
+    	    throw ex;
+    	}
+    	catch (TransactionRolledBackException ex)
+    	{
+    	    throw ex;
+    	}
         catch (WrongStateException ex)
         {
             throw ex;
         }
-        catch (UnknownTransactionException ex)
-        {
-            throw ex;
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
+    	catch (UnknownTransactionException ex)
+    	{
+    	    throw ex;
+    	}
+    	catch (Exception ex)
+    	{
+    	    ex.printStackTrace();
 
-            throw new SystemException(ex.toString());
-        }
-        finally
-        {
-            tidyup();
-        }
+    	    throw new SystemException(ex.toString());
+    	}
+    	finally
+    	{
+    	    tidyup();
+    	}
     }
 
     public void cancel () throws UnknownTransactionException, SystemException, WrongStateException
     {
-        TxContextImple ctx = null;
+    	TxContextImple ctx = null;
 
-        try
-        {
+    	try
+    	{
             ctx = (TxContextImple) _ctxManager.suspend();
             if (ctx == null) {
                 throw new WrongStateException();
@@ -195,36 +195,36 @@ public class UserBusinessActivityStandaloneImple extends UserBusinessActivity
 
             BusinessActivityTerminatorRPCStub terminatorRPCStub = new BusinessActivityTerminatorRPCStub(id, terminatorCoordinatorRPC);
 
-            terminatorRPCStub.cancel();
-        }
-        catch (SystemException ex)
-        {
-            throw ex;
-        }
+    	    terminatorRPCStub.cancel();
+    	}
+    	catch (SystemException ex)
+    	{
+    	    throw ex;
+    	}
         catch (WrongStateException ex)
         {
             throw ex;
         }
-        catch (UnknownTransactionException ex)
-        {
-            throw ex;
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
+    	catch (UnknownTransactionException ex)
+    	{
+    	    throw ex;
+    	}
+    	catch (Exception ex)
+    	{
+    	    ex.printStackTrace();
 
-            throw new SystemException(ex.toString());
-        }
-        finally
-        {
-            tidyup();
-        }
+    	    throw new SystemException(ex.toString());
+    	}
+    	finally
+    	{
+    	    tidyup();
+    	}
     }
 
     public void complete () throws UnknownTransactionException, SystemException, WrongStateException
     {
-        try
-        {
+    	try
+    	{
             final TxContextImple ctx = ((TxContextImple) _ctxManager.currentTransaction()) ;
             if (ctx == null) {
                 throw new WrongStateException();
@@ -234,45 +234,45 @@ public class UserBusinessActivityStandaloneImple extends UserBusinessActivity
 
             BusinessActivityTerminatorRPCStub terminatorRPCStub = new BusinessActivityTerminatorRPCStub(id, terminatorCoordinatorRPC);
 
-            terminatorRPCStub.complete();
-        }
-        catch (SystemException ex)
-        {
-            throw ex;
-        }
-        catch (UnknownTransactionException ex)
-        {
-            throw ex;
-        }
+    	    terminatorRPCStub.complete();
+    	}
+    	catch (SystemException ex)
+    	{
+    	    throw ex;
+    	}
+    	catch (UnknownTransactionException ex)
+    	{
+    	    throw ex;
+    	}
         catch (WrongStateException ex)
         {
             throw ex;
         }
-        catch (Exception ex)
-        {
-            throw new SystemException(ex.toString());
-        }
+    	catch (Exception ex)
+    	{
+    	    throw new SystemException(ex.toString());
+    	}
     }
 
     public String transactionIdentifier ()
     {
-        try
-        {
-            return _ctxManager.currentTransaction().toString();
-        }
-        catch (SystemException ex)
-        {
-            return "Unknown";
-        }
-        catch (NullPointerException ex)
-        {
-            return "Unknown";
-        }
+    	try
+    	{
+    	    return _ctxManager.currentTransaction().toString();
+    	}
+    	catch (SystemException ex)
+    	{
+    	    return "Unknown";
+    	}
+    	catch (NullPointerException ex)
+    	{
+    	    return "Unknown";
+    	}
     }
 
     public String toString ()
     {
-        return transactionIdentifier();
+    	return transactionIdentifier();
     }
 
     public void beginSubordinate(int timeout) throws WrongStateException, SystemException
@@ -338,7 +338,7 @@ public class UserBusinessActivityStandaloneImple extends UserBusinessActivity
         {
             throw new SystemException(ex.toString());
         }
-    }
+	}
 
     private W3CEndpointReference getTerminationCoordinatorRPC(final TxContextImple ctx)
         throws SystemException
@@ -357,14 +357,14 @@ public class UserBusinessActivityStandaloneImple extends UserBusinessActivity
 
     private final void tidyup ()
     {
-        try
-        {
-            _ctxManager.suspend();
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
+    	try
+    	{
+    	    _ctxManager.suspend();
+    	}
+    	catch (Exception ex)
+    	{
+    	    ex.printStackTrace();
+    	}
     }
 
     private ContextManager _ctxManager = new ContextManager();

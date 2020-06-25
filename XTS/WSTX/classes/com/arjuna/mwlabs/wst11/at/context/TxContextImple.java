@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -48,52 +48,52 @@ import javax.xml.ws.wsaddressing.W3CEndpointReference;
 public class TxContextImple implements TxContext
 {
 
-    public TxContextImple(CoordinationContextType ctx)
-    {
-        _context = new ContextImple(ctx);
-    }
+	public TxContextImple(CoordinationContextType ctx)
+	{
+		_context = new ContextImple(ctx);
+	}
 
-    public TxContextImple(Context context)
-    {
-        _context = context;
-    }
+	public TxContextImple(Context context)
+	{
+		_context = context;
+	}
 
-    public boolean valid ()
-    {
-        return (_context != null) ;
-    }
+	public boolean valid ()
+	{
+		return (_context != null) ;
+	}
 
-    public boolean equals (Object obj)
-    {
-        if (obj instanceof TxContextImple)
-        {
-            TxContextImple compare = (TxContextImple) obj;
+	public boolean equals (Object obj)
+	{
+		if (obj instanceof TxContextImple)
+		{
+			TxContextImple compare = (TxContextImple) obj;
 
-            return compare.context().equals(_context);
-        }
-        else
-            return false;
-    }
+			return compare.context().equals(_context);
+		}
+		else
+			return false;
+	}
 
-    public final String identifier ()
-    {
-        final String value = _context.getCoordinationContext().getIdentifier().getValue();
-        if ((value != null) && value.startsWith("urn:"))
+	public final String identifier ()
+	{
+	    final String value = _context.getCoordinationContext().getIdentifier().getValue();
+	    if ((value != null) && value.startsWith("urn:"))
         {
             return value.substring(4) ;
         }
-        return value ;
-    }
+	    return value ;
+	}
 
-    public final Context context ()
-    {
-        return _context;
-    }
+	public final Context context ()
+	{
+		return _context;
+	}
 
-    public String toString ()
-    {
-        return _context.toString();
-    }
+	public String toString ()
+	{
+		return _context.toString();
+	}
 
     public boolean isSecure()
     {
@@ -107,6 +107,6 @@ public class TxContextImple implements TxContext
         return false;
     }
 
-    private Context _context;
+	private Context _context;
 
 }

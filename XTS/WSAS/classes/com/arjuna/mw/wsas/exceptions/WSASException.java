@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -37,7 +37,7 @@ package com.arjuna.mw.wsas.exceptions;
  *
  * (i) a string describing the error.
  * (ii) an integer code for the error.
- *
+ * 
  * @author Mark Little (mark.little@arjuna.com)
  * @version $Id: WSASException.java,v 1.1 2002/11/25 10:51:44 nmcl Exp $
  * @since 1.0.
@@ -53,41 +53,41 @@ public class WSASException extends Exception
 
     public WSASException ()
     {
-    super();
+	super();
 
-    _errorCode = 0;
-    _data = null;
+	_errorCode = 0;
+	_data = null;
     }
 
     /**
      * Constructs a WSASException object with the specified reason.
      * errorcode defaults to 0.
-     *
+     * 
      * @param reason the reason
      */
 
     public WSASException (String reason)
     {
-    super(reason);
+	super(reason);
 
-    _errorCode = 0;
-    _data = null;
+	_errorCode = 0;
+	_data = null;
     }
 
     /**
      * Constructs a WSASException object with the specified reason and
      * errorcode.
-     *
+     * 
      * @param reason the reason
      * @param errorcode the error code
      */
 
     public WSASException (String reason, int errorcode)
     {
-    super(reason);
-
-    _errorCode = errorcode;
-    _data = null;
+	super(reason);
+	
+	_errorCode = errorcode;
+	_data = null;
     }
 
     /**
@@ -97,10 +97,10 @@ public class WSASException extends Exception
 
     public WSASException (String reason, Object obj)
     {
-    super(reason);
-
-    _errorCode = 0;
-    _data = obj;
+	super(reason);
+	
+	_errorCode = 0;
+	_data = obj;
     }
 
     /**
@@ -109,10 +109,10 @@ public class WSASException extends Exception
 
     public WSASException (Object obj)
     {
-    super();
-
-    _errorCode = 0;
-    _data = obj;
+	super();
+	
+	_errorCode = 0;
+	_data = obj;
     }
 
     /**
@@ -121,21 +121,21 @@ public class WSASException extends Exception
 
     public final int getErrorCode ()
     {
-    return _errorCode;
+	return _errorCode;
     }
 
     /**
      * @return the data object associated with this exception.
      */
-
+    
     public final Object getData ()
     {
-    return _data;
+	return _data;
     }
-
+    
     private int    _errorCode;
     private Object _data;
-
+    
 }
 
 

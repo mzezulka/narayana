@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -51,16 +51,16 @@ import com.arjuna.mw.wsas.exceptions.SystemException;
 
 public class CoordinationOutcome implements Outcome
 {
-
+    
     public CoordinationOutcome (int twophase)
     {
-    this(Success.instance(), twophase);
+	this(Success.instance(), twophase);
     }
 
     public CoordinationOutcome (CompletionStatus s, int twophase)
     {
-    _status = s;
-    _twophaseOutcome = twophase;
+	_status = s;
+	_twophaseOutcome = twophase;
     }
 
     /**
@@ -70,9 +70,9 @@ public class CoordinationOutcome implements Outcome
 
     public final int result ()
     {
-    return _twophaseOutcome;
+	return _twophaseOutcome;
     }
-
+    
     /**
      * Give a name for this outcome.
      *
@@ -84,7 +84,7 @@ public class CoordinationOutcome implements Outcome
 
     public String name () throws SystemException
     {
-    return "org.w3c.wscf.twophase.outcomes.CoordinationOutcome";
+	return "org.w3c.wscf.twophase.outcomes.CoordinationOutcome";
     }
 
     /**
@@ -95,12 +95,12 @@ public class CoordinationOutcome implements Outcome
      * @return the final completion status of the transaction. Any additional
      * information (e.g., exception types) may be provided by the data method.
      */
-
+ 
     public CompletionStatus completedStatus () throws SystemException
     {
-    return _status;
+	return _status;
     }
-
+ 
     /**
      * Outcome specific information that can be used to determine finer
      * level details about the outcome instance.
@@ -114,15 +114,15 @@ public class CoordinationOutcome implements Outcome
 
     public Object data () throws SystemException
     {
-    return null;
+	return null;
     }
 
     public String toString ()
     {
-    return "com.arjuna.mw.wscf.twophase.outcomes.CoordinationOutcome: "+TwoPhaseResult.stringForm(_twophaseOutcome);
+	return "com.arjuna.mw.wscf.twophase.outcomes.CoordinationOutcome: "+TwoPhaseResult.stringForm(_twophaseOutcome);
     }
-
+    
     private CompletionStatus _status;
     private int              _twophaseOutcome;
-
+    
 }

@@ -1,7 +1,7 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
+ * as indicated by the @author tags. 
  * See the copyritypeght.txt in the distribution for a full listing
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -109,66 +109,66 @@ public class SubordinateBACoordinator extends BACoordinator
     /**
      * normal constructor
      */
-    public SubordinateBACoordinator()
-    {
-        super();
+	public SubordinateBACoordinator()
+	{
+		super();
         subordinate = true;
         activated = true;
-    }
+	}
 
     /**
      * constructor for recovered coordinator
      * @param recovery
      */
-    public SubordinateBACoordinator(Uid recovery)
-    {
-        super(recovery);
+	public SubordinateBACoordinator(Uid recovery)
+	{
+		super(recovery);
         subordinate = true;
         activated = false;
-    }
+	}
 
     /**
-     * If the application requires and if the coordination protocol supports it,
-     * then this method can be used to execute a coordination protocol on the
-     * currently enlisted participants at any time prior to the termination of
-     * the coordination scope.
-     *
-     * This implementation only supports coordination at the end of the
-     * activity.
-     *
-     * @param     cs The completion status to use when determining how to
-     *            execute the protocol.
-     *
-     * @exception com.arjuna.mw.wsas.exceptions.WrongStateException
-     *                Thrown if the coordinator is in a state the does not allow
-     *                coordination to occur.
-     * @exception com.arjuna.mw.wsas.exceptions.ProtocolViolationException
-     *                Thrown if the protocol is violated in some manner during
-     *                execution.
-     * @exception com.arjuna.mw.wsas.exceptions.SystemException
-     *                Thrown if any other error occurs.
-     *
-     * @return The result of executing the protocol, or null.
-     */
+	 * If the application requires and if the coordination protocol supports it,
+	 * then this method can be used to execute a coordination protocol on the
+	 * currently enlisted participants at any time prior to the termination of
+	 * the coordination scope.
+	 *
+	 * This implementation only supports coordination at the end of the
+	 * activity.
+	 *
+	 * @param     cs The completion status to use when determining how to
+	 *            execute the protocol.
+	 *
+	 * @exception com.arjuna.mw.wsas.exceptions.WrongStateException
+	 *                Thrown if the coordinator is in a state the does not allow
+	 *                coordination to occur.
+	 * @exception com.arjuna.mw.wsas.exceptions.ProtocolViolationException
+	 *                Thrown if the protocol is violated in some manner during
+	 *                execution.
+	 * @exception com.arjuna.mw.wsas.exceptions.SystemException
+	 *                Thrown if any other error occurs.
+	 *
+	 * @return The result of executing the protocol, or null.
+	 */
 
-    public Outcome coordinate (CompletionStatus cs) throws WrongStateException,
-            ProtocolViolationException, SystemException
-    {
-        throw new ProtocolViolationException();
-    }
+	public Outcome coordinate (CompletionStatus cs) throws WrongStateException,
+			ProtocolViolationException, SystemException
+	{
+		throw new ProtocolViolationException();
+	}
 
-    public int end (boolean reportHeuristics)
-    {
-        return ActionStatus.INVALID;
-    }
+	public int end (boolean reportHeuristics)
+	{
+		return ActionStatus.INVALID;
+	}
 
     /**
      * this is driven by a coordinator-completion participant registered on behalf of the coordinator
      * and is required to propagate the complete to all registered coordinator-completion participants.
      */
 
-    public void complete ()  throws WrongStateException, SystemException
-    {
+	public void complete ()  throws WrongStateException, SystemException
+	{
         // if this goes wrong here then we will throw an exception
 
         super.complete();
@@ -187,15 +187,15 @@ public class SubordinateBACoordinator extends BACoordinator
         }
 
         // no need to return anything as the caller can just check the status
-    }
+	}
 
     /**
      * this is driven by a coordinator-completion participant registered on behalf of the coordinator
      * and is required to propagate the close to all registered participants.
      */
 
-    public int close () throws SystemException
-    {
+	public int close () throws SystemException
+	{
         int status = status();
         int result;
 
@@ -219,14 +219,14 @@ public class SubordinateBACoordinator extends BACoordinator
         runCallback(get_uid().stringForm());
 
         return result;
-    }
+	}
 
     /**
      * this is driven by a coordinator-completion participant registered on behalf of the coordinator
      * and is required to propagate the cancel to all registered participants.
      */
-    public int cancel ()
-    {
+	public int cancel ()
+	{
         int status = status();
         int result;
 
@@ -244,7 +244,7 @@ public class SubordinateBACoordinator extends BACoordinator
         runCallback(get_uid().stringForm());
 
         return result;
-    }
+	}
 
     /**
      * called by the durable participant during recovery processing
@@ -329,7 +329,7 @@ public class SubordinateBACoordinator extends BACoordinator
         }
 
         // ok we have a tx but no proxy so this is really an orphan
-
+        
         return true;
     }
 

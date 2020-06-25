@@ -16,16 +16,16 @@ import com.arjuna.wstx.tests.common.FailureParticipant;
 
 @RunWith(Arquillian.class)
 public class CommitRollbackInPrepareTest {
+	
+	@Deployment
+	public static WebArchive createDeployment() {
+		return WarDeployment.getDeployment(
+				DemoDurableParticipant.class,
+				FailureParticipant.class);
+	}
 
-    @Deployment
-    public static WebArchive createDeployment() {
-        return WarDeployment.getDeployment(
-                DemoDurableParticipant.class,
-                FailureParticipant.class);
-    }
-
-    @Test
-    public void testCommitRollbackInPrepare()
+	@Test
+	public void testCommitRollbackInPrepare()
             throws Exception
     {
         UserTransaction ut = UserTransaction.getUserTransaction();

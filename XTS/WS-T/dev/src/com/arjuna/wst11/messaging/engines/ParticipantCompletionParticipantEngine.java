@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -186,7 +186,7 @@ public class ParticipantCompletionParticipantEngine implements ParticipantComple
 
         final State current ;
         synchronized(this)
-        {
+        {                                      
             current = state ;
             if (current == State.STATE_ACTIVE)
             {
@@ -417,7 +417,7 @@ public class ParticipantCompletionParticipantEngine implements ParticipantComple
             if (!XTSBARecoveryManager.getRecoveryManager().deleteParticipantRecoveryRecord(id)) {
                 // hmm, could not delete entry -- nothing more we can do than log a message
                 WSTLogger.i18NLogger.warn_wst11_messaging_engines_ParticipantCompletionParticipantEngine_failed_1(id);
-            }
+            } 
         }
         // now the log record has been deleted we can safely end this participant
         if ((current == State.STATE_FAILING_ACTIVE) || (current == State.STATE_FAILING_CANCELING) ||
@@ -457,7 +457,7 @@ public class ParticipantCompletionParticipantEngine implements ParticipantComple
             current = state ;
             if (current == State.STATE_NOT_COMPLETING)
             {
-            ended() ;
+        	ended() ;
             }
         }
 
@@ -479,17 +479,17 @@ public class ParticipantCompletionParticipantEngine implements ParticipantComple
             WSTLogger.logger.trace(getClass().getSimpleName() + ".getStatus");
         }
 
-    final State current ;
-    synchronized(this)
-    {
-        current = state ;
-    }
+	final State current ;
+	synchronized(this)
+	{
+	    current = state ;
+	}
 
         if (WSTLogger.logger.isTraceEnabled()) {
             WSTLogger.logger.trace(getClass().getSimpleName() + ".getStatus. State: " + current);
         }
 
-    sendStatus(current) ;
+	sendStatus(current) ;
     }
 
     /**
@@ -739,7 +739,7 @@ public class ParticipantCompletionParticipantEngine implements ParticipantComple
             }
             else if (current == State.STATE_CANCELING)
             {
-            changeState(State.STATE_FAILING_CANCELING) ;
+        	changeState(State.STATE_FAILING_CANCELING) ;
             }
             else if (current == State.STATE_COMPENSATING)
             {
@@ -895,7 +895,7 @@ public class ParticipantCompletionParticipantEngine implements ParticipantComple
         final MAP map = createContext() ;
         try
         {
-            // if we are trying to reestablish the participant state then send getStatus otherwise send completed
+            // if we are trying to reestablish the participant state then send getStatus otherwise send completed 
             if (timedOut && checkStatus) {
                 ParticipantCompletionCoordinatorClient.getClient().sendGetStatus(coordinator, map, instanceIdentifier); ;
             } else {
@@ -1380,7 +1380,7 @@ public class ParticipantCompletionParticipantEngine implements ParticipantComple
      */
     private void ended()
     {
-    changeState(State.STATE_ENDED) ;
+	changeState(State.STATE_ENDED) ;
         ParticipantCompletionParticipantProcessor.getProcessor().deactivateParticipant(this) ;
     }
 

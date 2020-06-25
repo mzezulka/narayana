@@ -199,7 +199,7 @@ public class CoordinatorEngine implements CoordinatorInboundEvents
             }
             else
             {
-            sendUnknownTransaction(map, arjunaContext) ;
+        	sendUnknownTransaction(map, arjunaContext) ;
             }
         }
     }
@@ -287,7 +287,7 @@ public class CoordinatorEngine implements CoordinatorInboundEvents
 
             if (timerTask != null)
             {
-            timerTask.cancel() ;
+        	timerTask.cancel() ;
 
                 timerTask = null;
             }
@@ -426,7 +426,7 @@ public class CoordinatorEngine implements CoordinatorInboundEvents
         {
             if (timerTask != caller) {
                 // the timer was cancelled but it went off before it could be cancelled
-
+                
                 return;
             }
 

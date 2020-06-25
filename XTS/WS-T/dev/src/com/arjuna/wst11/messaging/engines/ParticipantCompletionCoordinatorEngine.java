@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -405,7 +405,7 @@ public class ParticipantCompletionCoordinatorEngine implements ParticipantComple
             current = state ;
             if (current == State.STATE_ACTIVE)
             {
-            changeState(State.STATE_FAILING_ACTIVE) ;
+        	changeState(State.STATE_FAILING_ACTIVE) ;
             }
             else if (current == State.STATE_CANCELING)
             {
@@ -494,11 +494,11 @@ public class ParticipantCompletionCoordinatorEngine implements ParticipantComple
             WSTLogger.logger.trace(getClass() + ".getStatus");
         }
 
-    final State current ;
-    synchronized(this)
-    {
-        current = state ;
-    }
+	final State current ;
+	synchronized(this)
+	{
+	    current = state ;
+	}
         if (WSTLogger.logger.isTraceEnabled()) {
             WSTLogger.logger.trace(getClass() + ".getStatus. State: " + current);
         }
@@ -521,10 +521,10 @@ public class ParticipantCompletionCoordinatorEngine implements ParticipantComple
         // TODO - is this correct?
 
         final State current ;
-        synchronized(this)
-        {
-            current = state ;
-        }
+	    synchronized(this)
+	    {
+	        current = state ;
+	    }
 
         if (WSTLogger.logger.isTraceEnabled()) {
             WSTLogger.logger.trace(getClass() + ".status. State: " + current);
@@ -594,7 +594,7 @@ public class ParticipantCompletionCoordinatorEngine implements ParticipantComple
         if (current == State.STATE_ENDED && failureState != null) {
             return failureState;
         }
-
+        
         return current ;
     }
 
@@ -740,12 +740,12 @@ public class ParticipantCompletionCoordinatorEngine implements ParticipantComple
             WSTLogger.logger.trace(getClass() + ".soapFault");
         }
 
-    ended() ;
-    try
-    {
-        // TODO - we cannot do this with JaxWS. need to log something
-    }
-    catch (final Throwable th) {} // ignore
+	ended() ;
+	try
+	{
+	    // TODO - we cannot do this with JaxWS. need to log something
+	}
+	catch (final Throwable th) {} // ignore
     }
 
     /**
@@ -975,7 +975,7 @@ public class ParticipantCompletionCoordinatorEngine implements ParticipantComple
 
         return recovered;
     }
-
+    
     /**
      * Change the state and notify any listeners.
      * @param state The new state.
@@ -1140,7 +1140,7 @@ public class ParticipantCompletionCoordinatorEngine implements ParticipantComple
         // will detect this activated participant and note that it has completed. if a crash
         // happens in between the recovery thread can safely recreate and reactivate the
         // participant and resend the commit since the commit/committed exchange is idempotent.
-
+        
         if (!recovered) {
             ParticipantCompletionCoordinatorProcessor.getProcessor().deactivateCoordinator(this) ;
         }

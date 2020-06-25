@@ -57,7 +57,7 @@ public class BAInteropUtil
     {
         return createCoordinationContext(coordinatorURI, BusinessActivityConstants.WSBA_PROTOCOL_ATOMIC_OUTCOME) ;
     }
-
+    
     /**
      * Get a mixed outcome coordination context.
      * @param coordinatorURI The coordinator URI.
@@ -69,7 +69,7 @@ public class BAInteropUtil
     {
         return createCoordinationContext(coordinatorURI, BusinessActivityConstants.WSBA_PROTOCOL_MIXED_OUTCOME) ;
     }
-
+    
     /**
      * Get a coordination context for the specified protocol.
      * @param coordinatorURI The coordinator URI.
@@ -78,7 +78,7 @@ public class BAInteropUtil
      * @throws Exception for errors.
      */
     private static CoordinationContextType createCoordinationContext(final String coordinatorURI, final String protocol)
-        throws Exception
+    	throws Exception
     {
         return ActivationCoordinator.createCoordinationContext(coordinatorURI, MessageId.getMessageId(), protocol, null, null) ;
     }
@@ -96,7 +96,7 @@ public class BAInteropUtil
         final W3CEndpointReference completionCoordinator = register(context, getTerminatorParticipant(id), ArjunaTXConstants.WSARJTX_PROTOCOL_TERMINATION) ;
         return new BusinessActivityTerminatorStub(id, completionCoordinator);
     }
-
+    
     /**
      * Register a participant completion participant in the specified coordination context.
      * @param context The coordination context.
@@ -106,16 +106,16 @@ public class BAInteropUtil
      * @throws Exception for errors.
      */
     public static ParticipantCompletionParticipantEngine registerParticipantCompletion(final CoordinationContextType context,
-    final BusinessAgreementWithParticipantCompletionParticipant participant, final String id)
+	final BusinessAgreementWithParticipantCompletionParticipant participant, final String id)
         throws Exception
     {
-    final W3CEndpointReference coordinator = RegistrationCoordinator.register(context, MessageId.getMessageId(),
+	final W3CEndpointReference coordinator = RegistrationCoordinator.register(context, MessageId.getMessageId(),
             getParticipantCompletionParticipant(id), BusinessActivityConstants.WSBA_SUB_PROTOCOL_PARTICIPANT_COMPLETION) ;
         final ParticipantCompletionParticipantEngine engine = new ParticipantCompletionParticipantEngine(id, coordinator, participant) ;
         ParticipantCompletionParticipantProcessor.getProcessor().activateParticipant(engine, id) ;
         return engine ;
     }
-
+    
     /**
      * Register a coordinator completion participant in the specified coordination context.
      * @param context The coordination context.
@@ -125,16 +125,16 @@ public class BAInteropUtil
      * @throws Exception for errors.
      */
     public static CoordinatorCompletionParticipantEngine registerCoordinatorCompletion(final CoordinationContextType context,
-    final BusinessAgreementWithCoordinatorCompletionParticipant participant, final String id)
+	final BusinessAgreementWithCoordinatorCompletionParticipant participant, final String id)
         throws Exception
     {
-    final W3CEndpointReference coordinator = RegistrationCoordinator.register(context, MessageId.getMessageId(),
+	final W3CEndpointReference coordinator = RegistrationCoordinator.register(context, MessageId.getMessageId(),
             getCoordinatorCompletionParticipant(id), BusinessActivityConstants.WSBA_SUB_PROTOCOL_COORDINATOR_COMPLETION) ;
         final CoordinatorCompletionParticipantEngine engine = new CoordinatorCompletionParticipantEngine(id, coordinator, participant) ;
         CoordinatorCompletionParticipantProcessor.getProcessor().activateParticipant(engine, id) ;
         return engine ;
     }
-
+    
     /**
      * Register for a sub protocol.
      * @param context The coordination context.
@@ -148,7 +148,7 @@ public class BAInteropUtil
     {
         return RegistrationCoordinator.register(context, MessageId.getMessageId(), participant, protocol) ;
     }
-
+    
     /**
      * Get the endpoint reference for a terminator participant.
      * @param id The participant id.
@@ -165,7 +165,7 @@ public class BAInteropUtil
         InstanceIdentifier.setEndpointInstanceIdentifier(builder, id) ;
         return builder.build();
     }
-
+    
     /**
      * Get the endpoint reference for a participant completion participant.
      * @param id The participant id.
@@ -182,7 +182,7 @@ public class BAInteropUtil
         InstanceIdentifier.setEndpointInstanceIdentifier(builder, id) ;
         return builder.build();
     }
-
+    
     /**
      * Get the endpoint reference for a coordinator completion participant.
      * @param id The participant id.

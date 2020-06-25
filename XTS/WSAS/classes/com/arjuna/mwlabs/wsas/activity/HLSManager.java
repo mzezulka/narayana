@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -59,8 +59,8 @@ public class HLSManager
 
     public static final void addHLS (HLS service) throws InvalidHLSException, SystemException
     {
-    if (service == null) {
-        throw new InvalidHLSException();
+	if (service == null) {
+	    throw new InvalidHLSException();
     } else {
         String key = service.identity();
         synchronized(_hlsMap) {
@@ -71,14 +71,14 @@ public class HLSManager
 
     public static final void removeHLS (HLS service) throws InvalidHLSException, SystemException
     {
-    if (service == null)
-        throw new InvalidHLSException();
-    else
-    {
+	if (service == null)
+	    throw new InvalidHLSException();
+	else
+	{
         String key = service.identity();
         HLS oldValue;
-        synchronized (_hlsMap)
-        {
+	    synchronized (_hlsMap)
+	    {
             oldValue = _hlsMap.remove(key);
         }
         if (oldValue == null) {
@@ -91,12 +91,12 @@ public class HLSManager
      */
     public static final HLS[] allHighLevelServices () throws SystemException
     {
-    synchronized (_hlsMap)
-    {
-        HLS[] toReturn = new HLS[(int) _hlsMap.size()];
+	synchronized (_hlsMap)
+	{
+	    HLS[] toReturn = new HLS[(int) _hlsMap.size()];
         Collection<HLS> services = _hlsMap.values();
         return services.toArray(toReturn);
-    }
+	}
     }
 
     public static final HLS getHighLevelService (String serviceType) throws SystemException

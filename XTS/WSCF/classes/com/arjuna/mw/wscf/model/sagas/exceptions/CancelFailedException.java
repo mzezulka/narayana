@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2008, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2008,
  * @author JBoss Inc.
  */
@@ -41,17 +41,17 @@ public class CancelFailedException extends SystemException
 
     public CancelFailedException()
     {
-    super();
+	super();
     }
 
     public CancelFailedException(String s)
     {
-    super(s);
+	super(s);
     }
 
     public CancelFailedException(String s, int errorcode)
     {
-    super(s, errorcode);
+	super(s, errorcode);
     }
 
 }

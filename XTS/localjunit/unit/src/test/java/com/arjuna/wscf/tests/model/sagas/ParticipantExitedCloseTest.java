@@ -14,13 +14,13 @@ import com.arjuna.wscf.tests.WarDeployment;
 
 @RunWith(Arquillian.class)
 public class ParticipantExitedCloseTest {
+	
+	@Deployment
+	public static WebArchive createDeployment() {
+		return WarDeployment.getDeployment();
+	}
 
-    @Deployment
-    public static WebArchive createDeployment() {
-        return WarDeployment.getDeployment();
-    }
-
-    @Test
+	@Test
     public void testParticipantExitedClose()
             throws Exception
     {

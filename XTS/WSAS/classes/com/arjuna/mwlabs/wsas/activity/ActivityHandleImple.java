@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -53,10 +53,10 @@ public class ActivityHandleImple implements ActivityHandle
 
     public ActivityHandleImple (ActivityImple curr)
     {
-    _theActivity = curr;
-    _valid = ((_theActivity == null) ? false : true);
+	_theActivity = curr;
+	_valid = ((_theActivity == null) ? false : true);
     }
-
+    
     /**
      * Although users won't typically care what the underlying implementation
      * of a context is, they will need to do comparisons.
@@ -68,24 +68,24 @@ public class ActivityHandleImple implements ActivityHandle
 
     public boolean equals (Object obj)
     {
-    if (obj != null)
-    {
-        if (obj == this)
-        return true;
-        else
-        {
-        if (obj instanceof ActivityHandleImple)
-        {
-            ActivityImple compare = ((ActivityHandleImple) obj).getActivity();
-            if (_theActivity.equals(compare))
-                return true;
-        }
-        }
+	if (obj != null)
+	{
+	    if (obj == this)
+		return true;
+	    else
+	    {
+		if (obj instanceof ActivityHandleImple)
+		{
+			ActivityImple compare = ((ActivityHandleImple) obj).getActivity();
+			if (_theActivity.equals(compare))
+				return true;
+		}
+	    }
+	}
+	
+	return false;
     }
-
-    return false;
-    }
-
+    
     /**
      * Although users won't typically care what the underlying implementation
      * of a context is, they will need to do comparisons.
@@ -95,7 +95,7 @@ public class ActivityHandleImple implements ActivityHandle
 
     public int hashCode ()
     {
-    return ((_theActivity == null) ? 0 : _theActivity.hashCode());
+	return ((_theActivity == null) ? 0 : _theActivity.hashCode());
     }
 
     /**
@@ -104,43 +104,43 @@ public class ActivityHandleImple implements ActivityHandle
 
     public boolean valid ()
     {
-    return _valid;
+	return _valid;
     }
 
     public int getTimeout ()
     {
-    try
-    {
-        return _theActivity.getTimeout();
+	try
+	{
+	    return _theActivity.getTimeout();
+	}
+	catch (Exception ex)
+	{
+	    ex.printStackTrace();
+	    
+	    return -1;
+	}
     }
-    catch (Exception ex)
-    {
-        ex.printStackTrace();
-
-        return -1;
-    }
-    }
-
+    
     /**
      * @return the activity identifier.
      */
 
     public String tid ()
     {
-    return ((_theActivity == null) ? null : new String(_theActivity.getGlobalId().value(), StandardCharsets.UTF_8));
+	return ((_theActivity == null) ? null : new String(_theActivity.getGlobalId().value(), StandardCharsets.UTF_8));
     }
 
     public final ActivityImple getActivity ()
     {
-    return _theActivity;
+	return _theActivity;
     }
 
     public String toString ()
     {
-    return tid();
+	return tid();
     }
 
     private ActivityImple _theActivity;
     private boolean       _valid;
-
+    
 }

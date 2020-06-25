@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -60,17 +60,17 @@ public class ArjunaContextImple implements SOAPContext
     public static final String serviceType = "TwoPhase11HLS";
     public static final String coordinationType = AtomicTransactionConstants.WSAT_PROTOCOL;
 
-    public ArjunaContextImple()
-    {
-        _context = null;
-    }
+	public ArjunaContextImple()
+	{
+		_context = null;
+	}
 
-    public ArjunaContextImple(ATCoordinator currentCoordinator)
-    {
-        _context = null;
+	public ArjunaContextImple(ATCoordinator currentCoordinator)
+	{
+		_context = null;
 
-        initialiseContext(currentCoordinator);
-    }
+		initialiseContext(currentCoordinator);
+	}
 
     /**
      * Serialise the SOAP context into a DOM node.
@@ -84,30 +84,30 @@ public class ArjunaContextImple implements SOAPContext
         return context ;
     }
 
-    public void initialiseContext(Object param)
-    {
-        try
-        {
-            ATCoordinator currentCoordinator = (ATCoordinator) param;
+	public void initialiseContext(Object param)
+	{
+		try
+		{
+			ATCoordinator currentCoordinator = (ATCoordinator) param;
 
-            ActivityHierarchy hier = null;
+			ActivityHierarchy hier = null;
 
-            try
-            {
-                hier = UserActivityFactory.userActivity().currentActivity();
-            }
-            catch (SystemException ex)
-            {
-                ex.printStackTrace();
-            }
+			try
+			{
+				hier = UserActivityFactory.userActivity().currentActivity();
+			}
+			catch (SystemException ex)
+			{
+				ex.printStackTrace();
+			}
 
-            if ((currentCoordinator != null) && (hier != null))
-            {
-                /*
-                 * Do the manditory stuff first.
-                 */
+			if ((currentCoordinator != null) && (hier != null))
+			{
+				/*
+				 * Do the manditory stuff first.
+				 */
 
-                ActionHierarchy txHier = currentCoordinator.getHierarchy();
+				ActionHierarchy txHier = currentCoordinator.getHierarchy();
                 final int depth = txHier.depth() ;
                 _identifierValues = new String[depth] ;
                 _expiresValues = new int[depth] ;
@@ -115,21 +115,21 @@ public class ArjunaContextImple implements SOAPContext
                 _identifierValues[0] = txHier.getDeepestActionUid().stringForm() ;
                 _expiresValues[0] = hier.activity(hier.size()-1).getTimeout() ;
 
-                /*
-                 * Now let's do the optional stuff.
-                 */
+				/*
+				 * Now let's do the optional stuff.
+				 */
                 for(int count = 1, index = 0 ; count < depth ; count++, index++)
                 {
                     _identifierValues[count] = txHier.getActionUid(index).stringForm() ;
                     _expiresValues[count] = hier.activity(index).getTimeout() ;
                 }
-            }
-        }
-        catch (ClassCastException ex)
-        {
-            throw new IllegalArgumentException();
-        }
-    }
+			}
+		}
+		catch (ClassCastException ex)
+		{
+			throw new IllegalArgumentException();
+		}
+	}
 
     /**
      * @return the context document object.
@@ -200,10 +200,10 @@ public class ArjunaContextImple implements SOAPContext
         return _context ;
     }
 
-    public String identifier ()
-    {
-        return ArjunaContextImple.class.getName();
-    }
+	public String identifier ()
+	{
+		return ArjunaContextImple.class.getName();
+	}
 
     public String getTransactionIdentifier()
     {
@@ -215,10 +215,10 @@ public class ArjunaContextImple implements SOAPContext
         return _expiresValues[0] ;
     }
 
-    public String toString ()
-    {
-        return DomUtil.nodeAsString(_context);
-    }
+	public String toString ()
+	{
+		return DomUtil.nodeAsString(_context);
+	}
 
     public static ArjunaContextImple getContext()
     {
@@ -237,15 +237,15 @@ public class ArjunaContextImple implements SOAPContext
         return null ;
     }
 
-    private Element _context;
+	private Element _context;
     private String[] _identifierValues ;
     private int[] _expiresValues ;
 
-    private static final String _wscoorNamespace = CoordinationConstants.WSCOOR_NAMESPACE;
-    private static final String _wsuNamespace = "http://schemas.xmlsoap.org/ws/2002/07/utility";
-    private static final String _arjunaNamespace = "http://arjuna.com/schemas/wsc/2003/01/extension";
-    private static final String _contextName = CoordinationConstants.WSCOOR_ELEMENT_COORDINATION_CONTEXT;
-    private static final String _identifier = CoordinationConstants.WSCOOR_ELEMENT_IDENTIFIER;
-    private static final String _expires = CoordinationConstants.WSCOOR_ELEMENT_EXPIRES;
+	private static final String _wscoorNamespace = CoordinationConstants.WSCOOR_NAMESPACE;
+	private static final String _wsuNamespace = "http://schemas.xmlsoap.org/ws/2002/07/utility";
+	private static final String _arjunaNamespace = "http://arjuna.com/schemas/wsc/2003/01/extension";
+	private static final String _contextName = CoordinationConstants.WSCOOR_ELEMENT_COORDINATION_CONTEXT;
+	private static final String _identifier = CoordinationConstants.WSCOOR_ELEMENT_IDENTIFIER;
+	private static final String _expires = CoordinationConstants.WSCOOR_ELEMENT_EXPIRES;
     private static final String _coordinationType = CoordinationConstants.WSCOOR_ELEMENT_COORDINATION_TYPE;
 }

@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -68,9 +68,9 @@ public class ArjunaContextImple implements SOAPContext
 
     public ArjunaContextImple(BACoordinator currentCoordinator)
     {
-        _context = null;
+    	_context = null;
 
-        initialiseContext(currentCoordinator);
+    	initialiseContext(currentCoordinator);
     }
 
     /**
@@ -87,28 +87,28 @@ public class ArjunaContextImple implements SOAPContext
 
     public void initialiseContext(Object param)
     {
-        try
-        {
-            BACoordinator currentCoordinator = (BACoordinator) param;
+    	try
+    	{
+    	    BACoordinator currentCoordinator = (BACoordinator) param;
 
-            ActivityHierarchy hier = null;
+    	    ActivityHierarchy hier = null;
 
-            try
-            {
-                hier = UserActivityFactory.userActivity().currentActivity();
-            }
-            catch (SystemException ex)
-            {
-                ex.printStackTrace();
-            }
+    	    try
+    	    {
+    	        hier = UserActivityFactory.userActivity().currentActivity();
+    	    }
+    	    catch (SystemException ex)
+    	    {
+    	        ex.printStackTrace();
+    	    }
 
-            if ((currentCoordinator != null) && (hier != null))
-            {
-                /*
-                 * Do the manditory stuff first.
-                 */
+    	    if ((currentCoordinator != null) && (hier != null))
+    	    {
+        		/*
+        		 * Do the manditory stuff first.
+        		 */
 
-                ActionHierarchy txHier = currentCoordinator.getHierarchy();
+        		ActionHierarchy txHier = currentCoordinator.getHierarchy();
                 final int depth = txHier.depth() ;
                 _identifierValues = new String[depth] ;
                 _expiresValues = new int[depth] ;
@@ -116,20 +116,20 @@ public class ArjunaContextImple implements SOAPContext
                 _identifierValues[0] = txHier.getDeepestActionUid().stringForm() ;
                 _expiresValues[0] = hier.activity(hier.size()-1).getTimeout() ;
 
-                /*
-                 * Now let's do the optional stuff.
-                 */
+        		/*
+        		 * Now let's do the optional stuff.
+        		 */
                 for(int count = 1, index = 0 ; count < depth ; count++, index++)
                 {
                     _identifierValues[count] = txHier.getActionUid(index).stringForm() ;
                     _expiresValues[count] = hier.activity(index).getTimeout() ;
                 }
             }
-        }
-        catch (ClassCastException ex)
-        {
-            throw new IllegalArgumentException();
-        }
+    	}
+    	catch (ClassCastException ex)
+    	{
+    	    throw new IllegalArgumentException();
+    	}
     }
 
     /**

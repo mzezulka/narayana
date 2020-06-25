@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -50,48 +50,48 @@ public class DemoDurableParticipant implements Durable2PCParticipant
 
     public DemoDurableParticipant ()
     {
-    _passed = false;
+	_passed = false;
     _prepared = false;
     _resolved = false;
     }
 
     public final boolean resolved ()
     {
-    return _resolved;
+	return _resolved;
     }
 
     public final boolean prepared ()
     {
-    return _prepared;
+	return _prepared;
     }
 
     public final boolean passed ()
     {
-    return _passed;
+	return _passed;
     }
-
+    
     public Vote prepare () throws WrongStateException, SystemException
     {
-    System.out.println("DemoDurableParticipant.prepare for "+this);
-
+	System.out.println("DemoDurableParticipant.prepare for "+this);
+	
     _prepared = true;
-    return new Prepared();
+	return new Prepared();
     }
 
     public void commit () throws WrongStateException, SystemException
     {
-    System.out.println("DemoDurableParticipant.commit for "+this);
+	System.out.println("DemoDurableParticipant.commit for "+this);
 
     _resolved = true;
-    _passed = true;
+	_passed = true;
     }
 
     public void rollback () throws WrongStateException, SystemException
     {
-    System.out.println("DemoDurableParticipant.rollback for "+this);
+	System.out.println("DemoDurableParticipant.rollback for "+this);
 
     _resolved = true;
-    _passed = false;
+	_passed = false;
     }
 
     public void unknown () throws SystemException
@@ -104,18 +104,18 @@ public class DemoDurableParticipant implements Durable2PCParticipant
 
     public String toString ()
     {
-    return identifier();
+	return identifier();
     }
-
+    
     public String identifier ()
     {
-    return _id.stringForm();
+	return _id.stringForm();
     }
-
+    
     private boolean _passed;
     private boolean _prepared;
     private boolean _resolved;
     private Uid     _id = new Uid();
-
+    
 }
 

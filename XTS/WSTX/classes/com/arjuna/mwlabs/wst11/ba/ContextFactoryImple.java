@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2006, Red Hat Middleware LLC, and individual contributors
- * as indicated by the @author tags.
- * See the copyright.txt in the distribution for a full listing
+ * as indicated by the @author tags. 
+ * See the copyright.txt in the distribution for a full listing 
  * of individual contributors.
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -14,7 +14,7 @@
  * v.2.1 along with this distribution; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- *
+ * 
  * (C) 2005-2006,
  * @author JBoss Inc.
  */
@@ -129,15 +129,15 @@ public class ContextFactoryImple implements ContextFactory
         throws InvalidCreateParametersException
     {
         if (BusinessActivityConstants.WSBA_PROTOCOL_ATOMIC_OUTCOME.equals(coordinationTypeURI))
-        {
-            try
-            {
-            // make sure no transaction is currently associated
+    	{
+    	    try
+    	    {
+    		// make sure no transaction is currently associated
 
             if (currentContext == null) {
-            _coordManager.suspend();
+    		_coordManager.suspend();
 
-            final int timeout ;
+    		final int timeout ;
             if (expires == null)
             {
                 timeout = 0 ;
@@ -148,7 +148,7 @@ public class ContextFactoryImple implements ContextFactory
                 timeout = (longTimeout > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int)longTimeout) ;
             }
 
-            _coordManager.begin(ArjunaContextImple.serviceType, timeout);
+    		_coordManager.begin(ArjunaContextImple.serviceType, timeout);
 
             final ArjunaContextImple arjunaContext = ArjunaContextImple.getContext() ;
             final ServiceRegistry serviceRegistry = PrivilegedServiceRegistryFactory.getInstance().getServiceRegistry();
@@ -177,9 +177,9 @@ public class ContextFactoryImple implements ContextFactory
             BusinessActivityTerminator terminator = new BusinessActivityTerminatorImple();
             TerminationCoordinatorProcessor.getProcessor().activateParticipant(terminator, transactionIdentifier);
 
-            _theRegistrar.associate();
+    		_theRegistrar.associate();
 
-            return coordinationContext;
+    		return coordinationContext;
             } else {
                 // we need to create a subordinate transaction -- this transaction will not be associated
                 // with an activity which identifes the parent transaction this means that we cannot use
@@ -231,39 +231,39 @@ public class ContextFactoryImple implements ContextFactory
                 _theRegistrar.associate(subTx);
                 return coordinationContext;
             }
-        }
-        catch (com.arjuna.mw.wsas.exceptions.NoActivityException ex)
-        {
-        // TODO handle properly
+	    }
+	    catch (com.arjuna.mw.wsas.exceptions.NoActivityException ex)
+	    {
+		// TODO handle properly
 
             ex.printStackTrace();
-        }
-        catch (com.arjuna.mw.wsas.exceptions.SystemException ex)
-        {
-        // TODO handle properly
+	    }
+	    catch (com.arjuna.mw.wsas.exceptions.SystemException ex)
+	    {
+		// TODO handle properly
 
-        ex.printStackTrace();
-        }
-        catch (com.arjuna.mw.wsas.exceptions.WrongStateException ex)
-        {
-        // TODO handle properly
+		ex.printStackTrace();
+	    }
+	    catch (com.arjuna.mw.wsas.exceptions.WrongStateException ex)
+	    {
+		// TODO handle properly
 
-        ex.printStackTrace();
-        }
-        catch (Exception ex)
-        {
-        // TODO handle properly
+		ex.printStackTrace();
+	    }
+	    catch (Exception ex)
+	    {
+		// TODO handle properly
 
-        ex.printStackTrace();
-        }
-    }
-    else {
+		ex.printStackTrace();
+	    }
+	}
+	else {
             wstxLogger.i18NLogger.warn_mwlabs_wst_ba_Context11FactoryImple_1(BusinessActivityConstants.WSBA_PROTOCOL_ATOMIC_OUTCOME, coordinationTypeURI);
 
             throw new InvalidCreateParametersException(wstxLogger.i18NLogger.get_mwlabs_wst_ba_Context11FactoryImple_3() + " < " + BusinessActivityConstants.WSBA_PROTOCOL_ATOMIC_OUTCOME + ", " + coordinationTypeURI + " >");
         }
 
-    return null;
+	return null;
     }
 
     /**
@@ -288,7 +288,7 @@ public class ContextFactoryImple implements ContextFactory
     {
         // we need to create a subordinate transaction and expose it to the bridge layer so it can
         // be driven to completion
-
+        
         SubordinateBACoordinator subTx = null;
         try {
             subTx = (SubordinateBACoordinator) createSubordinate();
@@ -379,7 +379,7 @@ public class ContextFactoryImple implements ContextFactory
 
     public void uninstall (String coordinationTypeURI)
     {
-    // we don't use this as one implementation is registered per type
+	// we don't use this as one implementation is registered per type
     }
 
     public final Object createSubordinate () throws NoActivityException, InvalidProtocolException, SystemException

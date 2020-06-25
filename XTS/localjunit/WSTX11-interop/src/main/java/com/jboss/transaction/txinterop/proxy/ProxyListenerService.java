@@ -77,7 +77,7 @@ public class ProxyListenerService extends HttpServlet
      * The default data size.
      */
     private static final int DEFAULT_DATA_SIZE = 256 ;
-
+    
     /**
      * Initialise the servlet.
      * @param config The servlet configuration.
@@ -86,7 +86,7 @@ public class ProxyListenerService extends HttpServlet
         throws ServletException
     {
         super.init(config);
-
+        
         // Initialise the local host:port/urlstub for the proxy.
         WSCEnvironmentBean wscEnvironmentBean = XTSPropertyManager.getWSCEnvironmentBean();
         String bindAddress = wscEnvironmentBean.getBindAddress11();
@@ -95,7 +95,7 @@ public class ProxyListenerService extends HttpServlet
         final String proxyServiceURI = baseURI + "/proxy";
         ProxyURIRewriting.setProxyURI(proxyServiceURI) ;
     }
-
+    
     /**
      * Handle the post request.
      * @param httpServletRequest The current HTTP servlet request.
@@ -105,12 +105,12 @@ public class ProxyListenerService extends HttpServlet
         throws ServletException, IOException
     {
         final String conversationIdentifier = getConversationIdentifier(httpServletRequest) ;
-
+        
         final byte[] requestContents = getContents(httpServletRequest.getInputStream()) ;
         final String soapAction = httpServletRequest.getHeader(SOAP_ACTION_HEADER) ;
         final boolean jbossClient = ProxyConversation.isInternalConversationId(conversationIdentifier) ;
         final String alternateConversationIdentifier = ProxyConversation.getAlternateConversationId(conversationIdentifier) ;
-
+        
         final ProxyConversationState state = ProxyConversation.getConversationState(conversationIdentifier) ;
 
 System.out.println("KEV: processing SOAP action " + trimAction(soapAction)) ;
@@ -121,37 +121,37 @@ System.out.println("KEV: processing SOAP action " + trimAction(soapAction)) ;
             final StringWriter newMessageWriter = new StringWriter() ;
             final WriterSAXHandler writerHandler = new WriterSAXHandler(newMessageWriter) ;
             final AddressingProxySAXHandler addressingHandler = new AddressingProxySAXHandler(writerHandler, alternateConversationIdentifier) ;
-
+            
             ContentHandler stateHandler = (state == null ? null : state.getHandler(addressingHandler)) ;
             ContentHandler parserHandler = (stateHandler == null ? addressingHandler : stateHandler) ;
-
+            
             final XMLReader xmlReader = XMLReaderFactory.createXMLReader() ;
             xmlReader.setContentHandler(parserHandler) ;
             xmlReader.parse(new InputSource(new ByteArrayInputStream(requestContents))) ;
-
+            
             final StringBuffer newMessageBuffer = newMessageWriter.getBuffer() ;
             final StringBuffer messageBuffer = (jbossClient ? newMessageBuffer : new StringBuffer(new String(requestContents))) ;
-
+            
             ProxyConversation.appendConversation(conversationIdentifier, checkForXMLDecl(messageBuffer)) ;
 
             final String identifier = addressingHandler.getIdentifier() ;
-            if ((state != null) && state.handleAction(trimAction(soapAction), identifier))
+            if ((state != null) && state.handleAction(trimAction(soapAction), identifier))  
             {
                 httpServletResponse.setStatus(HttpServletResponse.SC_ACCEPTED) ;
                 httpServletResponse.flushBuffer() ;
 System.out.println("KEV: handled SOAP action " + trimAction(soapAction)) ;
                 return ;
             }
-
+            
             // parse input stream
-
+            
             final URL destURL = new URL(addressingHandler.getToAddress()) ;
             final HttpURLConnection destConnection = (HttpURLConnection)destURL.openConnection() ;
             try
             {
                 destConnection.setDoOutput(true) ;
                 destConnection.setUseCaches(false) ;
-
+                
                 // copy the headers
                 final Enumeration headerNameEnum = httpServletRequest.getHeaderNames() ;
                 while(headerNameEnum.hasMoreElements())
@@ -173,11 +173,11 @@ System.out.println("KEV: handled SOAP action " + trimAction(soapAction)) ;
                         destConnection.setRequestProperty(name, value) ;
                     }
                 }
-
+                
                 // Set content length
                 destConnection.setRequestProperty("Content-Length", Integer.toString(newMessageBuffer.length())) ;
-                final int port = destURL.getPort() ;
-                final String host = (port > 0 ? destURL.getHost() + ":" + port : destURL.getHost()) ;
+        		final int port = destURL.getPort() ;
+        		final String host = (port > 0 ? destURL.getHost() + ":" + port : destURL.getHost()) ;
                 destConnection.setRequestProperty("Host", host) ;
                 destConnection.setRequestMethod("POST") ;
                 // Connect
@@ -187,7 +187,7 @@ System.out.println("KEV: handled SOAP action " + trimAction(soapAction)) ;
                 os.write(newMessageBuffer.toString().getBytes()) ;
                 os.flush() ;
                 os.close() ;
-
+                
                 final int responseCode = destConnection.getResponseCode() ;
                 final String fullContentType = destConnection.getContentType() ;
                 final String contentType = getContentType(fullContentType) ;
@@ -210,12 +210,12 @@ System.out.println("KEV: handled SOAP action " + trimAction(soapAction)) ;
                         {
                             httpServletResponse.setContentType(fullContentType) ;
                         }
-
+                        
                         // Copy data
                         final int datasize = DEFAULT_DATA_SIZE ;
                         final char[] data = new char[datasize] ;
                         int readCount ;
-
+                        
                         final InputStream is ;
                         if (responseCode == HttpURLConnection.HTTP_INTERNAL_ERROR)
                         {
@@ -290,7 +290,7 @@ System.out.println("KEV: handled SOAP action " + trimAction(soapAction)) ;
             error.printStackTrace() ;
         }
     }
-
+    
     /**
      * Trim quotes from the action.
      * @param action The action.
@@ -331,7 +331,7 @@ System.out.println("KEV: handled SOAP action " + trimAction(soapAction)) ;
         final int separator = pathInfo.indexOf('/', 1) ;
         return pathInfo.substring(1, separator) ;
     }
-
+    
     /**
      * Get the contents of the input stream
      * @param is The input stream.
@@ -339,7 +339,7 @@ System.out.println("KEV: handled SOAP action " + trimAction(soapAction)) ;
      * @throws IOException for errors.
      */
     private byte[] getContents(final InputStream is)
-        throws IOException
+    	throws IOException
     {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream() ;
         final byte[] buffer = new byte[1024] ;
@@ -355,7 +355,7 @@ System.out.println("KEV: handled SOAP action " + trimAction(soapAction)) ;
         while(readCount > 0) ;
         return baos.toByteArray() ;
     }
-
+    
     /**
      * Check for the XML declaration and remove.
      * This method is only used if we are intending to log the SOAP message so that it is easy to combine the XML without creating invalid documents.
@@ -382,10 +382,10 @@ System.out.println("KEV: handled SOAP action " + trimAction(soapAction)) ;
             }
         }
         catch (final StringIndexOutOfBoundsException sioobe) {}
-
+        
         return contents.toString() ;
     }
-
+    
     /**
      * Escape the contents of the string.
      * @param contents The original contents.
@@ -395,7 +395,7 @@ System.out.println("KEV: handled SOAP action " + trimAction(soapAction)) ;
     {
         final int length = contents.length() ;
         StringWriter escapedContents = null ;
-
+        
         for(int count = 0 ; count < length ; count++)
         {
             final char ch = contents.charAt(count) ;

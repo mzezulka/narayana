@@ -40,28 +40,28 @@ public class DemoSOAPContextImple implements SOAPContext
 
     public DemoSOAPContextImple (String id)
     {
-        try
-        {
-            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-
-            Document doc = docBuilder.newDocument();
+    	try
+    	{
+    	    DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+    	    DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+    	
+    	    Document doc = docBuilder.newDocument();
             _context = doc.createElement(id);
 
             _context.appendChild(doc.createTextNode("urn:mycomputer.org:"+id+":foo:bar"));
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-
-            _context = null;
-        }
+    	}
+    	catch (Exception ex)
+    	{
+    	    ex.printStackTrace();
+    	    
+    	    _context = null;
+    	}
     }
 
     public void initialiseContext (Object param)
     {
     }
-
+    
     /**
      * Serialise the SOAP context into a DOM node.
      * @param element The element to contain the serialisation.
@@ -76,17 +76,17 @@ public class DemoSOAPContextImple implements SOAPContext
         element.appendChild(context);
         return context;
     }
-
+    
     public String identifier ()
     {
-    return "DemoSOAPContextImple";
+	return "DemoSOAPContextImple";
     }
 
     public String toString ()
     {
         return _context.toString() ;
     }
-
+    
     private Element _context;
 
 }
