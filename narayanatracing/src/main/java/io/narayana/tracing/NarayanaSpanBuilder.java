@@ -11,7 +11,8 @@ import io.narayana.tracing.names.StringConstants;
 import io.narayana.tracing.names.TagName;
 import io.opentracing.Span;
 import io.opentracing.Tracer.SpanBuilder;
-import io.opentracing.tag.Tag;
+import io.opentracing.noop.NoopSpan;
+import io.opentracing.tag.AbstractTag;
 import io.opentracing.tag.Tags;
 
 /**
@@ -36,7 +37,7 @@ public class NarayanaSpanBuilder {
 
     private SpanBuilder spanBldr;
     private SpanName name;
-    private static final Span DUMMY_SPAN = new DummySpan();
+    private static final Span DUMMY_SPAN = NoopSpan.INSTANCE;
 
     public NarayanaSpanBuilder(SpanName name, Object... args) {
         if(!TRACING_ACTIVATED) return;
@@ -61,10 +62,10 @@ public class NarayanaSpanBuilder {
         return this;
     }
 
-    public <T> NarayanaSpanBuilder tag(Tag<T> tag, T value) {
+    public <T> NarayanaSpanBuilder tag(AbstractTag<T> tag, T value) {
         if(!TRACING_ACTIVATED) return this;
         Objects.requireNonNull(tag);
-        spanBldr = spanBldr.withTag(tag, value);
+        spanBldr = spanBldr.withTag(tag.getKey(), value.toString());
         return this;
     }
 
@@ -76,7 +77,7 @@ public class NarayanaSpanBuilder {
      */
     public Span build(Span parent) {
         if(!TRACING_ACTIVATED) return DUMMY_SPAN;
-        return spanBldr.asChildOf(parent).withTag(Tags.COMPONENT, StringConstants.NARAYANA_COMPONENT_NAME).start();
+        return spanBldr.asChildOf(parent).withTag(Tags.COMPONENT.getKey(), StringConstants.NARAYANA_COMPONENT_NAME).start();
     }
 
     /**
@@ -90,6 +91,6 @@ public class NarayanaSpanBuilder {
      */
     public Span build() {
         if(!TRACING_ACTIVATED) return DUMMY_SPAN;
-        return spanBldr.withTag(Tags.COMPONENT, NARAYANA_COMPONENT_NAME).start();
+        return spanBldr.withTag(Tags.COMPONENT.getKey(), NARAYANA_COMPONENT_NAME).start();
     }
 }

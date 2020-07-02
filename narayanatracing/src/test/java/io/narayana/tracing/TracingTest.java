@@ -33,7 +33,7 @@ public class TracingTest {
     @BeforeClass
     public static void init() {
         // we've successfully registered our mock tracer (the flag tells us exactly that)
-        assertThat(GlobalTracer.registerIfAbsent(testTracer)).isTrue();
+        GlobalTracer.register(testTracer);
     }
 
     @After

@@ -3,6 +3,8 @@ package io.narayana.tracing;
 import static io.narayana.tracing.names.StringConstants.NARAYANA_COMPONENT_NAME;
 import static io.narayana.tracing.names.StringConstants.TRACING_ACTIVATED_SYSPROP_NAME;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -10,9 +12,11 @@ import io.narayana.tracing.names.SpanName;
 import io.narayana.tracing.names.TagName;
 import io.narayana.tracing.names.TransactionStatus;
 import io.opentracing.Scope;
+import io.opentracing.ScopeManager;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
 import io.opentracing.Tracer.SpanBuilder;
+import io.opentracing.noop.NoopScopeManager;
 import io.opentracing.tag.Tags;
 import io.opentracing.util.GlobalTracer;
 
@@ -39,14 +43,38 @@ import io.opentracing.util.GlobalTracer;
 public class TracingUtils {
     static final boolean TRACING_ACTIVATED = Boolean
             .valueOf(System.getProperty(TRACING_ACTIVATED_SYSPROP_NAME, "true"));
-    private static final Scope DUMMY_SCOPE = () -> {};
+    private static final Scope DUMMY_SCOPE = NoopScopeManager.NoopScope.INSTANCE;
+    private static Method activateMethod;
+    private static boolean deprecatedApi = false;
+
+    static {
+        for(Method m : ScopeManager.class.getDeclaredMethods()) {
+            if(m.getName().equals("activate")) {
+                activateMethod = m;
+                break;
+            }
+        }
+        if(activateMethod == null) {
+            throw new IllegalStateException("Could not find ScopeManager#activate method.");
+        }
+        if(activateMethod.getParameterCount() == 2) {
+            deprecatedApi = true;
+        }
+    }
 
     private TracingUtils() {
     }
 
     public static Scope activateSpan(Span span) {
         if (!TRACING_ACTIVATED) return DUMMY_SCOPE;
-        return getTracer().activateSpan(span);
+        try {
+            if(deprecatedApi) {
+                return (Scope) activateMethod.invoke(getTracer().scopeManager(), span, false);
+            }
+            return (Scope) activateMethod.invoke(getTracer().scopeManager(), span);
+        } catch (IllegalAccessException|InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -77,7 +105,7 @@ public class TracingUtils {
 
         RootSpanBuilder() {
             if(!TRACING_ACTIVATED) return;
-            spanBldr = prepareSpan(SpanName.TX_ROOT).withTag(Tags.ERROR, false);
+            spanBldr = prepareSpan(SpanName.TX_ROOT).withTag(Tags.ERROR.getKey(), false);
         }
 
         private static SpanBuilder prepareSpan(SpanName name) {
@@ -115,7 +143,7 @@ public class TracingUtils {
         public Span build(String txUid) {
             if(!TRACING_ACTIVATED) return null;
             tag(TagName.UID, txUid);
-            return spanBldr.withTag(Tags.COMPONENT, NARAYANA_COMPONENT_NAME).start();
+            return spanBldr.withTag(Tags.COMPONENT.getKey(), NARAYANA_COMPONENT_NAME).start();
         }
     }
 
@@ -126,7 +154,7 @@ public class TracingUtils {
      */
     public static void markTransactionFailed(Span rootSpan) {
         if (!TRACING_ACTIVATED || rootSpan == null) return;
-        rootSpan.setTag(Tags.ERROR, true);
+        rootSpan.setTag(Tags.ERROR.getKey(), true);
     }
 
     /**
